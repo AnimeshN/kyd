@@ -1,11 +1,16 @@
 from kyd.settings.base import *
 
 DEBUG = False
+ALLOWED_HOSTS = ['104.43.197.79']
+SECRET_KEY = config['SECRET_KEY'] 
 
-ALLOWED_HOSTS = ['*']
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': config['DBNAME'],
+        'USER': config['DBUSER'],
+        'PASSWORD': config['DBPASSWORD'],
+        'HOST': 'localhost',
+        'PORT': '',
     }
 }
