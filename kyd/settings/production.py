@@ -3,7 +3,7 @@ import json
 with open('/etc/config.json') as config_file:
         config = json.load(config_file)
 
-DEBUG = False
+DEBUG = True
 ALLOWED_HOSTS = ['104.43.197.79']
 SECRET_KEY = config['SECRET_KEY'] 
 
