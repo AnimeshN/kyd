@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content%}
+<div class="row">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s3"><a href="{% url 'feat1' %}">Feature1</a></li>
+        <li class="tab col s3"><a class="active" href="{% url 'feat2' %}">Feature2</a></li>
+        <li class="tab col s3 disable"><a href="#test3">Feature3</a></li>
+        <li class="tab col s3 disable"><a href="#test4">Feature4</a></li>
+      </ul>
+    </div>
+    <!-- <div id="test1" class="col s12">Test 1</div>
+    <div id="test2" class="col s12">Test 2</div>
+    <div id="test3" class="col s12">Test 3</div>
+    <div id="test4" class="col s12">Test 4</div> -->
+  </div>
+  <div class="container">
+    {% block feature %}
+    {% endblock %}
+  </div>
+   
+
+    {% if messages %}
+    {% for message in messages %}
+    <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
+    {% endfor %}
+{% endif %}
+{% endblock%}

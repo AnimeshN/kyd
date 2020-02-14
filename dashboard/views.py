@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 
 
@@ -22,7 +22,7 @@ def login_request(request):
             if user is not None:
                 login(request, user)
                 messages.info(request, f"You are now logged in as {username}")
-                return redirect('/')
+                return redirect('/kyd_dashboard')
             else:
                 messages.error(request, "Invalid username or password.")
         else:
@@ -31,3 +31,8 @@ def login_request(request):
     return render(request = request,
                     template_name = "dashboard/login.html",
                     context={"form":form})
+
+def logout_request(request):
+    logout(request)
+    messages.info(request, "Logged out successfully!")
+    return redirect("/")

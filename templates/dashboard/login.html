@@ -10,10 +10,8 @@
     <!-- Don't have an account? <a href="/register" target="blank"><strong>register here</strong></a>! -->
 </div>
 {% if messages %}
-  <ul class="messages">
-    {% for message in messages %}
-      <li class="{{ message.tags }}">{{ message }}</li>
-    {% endfor %}
-  </ul>
+        {% for message in messages %}
+          <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
+        {% endfor %}
 {% endif %}
 {% endblock %}
