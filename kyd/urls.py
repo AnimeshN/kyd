@@ -27,8 +27,8 @@ urlpatterns = [
     url(r'^kyd_dashboard/feature1$', FeatureOne.as_view(), name='feat1'),
     url(r'^kyd_dashboard/feature2$', FeatureTwo.as_view(), name='feat2'),
     url(r'^admin/', admin.site.urls),
-    url("login", views.login_request, name="login"),
-    url("logout", views.logout_request, name="logout"),
+    url(r'^login/', views.login_request, name='login'),
+    url(r'^logout/', views.logout_request, name='logout'),
 
 
     # url(r'logout', views.logout_request, name="logout"),
