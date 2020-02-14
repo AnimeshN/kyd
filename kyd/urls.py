@@ -18,8 +18,13 @@ from django.conf.urls import url
 from dashboard.views import DashboardView
 from django.conf import settings
 from django.conf.urls.static import static
+from dashboard import views
 
 urlpatterns = [
     url(r'^$', DashboardView.as_view(), name='home'),
     url(r'^admin/', admin.site.urls),
+    url("login", views.login_request, name="login"),
+
+    # url(r'logout', views.logout_request, name="logout"),
+
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
