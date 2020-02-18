@@ -1,4 +1,28 @@
 {% extends 'kyd_dashboard/kyd_base.html' %}
 {% block feature %}
-this is feature 1
+<div class="dropdown">
+    <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown">select Month
+    <span class="caret"></span></button>
+    <ul class="dropdown-menu">
+      <li><a href="#">August</a></li>
+      <li><a href="#">September</a></li>
+      <li><a href="#">October</a></li>
+    </ul>
+  </div>
+          <select id = "monthdropdown">
+            <option value="aug">August</option>
+            <option value="sep">September</option>
+            <option value="oct">October</option>
+          </select>
+              <select id = "opt">
+            <option value="1">Height%</option>
+            <option value="2">Weight%</option>
+            <option value="3">Height + Weight%</option>
+          </select> 
+          </div>
+     
+        <svg width="1000" height="250"></svg>
+      
+
+
 {% endblock %}
