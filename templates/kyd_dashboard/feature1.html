@@ -1,8 +1,11 @@
 {% extends 'kyd_dashboard/kyd_base.html' %}
 {% load static %}
+{% block feature_css %}
+  <link rel="stylesheet" href="{% static 'kyd_dashboard/css/feature1.css' %}" >
+{% endblock %}
 {% block feature %}
 <div class="row text-center" style="height: 100px;">
-  <div class="col-12 bg-primary h-75 w-100" >
+  <div class="col-12 bg-info h-75 w-100" >
     <!-- select month -->
     <div class="dropdown" style="float: left; margin:20px">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -25,6 +28,8 @@
         <a class="dropdown-item" href="#">Height+Weight %</a>
       </div>
     </div>
+
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat2' %}`">Next</button>
 
     
   </div>

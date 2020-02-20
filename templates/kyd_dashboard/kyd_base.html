@@ -1,7 +1,11 @@
 {% extends 'base.html' %}
 {% load static%}
+{% block extra_css %}
 
-<link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+  {% block feature_css %}
+  {% endblock %}
+  
+{% endblock %}
 {% block content%}
 <div class="container-fluid" style="height: 100%;margin-top: 10px;">
   {% block feature %}
