@@ -16,8 +16,21 @@ Including another URLconf
 from django.contrib import admin 
 from django.conf.urls import url
 from dashboard.views import DashboardView
+from kyd_dashboard.views import KYDDashboardView, FeatureOne, FeatureTwo
+from django.conf import settings
+from django.conf.urls.static import static
+from dashboard import views
 
 urlpatterns = [
     url(r'^$', DashboardView.as_view(), name='home'),
+    url(r'^kyd_dashboard$', KYDDashboardView.as_view(), name='kyd_dashboard'),
+    url(r'^kyd_dashboard/feature1$', FeatureOne.as_view(), name='feat1'),
+    url(r'^kyd_dashboard/feature2$', FeatureTwo.as_view(), name='feat2'),
     url(r'^admin/', admin.site.urls),
-]
+    url(r'^login/', views.login_request, name='login'),
+    url(r'^logout/', views.logout_request, name='logout'),
+
+
+    # url(r'logout', views.logout_request, name="logout"),
+
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

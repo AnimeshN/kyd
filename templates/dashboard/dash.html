@@ -1,1 +1,32 @@
-hello
+{% extends 'base.html' %}
+
+{% block content%}
+        
+          
+        <div class="container">
+            <div class=" mt-5" style="height:100%;">
+               
+                <p class="text-center">
+                   <u> Dashboard covers the 18 Nutrition indicators categorized in 3 parts</u>
+                    <br><br>
+                   
+                </p>
+                <ul class="text-center">
+                    <li><a href="#"><u>Outcome indicators:</u></a>
+                                        It includes the nutrition status (Stunting/Wasting/Underweight/Low Birth Weight) of the children.
+                    </li>                     
+                    <li><a href="#"><u>Child Related(IYCF) Indicators:</u></a>
+                                        It includes the Brestfeeding and Complementary feeding practices followed for 0-6 months and 6-24 months children.
+                    </li>
+                    <li><a href="#"><u>Pregnant Women Related Indicators:</u></a>
+                                        It includes ANC visits, number of Anemic women.
+                    </li>
+                </ul>
+            </div>
+        </div>  
+        {% if messages %}
+            {% for message in messages %}
+            <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
+            {% endfor %}
+        {% endif %}
+   {% endblock %}

@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% load static%}
+
+<link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+{% block content%}
+<div class="container-fluid" style="height: 100%;margin-top: 10px;">
+  {% block feature %}
+  {% endblock %}
+</div>
+<div class="row">
+    <div class="col s12">
+      <ul class="tabs">
+        <li class="tab col s3"><a href="{% url 'feat1' %}">Feature1</a></li>
+        <li class="tab col s3"><a class="active" href="{% url 'feat2' %}">Feature2</a></li>
+        <li class="tab col s3 disable"><a href="#test3">Feature3</a></li>
+        <li class="tab col s3 disable"><a href="#test4">Feature4</a></li>
+      </ul>
+    </div>
+    <!-- <div id="test1" class="col s12">Test 1</div>
+    <div id="test2" class="col s12">Test 2</div>
+    <div id="test3" class="col s12">Test 3</div>
+    <div id="test4" class="col s12">Test 4</div> -->
+  </div>
+  
+   
+
+    {% if messages %}
+    {% for message in messages %}
+    <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
+    {% endfor %}
+    {% block extra_js %}
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js"></script>
+    <script src="https://d3js.org/d3-color.v1.min.js"></script>
+    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+    {% block feature_js %}
+    {% endblock %}
+    {% endblock %}
+
+{% endif %}
+{% endblock%}
