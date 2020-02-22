@@ -1,5 +1,8 @@
 {% extends 'kyd_dashboard/kyd_base.html' %}
 {% load static %}
+{% block feature_css %}
+  <link rel="stylesheet" href="{% static 'kyd_dashboard/css/feature1.css' %}" >
+{% endblock %}
 {% block feature %}
 <div class="row text-center" style="height: 100px;">
   <div class="col-12 bg-primary h-75 w-100" >
@@ -27,7 +30,7 @@
       </div>
     </div>
 
-    <div>Outcome indicator(stunting/wasting/underweight/lowbirth weight)</div>
+    <div class='h2 text-light mt-2'>Outcome indicator<small>(stunting/wasting/underweight/lowbirth weight)</small></div>
   </div>
 
   <div class="col-12 m-5">
