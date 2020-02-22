@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from .models import F1
+from .models import F1, F2
 from django.core import serializers
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -17,4 +17,7 @@ class FeatureOne(LoginRequiredMixin,TemplateView):
             return render(request,'kyd_dashboard/feature1.html',{"data":jsondata})
 
 class FeatureTwo(TemplateView):
-    template_name = "kyd_dashboard/feature2.html"
+    def get(self,request):
+        oi_data = F2.objects.all()
+        oi_jdata = serializers.serialize('json', oi_data)
+        return render(request, 'kyd_dashboard/feature2.html', {"oi_data":oi_jdata})
