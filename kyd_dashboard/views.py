@@ -1,6 +1,6 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from .models import F1, F2
+from .models import F1, F2, F3, F4
 from django.core import serializers
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -9,8 +9,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 class KYDDashboardView(TemplateView):
     template_name = "kyd_dashboard/kyd_base.html"
 
-class FeatureOne(LoginRequiredMixin,TemplateView):
-    login_url = '/login/'
+class FeatureOne(TemplateView):
     def get(self,request):
             data = F1.objects.all()
             jsondata = serializers.serialize('json',data)
@@ -21,3 +20,15 @@ class FeatureTwo(TemplateView):
         oi_data = F2.objects.all()
         oi_jdata = serializers.serialize('json', oi_data)
         return render(request, 'kyd_dashboard/feature2.html', {"oi_data":oi_jdata})
+
+class FeatureThree(TemplateView):
+    def get(self,request):
+        data = F3.objects.all()
+        jsondata = serializers.serialize('json', data)
+        return render(request, 'kyd_dashboard/feature3.html', {"poi_data":jsondata})
+
+class FeatureFour(TemplateView):
+    def get(self,request):
+        data = F4.objects.all()
+        jsondata = serializers.serialize('json', data)
+        return render(request, 'kyd_dashboard/feature4.html', {"pi_data":jsondata})

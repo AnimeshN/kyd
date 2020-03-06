@@ -1,0 +1,294 @@
+{% extends 'kyd_dashboard/kyd_base.html' %}
+{% load static %}
+{% block feature_css %}
+  <!-- <link rel="stylesheet" href="{% static 'kyd_dashboard/css/feature1.css' %}" > -->
+  <style>
+      div.tooltip {	
+                position: absolute;			
+                text-align: center;			
+                width: 150px;					
+                height: 40px;					
+                padding: 2px;				
+                font: 16px sans-serif;
+                color: black;		
+                background: white;
+                border: 1px;		
+                pointer-events: none;			
+        }
+        .arc text {
+            font: 16px sans-serif;
+            color: #fff;
+            text-anchor: middle;
+        }
+
+        .arc path {
+        stroke: #DDDDDD;
+        stroke-width: 2;
+        }
+  </style>
+{% endblock %}
+{% block feature %}
+<div class="row text-center" style="height: 100px;">
+  <div class="col-12 bg-primary h-75 w-100" >
+    <!-- select month -->
+    <div class="dropdown" style="float: left; margin:20px">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select Month
+      </button>
+      <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">August</a>
+        <a class="dropdown-item" href="#">September</a>
+        <a class="dropdown-item" href="#">October</a>
+      </div>
+    </div>
+    <!-- select category -->
+    <div class="dropdown" style="float: left; margin:20px"> 
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select Category
+      </button>
+      <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">Wasting(%)</a>
+        <a class="dropdown-item" href="#">Stunting(%)</a>
+        <a class="dropdown-item" href="#">Underweight(%)</a>
+        <a class="dropdown-item" href="#">Low Birth Weight(%)</a>
+      </div>
+    </div>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat2' %}`">Back</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat4' %}`">Next</button>
+
+    <div class='h2 text-light mt-2'>Project-wise Contribution</div>
+  </div>
+
+  <div class="col-12 m-5">
+    <svg width="1100" height="750"></svg>
+  </div>
+
+</div>
+
+
+
+{% endblock %}
+
+
+{% block feature_js %}
+
+<script>
+    const svg = d3.select('svg');
+    const width = +svg.attr('width');
+    const height = +svg.attr('height');
+    var radius = Math.min(width, height) / 3;
+  
+  
+const render = data =>{
+
+    let arcInitial = d => d.wasting;
+
+    const margin = {left:350,top:300 ,right:170,bottom:30};
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom; 
+    
+    const g = svg.append('g')
+        .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    var pie = d3.pie()
+                .value(function(d) { 
+                        return arcInitial(d); });
+
+    var path = d3.arc()
+                .outerRadius(radius -10)
+                .innerRadius(0);
+
+    var label = d3.arc()
+                .outerRadius(radius - 40)
+                .innerRadius(radius - 40);
+
+    //tooltip
+    // Define the div for the tooltip
+    const onMouseOver = d =>{	
+        div.transition().duration(200).style("opacity", .9);		
+        div	.html(d.data.project+"<br>"+arcInitial(d.data)+"%")
+            .style("left", d3.event.pageX + "px")
+            .style("top",  d3.event.pageY - 30 + "px");	
+        }
+        
+    var div = d3.select("body").append("div")	
+        .attr("class", "tooltip")				
+        .style("opacity", 0);
+
+
+    oi = {"project":[],"wasting":[],"stunting":[],"underweight":[],"lbw":[]}
+        
+    data.forEach(d => {
+        oi.project.push(d.project);
+        oi.wasting.push(d.wasting);
+        oi.stunting.push(d.stunting);
+        oi.underweight.push(d.underweight);
+        oi.lbw.push(d.lbw);
+        
+    });
+
+    var color = d3.scaleSequential().domain([d3.min(arcInitial(oi)),d3.max(arcInitial(oi))])
+            .interpolator(d3.interpolateGreys);
+
+    var arc = g.selectAll(".arc");
+
+    var arcData = arc.data(pie(data));
+
+    var arcEnter = arcData.enter().append("g")
+                        .attr("class", "arc");
+
+        arcEnter.append("path")
+        .attr("d", path)
+        .attr("fill", function(d) { 
+            return color(arcInitial(d.data)); })
+            .on("mouseover", d => onMouseOver(d))					
+                    .on("mouseout", function(d) {		
+                div.transition()		
+                    .duration(500)		
+                    .style("opacity", 0);
+            });
+    
+    
+        makeviz = opt =>{
+            arc.selectAll("*").remove();
+                $( ".hello" ).remove();
+                // console.log(d)
+
+
+                let tansitionDuration = 1000;
+                    if(opt == 'Wasting(%)'){
+                    arcInitial  = d => d.wasting;
+                }else if (opt == 'Stunting(%)' ){
+                    arcInitial  = d => d.stunting; 
+                }else if (opt == 'Underweight(%)' ){
+                    arcInitial  = d => d.underweight; 
+                }
+                else{
+                    arcInitial  = d => d.lbw;
+                }
+            var pie = d3.pie()
+                .value(function(d) { 
+                    return arcInitial(d); });
+            
+            var label = d3.arc()
+                .outerRadius(radius - 40)
+                .innerRadius(radius - 40);
+
+            var mycolor = d3.scaleSequential().domain([d3.min(arcInitial(oi)),d3.max(arcInitial(oi))])
+                            .interpolator(d3.interpolateGreys);
+
+
+            var arcData = arc.data(pie(data));
+
+            var arcEnter = arcData.enter().append("g")
+                .attr("class", "arc");
+                arcEnter.append("path")
+            .attr("d", path)
+            .transition().duration(tansitionDuration)
+            .attr("fill", function(d) { 
+                return mycolor(arcInitial(d.data)); });
+
+            arcEnter.append("text")
+            .attr("transform", function(d) {
+                var _d = label.centroid(d);
+                _d[0] *= 1.40;	//multiply by a constant factor
+                _d[1] *= 1.40;	//multiply by a constant factor
+                return "translate(" + _d + ")";
+            })
+            .attr("dy", ".50em")
+            .attr("class", "hello")
+            .style("text-anchor", "middle")
+            .text(function(d) { return (d.data.project) + ": " + (arcInitial(d.data)) + "%" });
+                    
+  
+            
+        }   
+  
+        const dropdownChange = () =>{
+            var sel = document.getElementById('opt');
+            val = document.getElementById("opt").value
+        }
+        makeviz("Wasting(%)");
+        $(".category a").click(function(){
+        var val = $(this).text();
+        makeviz(val);
+
+        });
+
+
+}
+
+  
+  const monthwise = (data) => {
+    data.forEach(d => {
+            d.wasting = +d.wasting;
+            d.stunting = +d.stunting;
+            d.underweight = +d.underweight;
+            d.lbw = +d.lbw;
+        });
+
+        var aproperty = [];
+        var sproperty = [];
+        var oproperty = [];
+    data.forEach(d =>{
+        var temp = {};
+        temp['project'] = d.project;
+        temp['wasting'] = d.wasting;
+        temp['stunting'] = d.stunting;
+        temp['underweight'] = d.underweight;
+        temp['lbw'] = d.lbw;
+        if(d.month == "Aug"){
+            aproperty.push(temp);
+        }else if (d.month == "Sep"){
+            sproperty.push(temp);
+        }else if (d.month == "Oct"){
+            oproperty.push(temp);
+        }
+      
+    })
+  
+    var listdata = [
+        aproperty,sproperty,oproperty
+    ]
+    return listdata;
+    }
+  
+    const selectData =  (val,monthwiseData) =>{
+    if(val == "August"){
+            return monthwiseData[0];
+        }else if (val == "September"){
+            return monthwiseData[1];
+        }else if (val == 'October'){
+            return monthwiseData[2]       
+        }
+    } 
+  
+  
+  //
+    data_from_django = {{ poi_data|safe }};
+    var data = []
+    data_from_django.forEach(element => {
+        data.push(element.fields);
+    });
+    monthwiseData = monthwise(data);
+  
+    d3.select("#monthdropdown")
+    .on("change", () =>{
+            val = document.getElementById("monthdropdown").value
+            mydata = selectData(val,monthwiseData);
+            svg.selectAll("*").remove();
+            render(mydata);
+        });
+    
+        $(".month a").click(function(){
+        var val = $(this).text();
+        mydata = selectData(val,monthwiseData);
+        svg.selectAll("*").remove();
+        render(mydata);
+
+    });
+    
+    augData = monthwiseData[0];
+    render(augData); 
+    </script>
+{% endblock %}

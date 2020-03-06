@@ -1,0 +1,308 @@
+{% extends 'kyd_dashboard/kyd_base.html' %}
+{% load static %}
+{% block feature_css %}
+  <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+  <style>
+    .table { 
+		width: 90%; 
+		 
+    padding: 1000px;
+    border-radius: 1px;
+	}
+	
+	th { 
+		background: skyblue; 
+        font-size: 15px;
+		font-weight: bold; 
+		cursor: s-resize;
+		background-repeat: no-repeat;
+        background-position: 3% center;
+        
+	}
+	td, th { 
+		padding: 6px; 
+		border: 1px solid #ccc; 
+		text-align: right; 
+	}
+    
+    th:nth-child(odd) {
+    background-color: #f2f2f2;
+    }
+    
+    div h3{
+         text-align: center;
+        margin-top: 10px;
+    }
+    
+  </style>
+{% endblock %}
+{% block feature %}
+<div class="row text-center" style="height: 100px;">
+  <div class="col-12 bg-info h-75 w-100" >
+    <!-- select month -->
+    <div class="dropdown" style="float: left; margin:20px">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select Month
+      </button>
+      <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">August</a>
+        <a class="dropdown-item" href="#">September</a>
+        <a class="dropdown-item" href="#">October</a>
+      </div>
+    </div>
+    
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat3'%}`">Back</button>
+
+    <div class='heading text-light mt-2'>District Profile</div>
+    
+  </div>
+
+  <div>
+    <h3 style="margin-left: 700px; font-style: italic; font-weight: bold;">Outcome Indicators</h3>
+  </div>
+  <div style="color:black;" id="table" class="row h-55 w-90 ">               
+</div>
+
+<div >
+    <h3 style="margin-left:700px; margin-top: 90px; font-style: italic; font-weight: bold;">Performance Indicators</h3>
+</div>
+
+<div style="color:black" id="table1" class="row h-15 w-60 bg-skyblue justify-content-right  ">
+    
+</div>
+</div>
+
+
+
+{% endblock %}
+
+
+{% block feature_js %}
+
+<script>
+  const render = data =>{
+
+      
+}
+const monthwise = (data) => {
+//  console.log(data)
+    
+    data.forEach(d => {
+        d.district = d.district;
+        d.mdrtly_stntd = +d.mdrtly_stntd;
+        d.svrly_stntd = +d.svrly_stntd;
+        d.svrly_wstd = +d.svrly_wstd;
+        d.mdrtly_wstd = +d.mdrtly_wstd;
+        d.svrly_uw = +d.svrly_uw;
+        d.mdrtly_uw = +d.mdrtly_uw;
+        d.nb_lbw = +d.nb_lbw;
+        d.wasting_percent = d.wasting_percent;
+    });
+    // console.log(data);
+     var aproperty = [];
+     var sproperty = [];
+     var oproperty = [];
+     data.forEach(d=>{
+         var temp = {}
+         temp['district_n'] = d.district;
+         temp['nb_lbw'] = d.nb_lbw;
+         temp['wasting_percent'] = d.wasting_percent;
+         temp['stunting_percent'] = d.stunting_percent;
+         temp['underweight_percent'] = d.underweight_percent;
+         temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
+         temp['stntd_chld'] = d.stntd_chld;
+         temp['wstd_chld'] = d.wstd_chld;
+         temp['uw_chld'] = d.uw_chld;
+         temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
+         temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
+         temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+         temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
+         temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
+         temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+         temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
+         temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+         temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+         temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
+         temp['prnt_child_6to8mnths_intd_cf']= d.prnt_child_6to8mnths_intd_cf;
+         temp['prnt_child_6to24mnths_intd_cf'] = d.prnt_child_6to24mnths_intd_cf;
+         temp['prnt_child_1yr_cmpltd_immunzt'] =d.prnt_child_1yr_cmpltd_immunzt;
+         if(d.month == "Aug"){
+             aproperty.push(temp);
+     }else if (d.month == "Sep"){
+         sproperty.push(temp);
+     }else if (d.month == "Oct"){
+         oproperty.push(temp);
+     }
+    //  console.log( data)
+ })
+
+ var listdata = [aproperty,sproperty,oproperty]
+ // console.log(listdata)
+
+ return listdata;
+ }
+ 
+  
+  
+  
+  /////
+  data_from_django = {{ pi_data|safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
+  });
+  console.log(data);
+  monthwiseData = monthwise(data);
+  
+  d3.select("#monthdropdown")
+  .on("change", () =>{
+        let val = document.getElementById("monthdropdown").value
+        console.log(val);
+        let tableData = tbData(val, monthwiseData);
+        svg.selectAll("*").remove();
+        console.log(tableData);
+        render(tableData);
+    });
+  
+    $(".month a").click(function(){
+      var val = $(this).text();
+      tableData = tbData(val, monthwiseData);
+      svg.selectAll("*").remove();
+      console.log(tableData);
+      render(tableData);
+      
+
+});
+  
+  
+  tables(monthwiseData[0]); 
+
+  const tbData =  (val,monthwiseData) =>{
+      console.log(monthwiseData);
+        if(val == "August"){
+          return [tables(monthwiseData[0])];
+        }else if (val == "September"){
+            return [tables(monthwiseData[1])];
+        }else if (val == 'October'){
+            return [tables(monthwiseData[2])];      
+            }
+            
+        }
+
+                
+
+
+function tables(data){
+// console.log(data);
+$( ".hello" ).remove();
+    $( ".hello1" ).remove();
+
+   
+var tbdata = [];
+            
+            data.forEach(d=>{
+                var tbd = {}
+                tbd[''] = d.district_n;
+                tbd['stunted childern'] = d.stntd_chld;
+                tbd['stunting percent %'] = d.stunting_percent;
+                tbd['wasted childern'] = d.wstd_chld;
+                tbd['wasting percent %'] = d.wasting_percent;
+                tbd['underweight childern'] = d.uw_chld;
+                tbd['underweight percent %'] = d.underweight_percent;
+                tbd['No. of newborn with Low Birth Weight'] = d.nb_lbw;
+                tbd['low birth weight percent %'] = d.low_birth_weight_percent;
+               
+               
+                tbdata.push(tbd);
+            });
+        var table = d3.select('div#table').append('table').attr('class','hello');
+          
+        // console.log(tbData[0]);
+		  var titles = d3.keys(tbdata[0]);
+      
+		  var headers = table.append('thead').append('tr')
+		                   .selectAll('th')
+		                   .data(titles).enter()
+		                   .append('th')
+		                   .text(function (d) {
+			                    return d;
+		                    });
+		             
+		 
+		  var rows = table.append('tbody').selectAll('tr')
+		               .data(tbdata).enter()
+                       .append('tr');
+                       
+          rows.selectAll('td')
+               
+		    .data(function (d) {
+		    	return titles.map(function (k) {
+		    		return { 'value': d[k], 'name': k};
+		    	});
+		    }).enter()
+            .append('td')
+       
+        .text(function (d) {
+		    	return d.value;
+            });
+
+
+            var tbdata1 = [];
+            
+            data.forEach(d=>{
+                var tbdt = {}
+                tbdt[''] = d.district_n;
+                tbdt['%Anemic women'] = d.prnt_anwmic_wmn;
+                tbdt['%Pregnant women had 4 ANC visit'] = d.prnt_4_anc_vst_dlvry;
+                tbdt['%Pregnant women resting during pregnancy']=d.prnt_wmn_rstg_drg_prgncy;
+                tbdt['%Pregnant women eating extra meal during pregnancy'] = d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                tbdt['%Pregnant women counselled for BF in trimester']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                tbdt['%Childern breastfeed at birth'] = d.prnt_chld_bf_at_birth;
+                tbdt['%Childern (6-8 months) initiated CF']= d.prnt_child_6to8mnths_intd_cf;
+                tbdt['%Childern (6-24 months) initiated CF']= d.prnt_child_6to24mnths_intd_cf;
+                tbdt['%Childern(0-6) exclusively breastfed'] = d.prnt_chld_excly_bf;
+                tbdt['%Children receiving CF with diet diversity'] = d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                tbdt['%Children receiving CF with diet quantity'] = d.prnt_chld_cf_wid_adq_dt_qnty;
+                tbdt['%Childern receiving CF with appropriate hand washing'] = d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+                tbdt['%Childern with 1 year completed Immunization']= d.prnt_child_1yr_cmpltd_immunzt;
+
+                tbdata1.push(tbdt);
+            });
+            // console.log(tbdata1)
+
+            var table = d3.select('div#table1').append('table').attr('class','hello1');
+          
+          // console.log(tbData[0]);
+            var titles = d3.keys(tbdata1[0]);
+        
+            var headers = table.append('thead').append('tr')
+                             .selectAll('th')
+                             .data(titles).enter()
+                             .append('th')
+                             .text(function (d) {
+                                  return d;
+                              });
+                       
+           
+            var rows = table.append('tbody').selectAll('tr')
+                         .data(tbdata1).enter()
+                         .append('tr');
+                         
+            rows.selectAll('td')
+                 
+              .data(function (d) {
+                  return titles.map(function (k) {
+                      return { 'value': d[k], 'name': k};
+                  });
+              }).enter()
+              .append('td')
+         
+          .text(function (d) {
+                  return d.value;
+              });
+  
+
+}
+
+  </script>
+{% endblock %}

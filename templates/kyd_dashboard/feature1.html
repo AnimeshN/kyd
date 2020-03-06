@@ -1,7 +1,27 @@
 {% extends 'kyd_dashboard/kyd_base.html' %}
 {% load static %}
 {% block feature_css %}
-  <link rel="stylesheet" href="{% static 'kyd_dashboard/css/feature1.css' %}" >
+  <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+  <style>
+    /* table { 
+		width: 80%; 
+    height: 75%;
+		border-collapse: collapse; 
+	}
+	
+	th { 
+    background: skyblue; 
+		font-weight: bold; 
+		cursor: s-resize;
+		background-repeat: no-repeat;
+        background-position: 3% center;
+	}
+	td, th { 
+		padding: 6px; 
+		border: 1px solid rgb(19, 17, 17); 
+		text-align: left; 
+	} */
+  </style>
 {% endblock %}
 {% block feature %}
 <div class="row text-center" style="height: 100px;">
@@ -38,7 +58,9 @@
   <div class="col-12 m-5">
     <svg width="1100" height="350"></svg>
   </div>
-
+  <div id="table" class="row h-50 bg-light justify-content-center">
+                        
+  </div>
 </div>
 
 
@@ -58,12 +80,12 @@
   const render = data =>{
       let yValue  = d => d.heightp;
       const xValue = d => d.block;
-      const margin = {left:30,top:10 ,right:40,bottom:30};
+      const margin = {left:70,top:10 ,right:470,bottom:30};
       const innerWidth = width - margin.left - margin.right;
       const innerHeight = height - margin.top - margin.bottom;
   
       const yScale = d3.scaleLinear()
-          .domain([d3.max(data,yValue),0])
+          .domain([100,0])
           .range([0,innerHeight]);
       
       const xScale = d3.scaleBand()
@@ -95,7 +117,8 @@
               .attr('x', d => xScale(d.block))
               .attr('y', d => yScale(yValue(d)))
               .attr('height',d => innerHeight - yScale(yValue(d)))
-              .attr('width',xScale.bandwidth())
+              .attr('width', 50)
+              .attr("font-size", "14px")
               .attr("fill", d => myColor(yValue(d)))
                 .on("mouseover", d => onMouseOver(d))					
               .on("mouseout", function(d) {		
@@ -108,11 +131,11 @@
           var mytext = g.selectAll("text").data(data)
               .enter().append("text")
               .text(d => yValue(d))
-              .attr('x', d => xScale(d.block)+25)
-              .attr('y', d => yScale(yValue(d))+15)
+              .attr('x', d => xScale(d.block)+10)
+              .attr('y', d => yScale(yValue(d)) )
               .attr("font-family", "sans-serif")
-              .attr("font-size", "11px")
-              .attr("fill", "white")
+              .attr("font-size", "14px")
+              .attr("fill", "black")
   
       var yaxis = g.append('g')
           .call(d3.axisLeft(yScale));
@@ -125,7 +148,7 @@
             if(opt == 'Height%'){
               yValue  = d => d.heightp;
               data = sortData(data,'heightp');
-              console.log('height');
+              // console.log('height');
             }else if (opt == 'Weight%' ){
               yValue  = d => d.weightp; 
               data = sortData(data,'weightp');
@@ -137,7 +160,7 @@
         const xScale0 = xScale.domain(data.map(xValue)).copy();
   
         const yScale = d3.scaleLinear()
-          .domain([d3.max(data,yValue),0])
+          .domain([100,0])
           .range([0,innerHeight]);
               
           bars.transition().duration(tansitionDuration)
@@ -154,8 +177,8 @@
             //text update
             mytext.transition().duration(tansitionDuration)
             .text(d => yValue(d))
-              .attr('y', d => yScale(yValue(d))+15)
-              .attr('x', d => xScale0(d.block)+25)
+              .attr('y', d => yScale(yValue(d)))
+              .attr('x', d => xScale0(d.block)+10)
   
             mytext.exit().remove();
             
@@ -189,6 +212,12 @@
   
   const monthwise = (data) => {
   data.forEach(d => {
+          d.no_enrolled = +d.no_enrolled;
+          d.tot_elgb_wghd = +d.tot_elgb_wghd;
+          d.tot_elgb_hght = +d.tot_elgb_hght;
+          d.no_wt = +d.no_wt;
+          d.no_ht = +d.no_ht;
+          d.no_wt_ht = +d.no_wt_ht;
           d.heightp = +d.heightp;
           d.weightp = +d.weightp;
           d.heightweightp = +d.heightweightp;
@@ -199,6 +228,12 @@
     data.forEach(d =>{
       var temp = {};
       temp['block'] = d.block;
+      temp['no_enrolled'] = d.no_enrolled;
+      temp['tot_elgb_wghd'] = d.tot_elgb_wghd;
+      temp['tot_elgb_hght'] = d.tot_elgb_hght;
+      temp['no_wt'] = d.no_wt;
+      temp['no_ht'] = d.no_ht;
+      temp['no_wt_ht'] = d.no_wt_ht;
       temp['heightp'] = d.heightp;
       temp['weightp'] = d.weightp;
       temp['heightweightp'] = d.heightweightp;
@@ -248,22 +283,141 @@
   
   d3.select("#monthdropdown")
   .on("change", () =>{
-        val = document.getElementById("monthdropdown").value
-        mydata = selectData(val,monthwiseData);
+        let val = document.getElementById("monthdropdown").value
+        console.log(val);
+        let mydata = selectData(val,monthwiseData);
+        let tableData = tbData(val, monthwiseData);
         svg.selectAll("*").remove();
-        render(mydata);
+        render(mydata,tableData);
     });
   
     $(".month a").click(function(){
       var val = $(this).text();
       mydata = selectData(val,monthwiseData);
+      tableData = tbData(val, monthwiseData);
       svg.selectAll("*").remove();
-      render(mydata);
+      render(mydata,tableData);
+      
 
 });
   
   augData = monthwiseData[0];
   sortedData = sortData(augData,'HeightP');
   render(sortedData); 
+  tables(monthwiseData[0]); 
+
+  const tbData =  (val,monthwiseData) =>{
+        if(val == "August"){
+          return [tables(monthwiseData[0])];
+        }else if (val == "September"){
+            return [tables(monthwiseData[1])];
+        }else if (val == 'October'){
+            return [tables(monthwiseData[2])];      
+            }
+            
+        }
+
+        function tables(data){
+            $( ".hello" ).remove();
+            var tbdata = [];
+            data.forEach(d=>{
+                var tbd = {}
+              
+
+                tbd["Block"] = d.block;
+                tbd["Number of Children 0-6 years old enrolled for services"] = d.no_enrolled;
+                tbd["Total No. of Children Eligible to be Weighed"] = d.tot_elgb_wghd;
+                tbd["Total No. of Children Eligible for measuring Height"] = d.tot_elgb_hght;
+                tbd["Total No. of Children Weighed"] = d.no_wt;
+                tbd["Total No. of Children whose Height has been measured"] = d.no_ht;
+                tbd["Total No. of Children whose Height and Weight has been measured"] = d.no_wt_ht;
+
+                tbdata.push(tbd);
+            });
+            
+
+            column_data = {"block_n":[],"no_enrolled":[],"tot_elgb_wghd":[],"tot_elgb_hght":[],"no_wt":[],"no_ht":[],"no_wt_ht":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+            
+            data.forEach(d=>{
+            column_data.block_n.push(d.block);
+            column_data.no_enrolled.push(+d.no_enrolled);
+            column_data.tot_elgb_wghd.push(+d.tot_elgb_wghd);
+            column_data.tot_elgb_hght.push(+d.tot_elgb_hght);
+            column_data.no_wt.push(+d.no_wt);
+            column_data.no_ht.push(+d.no_ht);
+            column_data.no_wt_ht.push(+d.no_wt_ht);
+            
+          })
+
+
+        var enroll_Color = d3.scaleSequential().domain([d3.min(column_data.no_enrolled),d3.max(column_data.no_enrolled)])
+        .interpolator(d3.interpolateRdYlGn);
+
+        var elgb_wt_Color = d3.scaleSequential().domain([d3.min(column_data.tot_elgb_wghd),d3.max(column_data.tot_elgb_wghd)])
+        .interpolator(d3.interpolateRdYlGn);
+
+        var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.tot_elgb_hght),d3.max(column_data.tot_elgb_hght)])
+        .interpolator(d3.interpolateRdYlGn);
+
+        var wt_Color = d3.scaleSequential().domain([d3.min(column_data.no_wt),d3.max(column_data.no_wt)])
+        .interpolator(d3.interpolateRdYlGn);
+
+        var ht_Color = d3.scaleSequential().domain([d3.min(column_data.no_ht),d3.max(column_data.no_ht)])
+        .interpolator(d3.interpolateRdYlGn);
+
+        var wt_ht_Color = d3.scaleSequential().domain([d3.min(column_data.no_wt_ht),d3.max(column_data.no_wt_ht)])
+        .interpolator(d3.interpolateRdYlGn);
+
+          var table = d3.select('div#table').append('table').attr('class','hello');
+           
+		  var titles = d3.keys(tbdata[0]);
+		  var headers = table.append('thead').append('tr')
+		                   .selectAll('th')
+		                   .data(titles).enter()
+		                   .append('th')
+		                   .text(function (d) {
+			                    return d;
+		                    });
+		             
+		 
+		  var rows = table.append('tbody').selectAll('tr')
+		               .data(tbdata).enter()
+                       .append('tr');
+                       
+          rows.selectAll('td')
+               
+		    .data(function (d) {
+		    	return titles.map(function (k) {
+		    		return { 'value': d[k], 'name': k};
+		    	});
+		    }).enter()
+            .append('td')
+            .style("background-color", function(d) {
+                
+              if(d.name == 'Number of Children 0-6 years old enrolled for services'){
+                                    return enroll_Color(d.value);
+                        }
+                        else if(d.name == 'Total No. of Children Eligible to be Weighed'){
+                            return elgb_wt_Color(d.value);
+                        }
+                        else if(d.name == 'Total No. of Children Eligible for measuring Height'){
+                            return elgb_ht_Color(d.value);
+                        }
+                        else if(d.name == 'Total No. of Children Weighed'){
+                            return ht_Color(d.value);
+                        } 
+                        else if(d.name == 'Total No. of Children whose Height has been measured'){
+                            return ht_Color(d.value);
+                        } 
+                        else if(d.name == 'Total No. of Children whose Height and Weight has been measured'){
+                            return wt_ht_Color(d.value);
+                        } 
+                    })
+		    .text(function (d) {
+		    	return d.value;
+            });
+        }
+
+
   </script>
 {% endblock %}
