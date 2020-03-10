@@ -91,3 +91,76 @@ class F4(models.Model):
         managed = False
         db_table = 'f4'
 
+class F6MapBeat(models.Model):
+    month_n = models.CharField(max_length=10, blank=True, null=True)
+    block_n = models.CharField(max_length=15, blank=True, null=True)
+    project_n = models.CharField(max_length=15, blank=True, null=True)
+    beat_n = models.CharField(max_length=15, blank=True, null=True)
+    mdrtly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svr_wstg = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    mdrtly_wstd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    mdrtly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    nb_lbw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    wstd_chld = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    stntd_chld = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    uw_chld = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_wasting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    wasting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_stunting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    stunting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_underweight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    underweight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    low_birth_weight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'f6_map_beat'
+
+
+class F6MapBlock(models.Model):
+    month_n = models.CharField(max_length=10, blank=True, null=True)
+    block_n = models.CharField(max_length=15, blank=True, null=True)
+    mdrtly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svr_wstg = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    mdrtly_wstd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    mdrtly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    nb_lbw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_wasting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    wasting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_stunting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    stunting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_underweight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    underweight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    low_birth_weight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'f6_map_block'
+
+
+class F6MapProject(models.Model):
+    month_n = models.CharField(max_length=10, blank=True, null=True)
+    block_n = models.CharField(max_length=15, blank=True, null=True)
+    project_n = models.CharField(max_length=15, blank=True, null=True)
+    mdrtly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svr_wstg = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    mdrtly_wstd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    mdrtly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    nb_lbw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_wasting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    wasting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_stunting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    stunting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_underweight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    underweight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    low_birth_weight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'f6_map_project'

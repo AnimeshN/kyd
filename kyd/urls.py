@@ -16,7 +16,7 @@ Including another URLconf
 from django.contrib import admin 
 from django.conf.urls import url
 from dashboard.views import DashboardView
-from kyd_dashboard.views import KYDDashboardView, FeatureOne, FeatureTwo, FeatureThree, FeatureFour
+from kyd_dashboard.views import KYDDashboardView, FeatureOne, FeatureTwo, FeatureThree, FeatureFour, FeatureSix
 from django.conf import settings
 from django.conf.urls.static import static
 from dashboard import views
@@ -28,6 +28,8 @@ urlpatterns = [
     url(r'^kyd_dashboard/feature2$', FeatureTwo.as_view(), name='feat2'),
     url(r'^kyd_dashboard/feature3$', FeatureThree.as_view(), name='feat3'),
     url(r'^kyd_dashboard/feature4$', FeatureFour.as_view(), name='feat4'),
+    url(r'^kyd_dashboard/feature5$', FeatureSix.as_view(), name='feat5'),
+
     url(r'^admin/', admin.site.urls),
     url(r'^login/', views.login_request, name='login'),
     url(r'^logout/', views.logout_request, name='logout'),
