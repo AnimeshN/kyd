@@ -63,18 +63,23 @@ div.tooltip {
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Select Category
             </button>
-            <div class="dropdown-menu drop-category" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">Severly Stunted Children</a>
-              <a class="dropdown-item" href="#">Stunted Children</a>
-              <a class="dropdown-item" href="#">Severely Wasted Children</a>
-              <a class="dropdown-item" href="#">Wasted Children</a>
-              <a class="dropdown-item" href="#">Severely Underweight Children</a>
-              <a class="dropdown-item" href="#">Undreweight Children</a>
-              <a class="dropdown-item" href="#">Newborn with low birth rate</a>
+                <div class="dropdown-menu drop-category" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Aneamic Women (%)</a>
+                    <a class="dropdown-item" href="#">Tenatus Completed (%)</a>
+                    <a class="dropdown-item" href="#">Women had atleast 1 ANC visit by delivery (%)</a>
+                    <a class="dropdown-item" href="#">Women had atleast 4 ANC visit by delivery (%)</a>
+                    <a class="dropdown-item" href="#">Women Resting During Pregnancy (%)</a>
+                    <a class="dropdown-item" href="#">Women Eating Extra Meal During Pregnancy (%)</a>
+                    <a class="dropdown-item" href="#">Trimester 3 women counselled on immediate breastfeeding (%)</a>
+
+
+                </div>
             </div>
-          </div>
-          <button type="button" class="btn btn-info back-button" style="float: left; margin:20px"><i class="fa fa-backward" aria-hidden="true"></i></button>
-          <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat4'%}`">Back</button>
+            <button type="button" class="btn btn-info back-button" style="float: left; margin:20px"><i class="fa fa-backward" aria-hidden="true"></i>Previous Level</button>
+            <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat7'%}`">Previous Feature</button>
+            <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href='#'">Next Feature</button>
+            <div class='h2 text-light mt-2'>Pregnant Women Related Indicators</div>
+
       
 
     </div>
@@ -101,7 +106,7 @@ div.tooltip {
       <div class='row h-25' style="background-color: #F5F5F5;">
         <div class='info'>
         	<b>Month:</b><span class=' info-month'>August</span><br>
-          <b>Category:</b><span class=' info-category'>Severely stunted</span>
+          <b>Category:</b><span class=' info-category'>Aneamic Women (%)</span>
         </div>
       </div>
     </div>
@@ -148,10 +153,11 @@ const pathGenerator = d3.geoPath().projection(mercator);
 // svg.call(d3.zoom().on('zoom',() =>{
 // 	g.attr('transform',event.transform)
 // })) 
+
 const render = (block,project,beat,blockData,projectData,beatData) => {
-  let SevStuntingPValue = d => d.properties.svrly_stunting_percent;
+  let InitialPValue = d => d.properties.prnt_anwmic_wmn;
   let TextValue = null;
-	let ColorValue = SevStuntingPValue;
+	let ColorValue = InitialPValue;
   const fillCellColor = (d,percentageColor,actualColor) =>{
   	if(d.name == 'Percentage')
       	return percentageColor(d.value)
@@ -270,20 +276,21 @@ let tooltip = d3.select("body").append("div")
     const updateviz = selectedCat =>{
       let updatedCat;
     	switch(selectedCat){
-        case 1: updatedCat = 'Severely Stunted Children';
-          				ColorValue = d => d.properties.svrly_stunting_percent;break;
-        case 2:	updatedCat = 'Stunted Children';
-          				ColorValue = d => d.properties.stunting_percent;break;
-        case 3:	updatedCat = 'Severely Wasted Children';
-          				ColorValue = d => d.properties.svrly_wasting_percent;break;
-        case 4:	updatedCat = 'Wasted Children';
-          				ColorValue = d => d.properties.wasting_percent;break;
-        case 5:	updatedCat = 'Severely Underweight Children';
-          				ColorValue = d => d.properties.svrly_underweight_percent;break;
-        case 6:	updatedCat = 'Underweight Children';
-          				ColorValue = d => d.properties.underweight_percent;break;
-        case 7:	updatedCat = 'New born with low birth rate';
-          				ColorValue = d => d.properties.low_birth_weight_percent;break;
+        case 1: updatedCat = 'Aneamic Women (%)';
+          				ColorValue = d => d.properties.prnt_anwmic_wmn;break;
+        case 2:	updatedCat = 'Tenatus Completed (%)';
+          				ColorValue = d => d.properties.prnt_tenatus_cmpltd;break;
+        case 3:	updatedCat = 'Women had atleast 1 ANC visit by delivery (%)';
+          				ColorValue = d => d.properties.prnt_wmn_1_anc_vst_dlvry;break;
+        case 4:	updatedCat = 'Women had atleast 4 ANC visit by delivery (%)';
+          				ColorValue = d => d.properties.prnt_wmn_4_anc_vst_dlvry;break;
+        case 5:	updatedCat = 'Women Resting During Pregnancy (%)';
+          				ColorValue = d => d.properties.prnt_wmn_rstg_drg_prgncy;break;
+        case 6:	updatedCat = 'Women Eating Extra Meal During Pregnancy (%)';
+          				ColorValue = d => d.properties.prnt_wmn_etg_xtr_ml_drng_prgncy;break;
+        case 7:	updatedCat = 'Trimester 3 women counselled on immediate breastfeeding (%)';
+          				ColorValue = d => d.properties.prnt_trmstr_3wmn_cnsld_imdtbf;break;
+        
       }
       	updateCategory(updatedCat);
         min = d3.min(geojson,ColorValue);
@@ -308,13 +315,14 @@ let tooltip = d3.select("body").append("div")
             let selCat = $(this).text();
             let val;
             switch(selCat){
-                case "Severly Stunted Children":val=1;break;
-                case "Stunted Children":val=2;break;
-                case "Severely Wasted Children":val=3;break;
-                case "Wasted Children":val=4;break;
-                case "Severely Underweight Children ":val=5;break;
-                case "Undreweight Children":val=6;break;
-                case "Newborn with low birth rate":val=7;break;
+                case "Aneamic Women (%)":val=1;break;
+                case "Tenatus Completed (%)":val=2;break;
+                case "Women had atleast 1 ANC visit by delivery (%)":val=3;break;
+                case "Women had atleast 4 ANC visit by delivery (%)":val=4;break;
+                case "Women Resting During Pregnancy (%)":val=5;break;
+                case "Women Eating Extra Meal During Pregnancy (%)":val=6;break;
+                case "Trimester 3 women counselled on immediate breastfeeding (%)":val=7;break;
+
             }
             updateviz(val);
             updatetable(val);
@@ -423,8 +431,8 @@ const selectedSubData = (csv,location) =>{
 //makeTable
     let tbdata = []
     let LocationValue = d => d.Block
-    let PercentageValue = d => d.svrly_stunting_percent
-    let ActualValue = d => d.svrly_stntd
+    let PercentageValue = d => d.prnt_anwmic_wmn
+    let ActualValue = d => d.no_anemic_wmn
     tdata.forEach(d =>{
       let temp = {};
       if(level === 0 && direction == 1){
@@ -464,26 +472,26 @@ const selectedSubData = (csv,location) =>{
   const updatetable = selCat =>{
     rowEnter.selectAll('*').remove();
   	switch(selCat){
-        case 1: PercentageValue = d => d.svrly_stunting_percent;
-  				ActualValue = d => d.svrly_stntd;
+        case 1: PercentageValue = d => d.prnt_anwmic_wmn;
+  				ActualValue = d => d.no_anemic_wmn;
         		break;
-        case 2: PercentageValue = d => d.stunting_percent;
-  				ActualValue = d => d.mdrtly_stntd;
+        case 2: PercentageValue = d => d.prnt_tenatus_cmpltd;
+  				ActualValue = d => d.no_tenatus_cmpltd;
         		break;
-        case 3:	PercentageValue = d => d.svrly_wasting_percent;
-        		ActualValue = d => d.svr_wstg;
+        case 3:	PercentageValue = d => d.prnt_wmn_1_anc_vst_dlvry;
+        		ActualValue = d => d.no_wmn_1_anc_vst_dlvry;
         		break;
-        case 4:	PercentageValue = d => d.wasting_percent;
-             	ActualValue = d => d.mdrtly_wstd;
+        case 4:	PercentageValue = d => d.prnt_wmn_4_anc_vst_dlvry;
+             	ActualValue = d => d.no_wmn_4_anc_vst_dlvry;
         				break;
-        case 5:	PercentageValue = d => d.svrly_underweight_percent;
-                ActualValue = d => d.svrly_uw;
+        case 5:	PercentageValue = d => d.prnt_wmn_rstg_drg_prgncy;
+                ActualValue = d => d.no_wmn_rstg_drg_prgncy;
                         break;
-        case 6:	PercentageValue = d => d.underweight_percent;
-                ActualValue = d => d.mdrtly_uw;
+        case 6:	PercentageValue = d => d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                ActualValue = d => d.no_wmn_etg_xtr_ml_drg_prgncy;
           			break;
-        case 7:	PercentageValue = d => d.low_birth_weight_percent;
-                ActualValue = d => d.nb_lbw;
+        case 7:	PercentageValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                ActualValue = d => d.no_trmstr_3wmn_cnsld_imdtbf;
        					break;
     }
     let newtbdata = []
@@ -555,7 +563,7 @@ return selection;
   g.selectAll("*").remove();
    svg.transition().duration(transitionDuration).call(
      zzoom.transform, d3.zoomIdentity );
-  updateCategory('Severely Stunted Children');
+  updateCategory('Aneamic Women (%)');
   let LocationMonth,LocationDataMonth;
   if(level === 1 || level === 0){
     	switch(month_hack){
@@ -659,20 +667,20 @@ const monthWiseCSV = (data) =>{
     temp.beat_n = d.beat_n
     
   temp.block_n = d.block_n 
-  temp.mdrtly_stntd = +d.mdrtly_stntd
-  temp.svrly_stntd = +d.svrly_stntd
-  temp.svr_wstg = +d.svr_wstg
-  temp.mdrtly_wstd = +d.mdrtly_wstd
-  temp.svrly_uw = +d.svrly_uw
-  temp.mdrtly_uw = +d.mdrtly_uw
-  temp.nb_lbw = +d.nb_lbw
-  temp.svrly_wasting_percent = +d.svrly_wasting_percent
-  temp.wasting_percent = +d.wasting_percent
-  temp.svrly_stunting_percent = +d.svrly_stunting_percent
-  temp.stunting_percent = +d.stunting_percent
-  temp.svrly_underweight_percent = +d.svrly_underweight_percent
-  temp.underweight_percent = +d.underweight_percent
-  temp.low_birth_weight_percent = +d.low_birth_weight_percent
+  temp.no_anemic_wmn = +d.no_anemic_wmn
+  temp.no_tenatus_cmpltd = +d.no_tenatus_cmpltd
+  temp.no_wmn_1_anc_vst_dlvry = +d.no_wmn_1_anc_vst_dlvry
+  temp.no_wmn_4_anc_vst_dlvry = +d.no_wmn_4_anc_vst_dlvry
+  temp.no_wmn_rstg_drg_prgncy = +d.no_wmn_rstg_drg_prgncy
+  temp.no_wmn_etg_xtr_ml_drg_prgncy = +d.no_wmn_etg_xtr_ml_drg_prgncy
+  temp.no_trmstr_3wmn_cnsld_imdtbf = +d.no_trmstr_3wmn_cnsld_imdtbf
+  temp.prnt_anwmic_wmn = +d.prnt_anwmic_wmn
+  temp.prnt_tenatus_cmpltd = +d.prnt_tenatus_cmpltd
+  temp.prnt_wmn_1_anc_vst_dlvry = +d.prnt_wmn_1_anc_vst_dlvry
+  temp.prnt_wmn_4_anc_vst_dlvry = +d.prnt_wmn_4_anc_vst_dlvry
+  temp.prnt_wmn_rstg_drg_prgncy = +d.prnt_wmn_rstg_drg_prgncy
+  temp.prnt_wmn_etg_xtr_ml_drng_prgncy = +d.prnt_wmn_etg_xtr_ml_drng_prgncy
+  temp.prnt_trmstr_3wmn_cnsld_imdtbf = +d.prnt_trmstr_3wmn_cnsld_imdtbf
   month[d.month_n].push(temp)
   })
 return month;
@@ -694,20 +702,21 @@ const addProperty = (data,geojson) =>{
     }
       
       if(x == y){
-				geojson[j].properties.mdrtly_stntd = data[i].mdrtly_stntd 
-        geojson[j].properties.svrly_stntd = data[i].svrly_stntd	
-        geojson[j].properties.svr_wstg = data[i].svr_wstg
-        geojson[j].properties.mdrtly_wstd = data[i].mdrtly_wstd
-        geojson[j].properties.svrly_uw = data[i].svrly_uw
-        geojson[j].properties.mdrtly_uw = data[i].mdrtly_uw
-        geojson[j].properties.nb_lbw = data[i].nb_lbw
-        geojson[j].properties.svrly_wasting_percent = data[i].svrly_wasting_percent
-        geojson[j].properties.wasting_percent = data[i].wasting_percent
-        geojson[j].properties.svrly_stunting_percent = data[i].svrly_stunting_percent
-        geojson[j].properties.stunting_percent = data[i].stunting_percent
-        geojson[j].properties.svrly_underweight_percent = data[i].svrly_underweight_percent
-        geojson[j].properties.underweight_percent = data[i].underweight_percent
-        geojson[j].properties.low_birth_weight_percent = data[i].low_birth_weight_percent     
+			geojson[j].properties.no_anemic_wmn = data[i].no_anemic_wmn 
+            geojson[j].properties.no_tenatus_cmpltd = data[i].no_tenatus_cmpltd	
+            geojson[j].properties.no_wmn_1_anc_vst_dlvry = data[i].no_wmn_1_anc_vst_dlvry
+            geojson[j].properties.no_wmn_4_anc_vst_dlvry = data[i].no_wmn_4_anc_vst_dlvry
+            geojson[j].properties.no_wmn_rstg_drg_prgncy = data[i].no_wmn_rstg_drg_prgncy
+			geojson[j].properties.no_wmn_etg_xtr_ml_drg_prgncy = data[i].no_wmn_etg_xtr_ml_drg_prgncy 
+			geojson[j].properties.no_trmstr_3wmn_cnsld_imdtbf = data[i].no_trmstr_3wmn_cnsld_imdtbf 
+            geojson[j].properties.prnt_anwmic_wmn = data[i].prnt_anwmic_wmn
+            geojson[j].properties.prnt_tenatus_cmpltd = data[i].prnt_tenatus_cmpltd
+            geojson[j].properties.prnt_wmn_1_anc_vst_dlvry = data[i].prnt_wmn_1_anc_vst_dlvry
+            geojson[j].properties.prnt_wmn_4_anc_vst_dlvry = data[i].prnt_wmn_4_anc_vst_dlvry
+            geojson[j].properties.prnt_wmn_rstg_drg_prgncy = data[i].prnt_wmn_rstg_drg_prgncy
+            geojson[j].properties.prnt_wmn_etg_xtr_ml_drng_prgncy = data[i].prnt_wmn_etg_xtr_ml_drng_prgncy
+            geojson[j].properties.prnt_trmstr_3wmn_cnsld_imdtbf = data[i].prnt_trmstr_3wmn_cnsld_imdtbf
+
       }
       
     }
