@@ -1,13 +1,17 @@
 {% extends 'base.html' %}
 {% load static%}
-
-<link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+{% block extra_css %}
+<link rel="stylesheet" type="text/css" href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'><link>
+  {% block feature_css %}
+  {% endblock %}
+  
+{% endblock %}
 {% block content%}
-<div class="container" style="height: 100%;margin-top: 10px;">
+<div class="container-fluid" style="height: 100%;margin-top: 10px;">
   {% block feature %}
   {% endblock %}
 </div>
-<div class="row">
+<!-- <div class="row">
     <div class="col s12">
       <ul class="tabs">
         <li class="tab col s3"><a href="{% url 'feat1' %}">Feature1</a></li>
@@ -16,25 +20,25 @@
         <li class="tab col s3 disable"><a href="#test4">Feature4</a></li>
       </ul>
     </div>
-    <!-- <div id="test1" class="col s12">Test 1</div>
-    <div id="test2" class="col s12">Test 2</div>
-    <div id="test3" class="col s12">Test 3</div>
-    <div id="test4" class="col s12">Test 4</div> -->
   </div>
-  
+   -->
    
 
     {% if messages %}
     {% for message in messages %}
     <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
     {% endfor %}
-    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    {% block extra_js %}
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js"></script>
     <script src="https://d3js.org/d3-color.v1.min.js"></script>
     <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
     <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <script src="{% static 'kyd_dashboard/js/index.js' %}"></script>
+    <script src="https://unpkg.com/d3-simple-slider"></script>
+
+    {% block feature_js %}
+    {% endblock %}
+    {% endblock %}
+
 {% endif %}
 {% endblock%}
