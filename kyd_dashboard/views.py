@@ -1,7 +1,9 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
+
 from .models import F1, F2, F3, F4, F6MapBeat ,F6MapBlock ,F6MapProject, F7IycfBlk, F7IycfPrjt, F7IycfBt
 from .models import F8PwBlk, F8PwPrjt, F8PwBt
+
 from django.core import serializers
 from django.contrib.auth.mixins import LoginRequiredMixin
 
