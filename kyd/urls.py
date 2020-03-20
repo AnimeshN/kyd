@@ -17,6 +17,7 @@ from django.contrib import admin
 from django.conf.urls import url
 from dashboard.views import DashboardView
 from kyd_dashboard.views import KYDDashboardView, FeatureOne, FeatureTwo, FeatureThree, FeatureFour, FeatureSix, FeatureSeven, FeatureEight
+from maha_dashboard.views import MahaFeatureOne
 from django.conf import settings
 from django.conf.urls.static import static
 from dashboard import views
@@ -31,6 +32,10 @@ urlpatterns = [
     url(r'^kyd_dashboard/feature6$', FeatureSix.as_view(), name='feat6'),
     url(r'^kyd_dashboard/feature7$', FeatureSeven.as_view(), name='feat7'),
     url(r'^kyd_dashboard/feature8$', FeatureEight.as_view(), name='feat8'),
+    
+    url(r'^maha_dashboard/maha_feature1$', MahaFeatureOne.as_view(), name='maha-feat1'),
+
+
 
 
     url(r'^admin/', admin.site.urls),
