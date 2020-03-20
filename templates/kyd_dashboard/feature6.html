@@ -78,14 +78,14 @@ td{
               <a class="dropdown-item" href="#">Severely Wasted Children</a>
               <a class="dropdown-item" href="#">Wasted Children</a>
               <a class="dropdown-item" href="#">Severely Underweight Children</a>
-              <a class="dropdown-item" href="#">Undreweight Children</a>
+              <a class="dropdown-item" href="#">Underweight Children</a>
               <a class="dropdown-item" href="#">Newborn with low birth rate</a>
             </div>
           </div>
           <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'feat4'%}`">Previous Feature</button>
           <div id="slider-range" style="float: left;"></div>
 
-          <button type="button" class="btn back-button m-4"><i class="fa fa-backward" aria-hidden="true"></i></button>
+          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`#`">Next Feature</button>
 
 
 
@@ -97,7 +97,9 @@ td{
       <div class='row'> 
   
        
-        <div class='col '>            
+        <div class='col '>   
+          <button type="button" class="btn back-button m-4">back</button>
+
           <span class='info info-hirar'>Palghar</span><br>
 				</div>
       </div>
@@ -203,7 +205,7 @@ const render = (
   //initail value of tooltip
   let TextValue = null;
   let TooltipVal1 = d => d.properties.svrly_stntd;
-  let TooltipVal2 = d => d.properties.mdrtly_stntd;
+  let TooltipVal2 = d => "-";
   let TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
   let ColorValue = d => d.properties.svrly_stunting_percent;
   let TPercentValue = d => d.svrly_stunting_percent;
@@ -378,7 +380,7 @@ const render = (
         case 1:
           updatedCat = "Severely Stunted Children";
           TooltipVal1 = d => d.properties.svrly_stntd;
-  				TooltipVal2 = d => d.properties.mdrtly_stntd;
+  				TooltipVal2 = d => "-";
   				TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
   				ColorValue = d => d.properties.svrly_stunting_percent;
                 TPercentValue = d => d.svrly_stunting_percent;
@@ -398,7 +400,7 @@ const render = (
         case 3:
           updatedCat = "Severely Wasted Children";
           TooltipVal1 = d => d.properties.svr_wstg;
-  				TooltipVal2 = d => d.properties.mdrtly_wstd;
+  				TooltipVal2 = d => "-";
   				TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
           ColorValue = d => d.properties.svr_wasting_percent;
           TPercentValue = d => d.svr_wasting_percent;
@@ -418,7 +420,7 @@ const render = (
         case 5:
           updatedCat = "Severely Underweight Children";
           TooltipVal1 = d => d.properties.svrly_uw;
-  				TooltipVal2 = d => d.properties.mdrtly_uw;
+  				TooltipVal2 = d => "-";
   				TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
           ColorValue = d => d.properties.svrly_underweight_percent;
           TPercentValue = d => d.svrly_underweight_percent;
@@ -500,8 +502,8 @@ const render = (
                 case "Stunted Children":val=2;break;
                 case "Severely Wasted Children":val=3;break;
                 case "Wasted Children":val=4;break;
-                case "Severely Underweight Children ":val=5;break;
-                case "Undreweight Children":val=6;break;
+                case "Severely Underweight Children":val=5;break;
+                case "Underweight Children":val=6;break;
                 case "Newborn with low birth rate":val=7;break;
             }
             updateviz(val);
