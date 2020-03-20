@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
 
-from .models import F1, F2, F3, F4, F6MapBeat ,F6MapBlock ,F6MapProject, F7IycfBlk, F7IycfPrjt, F7IycfBt
+from .models import F1, F2, F3, F4, F51, F6MapBeat ,F6MapBlock ,F6MapProject, F7IycfBlk, F7IycfPrjt, F7IycfBt
 from .models import F8PwBlk, F8PwPrjt, F8PwBt
 
 from django.core import serializers
@@ -46,6 +46,16 @@ class FeatureFour(LoginRequiredMixin, TemplateView):
         data = F4.objects.all()
         jsondata = serializers.serialize('json', data)
         return render(request, 'kyd_dashboard/feature4.html', {"pi_data":jsondata})
+
+class FeatureFive(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self,request):
+        data = F51.objects.all()
+        jsondata = serializers.serialize('json', data)
+        return render(request, 'kyd_dashboard/feature5.html', {"data":jsondata})
+
 
 class FeatureSix(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
