@@ -85,3 +85,12 @@ class FeatureEight(TemplateView):
         return render(request,'kyd_dashboard/feature8.html',{"context":context}  )
 
 
+class FeatureComp(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self,request):
+        return render(request,'kyd_dashboard/feature_comp.html')
+        
+
+
