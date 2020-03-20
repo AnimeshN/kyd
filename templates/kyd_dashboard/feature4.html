@@ -17,32 +17,36 @@
 		cursor: s-resize;
 		background-repeat: no-repeat;
         background-position: 3% center;
+        text-align: left;
+        width: 10%;
+        text-align: center;
         
 	}
 	td, th { 
 		padding: 6px; 
 		border: 1px solid #ccc; 
-		text-align: right; 
+		text-align: right;
+    width: 10%;
+    /* font-weight: bold; */
 	}
     
     th:nth-child(odd) {
     background-color: #f2f2f2;
     }
     
-    div h3{
-         text-align: center;
-        margin-top: 10px;
-    }
+
     
   </style>
 {% endblock %}
 {% block feature %}
+<div class='heading text-dark mt-2 text-center'>District Profile</div>
 <div class="row text-center" style="height: 100px;">
   <div class="col-12 bg-info h-75 w-100" >
     <!-- select month -->
     <div class="dropdown" style="float: left; margin:20px">
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Select Month
+        <span class="selectedMonth"></span>
       </button>
       <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" href="#">August</a>
@@ -51,22 +55,23 @@
       </div>
     </div>
     
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat3'%}`">Back</button>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat5'%}`">Next</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat3'%}`">Previous Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat6'%}`">Next Feature</button>
 
-    <div class='heading text-light mt-2'>District Profile</div>
+
     
   </div>
 
-  <div>
-    <h3 style="margin-left: 700px; font-style: italic; font-weight: bold;">Outcome Indicators</h3>
-  </div>
+  <div class='col-12 heading text-dark mt-2 text-center'>Outcome Indicators</div>
+    <!-- <h3 style="margin-left: 700px; font-style: italic; font-weight: bold;">Outcome Indicators</h3>
+  </div> -->
   <div style="color:black;" id="table" class="row h-55 w-90 ">               
 </div>
 
-<div >
-    <h3 style="margin-left:700px; margin-top: 90px; font-style: italic; font-weight: bold;">Performance Indicators</h3>
-</div>
+
+<div class='col-12 heading text-dark mt-2 text-center'>Performance Indicators</div>
+    <!-- <h3 style="font-style: italic; font-weight: bold;">Performance Indicators</h3>
+</div> -->
 
 <div style="color:black" id="table1" class="row h-15 w-60 bg-skyblue justify-content-right  ">
     
@@ -82,8 +87,47 @@
 
 <script>
   const render = data =>{
+    const dropdownChange = () =>{
+    var sel = document.getElementById('opt');
+    val = document.getElementById("opt").value
+  }
+//   makeviz("Stunting(%)");
+//   // $(".category a").click(function(){
+//   // var val = $(this).text();
+//   // makeviz(val);
+//   $(".category a").click(function(){
+//   $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
+//  $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+// 	var valCategory = $(this).text();	
+// 	// var displayVal = valCategory.substring(0, valCategory.length-1);
+// 	// console.log(displayVal);
+// 	// if(displayVal== "Height+Weight ")
+// 	// displayVal = displayVal.replace("Height+Weight", "Height and Weight");
+// 	// document.getElementById('barTitle').innerHTML=displayVal+" Measurement Efficiency";
+//   makeviz(valCategory);
 
-      
+//info-div
+
+  $(".drop-month a").click(function(){
+      var val = $(this).text();
+	  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
+	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+      if(val === 'August'){
+        month_hack = 'aug'
+      }else if(val === 'September'){
+        month_hack = 'sep'
+      }else if(val === 'October'){
+        month_hack = 'oct'
+      }
+    //     let monthjson = selectGeoJSON(month_hack,block);
+    // 	let monthdata = selectCSV(month_hack,blockData);
+    // 	level = 0;
+		// g.selectAll("*").remove();
+    // 	rowEnter.selectAll("*").remove();
+    //     svg.transition().duration(transitionDuration).call( zzoom.transform, d3.zoomIdentity );
+    // 	updateMonth();
+    //   	makemap(monthjson,monthdata);
+  }) 
 }
 const monthwise = (data) => {
 //  console.log(data)
@@ -168,13 +212,22 @@ const monthwise = (data) => {
     $(".month a").click(function(){
       var val = $(this).text();
       tableData = tbData(val, monthwiseData);
-      svg.selectAll("*").remove();
+      // svg.selectAll("*").remove();
       console.log(tableData);
       render(tableData);
       
 
 });
+$(function(){
+  //bind event
+  $(".month a").click(function(){
+    var valMonth = $(this).text();
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+  });
+  $('.month a').first().trigger('click');
+  $(".category a").first().trigger('click');
   
+});
   
   tables(monthwiseData[0]); 
 
@@ -203,15 +256,15 @@ var tbdata = [];
             
             data.forEach(d=>{
                 var tbd = {}
-                tbd[''] = d.district_n;
-                tbd['stunted childern'] = d.stntd_chld;
-                tbd['stunting percent %'] = d.stunting_percent;
-                tbd['wasted childern'] = d.wstd_chld;
-                tbd['wasting percent %'] = d.wasting_percent;
-                tbd['underweight childern'] = d.uw_chld;
-                tbd['underweight percent %'] = d.underweight_percent;
-                tbd['No. of newborn with Low Birth Weight'] = d.nb_lbw;
-                tbd['low birth weight percent %'] = d.low_birth_weight_percent;
+                tbd['District/State'] = d.district_n;
+                tbd['Stunted Childern'] = d.stntd_chld;
+                tbd['Stunting Percent(%)'] = d.stunting_percent;
+                tbd['Wasted Childern'] = d.wstd_chld;
+                tbd['Wasting Percent(%)'] = d.wasting_percent;
+                tbd['Underweight Childern'] = d.uw_chld;
+                tbd['Underweight Percent(%)'] = d.underweight_percent;
+                tbd['No. of Newborn with Low Birth Weight'] = d.nb_lbw;
+                tbd['Low Birth Weight Percent(%)'] = d.low_birth_weight_percent;
                
                
                 tbdata.push(tbd);
@@ -252,20 +305,20 @@ var tbdata = [];
             
             data.forEach(d=>{
                 var tbdt = {}
-                tbdt[''] = d.district_n;
-                tbdt['%Anemic women'] = d.prnt_anwmic_wmn;
-                tbdt['%Pregnant women had 4 ANC visit'] = d.prnt_4_anc_vst_dlvry;
-                tbdt['%Pregnant women resting during pregnancy']=d.prnt_wmn_rstg_drg_prgncy;
-                tbdt['%Pregnant women eating extra meal during pregnancy'] = d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-                tbdt['%Pregnant women counselled for BF in trimester']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
-                tbdt['%Childern breastfeed at birth'] = d.prnt_chld_bf_at_birth;
-                tbdt['%Childern (6-8 months) initiated CF']= d.prnt_child_6to8mnths_intd_cf;
-                tbdt['%Childern (6-24 months) initiated CF']= d.prnt_child_6to24mnths_intd_cf;
-                tbdt['%Childern(0-6) exclusively breastfed'] = d.prnt_chld_excly_bf;
-                tbdt['%Children receiving CF with diet diversity'] = d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
-                tbdt['%Children receiving CF with diet quantity'] = d.prnt_chld_cf_wid_adq_dt_qnty;
-                tbdt['%Childern receiving CF with appropriate hand washing'] = d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
-                tbdt['%Childern with 1 year completed Immunization']= d.prnt_child_1yr_cmpltd_immunzt;
+                tbdt['District/State'] = d.district_n;
+                tbdt['Anemic women(%)'] = d.prnt_anwmic_wmn;
+                tbdt['Pregnant Women had 4 ANC Visit(%)'] = d.prnt_4_anc_vst_dlvry;
+                tbdt['Pregnant Women resting during Pregnancy(%)']=d.prnt_wmn_rstg_drg_prgncy;
+                tbdt['Pregnant Women eating extra meal during Pregnancy(%)'] = d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                tbdt['Pregnant Women Counselled for BF in Trimester(%)']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                tbdt['Children Breastfeed at Birth(%)'] = d.prnt_chld_bf_at_birth;
+                tbdt['Children (6-8 months) initiated CF(%)']= d.prnt_child_6to8mnths_intd_cf;
+                tbdt['Children (6-24 months) initiated CF(%)']= d.prnt_child_6to24mnths_intd_cf;
+                tbdt['Children(0-6) exclusively Breastfed(%)'] = d.prnt_chld_excly_bf;
+                tbdt['Children receiving CF with Diet Diversity(%)'] = d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                tbdt['Children receiving CF with Diet Quantity(%)'] = d.prnt_chld_cf_wid_adq_dt_qnty;
+                tbdt['Children receiving CF with Appropriate Hand Washing(%)'] = d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+                tbdt['Children with 1 year completed Immunization(%)']= d.prnt_child_1yr_cmpltd_immunzt;
 
                 tbdata1.push(tbdt);
             });

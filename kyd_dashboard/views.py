@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.views.generic import TemplateView
-from .models import F1, F2, F3, F4, F6MapBeat ,F6MapBlock ,F6MapProject
+from .models import F1, F2, F3, F4, F6MapBeat ,F6MapBlock ,F6MapProject, F7IycfBlk, F7IycfPrjt, F7IycfBt
+from .models import F8PwBlk, F8PwPrjt, F8PwBt
 from django.core import serializers
 from django.contrib.auth.mixins import LoginRequiredMixin
 
@@ -49,9 +50,13 @@ class FeatureSix(LoginRequiredMixin, TemplateView):
     redirect_field_name = 'login'
 
     def get(self,request):
-        beatData = F6MapBeat.objects.all()
-        projectData = F6MapProject.objects.all()
-        blockData = F6MapBlock.objects.all()
+        return render(request,'kyd_dashboard/feature6.html')
+
+class FeatureSeven(TemplateView):
+    def get(self,request):
+        beatData = F7IycfBt.objects.all()
+        projectData = F7IycfPrjt.objects.all()
+        blockData = F7IycfBlk.objects.all()
         jsonBeat = serializers.serialize('json', beatData)
         jsonProject = serializers.serialize('json', projectData)
         jsonBlock = serializers.serialize('json', blockData)
@@ -60,4 +65,21 @@ class FeatureSix(LoginRequiredMixin, TemplateView):
             "jsonProject":jsonProject,
             "jsonBlock":jsonBlock
             }
-        return render(request,'kyd_dashboard/feature5.html',{"context":context}  )
+        return render(request,'kyd_dashboard/feature7.html',{"context":context}  )
+
+class FeatureEight(TemplateView):
+    def get(self,request):
+        beatData = F8PwBt.objects.all()
+        projectData = F8PwPrjt.objects.all()
+        blockData = F8PwBlk.objects.all()
+        jsonBeat = serializers.serialize('json', beatData)
+        jsonProject = serializers.serialize('json', projectData)
+        jsonBlock = serializers.serialize('json', blockData)
+        context = {
+            "jsonBeat":jsonBeat,
+            "jsonProject":jsonProject,
+            "jsonBlock":jsonBlock
+            }
+        return render(request,'kyd_dashboard/feature8.html',{"context":context}  )
+
+
