@@ -124,6 +124,22 @@ class FeatureComp(LoginRequiredMixin, TemplateView):
 
     def get(self,request):
         return render(request,'kyd_dashboard/feature_comp.html')
+
+
+class FeatureRadar(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self,request):
+        return render(request,'kyd_dashboard/feat_radar.html')
+
+
+class FeatureRadar2(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self,request):
+        return render(request,'kyd_dashboard/feat_radar2.html')
         
 
 
