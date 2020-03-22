@@ -1,0 +1,56 @@
+{% extends 'kyd_dashboard/kyd_base.html' %}
+{% load static %}
+
+{% block feature_css %}
+<style>
+    body {
+        position: fixed;
+        left: 0;
+        right: 0;
+        top: 0;
+        bottom: 0;
+        margin: 0;
+        overflow: hidden;
+      }
+      div.tooltip { 
+          position: absolute;     
+          text-align: center;     
+          width: 150px;          
+          height: 60px;          
+          padding: 2px;       
+          font: 12px sans-serif;    
+          background: #fff; 
+          border: 0px;
+            border-radius: 50px;
+          pointer-events: none;     
+      }
+      
+      .boundary {
+        stroke: #ccebed;
+        stroke-width: 1px; 
+      }
+      
+      .slider-lebel{
+          background-color: green;
+      }
+      
+      .info{
+      /* 	font-size:1.5em; */
+      
+      }
+      td{
+       font-weight:bold;
+      }
+      .scrollable{
+        overflow-y: scroll; 
+        max-height: 700px;
+    }
+    </style>
+{% endblock %}
+
+{% block feature %}
+this is feature of maharashtra
+{% endblock %}
+
+{% block feature_js %}
+{% endblock %}

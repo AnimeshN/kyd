@@ -1,0 +1,1028 @@
+{% extends 'kyd_dashboard/kyd_base.html' %}
+{% load static %}
+
+{% block feature_css %}
+<style>
+    body {
+      position: fixed;
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: 0;
+      margin: 0;
+      overflow: hidden;
+    }
+    
+    div.tooltip { 
+        position: absolute;     
+        text-align: center;     
+        width: 150px;          
+        height: 40px;         
+        padding: 2px;       
+        font: 12px sans-serif;    
+        background: #fff; 
+        border: 0px;        
+        pointer-events: none;     
+    }
+    
+    .boundary {
+      stroke: #ccebed;
+      stroke-width: 2px; 
+    }
+    
+    .slider-lebel{
+        background-color: green;
+    }
+    
+    .info{
+        text-align: center;
+        font-size: 20px;
+        margin: 50px;
+    }
+    
+    </style>
+{% endblock %}
+
+{% block feature %}
+<div class='h2 text-dark mt-2 text-center'>Child Related(IYCF) Indicators</div>
+  <div class="full-height" style="overflow-y: scroll; max-height: 700px;">
+    <div class="row bg-info header ">
+        <div class="dropdown" style="float: left; margin:20px">
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Select Month
+          		<span class="selectedMonth"></span>
+            </button>
+            <div class="dropdown-menu drop-month" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">November</a>
+              <a class="dropdown-item" href="#">December</a>
+              <a class="dropdown-item" href="#">January</a>
+            </div>
+          </div>
+          <div class="dropdown" style="float: left; margin:20px"> 
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Select Category
+              <span class="selectedCategory"></span>
+            </button>
+                <div class="dropdown-menu drop-category" aria-labelledby="dropdownMenuButton">
+                    <a class="dropdown-item" href="#">Children completed 1 year immunization</a>
+                    <a class="dropdown-item" href="#">Children Breastfeed at Birth</a>
+                    <a class="dropdown-item" href="#">Children exclusively Breastfeed</a>
+                    <a class="dropdown-item" href="#">Children initiated Complementary Feeding(in the past 30 days)</a>
+                    <a class="dropdown-item" href="#">Children (6-24 months) initiated appropriate Complementary Feeding</a>
+
+                </div>
+            </div>
+            <button type="button" class="btn btn-info back-button" style="float: left; margin:20px"><i class="fa fa-backward" aria-hidden="true"></i>Previous Level</button>
+            <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat6'%}`">Previous Feature</button>
+            <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat8'%}`">Next Feature</button>
+           
+
+      
+
+    </div>
+  <div class="row h-100">
+    <div class="col-7">
+        <div class="row h-10 " style="background-color:rgb(245, 245, 245);">
+            <div style="margin-left: 370px;"class="row w-100 h-10">
+                <p id="value-range"></p>
+            </div>
+            <div style="margin-left: 250px;"class="row w-100 h-10">
+                <div id="slider-range"></div>
+                
+            </div>
+
+      	</div>
+	<div class="row h-85" >
+          <svg></svg>
+      </div>
+    </div>
+    <div class="col-5">
+       <div class='row h-75 ' style="overflow-y: scroll; max-height: 500px;">
+            <div class='data-table' ></div>
+      </div>
+      <!-- <div class='row h-25' style="background-color: #F5F5F5;">
+        <div class='info'>
+        	<b>Month:</b><span class=' info-month'>August</span><br>
+          <b>Category:</b><span class=' info-category'>Children completed 1 year immunization</span>
+        </div>
+      </div> -->
+    </div>
+   
+  </div>
+</div>
+  </div>
+  
+{% endblock %}
+
+{% block feature_js %}
+<script>
+    const width = "1000";
+const height = "600";
+const transitionDuration = 1000;
+let level = 0; 
+let levelLocation = [];
+let month_hack = "nov";
+let direction = 1;
+let circleEnter;
+let zoomBox = {'translate':[],'scale':[]};
+let table = d3
+  .select(".data-table")
+  .append("table")
+  .attr("class", "table update-table");
+let headerName = ["Location", "Percentage", "Actual Number"];
+let headers = table
+  .append("thead")
+  .append("tr")
+  .selectAll("th")
+  .data(headerName)
+  .enter()
+  .append("th")
+  .text(d => d);
+let row = table.append("tbody").selectAll("tr");
+//Zoom
+let zzoom = d3.zoom()
+  .scaleExtent([1, 8])
+  .on("zoom", zoomed);
+
+function zoomed() {
+  // g.style("stroke-width", 1.5 / d3.event.transform.k + "px");
+  g.attr("transform", d3.event.transform); // updated for d3 v4
+}
+
+let tooltip = d3
+  .select("body")
+  .append("div")
+  .attr("class", "tooltip")
+  .style("opacity", 0);
+
+const svg = d3
+  .select("svg")
+  .attr("width", width)
+  .attr("height", height);
+const g = svg.append("g");
+const mercator = d3
+  .geoMercator()
+  .scale(4000)
+  .translate([width / 2, height / 2])
+  .center([75, 18.8]);
+const pathGenerator = d3.geoPath().projection(mercator);
+//Zoom
+// svg.call(d3.zoom().on('zoom',() =>{
+// 	g.attr('transform',event.transform)
+// }))
+
+const render = (
+  block,
+  project,
+  // beat,
+  // awc,
+  blockData,
+  projectData
+  // beatData,
+  // awcData
+) => {
+  //initail value of tooltip
+  let TextValue = null;
+  let TooltipVal1 = d => d.properties.prnt_child_1yr_immnztn;
+  let TooltipVal2 = d => d.properties.no_of_chld_cmpltd_1yr_immunzt;
+//   let TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+  let ColorValue = d => d.properties.prnt_child_1yr_immnztn;
+  const fillCellColor = (d, percentageColor, actualColor) => {
+    if (d.name == "Percentage") return percentageColor(d.value);
+    else if (d.name == "Actual Number") return actualColor(d.value);
+  };
+
+  //info-div
+  const updateMonth = selectedMonth => {
+    switch (month_hack) {
+      case "nov":
+        selectedMonth = "November";
+        break;
+      case "dec":
+        selectedMonth = "December";
+        break;
+      case "jan":
+        selectedMonth = "January";
+        break;
+    }
+    d3.select(".info-month").text(selectedMonth);
+  };
+
+  const updateCategory = updatedCat => {
+    d3.select(".info-category").text(updatedCat);
+  };
+
+
+  //makemap
+  const makemap = (geojson, tdata) => {
+    d3.select('.info-hirar').text(function(){
+      let hirarchy = "Maharastra";
+      levelLocation.forEach(loc=>{
+      	hirarchy += ">"+loc;
+      })
+    	return hirarchy;
+    })
+    updateMonth();
+    if (level == 0 && direction == 1) {
+      TextValue = d => d.properties.District;
+    } else if (level == 1 && direction == 1) {
+      TextValue = d => d.properties.Block;
+      // ActualValue = d => d.properties. 
+    } 
+    // else if (level == 2 && direction == 1) {
+    //   TextValue = d => d.properties.beat_na;
+    // } else if (level == 2 && direction == 0) {
+    //   TextValue = d => d.properties.beat_na;
+    // } 
+    else if (level == 1 && direction == 0) {
+      TextValue = d => d.properties.Block;
+    } else if (level == 0 && direction == 0) {
+      TextValue = d => d.properties.District;
+    } 
+    let min = d3.min(geojson, ColorValue);
+    let max = d3.max(geojson, ColorValue);
+    let comp = (max - min) / 3;
+    let myColor = (v, low, high) => {
+        if (v < low) return "#24562B";
+        //matte green
+        else if (v >= low && v <= high) return "#FFE338";
+        //matte yellow
+        else if (v > high) return "#B2022F"; //matte red
+    };
+     	let tooltipValue = (d) =>{
+      let ttv = `<b>${TextValue(d)}</b><br> 
+									Actual Value: ${TooltipVal1(d)}<br>
+									Moderate Value: ${TooltipVal2(d)}<br>
+									`;
+     	return ttv;
+     	}
+        const onMouseOverPoly = d => {
+      tooltip
+        .transition()
+        .duration(200)
+        .style("opacity", 0.9);
+      tooltip
+        .html(tooltipValue(d))
+        .style("left", d3.event.pageX + "px")
+        .style("top", d3.event.pageY - 30 + "px");
+      
+    };
+
+    let path = g.selectAll("path").data(geojson);
+    let pathEnter = path
+      .enter()
+      .append("path")
+      .attr("d", pathGenerator)
+      .attr("class", "boundary")
+      .style("fill", d => {
+        if(level !== 3){
+        	return myColor(ColorValue(d), min + comp, max - comp);
+        }else{
+         return "rgba(0,0,0,0)";
+        }
+      })
+      .on("mouseover", d => onMouseOverPoly(d))
+      .on("mouseout", function(d) {
+        tooltip
+          .transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
+
+    //text over polygon
+    let textLabel = g
+      .selectAll("text")
+      .data(geojson)
+      .enter()
+      .append("text")
+      .text(d => {
+        if (level !== 3) {
+          return `${TextValue(d)}(${ColorValue(d)})`;
+        } else {
+          return "";
+        }
+      })
+      .attr("x", function(d) {
+        return pathGenerator.centroid(d)[0];
+      })
+      .attr("y", function(d) {
+        return pathGenerator.centroid(d)[1];
+      })
+      .attr("text-anchor", "middle")
+      .attr("font-family", "sans-serif");
+
+    if (level === 0) {
+      textLabel.attr("font-size", "10pt");
+    } else if (level === 1) {
+      textLabel.attr("font-size", "6pt"); 
+    } else if (level === 2) {
+      textLabel.attr("font-size", "4pt");
+    } 
+    
+
+    //update slider color
+    const fillSlider = () => {
+      leftX2 = +d3.select("line.track-fill").attr("x1") - 15;
+      d3.select("line.leftcolor").attr("x2", leftX2);
+    };
+    //when slider move
+    sliderRange.on("onchange", val => {
+      fillSlider();
+      d3.select("p#value-range").text(val.map(d3.format(".1%")).join("-"));
+      let low = (val[0] * 100).toFixed(2);
+      let high = (val[1] * 100).toFixed(2);
+      
+      pathEnter
+        .transition()
+        .duration(transitionDuration)
+        .style("fill", function(d) {
+        	if(level !== 3){
+          	return myColor(ColorValue(d), low, high);
+          }else{
+          	return 'rgba(0,0,0,0)';
+          }
+        });
+      
+      if(level === 3){
+      	circleEnter
+        .transition()
+        .duration(transitionDuration)
+        .style("fill", function(d) {
+          	return myColor(ColorValue(d), low, high);
+        });
+      }
+    });
+    let updatedCat;
+    const updateviz = selectedCat => {
+      //update tooltip
+
+      switch (selectedCat) {
+        case 1:
+          updatedCat = "Children completed 1 year immunization";
+          TooltipVal1 = d => d.properties.prnt_child_1yr_immnztn;
+  				TooltipVal2 = d => d.properties.no_of_chld_cmpltd_1yr_immunzt;
+  				// TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+  				ColorValue = d => d.properties.prnt_child_1yr_immnztn;
+          break;
+        case 2:
+          updatedCat = "Children Breastfeed at Birth";
+          TooltipVal1 = d => d.properties.prnt_chld_bf_at_birth;
+  				TooltipVal2 = d => d.properties.no_chld_bf_at_birth;
+  				// TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+          ColorValue = d => d.properties.prnt_chld_bf_at_birth;
+          break;
+        case 3:
+          updatedCat = "Children exclusively Breastfeed";
+          TooltipVal1 = d => d.properties.prnt_chld_excly_bf;
+  				TooltipVal2 = d => d.properties.no_chld_excly_bf;
+  				// TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+          ColorValue = d => d.properties.prnt_chld_excly_bf;
+          break;
+        case 4:
+          updatedCat = "Children initiated Complementary Feeding(in the past 30 days)";
+          TooltipVal1 = d => d.properties.prnt_chld_intd_cf_p30d;
+  				TooltipVal2 = d => d.properties.no_chld_intd_cf_past30d;
+  				// TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+          ColorValue = d => d.properties.prnt_chld_intd_cf_p30d;
+          break;
+        case 5:
+          updatedCat = "Children (6-24 months) initiated appropriate Complementary Feeding";
+          TooltipVal1 = d => d.properties.prnt_intd_cf_6to24mnth_child;
+  				TooltipVal2 = d => d.properties.no_chld_appr_cf;
+  				// TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
+          ColorValue = d => d.properties.prnt_intd_cf_6to24mnth_child;
+          break;
+        
+      }
+      updateCategory(updatedCat);
+      min = d3.min(geojson, ColorValue);
+      max = d3.max(geojson, ColorValue);
+      comp = (max - min) / 3;
+      pathEnter
+        .transition()
+        .duration(transitionDuration)
+        .style("fill", function(d) {
+        	if(level !== 3){
+          return myColor(ColorValue(d), min + comp, max - comp);
+          }else{
+          	return 'rgba(0,0,0,0)';
+          }
+        });
+
+      textLabel
+        .text(d => {
+        if(level !== 3)
+          return `${TextValue(d)}(${ColorValue(d)})`;
+        })
+        .exit()
+        .remove();
+    };
+
+    
+      let updatepoints = () =>{
+      	min = d3.min(geojson, ColorValue);
+      	max = d3.max(geojson, ColorValue);
+      	comp = (max - min) / 3;
+      circleEnter
+        .transition()
+        .duration(transitionDuration)
+        .style("fill", d => {
+       return myColor(ColorValue(d),min+comp,max-comp)
+      }); 
+        
+        
+      }
+      
+      
+
+
+    //on category selection
+    $('.drop-category a').click(function(){
+      let selCat = $(this).text();
+      let val;
+      switch(selCat){
+          case "Children completed 1 year immunization":val=1;break;
+          case "Children Breastfeed at Birth":val=2;break;
+          case "Children exclusively Breastfeed":val=3;break;
+          case "Children initiated Complementary Feeding(in the past 30 days)":val=4;break;
+          case "Children (6-24 months) initiated appropriate Complementary Feeding ":val=5;break;
+
+      }
+      updateviz(val);
+      updatetable(val);
+  })
+
+    //zoomToBoundingBox
+    const zoomToBoundingBox = d => {
+      let bounds = pathGenerator.bounds(d),
+        dx = bounds[1][0] - bounds[0][0],
+        dy = bounds[1][1] - bounds[0][1],
+        x = (bounds[0][0] + bounds[1][0]) / 2,
+        y = (bounds[0][1] + bounds[1][1]) / 2,
+        scale = Math.max(
+          1,
+          Math.min(8, 0.9 / Math.max(dx / width, dy / height))
+        ),
+        translate = [width / 2 - scale * x, height / 2 - scale * y];
+      	zoomBox['translate'].push(translate);
+      	zoomBox['scale'].push(scale);
+      svg
+        .transition()
+        .duration(transitionDuration)
+        .call(
+          zzoom.transform,
+          d3.zoomIdentity.translate(translate[0], translate[1])
+        	.scale(scale)
+        );
+    };
+    //selectmap
+    const selectedSubFeature = (geojson, location) => {
+      console.log(geojson,location);
+      let selection = [];
+      let geomType;
+      // if(level === 3 && direction == 0){
+      // } 
+      geojson.forEach(sel => {
+        if (level === 1 ) {
+          if (sel.properties.District === location) {
+            selection.push(sel);
+          }
+        } else if (level === 2 ) {
+          if (sel.properties.Block === location) {
+            selection.push(sel);
+          }
+        } 
+
+      });
+      return selection;
+    };
+
+    // select sub points
+    const selectedSubPoint = (geojson, location) => {
+      let selection = [];
+      geojson.forEach(sel => {
+        if (sel.properties.beat === location) {
+          selection.push(sel);
+        }
+      });
+      return selection;
+    };
+
+    const selectedSubData = (csv, location) => { 
+      let selection = [];
+      csv.forEach(sel => {
+        if (level === 1 && direction === 1) {
+          if (sel.district_n == location) {
+            selection.push(sel);
+          }
+        } else if (level === 2 && direction === 1) {
+          if (sel.sub_district == location) {
+            selection.push(sel);
+          }
+        }
+       
+       
+        else if (level === 1 && direction === 0) {
+          if (sel.sub_district == location) {
+            selection.push(sel);
+          }
+        }else if (level === 0 && direction === 0) {
+          if (sel.district_n == location) {
+            selection.push(sel);
+          }
+        }  
+      });
+      // console.log(selection);
+      return selection;
+    };
+    // clicked
+    const clicked = d => {
+      console.log('clic',d);
+      if (level < 1){ 
+      level++;
+      direction = 1;
+      zoomToBoundingBox(d);
+      let clickedLocation;
+      if (level === 1) {
+        clickedLocation = d.properties.District;
+      } 
+     
+console.log(clickedLocation)
+      levelLocation.push(clickedLocation);
+
+      let selectedJSON, selectedData;
+      // let selectedPoints;
+      switch (month_hack) {
+        case "nov":
+          if (level === 1) {
+            selectedJSON = project.Nov;
+            selectedData = projectData.Nov;
+          }
+          break;
+        case "dec":
+          if (level === 1) {
+            selectedJSON = project.Dec;
+            selectedData = projectData.Dec;
+          } 
+         
+          break;
+        case "jan":
+          if (level === 1) {
+            selectedJSON = project.Jan;
+            selectedData = projectData.Jan;
+          } 
+        
+          break;
+      }
+      let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
+      let selecteddata = selectedSubData(selectedData, clickedLocation);
+      g.selectAll("*").remove();
+      rowEnter.selectAll("*").remove();
+      // tooltip.remove();
+      makemap(selectedjson, selecteddata);
+    }// if condition ends here
+    };
+    pathEnter.on("click", clicked);
+  // makePoint
+  const makePoint = geoPoint => {
+
+  };
+    //makeTable
+    
+    let tbdata = [];
+    let LocationValue = d => d.district_n;
+    let PercentageValue = d => d.prnt_child_1yr_immnztn;
+    let ActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt; 
+    tdata.forEach(d => {
+      // console.log(d);
+      let temp = {};
+      if (level === 0 && direction == 1) {
+        LocationValue = d => d.district_n;
+      } 
+      else if (level === 1 && direction === 1) {
+        LocationValue = d => d.sub_district;
+      }
+
+      temp["Location"] =LocationValue(d);
+      temp["Percentage"] = PercentageValue(d);
+      temp["Actual Number"] = ActualValue(d);
+      tbdata.push(temp);
+    });
+    let percentageColor = d3
+      .scaleSequential()
+      .domain([d3.max(tdata, PercentageValue), d3.min(tdata, PercentageValue)])
+      .interpolator(d3.interpolateRdYlGn);
+    let actualColor = d3
+      .scaleSequential()
+      .domain([d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
+      .interpolator(d3.interpolateRdYlGn);
+
+    let rowEnter = row
+      .data(tbdata)
+      .enter()
+      .append("tr");
+    let td = rowEnter
+      .selectAll("td")
+      .data(d => {
+        return headerName.map(k => {
+          return { value: d[k], name: k };
+        });
+      })
+      .enter()
+      .append("td")
+      .text(d => d.value)
+      .attr("align", "center")
+      .style("background-color", d =>
+        fillCellColor(d, percentageColor, actualColor)
+      );
+
+    const updatetable = selCat => {
+      rowEnter.selectAll("*").remove();
+      switch (selCat) {
+        case 1:
+          PercentageValue = d => d.prnt_child_1yr_immnztn;
+          ActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt;
+          break;
+        case 2:
+          PercentageValue = d => d.prnt_chld_bf_at_birth;
+          ActualValue = d => d.no_chld_bf_at_birth;
+          break;
+        case 3:
+          PercentageValue = d => d.prnt_chld_excly_bf;
+          // console.log(PercentageValue(d))
+          ActualValue = d => d.no_chld_excly_bf;
+          break;
+        case 4:
+          PercentageValue = d => d.prnt_chld_intd_cf_p30d;
+          ActualValue = d => d.no_chld_intd_cf_past30d;
+          break;
+        case 5:
+          PercentageValue = d => d.prnt_intd_cf_6to24mnth_child;
+          ActualValue = d => d.no_chld_appr_cf;
+          break;
+        // case "6":
+        //   PercentageValue = d => d.underweight_percent;
+        //   ActualValue = d => d.uw_chld;
+        //   break;
+        // case "7":
+        //   PercentageValue = d => d.low_birth_weight_percent;
+        //   ActualValue = d => d.nb_lbw;
+        //   break;
+      }
+      let newtbdata = [];
+      if (level === 0) {
+        LocationValue = d => d.district_n;
+      } 
+      else if (level === 1) {
+        LocationValue = d => d.sub_district;
+        
+      } 
+    
+      tdata.forEach(d => {
+        let temp = {};
+        temp["Location"] = LocationValue(d);
+        temp["Percentage"] = PercentageValue(d);
+        temp["Actual Number"] = ActualValue(d);
+        newtbdata.push(temp);
+      });
+
+      let percentageColor = d3
+        .scaleSequential()
+        .domain([
+          d3.max(tdata, PercentageValue),
+          d3.min(tdata, PercentageValue)
+        ])
+        .interpolator(d3.interpolateRdYlGn);
+      let actualColor = d3
+        .scaleSequential()
+        .domain([d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
+        .interpolator(d3.interpolateRdYlGn);
+
+      rowEnter = row
+        .data(newtbdata)
+        .enter()
+        .append("tr");
+
+      let td = rowEnter
+        .selectAll("td")
+        .data(d => {
+          return headerName.map(k => {
+            return { value: d[k], name: k };
+          });
+        })
+        .enter()
+        .append("td")
+        .text(d => d.value)
+        .attr("align", "center")
+        .style("background-color", d =>
+          fillCellColor(d, percentageColor, actualColor)
+        );
+    };
+
+    d3.select("button").on("click", function() {
+      if (level > 0){ level--;
+      zoomBox['translate'].pop();zoomBox['scale'].pop();
+			
+      direction = 0;
+      let loc = levelLocation.pop();
+      rowEnter.selectAll("*").remove();
+      g.selectAll("*").remove();
+      let svgTrans = svg.transition().duration(transitionDuration);
+      // calculation for zoom
+      let transLength = zoomBox.translate.length;
+      let scaleLength = zoomBox.scale.length;
+      let transX,transY,scaleV;
+      if(level !== 0){
+        transX = zoomBox.translate[transLength - 1][0];
+        transY = zoomBox.translate[transLength - 1][1];
+        scaleV = zoomBox.scale[scaleLength-1];
+      }
+    	if(level === 0)
+        svgTrans.call(zzoom.transform, d3.zoomIdentity);
+    	else
+       svgTrans.call(zzoom.transform,d3.zoomIdentity.translate(transX,transY).scale(scaleV))
+      
+      updateCategory("Children completed 1 year immunization");
+      let LocationMonth, LocationDataMonth;
+      if (level === 0) {
+        switch (month_hack) {
+          case "nov":
+            LocationMonth = block.Nov;
+            LocationDataMonth = blockData.Nov;
+            break;
+          case "dec":
+            LocationMonth = block.Dec;
+            LocationDataMonth = blockData.Dec;
+            break;
+          case "jan":
+            LocationMonth = block.Jan;
+            LocationDataMonth = blockData.Jan;
+            break;
+        }
+
+        makemap(LocationMonth, LocationDataMonth);
+      } else if (level === 1) {
+
+        switch (month_hack) {
+          case "nov":
+            LocationMonth = project.Nov;
+            LocationDataMonth = projectData.Nov;
+            break;
+          case "dec":     
+            LocationMonth = project.Dec;
+            LocationDataMonth = projectData.Dec;
+            break;
+          case "jan":
+            LocationMonth = project.Jan;
+            LocationDataMonth = projectData.Jan;
+            break;
+        }
+        let previousBlock = levelLocation[levelLocation.length -1]; 
+
+        let selectedjson = selectedSubFeature(LocationMonth, previousBlock); 
+        let selectedcsv = selectedSubData(LocationDataMonth, previousBlock);
+         
+        makemap(selectedjson, selectedcsv);
+      }          
+        //select beats map from project_name
+         let previousProject = levelLocation[levelLocation.length -1];
+        	let selectedjson = selectedSubFeature(LocationMonth, previousProject); 
+          let selectedcsv = selectedSubData(LocationDataMonth, previousProject);
+      	  makemap(selectedjson, selectedcsv);
+      }
+    //if condition ends here
+    });
+    const selectGeoJSON = (val, allMonthGeoJSONData) => {
+      switch (val) {
+        case "nov":
+          return allMonthGeoJSONData.Nov;
+          break;
+        case "dec":
+          return allMonthGeoJSONData.Dec;
+          break;
+        case "jan":
+          return allMonthGeoJSONData.Jan;
+          break;
+      }
+    };
+    const selectCSV = (val, allMonthCSVData) => {
+      switch (val) {
+        case "nov":
+          return allMonthCSVData.Nov;
+          break;
+        case "dec":
+          return allMonthCSVData.Dec;
+          break;
+        case "jan":
+          return allMonthCSVData.Jan;
+          break;
+      }
+    };
+
+    $(".drop-month a").click(function(){
+      $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+  
+        var val = $(this).text();
+        if(val === 'November'){
+          month_hack = 'nov'
+        }else if(val === 'December'){
+          month_hack = 'dec'
+        }else if(val === 'January'){
+          month_hack = 'jan'
+        }
+          let monthjson = selectGeoJSON(month_hack,block);
+        let monthdata = selectCSV(month_hack,blockData);
+      level = 0;
+      g.selectAll("*").remove();
+      rowEnter.selectAll("*").remove();
+      svg
+        .transition()
+        .duration(transitionDuration)
+        .call(zzoom.transform, d3.zoomIdentity);
+      updateMonth();
+      levelLocation = [];
+      makemap(monthjson, monthdata);
+    });
+  };
+
+  //initial map
+  makemap(block.Nov, blockData.Nov);
+};
+
+async function fetchGeoJSON() {
+  let geoJSONBundle = {};
+  let districtJSON = await d3.json("{% static 'maha_dashboard/data/json/district.geojson' %}");
+  let subdstrictJSON = await d3.json("{% static 'maha_dashboard/data/json/block.geojson' %}");
+//   let beatJSON = await d3.json("beat.json");
+//   let awcJSON = await d3.json("awc.json");
+  geoJSONBundle.districtJSON = districtJSON.features;
+  geoJSONBundle.subdstrictJSON = subdstrictJSON.features;
+//   geoJSONBundle.beatJSON = beatJSON.features;
+//   geoJSONBundle.awcJSON = awcJSON.features;
+  return geoJSONBundle;
+}
+
+const monthWiseCSV = data => {
+  console.log(data)
+  let month = { Nov: [], Dec: [], Jan: [] };
+  data.forEach(d => {
+    let temp = {};
+    
+    if (d.sub_district) temp.sub_district = d.sub_district;
+    // if (d.beat_n) temp.beat_n = d.beat_n;
+    // if (d.awc_with_code) temp.awc_with_code = d.awc_with_code;
+
+    temp.district_n = d.district_n;
+    temp.no_chld_bf_at_birth = +d.no_chld_bf_at_birth;
+    temp.no_chld_excly_bf = +d.no_chld_excly_bf;
+    temp.no_chld_intd_cf_past30d = +d.no_chld_intd_cf_past30d;
+    temp.no_of_chld_cmpltd_1yr_immunzt = +d.no_of_chld_cmpltd_1yr_immunzt;
+    temp.prnt_chld_bf_at_birth = +d.prnt_chld_bf_at_birth;
+    temp.prnt_chld_excly_bf = +d.prnt_chld_excly_bf;
+    temp.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
+    temp.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
+    temp.no_chld_appr_cf = +d.no_chld_appr_cf;
+    temp.prnt_chld_intd_cf_p30d = +d.prnt_chld_intd_cf_p30d;
+    // temp.stunting_percent = +d.stunting_percent;
+    // temp.svrly_underweight_percent = +d.svrly_underweight_percent;
+    // temp.underweight_percent = +d.underweight_percent;
+    // temp.low_birth_weight_percent = +d.low_birth_weight_percent;
+    // temp.wstd_chld = +d.wstd_chld;
+    // temp.stntd_chld = +d.stntd_chld;
+	// 	temp.uw_chld = +d.uw_chld;
+    // temp.ht_msrmnt_effcy = +d.ht_msrmnt_effcy;
+	// 	temp.wt_msrmnt_effcy = +d.wt_msrmnt_effcy;
+    month[d.month_n].push(temp);
+    
+  });
+  return month;
+};
+const addProperty = (data, geojson) => {
+//  console.log(data,"A")
+  let x, y;
+  for (let i = 0; i < data.length; i++) {
+    for (let j = 0; j < geojson.length; j++) {
+      if (geojson[j].properties.Block) {
+        x = data[i].sub_district;
+        y = geojson[j].properties.Block;
+      } else {
+        x = data[i].district_n;
+        y = geojson[j].properties.District;
+      }
+
+      if (x === y) {
+        geojson[j].properties.no_chld_bf_at_birth = data[i].no_chld_bf_at_birth;
+    		geojson[j].properties.no_chld_excly_bf = data[i].no_chld_excly_bf;
+				geojson[j].properties.no_chld_intd_cf_past30d = data[i].no_chld_intd_cf_past30d;
+    		geojson[j].properties.no_of_chld_cmpltd_1yr_immunzt = data[i].no_of_chld_cmpltd_1yr_immunzt;
+				geojson[j].properties.prnt_chld_bf_at_birth = data[i].prnt_chld_bf_at_birth;
+        geojson[j].properties.prnt_chld_excly_bf = data[i].prnt_chld_excly_bf;
+        geojson[j].properties.prnt_child_1yr_immnztn = data[i].prnt_child_1yr_immnztn;
+        geojson[j].properties.prnt_intd_cf_6to24mnth_child = data[i].prnt_intd_cf_6to24mnth_child;
+        geojson[j].properties.no_chld_appr_cf = data[i].no_chld_appr_cf;
+        geojson[j].properties.prnt_chld_intd_cf_p30d = data[i].prnt_chld_intd_cf_p30d;
+        // geojson[j].properties.mdrtly_uw = data[i].mdrtly_uw;
+        // geojson[j].properties.nb_lbw = data[i].nb_lbw;
+        // geojson[j].properties.svrly_wasting_percent = data[i].svrly_wasting_percent;
+        // geojson[j].properties.wasting_percent = data[i].wasting_percent;
+        // geojson[j].properties.svrly_stunting_percent = data[i].svrly_stunting_percent;
+        // geojson[j].properties.stunting_percent = data[i].stunting_percent;
+        // geojson[j].properties.svrly_underweight_percent = data[i].svrly_underweight_percent;
+        // geojson[j].properties.underweight_percent = data[i].underweight_percent;
+        // geojson[j].properties.low_birth_weight_percent = data[i].low_birth_weight_percent;
+      }
+    }
+  }
+};
+async function mergeData(geoJSON) {
+  //merging block data
+  let districtGeoJSON= geoJSON.districtJSON;
+  let districtCSV = await d3.csv("{% static 'maha_dashboard/data/csv/districtIYCF.csv' %}");
+
+  let districtMonthWiseCSV = monthWiseCSV(districtCSV);
+  // console.log(blockMonthWiseCSV);
+
+  let districtGeoJSONNov = JSON.parse(JSON.stringify(districtGeoJSON));
+  let districtGeoJSONDec = JSON.parse(JSON.stringify(districtGeoJSON));
+  let districtGeoJSONJan = JSON.parse(JSON.stringify(districtGeoJSON));
+  //call by reference so need to return
+  addProperty(districtMonthWiseCSV.Nov, districtGeoJSONNov);
+  addProperty(districtMonthWiseCSV.Dec, districtGeoJSONDec);
+  addProperty(districtMonthWiseCSV.Jan, districtGeoJSONJan);
+  const mergedDistrict = {
+    Nov: districtGeoJSONNov,
+    Dec: districtGeoJSONDec,
+    Jan: districtGeoJSONJan
+  };
+  //merging subdistrict data
+  let subdstrictGeoJSON = geoJSON.subdstrictJSON;
+  let subdstrictCSV = await d3.csv("{% static 'maha_dashboard/data/csv/subdistrictIYCF.csv' %}");
+  let subdstrictMonthWiseCSV = monthWiseCSV(subdstrictCSV);
+  let subdstrictGeoJSONNov = JSON.parse(JSON.stringify(subdstrictGeoJSON));
+  let subdstrictGeoJSONDec = JSON.parse(JSON.stringify(subdstrictGeoJSON));
+  let subdstrictGeoJSONJan = JSON.parse(JSON.stringify(subdstrictGeoJSON));
+  addProperty(subdstrictMonthWiseCSV.Nov, subdstrictGeoJSONNov);
+  addProperty(subdstrictMonthWiseCSV.Dec, subdstrictGeoJSONDec);
+  addProperty(subdstrictMonthWiseCSV.Jan, subdstrictGeoJSONJan);
+  const mergedSubdistrict = {
+    Nov: subdstrictGeoJSONNov,
+    Dec: subdstrictGeoJSONDec,
+    Jan: subdstrictGeoJSONJan
+  };
+
+
+  render(
+    mergedDistrict,
+    mergedSubdistrict,
+    // mergedBeat,
+    // mergedAWC,
+    districtMonthWiseCSV,
+    subdstrictMonthWiseCSV,
+    // beatMonthWiseCSV,
+    // awcMonthWiseCSV
+  );
+}
+fetchGeoJSON().then(mergeData);
+
+const sliderRange = d3
+  .sliderBottom()
+  .min(0)
+  .max(0.999)
+  .width(300)
+  .tickFormat(d3.format(".1%"))
+  .ticks(5)
+  .default([0.25, 0.5])
+  .fill("yellow")
+  .handle(
+    d3
+      .symbol()
+      .type(d3.symbolCircle)
+      .size(550)()
+  );
+
+const gRange = d3
+  .select("div#slider-range")
+  .append("svg")
+  .attr("width", 500)
+  .attr("height", 100)
+  .append("g")
+  .attr("transform", "translate(30,30)");
+
+gRange.call(sliderRange);
+
+let leftX1 = +d3.select("line.track-inset").attr("x1");
+let leftX2 = +d3.select("line.track-fill").attr("x1") - 15;
+d3.select("g.slider")
+  .append("line")
+  .attr("class", "leftcolor")
+  .attr("x1", leftX1)
+  .attr("x2", leftX2)
+  .attr("stroke-width", 4)
+  .attr("stroke-linecap", "round");
+
+d3.select("line.track-fill").attr("stroke", "yellow");
+d3.select("line.leftcolor").attr("stroke", "green");
+d3.select("line.track-inset").attr("stroke", "red");
+</script>
+{% endblock %}
