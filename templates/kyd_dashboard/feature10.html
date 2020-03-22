@@ -418,7 +418,7 @@ console.log("in update graph")
 			.on("click", function(d){	
 			var sect2 = selectedCategory;  
 			sect2=sect2.replace(/ /g, '_');
-			var url = "http://localhost/line/line5.html?id1="+d.key+"&id2="+sect2;
+			var url = "http://104.43.197.79/kyd_dashboard/feature11?id1="+d.key+"&id2="+sect2;
               $(location).attr('href', url);
               window.location = url;
 					
@@ -493,7 +493,9 @@ console.log("in update graph")
 	  
 
     mousePerLine.append("text")
-      .attr("transform", "translate(10,3)");
+      .attr("transform", "translate(10,3)")
+	      .attr("font-size", "20px");
+
 
     mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
       .attr('width', width) // can't catch mouse events on a g element

@@ -112,7 +112,7 @@ fill: #fff;
       </div>
     </div>
     <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat10' %}`">Previous Feature</button>   
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`#`">Next Feature</button>   
+  <!--  <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`#`">Next Feature</button>   -->
   </div>
 
   <div class="col-12 m-5">
@@ -490,7 +490,9 @@ console.log("in update graph")
 	  
 
     mousePerLine.append("text")
-      .attr("transform", "translate(10,3)");
+      .attr("transform", "translate(10,3)")
+      .attr("font-size", "20px");
+
 
     mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
       .attr('width', width) // can't catch mouse events on a g element

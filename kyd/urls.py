@@ -53,8 +53,6 @@ urlpatterns = [
     url(r'^maha_dashboard/maha_feature7$', MahaFeatureSeven.as_view(), name='maha-feat7'), 
 
 
-
-
     url(r'^admin/', admin.site.urls),
     url(r'^login/', views.login_request, name='login'),
     url(r'^logout/', views.logout_request, name='logout'),
