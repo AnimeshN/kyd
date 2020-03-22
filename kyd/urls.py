@@ -20,7 +20,7 @@ from kyd_dashboard.views import (KYDDashboardView, FeatureOne,
     FeatureTwo, FeatureThree, FeatureFour,FeatureFive, FeatureSix,
     FeatureSeven, FeatureEight, FeatureNine,FeatureTen, 
     FeatureEleven, FeatureComp, FeatureRadar, FeatureRadar2)
-from maha_dashboard.views import MahaFeatureOne
+from maha_dashboard.views import MahaFeatureOne, MahaFeatureTwo
 from django.conf import settings
 from django.conf.urls.static import static
 from dashboard import views
@@ -44,6 +44,7 @@ urlpatterns = [
     url(r'^kyd_dashboard/feature_radar2$', FeatureRadar2.as_view(), name='feat-radar2'),
     
     url(r'^maha_dashboard/maha_feature1$', MahaFeatureOne.as_view(), name='maha-feat1'),
+    url(r'^maha_dashboard/maha_feature2$', MahaFeatureTwo.as_view(), name='maha-feat2'),
 
 
 
