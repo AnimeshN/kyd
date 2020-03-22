@@ -1,0 +1,478 @@
+{% extends 'dashboard/dash_base.html' %}
+{% load static %}
+
+{% block feature_css %}
+
+<style>
+    .heading{
+        font-weight: bold;
+        font-size: 34px;
+    }
+    p{
+        font: 20px sans-serif;
+    }
+    img{
+        width: 30px;
+        height:30px;
+    }
+
+    html, body {
+     height: 100%;
+    }
+    #table {width: 90%;
+    height: 75%;
+    font-size: large;
+   }
+    th{
+        border:2px solid black;
+        font-weight: bolder;
+        text-align: center;
+      }   
+td {border:2px solid black;
+text-align: center;}
+
+#tooltip {
+position: absolute;
+width: 370px;
+height: auto;
+padding: 10px;
+
+background-color: white;
+-webkit-border-radius: 10px;
+-moz-border-radius: 10px;
+border-radius: 10px;
+-webkit-box-shadow: 4px 4px 10px rgba(0, 0, 0, 0.4);
+-mox-box-shadow: 4px 4px 4px 10px rgba(0, 0, 0, 0.4);
+box-shadow: 4px 4px 10px rbga(0, 0, 0, 0.4); pointer-events: none;
+}
+
+.tooltip.hidden {
+opacity: 0;
+}
+#tooltip p {
+margin: 0;
+font-family: sans-serif;
+font-size: 20px;
+line-height: 20px;
+}
+ 
+</style>
+
+{% endblock %}
+
+{% block feature %}
+<div class='heading text-dark mt-2 text-center'  id="barTitle"><span id="bartitleCategory">Pie Chart</span> <span id="bartitleMonth"></span></div>
+<div class="row text-center" style="height: 100px;">
+  <div class="col-12 bg-info h-75 w-100" >
+    <!-- select month -->
+    <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select Month
+		<span class="selectedMonth"></span>
+      </button>
+      <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">November</a>
+        <a class="dropdown-item" href="#">December</a>
+        <a class="dropdown-item" href="#">January</a>
+      </div>
+    </div>
+    <!-- select category -->
+    <div class="dropdown" style="float: left; margin:20px; font-weight:bold"> 
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select Category
+		<span class="selectedCategory"></span>
+      </button>
+      <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">Wasting(%)</a>
+        <a class="dropdown-item" href="#">Stunting(%)</a>
+        <a class="dropdown-item" href="#">Underweight(%)</a>
+        <a class="dropdown-item" href="#">Low Birth Weight(%)</a>
+      </div>
+    </div>
+
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat2' %}`">Previous Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat4' %}`">Next Feature</button>
+
+
+   
+    
+  </div>
+  
+  <div class="col-12 m-5">
+    <svg width="1100" height="750"></svg>
+  </div>
+  <div id="table" class="row h-50 bg-light justify-content-center ">
+                        
+  </div>
+  
+  
+</div>
+
+<div id="tooltip" class="hidden">
+    <p><strong><span id="paraText"></span></strong><span id="value" style="font-weight: bold";> 100</span>%</p>
+	<p><strong>Enrolled children contribution: </strong><span id="enrlval" style="font-weight: bold";>10</span>%</p>
+</div>
+{% endblock %}
+
+{% block feature_js %}
+
+<script>
+    const svg = d3.select('svg');
+      const width = +svg.attr('width');
+      const height = +svg.attr('height');
+      var radius = Math.min(width, height) / 3;
+     var outerRadius1 = radius-10;
+    
+  const render = data =>{
+  
+      console.log(data);
+  
+      let arcInitial = d => d.wasting_percent;
+  
+      const margin = {left:350,top:350 ,right:170,bottom:20};
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom; 
+      
+      const g = svg.append('g')
+          .attr('transform', `translate(${margin.left}, ${margin.top})`);
+  
+      var pie = d3.pie()
+                  .value(function(d) { 
+                          return arcInitial(d); });
+  
+      var path = d3.arc()
+                  .outerRadius(radius -10)
+                  .innerRadius(0);
+  
+     var label = d3.arc()
+                  .outerRadius(radius - 40)
+                  .innerRadius(radius - 40);
+  
+      //tooltip
+      // Define the div for the tooltip
+      // const onMouseOver = d =>{	
+      //     div.transition().duration(200).style("opacity", .9);		
+      //     div.html(d.data.project+"<br>"+arcInitial(d.data)+"%")
+      //         .style("left", d3.event.pageX + "px")
+      //         .style("top",  d3.event.pageY - 30 + "px");	
+      //     }
+          
+     
+         
+  
+       
+      var div = d3.select("body").append("div") 
+          .attr("class", "tooltip")       
+          .style("opacity", 0);
+  
+    const onMouseOver = d =>{	
+       div.transition().duration(100).style("opacity", 1);		
+      div.html("<b>"+"<span id='paraText'>"+10+"</span>"+"</b><br>"+arcInitial(d.data)+"%");		
+      //  .style("left", d3.event.pageX + 100+"px")
+      //  .style("top",  d3.event.pageY +100 + "px");
+        
+    }
+    oi = {"wasting_percent":[],"stunting_percent":[],"underweight_percent":[],"low_birth_weight_percent":[],"prnt_intd_cf_6to24mnth_child":[],"prnt_chld_bf_at_birth":[],"prnt_chld_excly_bf":[],"prnt_child_1yr_immnztn":[],"prnt_anwmic_wmn":[],"prnt_trmstr_3wmn_cnsld_imdtbf":[],"prnt_wmn_etg_xtr_ml_drng_prgncy":[],"prnt_wmn_rstg_drg_prgncy":[],"prnt_4_anc_vst_dlvry":[]}
+                  
+                  data.forEach(d => {
+                      oi.wasting_percent.push(d.wasting_percent);
+                      oi.stunting_percent.push(d.stunting_percent);
+                      oi.underweight_percent.push(d.underweight_percent);
+                      oi.low_birth_weight_percent.push(d.low_birth_weight_percent);
+                      oi.prnt_intd_cf_6to24mnth_child.push(d.prnt_intd_cf_6to24mnth_child);
+                      oi.prnt_chld_bf_at_birth.push(d.prnt_chld_bf_at_birth);
+                      oi.prnt_chld_excly_bf.push(d.prnt_chld_excly_bf);
+                      oi.prnt_child_1yr_immnztn.push(d.prnt_child_1yr_immnztn);
+                      oi.prnt_anwmic_wmn.push(d.prnt_anwmic_wmn);
+                      oi.prnt_trmstr_3wmn_cnsld_imdtbf.push(d.prnt_trmstr_3wmn_cnsld_imdtbf);
+                      oi.prnt_wmn_etg_xtr_ml_drng_prgncy.push(d.prnt_wmn_etg_xtr_ml_drng_prgncy);
+                      oi.prnt_wmn_rstg_drg_prgncy.push(d.prnt_wmn_rstg_drg_prgncy);
+                      oi.prnt_4_anc_vst_dlvry.push(d.prnt_4_anc_vst_dlvry);
+  
+      // oi = {"project":[],"wasting":[],"stunting":[],"underweight":[],"lbw":[], "per_no_enrld" :[]}
+          
+      // data.forEach(d => {
+      //     oi.project.push(d.project);
+      //     oi.wasting.push(d.wasting);
+      //     oi.stunting.push(d.stunting);
+      //     oi.underweight.push(d.underweight);
+      //     oi.lbw.push(d.lbw);
+      // 	oi.per_no_enrld.push(d.per_no_enrld);
+          
+      });
+      var color = d3.scaleSequential().domain([d3.min(arcInitial),d3.max(arcInitial)])
+  
+     //var color = d3.scaleSequential().domain([d3.min(arcInitial(oi)),d3.max(arcInitial(oi))])
+             .interpolator(d3.interpolateReds);
+      var arc = g.selectAll(".arc");
+      
+      var arcData = arc.data(pie(data));
+  
+      var arcEnter = arcData.enter().append("g")
+                          .attr("class", "arc");
+  
+       
+  
+       
+      arcEnter.append("path")
+          .attr("fill", function(d) { 
+              return color(arcInitial(d.data)); })
+          .attr("d", path);
+                    
+            
+      arcEnter.on("mouseover", function (d) {
+              d3.select("#tooltip")
+              .transition().duration(200)
+               .style("left", d3.event.pageX + "px")
+              .style("top",  d3.event.pageY - 30 + "px")		
+              .select("#value").text(arcInitial(d.data))
+              
+              d3.select("#tooltip #enrlval").text(d.data["per_no_enrld"])
+              
+              d3.select("#tooltip").style("opacity", 1);	
+              
+  })
+      .on("mouseout", function () {
+      // Hide the tooltip
+      d3.select("#tooltip")
+          .style("opacity", 0);;
+  });
+      
+      
+          makeviz = opt =>{
+          g.selectAll(".arc").remove();
+             // arc.selectAll("*").remove();
+                  $( ".hello" ).remove();
+                  // console.log(d)
+  
+  
+                  let tansitionDuration = 1000;
+                      if(opt == 'Wasting(%)'){
+                      arcInitial  = d => d.wasting_percent;
+                  }else if (opt == 'Stunting(%)' ){
+                      arcInitial  = d => d.stunting_percent; 
+                  }else if (opt == 'Underweight(%)' ){
+                      arcInitial  = d => d.underweight_percent; 
+                  }else if (opt == 'Low Birth Weight(%)' ){
+                      arcInitial  = d => d.low_birth_weight_percent; 
+                  }else if (opt == 'Percentage of children(6-24monts)initiated appropriate complementary feed(%)' ){
+                      arcInitial  = d => d.prnt_intd_cf_6to24mnth_child; 
+                  }else if (opt == 'Percentage of children breastfed at birth(%)' ){
+                      arcInitial  = d => d.prnt_chld_bf_at_birth; 
+                  }else if (opt == 'Percentage of children exclusively breastfeeding(%)' ){
+                      arcInitial  = d => d.prnt_chld_excly_bf; 
+                  }else if (opt == 'Percentage of children 1 year imunization(%)' ){
+                      arcInitial  = d => d.prnt_child_1yr_immnztn; 
+                  }else if (opt == 'Percentage of Anemic pragnant women(%)' ){
+                      arcInitial  = d => d.prnt_anwmic_wmn; 
+                  }else if (opt == 'Percentage of trimester 3 women counselled on immediate breastfeeding(%)' ){
+                      arcInitial  = d => d.prnt_trmstr_3wmn_cnsld_imdtbf; 
+                  }else if (opt == 'Percentage of women eating extra meal during pregnancy(%)' ){
+                      arcInitial  = d => d.prnt_wmn_etg_xtr_ml_drng_prgncy; 
+                  }else if (opt == 'Percentage of women resting during pregnancy(%)' ){
+                      arcInitial  = d => d.prnt_wmn_rstg_drg_prgncy; 
+                  }else if (opt == 'Percent women had at least 4 ANC visit by delivery(%)' ){
+                      arcInitial  = d => d.prnt_4_anc_vst_dlvry; 
+                  }
+                  console.log(arcInitial);
+              var pie = d3.pie()
+                  .value(function(d) { 
+                      return arcInitial(d); });
+  
+                      
+              
+              var label = d3.arc()
+                  .outerRadius(radius - 40)
+                  .innerRadius(radius - 40);
+  
+              var mycolor = d3.scaleSequential().domain([d3.min(arcInitial(oi)),d3.max(arcInitial(oi))])
+                              .interpolator(d3.interpolateReds);
+              var arcData = arc.data(pie(data));
+              var arcEnter = arcData.enter().append("g")
+                  .attr("class", "arc");
+  
+              
+          
+          arcEnter.on("mouseover", function (d) {
+              d3.select("#tooltip")
+              .transition().duration(200)
+               .style("left", d3.event.pageX + "px")
+              .style("top",  d3.event.pageY - 30 + "px")		
+              .select("#value").text(arcInitial(d.data))
+              
+              d3.select("#tooltip #enrlval").text(d.data["per_no_enrld"])
+              
+              d3.select("#tooltip").style("opacity", 1);	
+              
+  })
+      .on("mouseout", function () {
+      // Hide the tooltip
+      d3.select("#tooltip")
+                      .style("opacity", 0);;
+  });
+          
+          
+          arcEnter.append("path").attr("fill", function(d) { 
+              return mycolor(arcInitial(d.data)); })
+          .attr("d", path)
+          .transition().duration(tansitionDuration)
+                      .attr("fill", function(d) { 
+                          return mycolor(arcInitial(d.data)); });
+          
+          var getAngle = function(d) {
+            return (180 / Math.PI * (d.startAngle + d.endAngle) / 2 + 90);
+          };  
+                  
+  
+              arcEnter.append("text")
+              .attr("transform", function(d) {
+                  return "translate(" + label.centroid(d) + ")"
+  
+                  var _d = label.centroid(d);
+                  _d[0] *= 1.50;	//multiply by a constant factor
+                  _d[1] *= 1.50;	//multiply by a constant factor
+                  return "translate(" + _d + ")";
+              })
+              .attr("dy", ".50em")
+              .attr("class", "hello")
+              .style("text-anchor", "middle")
+              .style("fill", "black")
+              .text(function(d) { return (d.data.district_n) });
+  
+             // .text(function(d) { return d.data.district_n 
+              //(d.data.project) + ": " + (arcInitial(d.data)) + "%" 
+           //   });
+              
+    
+              
+          }   
+    
+          const dropdownChange = () =>{
+              var sel = document.getElementById('opt');
+              val = document.getElementById("opt").value
+          }
+          makeviz("Wasting(%)");
+          $(".category a").click(function(){
+           $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
+          $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+          var valCategory = $(this).text();
+          var displayVal = valCategory.substring(0, valCategory.length-3);
+          document.getElementById('paraText').innerHTML= displayVal+" Contribution: ";
+          document.getElementById('bartitleCategory').innerHTML= displayVal+" : Project wise Contribution";
+          makeviz(valCategory);
+  
+          });
+  
+  
+  }
+  
+  $(function(){
+    //bind event
+    $(".month a").click(function(){
+      var valMonth = $(this).text();
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+       document.getElementById('bartitleMonth').innerHTML= valMonth;
+    });
+     $(".category a").click(function(){
+      var valCategory = $(this).text();
+      var displayVal = valCategory.substring(0, valCategory.length-3);
+  
+    document.getElementById('paraText').innerHTML= displayVal+" Contribution: ";
+    document.getElementById('bartitleCategory').innerHTML= displayVal+" : Project wise Contribution";
+   
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+    });
+  
+    //trigger event
+    $('.month a').first().trigger('click');
+    $(".category a").first().trigger('click');
+    
+  });
+  
+  
+    
+    const monthwise = (data) => {
+      data.forEach(d => {
+              d.wasting_percent = +d.wasting_percent;
+              d.stunting_percent = +d.stunting_percent;
+              d.underweight_percent = +d.underweight_percent;
+              d.low_birth_weight_percent = +d.low_birth_weight_percent;
+          //	d.per_no_enrld = +d.per_no_enrld;
+          });
+          console.log(data)
+  
+          var aproperty = [];
+          var sproperty = [];
+          var oproperty = [];
+      data.forEach(d =>{
+          var temp = {};
+          temp['district_n'] = d.district_n;
+          temp['wasting_percent'] = d.wasting_percent;
+          temp['stunting_percent'] = d.stunting_percent;
+          temp['underweight_percent'] = d.underweight_percent;
+          temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
+          temp['prnt_intd_cf_6to24mnth_child'] = +d.prnt_intd_cf_6to24mnth_child;
+          temp['prnt_chld_bf_at_birth'] = +d.prnt_chld_bf_at_birth;
+          temp['prnt_chld_excly_bf'] = +d.prnt_chld_excly_bf;
+          temp['prnt_child_1yr_immnztn'] = +d.prnt_child_1yr_immnztn;
+          temp['prnt_anwmic_wmn'] = +d.prnt_anwmic_wmn;
+          temp['prnt_trmstr_3wmn_cnsld_imdtbf'] = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
+          temp['prnt_wmn_etg_xtr_ml_drng_prgncy'] = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+          temp['prnt_wmn_rstg_drg_prgncy'] = +d.prnt_wmn_rstg_drg_prgncy;
+          temp['prnt_4_anc_vst_dlvry'] = +d.prnt_4_anc_vst_dlvry;
+          
+      //	temp['per_no_enrld'] = d.per_no_enrld;
+          if(d.month_n == "Dec"){
+              aproperty.push(temp);
+          }else if (d.month_n == "Jan"){
+              sproperty.push(temp);
+          }else if (d.month_n == "Nov"){
+              oproperty.push(temp);
+          }
+        
+      })
+    
+      var listdata = [
+          aproperty,sproperty,oproperty
+      ]
+      return listdata;
+      }
+    
+      const selectData =  (val,monthwiseData) =>{
+      if(val == "November"){
+              return monthwiseData[0];
+          }else if (val == "December"){
+              return monthwiseData[1];
+          }else if (val == 'January'){
+              return monthwiseData[2]       
+          }
+      } 
+    
+
+    d3.csv("{% static 'maha_dashboard/data/csv/f2.csv' %}").then(data => {
+              monthwiseData = monthwise(data);
+              d3.select("#monthdropdown")
+      .on("change", () =>{
+              val = document.getElementById("monthdropdown").value
+              mydata = selectData(val,monthwiseData);
+              svg.selectAll("*").remove();
+              render(mydata);
+          });
+      
+          $(".month a").click(function(){
+          $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+      $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+          var valMonth = $(this).text();
+           document.getElementById('bartitleMonth').innerHTML= valMonth;
+          mydata = selectData(valMonth,monthwiseData);
+          svg.selectAll("*").remove();
+          render(mydata);
+  
+      });
+      
+      augData = monthwiseData[0];
+      render(augData); 
+    })
+    </script>
+
+{% endblock %}
