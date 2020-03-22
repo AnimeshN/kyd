@@ -2,7 +2,7 @@ from django.shortcuts import render
 from django.views.generic import TemplateView
 
 from .models import F1, F2, F3, F4, F51, F6MapBeat ,F6MapBlock ,F6MapProject, F7IycfBlk, F7IycfPrjt, F7IycfBt
-from .models import F8PwBlk, F8PwPrjt, F8PwBt
+from .models import F8PwBlk, F8PwPrjt, F8PwBt, F9LcBlk
 
 from django.core import serializers
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -93,6 +93,14 @@ class FeatureEight(TemplateView):
             "jsonBlock":jsonBlock
             }
         return render(request,'kyd_dashboard/feature8.html',{"context":context}  )
+
+
+class FeatureNine(TemplateView):
+    def get(self, request):
+        blockData = F9LcBlk.objects.all()
+        jsonBlock = serializers.serialize('json', blockData)
+       
+        return render(request,'kyd_dashboard/feature9.html', {"jsonBlock":jsonBlock}  )
 
 
 class FeatureComp(LoginRequiredMixin, TemplateView):

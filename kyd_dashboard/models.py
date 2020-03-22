@@ -400,3 +400,26 @@ class F8PwPrjt(models.Model):
         managed = False
         db_table = 'f8_pw_prjt'
 
+
+
+class F9LcBlk(models.Model):
+    month_n = models.CharField(max_length=10, blank=True, null=True)
+    block_n = models.CharField(max_length=10, blank=True, null=True)
+    mdrtly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svr_wstg = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    mdrtly_wstd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    mdrtly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    nb_lbw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_wasting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    wasting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_stunting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    stunting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    svrly_underweight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    underweight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    low_birth_weight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'f9_lc_blk'
