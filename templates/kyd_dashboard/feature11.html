@@ -20,9 +20,8 @@
 }
 #legendContainer{
 	position:absolute;
-  float:right;
 	top:250px;
-	left:20px;
+	left:50px;
 	overflow: auto;
 	height:500px;
 	width:200px;
@@ -92,26 +91,28 @@ fill: #fff;
 </style>
   {% endblock %}
 {% block feature %}
+<div class='heading text-dark mt-2 text-center'> Outcome Indicators Beat-Wise</div>
+
 <div class="row text-center" style="height: 100px;">
   <div class="col-12 bg-info h-75 w-100" >   
     <!-- select category -->
     <div class="dropdown" style="float: left; margin:20px; font-weight:bold"> 
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Select Category
-		  <span class="selectedCategory"></span>
+		<span class="selectedCategory"></span>
       </button>
       <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" href="#">Severly Stunted Children</a>
         <a class="dropdown-item" href="#">Stunted Children</a>
         <a class="dropdown-item" href="#">Severly Wasted(SAM) Children</a>
-        <a class="dropdown-item" href="#">Wasted Children</a>
-        <a class="dropdown-item" href="#">Severly Underweight(SUW) Children</a>
-        <a class="dropdown-item" href="#">Underweight Children</a>
-        <a class="dropdown-item" href="#">Newborns with low birth weight</a>		
+		<a class="dropdown-item" href="#">Wasted Children</a>
+		<a class="dropdown-item" href="#">Severly Underweight(SUW) Children</a>
+		<a class="dropdown-item" href="#">Underweight Children</a>
+		<a class="dropdown-item" href="#">Newborns with low birth weight</a>		
       </div>
     </div>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat8' %}`">Previous Feature</button>   
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat10' %}`">Next Feature</button>   
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat10' %}`">Previous Feature</button>   
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`#`">Next Feature</button>   
   </div>
 
   <div class="col-12 m-5">
@@ -121,7 +122,6 @@ fill: #fff;
   </div>
 
    
-<!-- <p style="font-size: 16px; font-weight: bold;">Click rectangle box besides block names to view month wise trend for the project</strong> </p> -->
 <div id="legendContainer" class="legendContainer">
 	<svg id="legend"></svg>
 </div>
@@ -137,11 +137,39 @@ fill: #fff;
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 
 <script>
-    var svg = d3.select('svg');
+
+function parseURLParameters()
+{
+var query = (window.location.search || '?').substr(1);
+  var  map =[];
+   query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+       map.push(value);
+        });
+     return map;
+}
+
+function filterCSV(csv, key, value) {
+  var result = [];
+  csv.forEach(function(val,idx,arr){
+  
+    if(val[key] == value){
+    
+      result.push(val)
+    }
+  })
+  return result;
+}
+
+
+
+
+
+
+var svg = d3.select('svg');
  var width = +svg.attr('width');
  var height = +svg.attr('height');
  var ticks;
- var selectedCategory ='Severly Stunted Children';
+  var selectedCategory ='Severly Stunted Children';
 
 var mouseG
 
@@ -206,27 +234,121 @@ g.append("rect")
     .attr("height", innerHeight);  
 
       
-     var color = d3.scale.category10();
+     var color = d3.scale.category20();
 
 
-const render = data =>{
-console.log(data);
 
-	 
-      
+
+
+			  
+
+// Get the data
+d3.csv("{% static 'data/csv/lc_beat.csv'%}", function(error, csv) {
+ 
+ csv.forEach(function(d) {
+		
+		d.svrly_wasting_percent = +d.svrly_wasting_percent;
+		d.wasting_percent = +d.wasting_percent;
+		d.svrly_stunting_percent = +d.svrly_stunting_percent;
+		d.stunting_percent = +d.stunting_percent;
+		d.svrly_underweight_percent = +d.svrly_underweight_percent;
+		d.underweight_percent = +d.underweight_percent;
+		d.low_birth_weight_percent = +d.low_birth_weight_percent;
+		
+  });
+			
+		var section;
+		section='svrly_stunting_percent';
+		var choices = parseURLParameters(window.location.href);	
+		var data;
+		if(choices.length > 0)
+		{
+		selectedCategory=choices[1];
+		var choiceOneVal= choices[1].replace(/_/g, ' ');
+		if(choiceOneVal == 'Severly Stunted Children')
+			section ='svrly_stunting_percent';
+			else if (choiceOneVal == 'Stunted Children')
+			section ='stunting_percent';
+			else if(choiceOneVal == 'Severly Wasted(SAM) Children')
+			section ='svrly_wasting_percent';
+			else if(choiceOneVal == 'Wasted Children')
+			section = 'wasting_percent';
+			else if(choiceOneVal == 'Severly Underweight(SUW) Children')
+			section = 'svrly_underweight_percent';
+			else if (choiceOneVal == 'Underweight Children')
+			section = 'underweight_percent'
+			else 
+			section = 'low_birth_weight_percent'
+		data = filterCSV(csv, 'project_n', choices[0]);
+		setData(data,section);	
+		}
+		else
+		{
+		data=csv;
+		setData(csv,section);
+		}
+	
+	
+	$(".category a").click(function(){
+			var val = $(this).text();
+			selectedCategory=val;
+			if(val == 'Severly Stunted Children')
+			section ='svrly_stunting_percent';
+			else if (val == 'Stunted Children')
+			section ='stunting_percent';
+			else if(val == 'Severly Wasted(SAM) Children')
+			section ='svrly_wasting_percent';
+			else if(val == 'Wasted Children')
+			section = 'wasting_percent';
+			else if(val == 'Severly Underweight(SUW) Children')
+			section = 'svrly_underweight_percent';
+			else if (val == 'Underweight Children')
+			section = 'underweight_percent'
+			else 
+			section = 'low_birth_weight_percent'
+			
+			mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
+			mouseG.selectAll('.mouse-per-line').selectAll('text').remove();
+			setData(data,section);
+			});			
+					
+    
+});
+
+function setData(data, section)
+{
+			
+			var dataFilter = data.map(function(d){return {month: d.month_n, beat: d.beat_n, value: d[section]} })
+
+	      //debugger
+	      
+		    dataFilter.forEach(function(d) {
+    			
+    			d.value =+d.value;
+    			d.active = true;
+    		});
+    		
+			
+		   
+		    //debugger
+				updateGraph(dataFilter);
+
+			
+				jQuery('h1.page-header').html(section);
+}
+
+//var color = d3.scale.ordinal().range(["#48A36D", "#0096ff","#ff007e", "#FFA07A",  "#FFD700", "#ADFF2F", "#00FFFF", "#8A2BE2", "#800000","#00FFFF", "#008080", "#800080", "#FF00FF" ]);
+var color = d3.scale.category20();
+var ticks
+function updateGraph(data) {
+    
 console.log("in update graph")
     // Scale the range of the data
-	
-	//x.domain(data.map(function(d) { return d.month; }));
-	//x.domain(d3.extent(data, function(d) { 
-	
-	//console.log(d.month)
-	//return d.month; }));
-   // x.domain(d3.extent(data, function(d) { return d.month; }));
-   ticks = data.map(function(d) {
+	ticks = data.map(function(d) {
       return d.month
     });
     xScale.domain(ticks);
+	
    
    console.log("inside ydomain");
     yScale.domain([d3.min(data, function(d) { return d.value; }), d3.max(data, function(d) { return d.value; })]);
@@ -236,7 +358,7 @@ console.log("in update graph")
     // Nest the entries by block
 	
     dataNest = d3.nest()
-        .key(function(d) {return d.block})
+        .key(function(d) {return d.beat})
         .entries(data);
 	
 	console.log("print data nest");
@@ -259,7 +381,8 @@ console.log("in update graph")
       .data(result, function(d){return d.key});
 
 		block.enter().append("path")
-			.attr("class", "line");
+			.attr("class", "line")
+			
 			
 			
 
@@ -267,17 +390,16 @@ console.log("in update graph")
 			.style("stroke", function(d,i) { return d.color = color(d.key); })
 			.attr("id", function(d){ return 'tag'+d.key.replace(/\s+/g, '');}) // assign ID
 			.attr("d", function(d){
-			console.log(d.values)
-				return stateline(d.values);
+				return stateline(d.values)
 			});
 			
 		
 		block.exit().remove();
 
+
 		var legend = d3.select("#legend")
 			.selectAll("text")
 			.data(dataNest, function(d){return d.key});
-			console.log(legend);
 
 		//checkboxes
 		legend.enter().append("rect")
@@ -289,19 +411,15 @@ console.log("in update graph")
 		    return color(d.key);
 		    
 		  })
-		  .attr("class", function(d,i){return "legendcheckbox " + d.key})
-			.on("click", function(d){
-			console.log("in legend")
-			var sect =  selectedCategory;
-			console.log(sect);
-			sect= sect.replace(/ /g, '_');
-			console.log(sect);
-			var url = "http://localhost/line/line4.html?id1="+d.key+"&id2="+sect;
-              $(location).attr('href', url);
-              window.location = url;
-			 
+		  <!-- .attr("class", function(d,i){return "legendcheckbox " + d.key}) -->
+			<!-- .on("click", function(d){	 -->
+			  
+			  <!-- var url = "http://localhost/line/line4.html?id1="; -->
+             <!-- url += d.key; -->
+              <!-- $(location).attr('href', url); -->
+              <!-- window.location = url; -->
 					
-			})
+			<!-- }) -->
 			
 		        
     // Add the Legend text
@@ -317,8 +435,8 @@ console.log("in update graph")
 		legend.exit().remove();
 
 		svg.selectAll(".axis").remove();
-
-    // Add the X Axis
+		
+		 // Add the X Axis
     g.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + innerHeight + ")")
@@ -332,12 +450,11 @@ console.log("in update graph")
         .call(yAxis)
 		.attr("font-size", "20px")
 		.attr("font-weight", "bold")
-		 .append("text")		 
+		 .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", ".71em");
-	  
-	    
+
 	 mouseG = g.append("g")
       .attr("class", "mouse-over-effects");
 	 
@@ -365,7 +482,6 @@ console.log("in update graph")
 	.attr('class', 'topic-circle')
       .attr("r", 7)
       .style("stroke", function (d) {
-	  console.log(d.key);
         return color(d.key);
       })
       .style("fill", "none")
@@ -429,8 +545,22 @@ console.log("in update graph")
       });
 
 
-   	
+   
+		
 };
+
+$(function(){
+  //bind event
+ 
+   $(".category a").click(function(){
+    var valCategory = $(this).text();
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+  });
+
+  //trigger event
+  $(".category a").first().trigger('click');
+  
+});
 
 function clearAll(){
   d3.selectAll(".line")
@@ -456,83 +586,10 @@ function showAll(){
      }
    })
 };
-  
-  //
-  data_from_django = {{ jsonBlock|safe }};
-  var data = []
-  data_from_django.forEach(element => {
-    data.push(element.fields);
-  });
-  
 
-	
-	$(".category a").click(function(){
-        var val = $(this).text();
-		selectedCategory =val;
-		var section;
-			if(val == 'Severly Stunted Children')
-			section ='svrly_stunting_percent';
-			else if (val == 'Stunted Children')
-			section ='stunting_percent';
-			else if(val == 'Severly Wasted(SAM) Children')
-			section ='svrly_wasting_percent';
-			else if(val == 'Wasted Children')
-			section = 'wasting_percent';
-			else if(val == 'Severly Underweight(SUW) Children')
-			section = 'svrly_underweight_percent';
-			else if (val == 'Underweight Children')
-			section = 'underweight_percent'
-			else 
-			section = 'low_birth_weight_percent'
-			
-			mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
-			mouseG.selectAll('.mouse-per-line').selectAll('text').remove();	
-			
-			var dataFilter = data.map(function(d){return {month: d.month_n, block: d.block_n, value: d[section]} })
-			
-	      
-	      //debugger
-	      
-		    dataFilter.forEach(function(d) {
-    			
-    			d.value =+d.value;
-    			d.active = true;
-    		});
-    		
-		   
-		    //debugger
-				render(dataFilter);
-
-			
-				jQuery('h1.page-header').html(section);
-			});
-
-    var dataFilter = data.map(function(d){return {month: d.month_n, block: d.block_n, value: d.svrly_stunting_percent} })
-	// generate initial graph
-	//data = filterCSV(csv, 'type', 'Stunting');
-	 
-	render(dataFilter);	
-
-
-       
-	
-	
-    
-
-
-$(function(){
-  //bind event
  
-   $(".category a").click(function(){
-    var valCategory = $(this).text();
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
-  });
 
-  //trigger event
-  $(".category a").first().trigger('click');
-  
-});
+
   </script>
 {% endblock %}
-
 
