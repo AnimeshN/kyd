@@ -2,14 +2,13 @@
 {% load static %}
 
 {% block feature_css %}
-
 <style>
   
     label{
       font-size: large;
     }
               
-   .projectCheckBox{
+ .projectCheckBox{
     font-size: 20px;
     font-weight: bold;
     height:500px;
@@ -34,6 +33,7 @@ height: 40%;
 {% endblock %}
 
 {% block feature %}
+
 <div class="row text-center" style="height: 100px;">
     <div class="col-12 bg-info h-75 w-100" >  
    <div class="dropdown" style="float: left; margin:20px" id="monthDrop">
@@ -48,9 +48,6 @@ height: 40%;
         </div>
         
       </div>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat3' %}`">Previous Feature</button>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat5' %}`">Next Feature</button>
-
   </div>
   
   
@@ -63,35 +60,36 @@ height: 40%;
   </div>
   
   <div id="wrapper">
-  <div class="projectCheckBox">  
+  <div  class="projectCheckBox" >  
   <p>Select Project </p>	
         <form id="projectList" >
+          <!-- <input type="checkbox" class="myCheckbox" value="Am"/> All Projects <br> -->
         <label><input type="checkbox" id="myBestDistrict" value="BestDistrict"/><span> Best District</span></label> <br>
         <label><input type="checkbox" id="myMH" value="Maharashtra"/><span> Maharashtra</span></label> <br>
         <label><input type="checkbox" id="myAhmadnagar" value="Ahmadnagar"/><span> Ahmadnagar</span></label> <br>
-        <label><input type="checkbox" id="myAkola" value="Akola"/> <span>Akola</span></label> <br>
-        <label><input type="checkbox" id="myAmravati" value="Amravati"/> <span>Amravati</span></label> <br>
+        <label><input type="checkbox" id="myAkola" value="Akola"/><span> Akola</span></label> <br>
+        <label><input type="checkbox" id="myAmravati" value="Amravati"/><span> Amravati</span></label> <br>
         <label><input type="checkbox" id="myAurangabad" value="Aurangabad"/><span> Aurangabad</span></label> <br>
-        <label><input type="checkbox" id="myBeed" value="Beed"/> <span>Beed </span></label><br>
+        <label><input type="checkbox" id="myBeed" value="Beed"/><span> Beed</span></label> <br>
         <label><input type="checkbox" id="myBhandara" value="Bhandara"/><span> Bhandara</span></label> <br>
         <label><input type="checkbox" id="myBuldana" value="Buldana"/><span> Buldana</span></label> <br>
-        <label><input type="checkbox" id="myChandrapur" value="Chandrapur"/> <span>Chandrapur</span></label>  <br>     
+        <label><input type="checkbox" id="myChandrapur" value="Chandrapur"/><span> Chandrapur</span></label>   <br>     
         <label><input type="checkbox" id="myDhule" value="Dhule"/><span> Dhule</span></label> <br>
         <label><input type="checkbox" id="myGadchiroli" value="Gadchiroli"/><span> Gadchiroli</span></label> <br>
-        <label><input type="checkbox" id="myGondia" value="Gondia"/><span> Gondia </span></label><br>
+        <label><input type="checkbox" id="myGondia" value="Gondia"/><span> Gondia</span></label> <br>
         <label><input type="checkbox" id="myHingoli" value="Hingoli"/><span>Hingoli</span></label> <br>
-        <label><input type="checkbox" id="myJalgaon" value="Jalgaon"/> <span>Jalgaon</span></label> <br>		
+        <label><input type="checkbox" id="myJalgaon" value="Jalgaon"/><span> Jalgaon</span></label> <br>		
         <label><input type="checkbox" id="myJalna" value="Jalna"/><span> Jalna</span></label> <br>
         <label><input type="checkbox" id="myKolhapur" value="Kolhapur"/><span> Kolhapur</span></label> <br>
         <label><input type="checkbox" id="myLatur" value="Latur"/><span> Latur</span></label> <br>
         <label><input type="checkbox" id="myMumbaiCity" value="Mumbai City"/><span> Mumbai City</span></label> <br>
-        <label><input type="checkbox" id="myMumbaiSuburban" value="Mumbai Suburban"/> <span>Mumbai Suburban</span></label> <br>
-        <label><input type="checkbox" id="myNagpur" value="Nagpur"/><span> Nagpur </span></label><br>
-        <label><input type="checkbox" id="myNanded" value="Nanded"/> <span>Nanded</span></label> <br>
-        <label><input type="checkbox" id="myNandurbar" value="Nandurbar"/> <span>Nandurbar</span></label> <br>
-        <label><input type="checkbox" id="myNashik" value="Nashik"/> <span>Nashik</span></label> <br>
+        <label><input type="checkbox" id="myMumbaiSuburban" value="Mumbai Suburban"/><span> Mumbai Suburban</span></label> <br>
+        <label><input type="checkbox" id="myNagpur" value="Nagpur"/><span> Nagpur</span></label> <br>
+        <label><input type="checkbox" id="myNanded" value="Nanded"/><span> Nanded </span></label><br>
+        <label><input type="checkbox" id="myNandurbar" value="Nandurbar"/><span> Nandurbar</span></label> <br>
+        <label><input type="checkbox" id="myNashik" value="Nashik"/><span></span></label> Nashik <br>
         <label><input type="checkbox" id="myOsmanabad" value="Osmanabad"/><span> Osmanabad</span></label><br>     
-        <label><input type="checkbox" id="myPalghar" value="Palghar"/> <span>Palghar</span></label> <br>
+        <label><input type="checkbox" id="myPalghar" value="Palghar"/><span> Palghar</span></label> <br>
         <label><input type="checkbox" id="myParbhani" value="Parbhani"/><span>Parbhani</span></label> <br>
         <label><input type="checkbox" id="myPune" value="Pune"/><span> Pune</span></label><br>
         <label><input type="checkbox" id="myRaigad" value="Raigad"/><span>Raigad</span></label> <br>
@@ -99,27 +97,35 @@ height: 40%;
         <label><input type="checkbox" id="mySangli" value="Sangli"/> <span>Sangli</span></label> <br>
         <label><input type="checkbox" id="mySatara" value="Satara"/><span>Satara </span></label><br>
         <label><input type="checkbox" id="mySindhudurg" value="Sindhudurg"/><span> Sindhudurg </span></label><br>
-        <label><input type="checkbox" id="mySolapur" value="Solapur"/> <span>Solapur</span></label><br>     
-        <label><input type="checkbox" id="myThane" value="Thane"/> <span>Thane</span></label> <br>
-        <label><input type="checkbox" id="myWardha" value="Wardha"/><span>Wardha</span></label> <br>
+        <label><input type="checkbox" id="mySolapur" value="Solapur"/><span> Solapur</span></label><br>     
+        <label><input type="checkbox" id="myThane" value="Thane"/><span> Thane</span></label> <br>
+        <label><input type="checkbox" id="myWardha" value="Wardha"/><span>Wardha </span></label><br>
         <label><input type="checkbox" id="myWashim" value="Washim"/><span> Washim</span></label><br>
-        <label><input type="checkbox" id="myYavatmal" value="Yavatmal"/><span>Yavatmal</span></label> <br>     
-       </form>    
-  </div>
-  <div class="checkBoxButton"> <input type = "button"  value = "Update Chart" onclick = "GetSelected()" /> </div>
+        <label><input type="checkbox" id="myYavatmal" value="Yavatmal"/><span>Yavatmal</span></label> <br>  
+       </form> 
+  </div>	 
+   <div class="checkBoxButton"> <input type = "button"  value = "Update Chart" onclick = "GetSelected()" /> </div>
+  </div>  
+  
+  
+  
+  
   </div>
 
-  {% endblock %}
+{% endblock %}
 
 {% block feature_js %}
-
 <script>
    
  
      
     let chartStatData=[];
-     const monthwise = (data) => {
+ 
+    
+ const monthwise = (data) => {
+ 
      var aproperty = [];
+    
      var sproperty = [];
     
      var oproperty = [];
@@ -127,13 +133,11 @@ height: 40%;
    data.forEach(d =>{
      var temp = {};
      temp['district_n'] = d.district_n;
-     temp['stunting_percent'] = +d.stunting_percent;
-     temp['underweight_percent'] = +d.underweight_percent;
-     temp['wasting_percent'] = +d.wasting_percent;
-     temp['low_birth_weight_percent'] = +d.low_birth_weight_percent;
-      temp['svrly_stunting_percent']= +d.svrly_stunting_percent;
-     temp['svr_wasting_percent'] = +d.svr_wasting_percent;
-     
+     temp['anemic_free_women'] = +d.anemic_free_women;
+     temp['child_immunization'] = +d.child_immunization;
+     temp['child_bf_practices'] = +d.child_bf_practices;
+     temp['child_cf_practices'] = +d.child_cf_practices;
+ 
      if(d.month_n == "Nov"){
  
        aproperty.push(temp);}
@@ -156,20 +160,21 @@ height: 40%;
    
  let mydata = { data: {
   // labels: ["svrly_stntd","svr_wstg","wasting_percent","stunting_percent","underweight_percent"]
-   labels: ["Stunting", "Underweight","Wasting","Low BirthWeight","Severly Stunting","Severly Wasted"],
+   labels: ["Anemic Free Women", "Children Immunization","Children(0-6 months) BF Practices","Children (6-24 months) CF Practices"],
+  
    datasets:[]
  }}
  
  let mydataset = [];
  // mybackgroundcolor = [];
- mybordercolor = ['#B0E0E6','#F4A460','#778899','#7FFFD4','#6B8E23','#BDB76B','#C71585','#800080','#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080'];
- 
+ //mybordercolor = ['#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080','#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080'];
  let itr = 0;
  
    data.forEach((d,itr) => {
      let temp = {};
      temp.label = d.district_n,
      // temp.defaultFontSize= "12",
+     temp.pointLabelFontColor = "Red",
      temp.borderColor = 'Gray',
      temp.pointBorderColor = 'Black',
      temp.pointBackgroundColor= 'Black',
@@ -178,12 +183,12 @@ height: 40%;
      temp.backgroundColor = "transparent",
      temp.pointRadius = 5,
      temp.pointHoverRadius = 10,
-     temp.pointHoverBackgroundColor = 'red'
+     temp.pointHoverBackgroundColor = 'red',
      temp.pointHitRadius = 1,
      //temp.showTooltips = true,
     //temp.borderColor = mybordercolor[itr],
     // temp.data = [d.svrly_stntd,d.svr_wstg,d.wasting_percent,d.stunting_percent,d.underweight_percent];
-      temp.data = [d.stunting_percent,d.underweight_percent,d.wasting_percent,d.low_birth_weight_percent,d.svrly_stunting_percent,d.svr_wasting_percent]
+      temp.data = [d.anemic_free_women,d.child_immunization,d.child_bf_practices,d.child_cf_practices]
      
      mydataset.push(temp);
     
@@ -195,30 +200,30 @@ height: 40%;
  
  
  
-       d3.csv("{% static 'maha_dashboard/data/csv/Radar_Nutrition_status_MH.csv' %}").then(data => {
+       d3.csv("{% static 'maha_dashboard/data/csv/radar2_MH.csv' %}").then(data => {
           monthwisesplit = monthwise(data);
          
           data.forEach(element => {
             element.district_n = element.district_n;
            // element.svrly_stntd = +element.svrly_stntd;
            // element.svr_wstg = +element.svr_wstg;
-            element.stunting_percent = +element.stunting_percent;
-             element.underweight_percent = +element.underweight_percent;
-            element.wasting_percent  = +element.wasting_percent;
-            element.low_birth_weight_percent  = +element.low_birth_weight_percent;
-            element.svrly_stunting_percent = +element.svrly_stunting_percent; 
-            element.svr_wasting_percent = +element.svr_wasting_percent;
-            
+            element.anemic_free_women = +element.anemic_free_women;
+             element.child_immunization = +element.child_immunization;
+            element.child_bf_practices  = +element.child_bf_practices;
+            element.child_cf_practices  = +element.child_cf_practices;         
          });
          $(".month a").click(function(){
              $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
              $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-              var projectList = document.getElementById("projectList"); 
-             var chks = projectList.getElementsByTagName("INPUT");	
-             for (var i = 0; i < chks.length; i++) 
-             {
-             chks[i].checked = false;
-             }
+             
+         var projectList = document.getElementById("projectList"); 
+         var chks = projectList.getElementsByTagName("INPUT");
+     
+         for (var i = 0; i < chks.length; i++) 
+         {
+         chks[i].checked = false;
+         }
+             
            var val = $(this).text();
            mydata = selectData(val,monthwisesplit);
              chartStatData= dataforchart(mydata);
@@ -260,7 +265,7 @@ height: 40%;
    
    //trigger event
    $('.month a').first().trigger('click');
- 
+  
    
  });
  
@@ -289,14 +294,16 @@ height: 40%;
      
    const render = rdata =>{
    console.log(rdata);
+  
+   
   document.getElementById("myBestDistrict").checked = true;
    document.getElementById("myMH").checked = true;
-  
+   
    var rdata2=[];
    
    for (var i=0; i < rdata.length; i++)
    {
-   if(rdata[i].label== "BestDistrict"  || rdata[i].label== "Maharashtra")
+   if(rdata[i].label== "BestDistrict" ||  rdata[i].label== "Maharashtra")
    {
    
    rdata2.push(rdata[i]); 
@@ -312,11 +319,7 @@ height: 40%;
          // The data for our dataset
          data: {
             
-              labels: ["Stunting", "Underweight","Wasting","Low BirthWeight","Severly Stunting","Severly Wasted"],
-    // pointLabelFontSize : 160,
-    // scaleFontSize: 160,
-     
-     
+              labels: ["Anemic Free Women", "Children Immunization","Children(0-6 months) BF Practices","Children (6-24 months) CF Practices"],
              datasets: [rdata2[0], rdata2[1]],
            
          },
@@ -345,17 +348,15 @@ height: 40%;
              display: true
          },
          ticks: {
-             reverse: true,
              suggestedMin: 0,
-             suggestedMax: 100,
-             stepSize: 20
+             suggestedMax: 1,
+             stepSize: 0.2
          },
          pointLabels:{
         fontColor:"blue",
         fontSize: 20
      }
-     },
-     
+     }
      
      
  }
@@ -398,5 +399,4 @@ height: 40%;
        }
    // console.log(data)
      </script>
-
 {% endblock %}

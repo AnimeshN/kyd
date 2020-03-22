@@ -26,3 +26,19 @@ class MahaFeatureThree(LoginRequiredMixin, TemplateView):
 
     def get(self,request):
         return render(request,'maha_dashboard/maha_feat3.html')
+
+
+class MahaFeatureFour(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self,request):
+        return render(request,'maha_dashboard/maha_feat4.html')
+
+
+class MahaFeatureFive(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self,request):
+        return render(request,'maha_dashboard/maha_feat5.html')

@@ -90,7 +90,9 @@ line-height: 20px;
       </div>
     </div>
 
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat4' %}`">Next Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat2' %}`">Previous Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat4' %}`">Next Feature</button>
+
 
    
     
@@ -449,8 +451,6 @@ line-height: 20px;
 
     d3.csv("{% static 'maha_dashboard/data/csv/f2.csv' %}").then(data => {
               monthwiseData = monthwise(data);
-                         
-    
               d3.select("#monthdropdown")
       .on("change", () =>{
               val = document.getElementById("monthdropdown").value
