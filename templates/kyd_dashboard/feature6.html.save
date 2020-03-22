@@ -53,6 +53,10 @@ td{
 {% block feature %}
 <div class=" full-height">
     <div class='h2 text-dark mt-2 text-center' >Outcome Indicators</div>
+	<a href="{% url 'feat9'%}">
+          <h6 style="float: right; margin:10px">Want to see Month-wise Trend
+          <i class="fa fa-chevron-right" aria-hidden="true"></i>
+        </a></h6>
 
     <div class="row ">
           <div class="row bg-info w-100 m-0">
@@ -82,10 +86,10 @@ td{
               <a class="dropdown-item" href="#">Newborn with low birth rate</a>
             </div>
           </div>
-          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'feat5'%}`">Previous Feature</button>
+          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'feat4'%}`">Previous Feature</button>
           <div id="slider-range" style="float: left;"></div>
 
-          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'feat7'%}`">Next Feature</button>
+          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`#`">Next Feature</button>
 
 
 
@@ -100,12 +104,8 @@ td{
         <div class='col '>   
           <button type="button" class="btn back-button m-4">back</button>
 
-          <span class='info info-hirar'>Palghar</span>
-	 <a href="{% url 'feat9'%}">
-            <h6 style="float: right; margin:10px">Want to see Month-wise Trend
-            <i class="fa fa-chevron-right" aria-hidden="true"></i>
-          </a></h6>
-	<br>
+          <span class='info info-hirar'>Palghar</span
+><br>
 				</div>
       </div>
       <div class='row' style="height:900px" >

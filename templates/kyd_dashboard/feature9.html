@@ -110,7 +110,7 @@ fill: #fff;
         <a class="dropdown-item" href="#">Newborns with low birth weight</a>		
       </div>
     </div>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat8' %}`">Previous Feature</button>   
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat6' %}`">Previous Feature</button>   
     <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat10' %}`">Next Feature</button>   
   </div>
 
@@ -120,8 +120,7 @@ fill: #fff;
                         
   </div>
 
-   
-<!-- <p style="font-size: 16px; font-weight: bold;">Click rectangle box besides block names to view month wise trend for the project</strong> </p> -->
+    <p style="font-size: 16px; font-weight: bold;">Click rectangle box besides block names to view month wise trend for the project</strong> </p> 
 <div id="legendContainer" class="legendContainer">
 	<svg id="legend"></svg>
 </div>
@@ -296,7 +295,7 @@ console.log("in update graph")
 			console.log(sect);
 			sect= sect.replace(/ /g, '_');
 			console.log(sect);
-			var url = "http://localhost/line/line4.html?id1="+d.key+"&id2="+sect;
+			var url = "http://104.43.197.79/kyd_dashboard/feature10?id1="+d.key+"&id2="+sect;
               $(location).attr('href', url);
               window.location = url;
 			 
@@ -374,7 +373,9 @@ console.log("in update graph")
 	  
 
     mousePerLine.append("text")
-      .attr("transform", "translate(10,3)");
+      .attr("transform", "translate(10,3)")
+	      .attr("font-size", "20px");
+
 
     mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
       .attr('width', width) // can't catch mouse events on a g element
