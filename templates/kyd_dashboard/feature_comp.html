@@ -1,56 +1,82 @@
-{% extends 'kyd_dashboard/kyd_base.html' %}
+{% extends 'dashboard/dash_base.html' %}
 {% load static %}
 {% block feature_css %}
   <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
   <style>
-    
+    .full-height {
+  height: 100%;
+}
+
+.header {
+    height: 50px;
+}
   </style>
 {% endblock %}
 {% block feature %}
+<div class="container-fluid full-height">
+
 <div class='heading text-dark mt-2 text-center'>Outcome Indicators</div>
-<div class="row text-center" style="height: 100px;">
-  <div class="col-12 bg-primary h-75 w-100" >
-    <!-- select month -->
-    <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Select Month
-		<span class="selectedMonth"></span>
-      </button>
-      <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#">August</a>
-        <a class="dropdown-item" href="#">September</a>
-        <a class="dropdown-item" href="#">October</a>
-      </div>
-    </div>
-    <!-- select category -->
+
+    <div class="row header bg-primary">
+        <div class="col bg-secondary">
+            <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Select Month
+                  <span class="selectedMonth"></span>
+                </button>
+                <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="#">August</a>
+                  <a class="dropdown-item" href="#">September</a>
+                  <a class="dropdown-item" href="#">October</a>
+                </div>
+              </div>
+
+              
     <div class="dropdown" style="float: left; margin:20px"> 
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Select Category
-        <span class="selectedCategory"></span>
-      </button>
-      <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#">Stunting(%)</a>
-        <a class="dropdown-item" href="#">Wasting(%)</a>
-        <a class="dropdown-item" href="#">Underweight(%)</a>
-        <a class="dropdown-item" href="#">Low Birth Weight(%)</a>
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Select Category
+          <span class="selectedCategory"></span>
+        </button>
+        <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+          <a class="dropdown-item" href="#">Stunting(%)</a>
+          <a class="dropdown-item" href="#">Wasting(%)</a>
+          <a class="dropdown-item" href="#">Underweight(%)</a>
+          <a class="dropdown-item" href="#">Low Birth Weight(%)</a>
+        </div>
+  
       </div>
 
+        <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat1' %}`">Previous Feature</button>
+        <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat3' %}`">Next Feature</button>
+    
+        </div>
+        <div class="col bg-info">
+            <div class="dropdown" style="float: left; margin:20px"> 
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                  Select Category
+                  <span class="selectedCategory"></span>
+                </button>
+                <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+                  <a class="dropdown-item" href="#">Stunting(%)</a>
+                  <a class="dropdown-item" href="#">Wasting(%)</a>
+                  <a class="dropdown-item" href="#">Underweight(%)</a>
+                  <a class="dropdown-item" href="#">Low Birth Weight(%)</a>
+                </div>
+          
+              </div>
+        </div>
+
     </div>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat1' %}`">Previous Feature</button>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat3' %}`">Next Feature</button>
-
     
-  </div>
-
-    
-
-  <div class="col-12 m-5">
-    <svg width="1100" height="350"></svg>
-  </div>
+  <div class="row h-100 bg-secondary">
+    <div class="col">
+      <div class='row h-100 bg-info'>
+      	<div id = 'b1' class='col bg-warning bar1'></div>
+        <div id = 'b2'class='col bg-danger bar2'></div>
+      </div>
+    </div>
 
 </div>
-
-
 
 {% endblock %}
 
@@ -58,230 +84,261 @@
 {% block feature_js %}
 
 <script>
-  const svg = d3.select('svg');
-  const width = +svg.attr('width');
-  const height = +svg.attr('height');
-  const yScale = [];
-  const xScale = [];
+    const width = document.getElementById("b1").offsetWidth/1.2;
+    const height = document.getElementById("b1").offsetHeight/2;
+    const yScale = [];
+    const xScale = [];
+    const tansitionDuration = 500;
+    let bar1 = d3.select('.bar1').append("svg").attr('width',width).attr('height',height);
+    let bar2 = d3.select('.bar2').append("svg").attr('width',width).attr('height',height);
+    let yValue  = d => d.stunting_percent;
+    let xValue = d => d.block_n;
 
- 
-  const render = data =>{
-      let yValue  = d => d.stunting;
-      const xValue = d => d.block;
-      const margin = {left:50,top:10 ,right:400,bottom:30};
-      const innerWidth = width - margin.left - margin.right;
-      const innerHeight = height - margin.top - margin.bottom;
-  
-      const yScale = d3.scaleLinear()
-          .domain([100,0])
-          .range([0,innerHeight]);
-      
-      const xScale = d3.scaleBand()
-          .range([0,innerWidth])
-          .padding(0.1);
-      
-      xScale.domain(data.map(xValue))
-  
-      
-      const g = svg.append('g')
-          .attr('transform', `translate(${margin.left}, ${margin.top})`);
-  
-      var myColor = d3.scaleSequential().domain([d3.min(data,yValue),d3.max(data,yValue)])
-      .interpolator(d3.interpolateRdYlGn);
+    const render = data =>{
+        console.log(data);
+        console.log(yValue);
 
-    
-          var bars =   g.selectAll("rect").data(data)
-          .enter().append('rect')
-              .attr('x', d => xScale(d.block))
-              .attr('y', d => yScale(yValue(d)))
-              .attr('height',d => innerHeight - yScale(yValue(d)))
-              .attr('width', 60)
-              .attr("fill", d => myColor(yValue(d)))
+        
+        const margin = {left:50,top:60 ,right:0,bottom:30};
+        const innerWidth = width - margin.left - margin.right;
+        const innerHeight = height - margin.top - margin.bottom;
 
-          
-          // update new values
-          var mytext = g.selectAll("text").data(data)
-              .enter().append("text")
-              .text(d => yValue(d))
-              .attr('x', d => xScale(d.block)+12)
-              .attr('y', d => yScale(yValue(d))-5)
-              .attr("font-family", "sans-serif")
-              .attr("font-size", "14px")
-      		    .attr("font-weight", "bold")
-              .attr("fill", "blue");
-  
-      var yaxis = g.append('g')
-          .call(d3.axisLeft(yScale))
-          .attr("font-size", "15px")
-		    .attr("font-weight", "bold");
-      
-      var xaxis = g.append('g').call(d3.axisBottom(xScale))
-          .attr('transform',`translate(0, ${innerHeight})`)
-          .attr("font-size", "8x")
-		    .attr("font-weight", "bold");
-    
-          makeviz = opt =>{
-            let tansitionDuration = 1000;
-            if(opt == 'Wasting(%)'){
-              yValue  = d => d.wasting;
-              data = sortData(data,'wasting');
-            //   console.log('height');
-            }else if (opt == 'Stunting(%)' ){
-              yValue  = d => d.stunting; 
-              data = sortData(data,'stunting');
-            //   console.log('weight');
-            }else if (opt == 'Underweight(%)' ){
-              yValue  = d => d.underweight; 
-              data = sortData(data,'underweight');
-            //   console.log('weight');
-            }else{
-              data = sortData(data,'lbw');
-              yValue  = d => d.lbw;
-            }
-        const xScale0 = xScale.domain(data.map(xValue)).copy();
-  
         const yScale = d3.scaleLinear()
-          .domain([100,0])
-          .range([0,innerHeight]);
+            .domain([100,0])
+            .range([0,innerHeight]);
 
-          var changColor = d3.scaleSequential().domain([d3.max(data,yValue),d3.min(data,yValue)])
-            .interpolator(d3.interpolateRdYlGn);
+        const xScale = d3.scaleBand()
+            .range([0,innerWidth])
+            .padding(0.1);
+
+        xScale.domain(data.map(xValue))
+        
+
+
+        const g1 = bar1.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
+        const g2 = bar2.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+        var getColor = d3.scaleSequential().domain([d3.min(data,yValue),d3.max(data,yValue)])
+        .interpolator(d3.interpolateRdYlGn);
+
+        let xaxisLeft = g1.append('g').call(d3.axisBottom(xScale))
+            .attr('transform',`translate(0, ${innerHeight})`)
+            .attr("font-size", "8x")
+            .attr("font-weight", "bold");
+    //    xaxisLeft.exit().remove();
+
+
+        xaxisLeft.transition().duration(tansitionDuration)
+            .call(d3.axisBottom(xScale));
+
+        xaxisLeft.exit().remove();
+
+        let chart = bar1.selectAll("rect").data(data)
+        chart.exit().remove();
+
+        chart.enter().append('rect')
+            .attr('x', d => xScale(d.block_n)+ margin.left + 25)
+            .attr('y', d => yScale(yValue(d)) + margin.top)
+            .attr('height',d => innerHeight - yScale(yValue(d)))
+            .attr('width', d=> innerWidth/15)
+            .attr("fill", d => getColor(yValue(d)))
+
+        
+        chart.transition().duration(tansitionDuration)
+            .attr('x', d => xScale(d.block_n)+ margin.left + 25)
+            .attr('y', d => yScale(yValue(d)) + margin.top)
+            .attr('height',d => innerHeight - yScale(yValue(d)))
+            .attr("fill", d => getColor(yValue(d)))
+
+
+
+
+
+        bar2.selectAll("rect").data(data)
+        .enter().append('rect')
+        .attr('x', d => xScale(d.block_n)+ margin.left + 25)
+        .attr('y', d => yScale(yValue(d)) + margin.top)
+        .attr('height',d => innerHeight - yScale(yValue(d)))
+        .attr('width', d=> innerWidth/15)
+        .attr("fill", d => getColor(yValue(d)))
+
+            
+            // update new values
+        //   var mytext = g.selectAll("text").data(data)
+        //       .enter().append("text")
+        //       .text(d => yValue(d))
+        //       .attr('x', d => xScale(d.block)+12)
+        //       .attr('y', d => yScale(yValue(d))-5)
+        //       .attr("font-family", "sans-serif")
+        //       .attr("font-size", "14px")
+        // 	    .attr("font-weight", "bold")
+        //       .attr("fill", "blue");
+  
+
+        let yaxisLeft = g1.append('g')
+            .call(d3.axisLeft(yScale))
+            .attr("font-size", "15px")
+            .attr("font-weight", "bold");
+            
+      
+
+
+
+        let yaxisRight = g2.append('g')
+            .call(d3.axisLeft(yScale))
+            .attr("font-size", "15px")
+            .attr("font-weight", "bold");
+
+        let xaxisRight = g2.append('g').call(d3.axisBottom(xScale))
+            .attr('transform',`translate(0, ${innerHeight})`)
+            .attr("font-size", "8x")
+            .attr("font-weight", "bold");
+    
+        //   makeviz = opt =>{
+        //     let tansitionDuration = 1000;
+        //     if(opt === 'Wasting(%)'){
+        //       yValue  = d => d.wasting;
+        //       data = sortData(data,'wasting');
+        //     //   console.log('height');
+        //     }else if (opt === 'Stunting(%)' ){
+        //       yValue  = d => d.stunting; 
+        //       data = sortData(data,'stunting');
+        //     //   console.log('weight');
+        //     }else if (opt === 'Underweight(%)' ){
+        //       yValue  = d => d.underweight; 
+        //       data = sortData(data,'underweight');
+        //     //   console.log('weight');
+        //     }else{
+        //       data = sortData(data,'lbw');
+        //       yValue  = d => d.lbw;
+        //     }
+  
+        // const yScale = d3.scaleLinear()
+        //   .domain([100,0])
+        //   .range([0,innerHeight]);
+
+        //   var changColor = d3.scaleSequential().domain([d3.max(data,yValue),d3.min(data,yValue)])
+        //     .interpolator(d3.interpolateRdYlGn);
               
-          bars.transition().duration(tansitionDuration)
-              .attr('y', d => yScale(yValue(d)))
-              .attr('x', d => xScale0(d.block))
-              .attr('height',d => innerHeight - yScale(yValue(d)))
-              .attr("fill", d => changColor(yValue(d)))
+        //   bars.transition().duration(tansitionDuration)
+        //       .attr('y', d => yScale(yValue(d)))
+        //       .attr('x', d => xScale0(d.block))
+        //       .attr('height',d => innerHeight - yScale(yValue(d)))
+        //       .attr("fill", d => changColor(yValue(d)))
   
   
-          // Remove old ones
-          bars.exit().remove();
+        //   // Remove old ones
+        //   bars.exit().remove();
             
             
-            //text update
-            mytext.transition().duration(tansitionDuration)
-            .text(d => yValue(d))
-              .attr('y', d => yScale(yValue(d))-5)
-              .attr('x', d => xScale0(d.block)+12)
+        //     //text update
+        //     mytext.transition().duration(tansitionDuration)
+        //     .text(d => yValue(d))
+        //       .attr('y', d => yScale(yValue(d))-5)
+        //       .attr('x', d => xScale0(d.block)+12)
   
-            mytext.exit().remove();
+        //     mytext.exit().remove();
             
-            // y axis update
+        //     // y axis update
             
-            yaxis.transition().duration(tansitionDuration)
-          .call(d3.axisLeft(yScale));
+        //     yaxis.transition().duration(tansitionDuration)
+        //   .call(d3.axisLeft(yScale));
             
-            // x axis update
-            xaxis.transition().duration(tansitionDuration)
-          .call(d3.axisBottom(xScale));
+        //     // x axis update
+        //     xaxis.transition().duration(tansitionDuration)
+        //   .call(d3.axisBottom(xScale));
   
             
-          }   
-  
-  const dropdownChange = () =>{
-    var sel = document.getElementById('opt');
-    val = document.getElementById("opt").value
-  }
-  makeviz("Stunting(%)");
-  
-  $(".category a").click(function(){
-  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
-  $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-	var valCategory = $(this).text();	
-	
-  makeviz(valCategory);
-});
+        //   }   
   
 
-  $(".drop-month a").click(function(){
-      var val = $(this).text();
-	  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
-	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-          
-  })
+  
+
+  
+
+
   }
 
   const monthwise = (data) => {
-  data.forEach(d => {
-    d.wasting = +d.wasting;
-                d.stunting = +d.stunting;
-                d.underweight = +d.underweight;
-                d.lbw = +d.lbw;
-      });
-      var aproperty = [];
-      var sproperty = [];
-      var oproperty = [];
-      
+    let listdata = {"Aug":[],"Sep":[],"Oct":[]}
     data.forEach(d =>{
       var temp = {};
-      temp['block'] = d.block;
-      temp['wasting'] = d.wasting;
-      temp['stunting'] = d.stunting;
-      temp['underweight'] = d.underweight;
-      temp['lbw'] = d.lbw;
-      if(d.month == "Aug"){
-        aproperty.push(temp);
-      }else if (d.month == "Sep"){
-        sproperty.push(temp);
-      }else if (d.month == "Oct"){
-        oproperty.push(temp);
-      }
-      
+        temp['block_n'] = d.block_n;
+        temp['stunting_percent'] = +d.stunting_percent;
+        temp['wasting_percent'] = +d.wasting_percent;
+        temp['underweight_percent'] = +d.underweight_percent;
+        temp['low_birth_weight_percent'] = +d.low_birth_weight_percent;
+        temp['prnt_child_1yr_cmpltd_immunzt'] = +d.prnt_child_1yr_cmpltd_immunzt;
+        temp['prnt_chld_bf_at_birth'] = +d.prnt_chld_bf_at_birth;
+        temp['prnt_chld_excly_bf'] = +d.prnt_chld_excly_bf;
+        temp['prnt_chld_intd_cf_past30d'] = +d.prnt_chld_intd_cf_past30d;
+        temp['prnt_chld_6to24mnths_intd_cf'] = +d.prnt_chld_6to24mnths_intd_cf;
+        temp['prnt_anwmic_wmn'] = +d.prnt_anwmic_wmn;
+        temp['prnt_tenatus_cmpltd'] = +d.prnt_tenatus_cmpltd;
+        temp['prnt_wmn_1_anc_vst_dlvry'] = +d.prnt_wmn_1_anc_vst_dlvry;
+        temp['prnt_wmn_4_anc_vst_dlvry'] = +d.prnt_wmn_4_anc_vst_dlvry;
+        temp['prnt_wmn_rstg_drg_prgncy'] = +d.prnt_wmn_rstg_drg_prgncy;
+        temp['prnt_wmn_etg_xtr_ml_drng_prgncy'] = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+        temp['prnt_trmstr_3wmn_cnsld_imdtbf'] = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
+        listdata[d.month_n].push(temp);
     })
-  
-  var listdata = [
-    aproperty,sproperty,oproperty
-  ]
   return listdata;
   }
   
   const selectData =  (val,monthwiseData) =>{
-  if(val == "August"){
-        monthwiseData[0] = sortData(monthwiseData[0],'stunting');
-        return monthwiseData[0];
-    }else if (val == "September"){
-        monthwiseData[1] = sortData(monthwiseData[1],'stunting');
-        return monthwiseData[1];
-    }else if (val == 'October'){
-        monthwiseData[2] = sortData(monthwiseData[2],'stunting');
-        return monthwiseData[2]       
+  if(val === "August"){
+        monthwiseData.Aug = sortData(monthwiseData.Aug,'stunting_percent');
+        return monthwiseData.Aug;
+    }else if (val === "September"){
+        monthwiseData.Sep = sortData(monthwiseData.Sep,'stunting_percent');
+        return monthwiseData.Sep;
+    }else if (val === 'October'){
+        monthwiseData.Oct = sortData(monthwiseData.Oct,'stunting_percent');
+        return monthwiseData.Oct       
       }
   }
   const sortData = (data,parameter) =>{
-  sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
-  return sortedData;
+    let sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
+    return sortedData;
   }
   
-  
-  
-  
-  //
-  data_from_django = {{ oi_data|safe }};
-  var data = []
-  data_from_django.forEach(element => {
-    data.push(element.fields);
-  });
-  monthwiseData = monthwise(data);
-  
-  d3.select("#monthdropdown")
-  .on("change", () =>{
-        val = document.getElementById("monthdropdown").value
-        mydata = selectData(val,monthwiseData);
-        svg.selectAll("*").remove();
-        render(mydata);
+  d3.csv("{% static 'data/csv/feat2data.csv'%}").then(data=>{
+    let monthwiseData = monthwise(data);
+    augData = monthwiseData.Aug;
+    augSortedData = sortData(augData,'stunting_percent');
+    render(augSortedData);
+    let valMonth = "August";
+
+    $(".month a").click(function(){
+        $(this).parents(".dropdown").find('.btn').html($(this).text());
+
+        valMonth = $(this).text();
+        monthData = selectData(valMonth,monthwiseData);
+        render(monthData);
+      
     });
+
+    $(".category a").click(function(){
+        console.log(valMonth);
+        $(this).parents(".dropdown").find('.btn').html($(this).text());
+        let valCategory = $(this).text();
+        switch(valCategory){
+            case "Stunting(%)": yValue = d=> d.stunting_percent; break;
+            case "Wasting(%)": yValue = d=> d.wasting_percent; break;
+            case "Underweight(%)": yValue = d=> d.underweight_percent; break;
+            case "Low Birth Weight(%)": yValue = d=> d.low_birth_weight_percent; break;
+        }
+        render();
+
+});
+
+
+  })
+  
+
   
     
-    $(".month a").click(function(){
-	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-     var valMonth = $(this).text();
-      mydata = selectData(valMonth,monthwiseData);
-      // tableData = tbData(valMonth, monthwiseData);
-      svg.selectAll("*").remove();
-      render(mydata);
-      
-});
+
 $(function(){
   //bind event
   $(".month a").click(function(){
@@ -304,8 +361,6 @@ $(function(){
 
  
 
-  augData = monthwiseData[0];
-  sortedData = sortData(augData,'Stunting');
-  render(sortedData); 
+
   </script>
 {% endblock %}
