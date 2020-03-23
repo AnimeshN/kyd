@@ -137,6 +137,7 @@ font-weight: bold;
         .attr("class", "tooltip")				
         .style("opacity", 1);
       
+	var selectCategory="Stunting(%)";
       
             var bars =   g.selectAll("rect").data(data)
             .enter().append('rect')
@@ -273,15 +274,42 @@ font-weight: bold;
       var sel = document.getElementById('opt');
       val = document.getElementById("opt").value
     }
-    makeviz("Stunting(%)");
+     makeviz(selectCategory);
+
     $(".category a").click(function(){
+  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
+ $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
     var val = $(this).text();
+  selectCategory=val;
+
     makeviz(val);
   
   });
     
   
     }
+
+$(function(){
+ console.log("in on load");
+  //bind event
+  $(".month a").click(function(){
+    var valMonth = $(this).text();
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+  });
+   $(".category a").click(function(){
+   console.log("in category on load");
+    var valCategory = $(this).text();
+var displayVal = valCategory.substring(0, valCategory.length-1);
+ 
+
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+  });
+
+  //trigger event
+  $('.month a').first().trigger('click');
+  $(".category a").first().trigger('click');
+ 
+});
   
   
     
@@ -374,6 +402,8 @@ font-weight: bold;
       });
     
       $(".month a").click(function(){
+$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
         var val = $(this).text();
         mydata = selectData(val,monthwiseData);
         svg.selectAll("*").remove();
