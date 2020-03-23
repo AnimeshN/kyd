@@ -26,9 +26,7 @@ class FeatureTwo(LoginRequiredMixin, TemplateView):
     redirect_field_name = 'login'
 
     def get(self,request):
-        oi_data = F2.objects.all()
-        oi_jdata = serializers.serialize('json', oi_data)
-        return render(request, 'kyd_dashboard/feature2.html', {"oi_data":oi_jdata})
+        return render(request, 'kyd_dashboard/feature2.html')
 
 class FeatureThree(LoginRequiredMixin, TemplateView):
     login_url = '/login/'

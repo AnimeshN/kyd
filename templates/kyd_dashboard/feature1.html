@@ -1,963 +1,482 @@
 {% extends 'kyd_dashboard/kyd_base.html' %}
-
 {% load static %}
-
 {% block feature_css %}
-
   <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
-
   <style>
-
     #table{
-
         width: 90%;
-
         height: 75%;
-
         font-size: large;
-
     }
-
     th{
-
         border:2px solid black;
-
         font-weight: bolder;
-
         text-align: center;
-
     }   
-
     td{
-
       border:2px solid black;
-
       text-align: center;
-
     }
-
   </style>
-
 {% endblock %}
-
 {% block feature %}
 
-
-
 <div class='heading text-dark mt-2 text-center' id="barTitle"> Measurement Efficiency</div>
-
 <div class="row text-center" style="height: 100px;">
-
   <div class="col-12 bg-info h-75 w-100" >
-
     <!-- select month -->
-
     <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
-
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
         Select Month
-
 		<span class="selectedMonth"></span>
-
       </button>
-
       <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-
         <a class="dropdown-item" href="#">August</a>
-
         <a class="dropdown-item" href="#">September</a>
-
         <a class="dropdown-item" href="#">October</a>
-
       </div>
-
     </div>
-
     <!-- select category -->
-
     <div class="dropdown" style="float: left; margin:20px; font-weight:bold"> 
-
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
         Select Category
-
 		<span class="selectedCategory"></span>
-
       </button>
-
       <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
-
         <a class="dropdown-item" href="#">Height%</a>
-
         <a class="dropdown-item" href="#">Weight%</a>
-
         <a class="dropdown-item" href="#">Height+Weight %</a>
-
       </div>
-
     </div>
-
-
 
     <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat2' %}`">Next Feature</button>
 
-
-
    
-
     
-
   </div>
-
   
-
   <div class="col-12 m-5">
-
     <svg width="1100" height="350"></svg>
-
   </div>
-
   <div id="table" class="row h-50 bg-light justify-content-center ">
-
                         
-
   </div>
-
 </div>
 
 
-
-
-
 {% endblock %}
-
-
-
 
 
 {% block feature_js %}
 
-
-
 <script>
-
   const svg = d3.select('svg');
-
   const width = +svg.attr('width');
-
   const height = +svg.attr('height');
-
   const yScale = [];
-
   const xScale = [];
-
   let month_hack = 'aug';   
-
   
-
   const render = data =>{
-
       let yValue  = d => d.heightp;
-
       const xValue = d => d.block;
-
       const margin = {left:50,top:10 ,right:400,bottom:30};
-
       const innerWidth = width - margin.left - margin.right;
-
       const innerHeight = height - margin.top - margin.bottom;
-
   
-
       const yScale = d3.scaleLinear()
-
           .domain([100,0])
-
           .range([0,innerHeight]);
-
       
-
       const xScale = d3.scaleBand()
-
           .range([0,innerWidth])
-
           .padding(0.1);
-
       
-
       xScale.domain(data.map(xValue))
-
   
-
       
-
       const g = svg.append('g')
-
           .attr('transform', `translate(${margin.left}, ${margin.top})`);
-
   
-
       var myColor = d3.scaleSequential().domain([d3.min(data,yValue),d3.max(data,yValue)])
-
       .interpolator(d3.interpolateRdYlGn);
-
         //tooltip
-
   // Define the div for the tooltip
-
   //const onMouseOver = d =>{	
-
      //         div.transition().duration(200).style("opacity", 1);		
-
       //        div.html(yValue(d))
-
      //             .style("left", d3.event.pageX + "px")
-
       //            .style("top",  d3.event.pageY - 30 + "px")
-
 		//		  .style("font-size", "50px");	
-
           //    }
-
  // var div = d3.select("body").append("div")	
-
   //    .attr("class", "tooltip")				
-
   //    .style("opacity", 0);
-
     
-
           var bars =   g.selectAll("rect").data(data)
-
           .enter().append('rect')
-
               .attr('x', d => xScale(d.block)+1)
-
               .attr('y', d => yScale(yValue(d)))
-
               .attr('height',d => innerHeight - yScale(yValue(d)))
-
               .attr('width', 60)
-
               .attr("font-size", "14px")
-
               .attr("fill", d => myColor(yValue(d)))
-
               //.on("mouseover", d => onMouseOver(d))					
-
              // .on("mouseout", function(d) {		
-
            //   div.transition()		
-
            //       .duration(500)		
-
          //         .style("opacity", 0);
-
          // });
-
           
-
           //update new values
-
         var mytext = g.selectAll("text").data(data)
-
              .enter().append("text")
-
             .text(d => yValue(d))
-
               .attr('x', d => xScale(d.block)+15)
-
               .attr('y', d => yScale(yValue(d))-5)
-
              .attr("font-family", "sans-serif")
-
              .attr("font-size", "12px")
-
              .attr("fill", "blue")
-
 			
-
 			
-
 			 
-
   
-
       var yaxis = g.append('g')
-
           .call(d3.axisLeft(yScale))
-
 		  .attr("font-size", "15px")
-
 		  .attr("font-weight", "bold");
-
       
-
       var xaxis = g.append('g').call(d3.axisBottom(xScale))
-
           .attr('transform',`translate(0, ${innerHeight})`)
-
 		   .attr("font-size", "8x")
-
 		   .attr("font-weight", "bold");
-
     
-
           makeviz = opt =>{
-
             let tansitionDuration = 1000;
-
             if(opt == 'Height%'){
-
               yValue  = d => d.heightp;
-
               data = sortData(data,'heightp');
-
               // console.log('height');
-
             }else if (opt == 'Weight%' ){
-
               yValue  = d => d.weightp; 
-
               data = sortData(data,'weightp');
-
               console.log('weight');
-
             }else{
-
               data = sortData(data,'heightweightp');
-
               yValue  = d => d.heightweightp;
-
             }
-
         const xScale0 = xScale.domain(data.map(xValue)).copy();
-
   
-
         const yScale = d3.scaleLinear()
-
           .domain([100,0])
-
           .range([0,innerHeight]);
-
               
-
           bars.transition().duration(tansitionDuration)
-
               .attr('y', d => yScale(yValue(d)))
-
               .attr('x', d => xScale0(d.block))
-
               .attr('height',d => innerHeight - yScale(yValue(d)))
-
               .attr("fill", d => myColor(yValue(d)))
-
 			  
-
 			
-
   
-
   
-
           // Remove old ones
-
           bars.exit().remove();
-
             
-
             
-
             //text update
-
             mytext.transition().duration(tansitionDuration)
-
             .text(d => yValue(d))
-
               .attr('y', d => yScale(yValue(d))-5)
-
               .attr('x', d => xScale0(d.block)+15)
-
 			  .attr("font-family", "sans-serif")
-
              .attr("font-size", "12px")
-
             
-
 			  .attr("font-weight", "bold")
-
 			 
-
            mytext.exit().remove();
-
             
-
             // y axis update
-
             
-
             yaxis.transition().duration(tansitionDuration)
-
           .call(d3.axisLeft(yScale));
-
             
-
             // x axis update
-
             xaxis.transition().duration(tansitionDuration)
-
           .call(d3.axisBottom(xScale));
-
   
-
             
-
           }   
-
   
-
   const dropdownChange = () =>{
-
     var sel = document.getElementById('opt');
-
     val = document.getElementById("opt").value
-
 	console.log(sel);
-
   }
-
   makeviz("Height%");
-
   $(".category a").click(function(){
-
   $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
-
  $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-
 	var valCategory = $(this).text();	
-
 	var displayVal = valCategory.substring(0, valCategory.length-1);
-
 	console.log(displayVal);
-
 	if(displayVal== "Height+Weight ")
-
 	displayVal = displayVal.replace("Height+Weight", "Height and Weight");
-
 	document.getElementById('barTitle').innerHTML=displayVal+" Measurement Efficiency";
-
   makeviz(valCategory);
 
 
-
-
-
 });
-
-
-
-
 
 
 
    
-
   $(".drop-month a").click(function(){
-
       var val = $(this).text();
-
 	  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
-
 	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-
   })
-
   }
-
-
 
  
-
   
-
   const monthwise = (data) => {
-
   data.forEach(d => {
-
           d.no_enrolled = +d.no_enrolled;
-
           d.tot_elgb_wghd = +d.tot_elgb_wghd;
-
           d.tot_elgb_hght = +d.tot_elgb_hght;
-
           d.no_wt = +d.no_wt;
-
           d.no_ht = +d.no_ht;
-
           d.no_wt_ht = +d.no_wt_ht;
-
           d.heightp = +d.heightp;
-
           d.weightp = +d.weightp;
-
           d.heightweightp = +d.heightweightp;
-
       });
-
       var aproperty = [];
-
       var sproperty = [];
-
       var oproperty = [];
-
     data.forEach(d =>{
-
       var temp = {};
-
       temp['block'] = d.block;
-
       temp['no_enrolled'] = d.no_enrolled;
-
       temp['tot_elgb_wghd'] = d.tot_elgb_wghd;
-
       temp['tot_elgb_hght'] = d.tot_elgb_hght;
-
       temp['no_wt'] = d.no_wt;
-
       temp['no_ht'] = d.no_ht;
-
       temp['no_wt_ht'] = d.no_wt_ht;
-
       temp['heightp'] = d.heightp;
-
       temp['weightp'] = d.weightp;
-
       temp['heightweightp'] = d.heightweightp;
-
       if(d.month == "Aug"){
-
         aproperty.push(temp);
-
       }else if (d.month == "Sep"){
-
         sproperty.push(temp);
-
       }else if (d.month == "Oct"){
-
         oproperty.push(temp);
-
       }
-
       
-
     })
-
   
-
   var listdata = [
-
     aproperty,sproperty,oproperty
-
   ]
-
   return listdata;
-
   }
-
   
-
   const selectData =  (val,monthwiseData) =>{
-
   if(val == "August"){
-
         monthwiseData[0] = sortData(monthwiseData[0],'heightp');
-
         return monthwiseData[0];
-
     }else if (val == "September"){
-
         monthwiseData[1] = sortData(monthwiseData[1],'heightp');
-
         return monthwiseData[1];
-
     }else if (val == 'October'){
-
         monthwiseData[2] = sortData(monthwiseData[2],'heightp');
-
         return monthwiseData[2]       
-
       }
-
   }
-
   const sortData = (data,parameter) =>{
-
   sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
-
   return sortedData;
-
   }
-
   
-
   
-
   
-
   
-
   /////
-
   data_from_django = {{ data|safe }};
-
   var data = []
-
   data_from_django.forEach(element => {
-
     data.push(element.fields);
-
   });
-
   monthwiseData = monthwise(data);
-
   
-
   d3.select("#monthdropdown")
-
   .on("change", () =>{
-
         let val = document.getElementById("monthdropdown").value
-
         console.log(val);
-
         let mydata = selectData(val,monthwiseData);
-
         let tableData = tbData(val, monthwiseData);
-
         svg.selectAll("*").remove();
-
         render(mydata,tableData);
-
 updateMonth();
 
-
-
     });
-
   
-
     $(".month a").click(function(){
-
 	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-
 	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-
       var val = $(this).text();
-
       mydata = selectData(val,monthwiseData);
-
       tableData = tbData(val, monthwiseData);
-
       svg.selectAll("*").remove();
-
       render(mydata,tableData);
-
       
-
 });
-
-
 
 $(function(){
-
   //bind event
-
   $(".month a").click(function(){
-
     var selText = $(this).text();
-
     console.log(selText);
-
     $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedMonth"></span>');
-
   });
-
    $(".category a").click(function(){
-
     var selText = $(this).text();
-
     console.log(selText);
-
     $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedCategory"></span>');
-
   });
-
-
 
   //trigger event
-
   $('.month a').first().trigger('click');
-
   $(".category a").first().trigger('click');
-
 });
 
 
 
-
-
-
-
   
-
   augData = monthwiseData[0];
-
   sortedData = sortData(augData,'HeightP');
-
   render(sortedData); 
-
   tables(monthwiseData[0]); 
 
 
 
 
 
-
-
-
-
-
-
   const tbData =  (val,monthwiseData) =>{
-
         if(val == "August"){
-
           return [tables(monthwiseData[0])];
-
         }else if (val == "September"){
-
             return [tables(monthwiseData[1])];
-
         }else if (val == 'October'){
-
             return [tables(monthwiseData[2])];      
-
             }
-
             
-
         }
 
-
-
         function tables(data){
-
             $( ".hello" ).remove();
-
             var tbdata = [];
-
             data.forEach(d=>{
-
                 var tbd = {}
-
               
 
-
-
                 tbd["Block"] = d.block;
-
                 tbd["Number of Children 0-6 years old enrolled for services"] = d.no_enrolled;
-
                 tbd["Total No. of Children Eligible to be Weighed"] = d.tot_elgb_wghd;
-
                 tbd["Total No. of Children Eligible for measuring Height"] = d.tot_elgb_hght;
-
                 tbd["Total No. of Children Weighed"] = d.no_wt;
-
                 tbd["Total No. of Children whose Height has been measured"] = d.no_ht;
-
                 tbd["Total No. of Children whose Height and Weight has been measured"] = d.no_wt_ht;
 
-
-
                 tbdata.push(tbd);
-
             });
-
             
-
-
 
           //   column_data = {"block_n":[],"no_enrolled":[],"tot_elgb_wghd":[],"tot_elgb_hght":[],"no_wt":[],"no_ht":[],"no_wt_ht":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
-
             
-
           //   data.forEach(d=>{
-
           //   column_data.block_n.push(d.block);
-
           //   column_data.no_enrolled.push(+d.no_enrolled);
-
           //   column_data.tot_elgb_wghd.push(+d.tot_elgb_wghd);
-
           //   column_data.tot_elgb_hght.push(+d.tot_elgb_hght);
-
           //   column_data.no_wt.push(+d.no_wt);
-
           //   column_data.no_ht.push(+d.no_ht);
-
           //   column_data.no_wt_ht.push(+d.no_wt_ht);
-
             
-
           // })
 
 
-
-
-
         // var enroll_Color = d3.scaleSequential().domain([d3.min(column_data.no_enrolled),d3.max(column_data.no_enrolled)])
-
         // .interpolator(d3.interpolateRdYlGn);
-
-
 
         // var elgb_wt_Color = d3.scaleSequential().domain([d3.min(column_data.tot_elgb_wghd),d3.max(column_data.tot_elgb_wghd)])
-
         // .interpolator(d3.interpolateRdYlGn);
-
-
 
         // var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.tot_elgb_hght),d3.max(column_data.tot_elgb_hght)])
-
         // .interpolator(d3.interpolateRdYlGn);
-
-
 
         // var wt_Color = d3.scaleSequential().domain([d3.min(column_data.no_wt),d3.max(column_data.no_wt)])
-
         // .interpolator(d3.interpolateRdYlGn);
-
-
 
         // var ht_Color = d3.scaleSequential().domain([d3.min(column_data.no_ht),d3.max(column_data.no_ht)])
-
         // .interpolator(d3.interpolateRdYlGn);
-
-
 
         // var wt_ht_Color = d3.scaleSequential().domain([d3.min(column_data.no_wt_ht),d3.max(column_data.no_wt_ht)])
-
         // .interpolator(d3.interpolateRdYlGn);
 
-
-
           var table = d3.select('div#table').append('table').attr('class','hello');
-
            
-
 		  var titles = d3.keys(tbdata[0]);
-
 		  var headers = table.append('thead').append('tr')
-
 		                   .selectAll('th')
-
 		                   .data(titles).enter()
-
 		                   .append('th')
-
 		                   .text(function (d) {
-
 			                    return d;
-
 		                    });
-
 		             
-
 		 
-
 		  var rows = table.append('tbody').selectAll('tr')
-
 		               .data(tbdata).enter()
-
                        .append('tr');
-
                        
-
           rows.selectAll('td')
-
                
-
 		    .data(function (d) {
-
 		    	return titles.map(function (k) {
-
 		    		return { 'value': d[k], 'name': k};
-
 		    	});
-
 		    }).enter()
-
             .append('td')
-
             // .style("background-color", function(d) {
-
                 
-
             //   if(d.name == 'Number of Children 0-6 years old enrolled for services'){
-
             //                         return enroll_Color(d.value);
-
             //             }
-
             //             else if(d.name == 'Total No. of Children Eligible to be Weighed'){
-
             //                 return elgb_wt_Color(d.value);
-
             //             }
-
             //             else if(d.name == 'Total No. of Children Eligible for measuring Height'){
-
             //                 return elgb_ht_Color(d.value);
-
             //             }
-
             //             else if(d.name == 'Total No. of Children Weighed'){
-
             //                 return ht_Color(d.value);
-
             //             } 
-
             //             else if(d.name == 'Total No. of Children whose Height has been measured'){
-
             //                 return ht_Color(d.value);
-
             //             } 
-
             //             else if(d.name == 'Total No. of Children whose Height and Weight has been measured'){
-
             //                 return wt_ht_Color(d.value);
-
             //             } 
-
             //         })
-
 		    .text(function (d) {
-
 		    	return d.value;
-
             });
-
         }
-
-
-
-
 
 
 
   </script>
-
 {% endblock %}
