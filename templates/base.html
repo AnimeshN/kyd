@@ -22,6 +22,8 @@
 
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 
+	        <link rel="stylesheet" type="text/css" href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'><link>
+
 
        
 
@@ -35,12 +37,27 @@
 
             }
 
+            
+
             p{
 
-                font: 20px sans-serif;
+
+
+                font: 26px sans-serif;
+
+
 
             }
 
+            li{
+
+
+
+                font: 18px sans-serif;
+
+
+
+            }
             img{
 
                 width: 30px;
@@ -73,13 +90,17 @@
 
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
-            <a class="navbar-brand" href="/"><img src="{% static 'dashboard/img/iitb_logo.jpg'%}" class=""></img></a>
+        	<a class="navbar-brand" href="/"><img src="{% static 'dashboard/img/iitb_logo.jpg'%}" class=""></img></a>
 
-            <a class="navbar-brand" href="#"><img src="{% static 'dashboard/img/wcd_logo.jpg'%}" class=""></img></a>
+         	<a class="navbar-brand" href="#"><img src="{% static 'dashboard/img/wcd_logo.jpg'%}" class=""></img></a>
 
-            <a class="navbar-brand" href="#"><img src="{% static 'dashboard/img/unicef_logo.png'%}" class=""></img></a>
+       		<a class="navbar-brand" href="#"><img src="{% static 'dashboard/img/unicef_logo.png'%}" class=""></img></a>
+	
+		<a class="navbar-brand" href="{% url 'home' %}" style="font-size: large;"><i class="fa fa-home" aria-hidden="true">
 
-            <a class="navbar-brand" href="{% url 'home' %}">Palghar CAS Data Analysis and Visualization</img></a>
+                CAS Data Analysis and Visualization (Palghar and Maharashtra)</img></a></i>
+
+
 
             <ul class="navbar-nav ml-auto">
 
