@@ -73,11 +73,11 @@
   </div>
 <div class="row" style="float: left; margin:20px">
 
-    <form action="#">
+    <form name="indicatorRadio" action="#">
  
         <label>
    
-          <input name="states" type="radio" value="set1" />
+          <input name="states" type="radio" id="radio1" value="set1" />
    
           <span>Outcome Indicators</span>
    
@@ -86,7 +86,7 @@
    
         <label>
    
-          <input name="states" type="radio" value="set2" />
+          <input name="states" type="radio" id="radio2" value="set2" />
    
           <span>Child related(IYCF) Indicators</span>
    
@@ -95,7 +95,7 @@
    
         <label>
    
-          <input name="states" type="radio" value="set3" />
+          <input name="states" type="radio" id="radio3" value="set3" />
    
           <span>Pregnant Women related Performance Indicators</span>
    
@@ -114,529 +114,1897 @@
 
 
 {% block feature_js %}
-
 <script>
+  var selectMonth="August"; 
+  function  block()
+  {
   
-function  block()
-{
-	const render = data =>{
-
-      
-       
-              
-            // return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[0]);
-      
-       }
-    //    var myColor = d3.scaleSequential().domain([d3.min(data,yValue),d3.max(data,yValue)])
-            // .interpolator(d3.interpolateRdYlGn);
-       const monthwise = (data) => {
-        // console.log(data)
-           
-           data.forEach(d => {
-               d.district_n = d.district_n;
-               d.mdrtly_stntd = +d.mdrtly_stntd;
-               d.svrly_stntd = +d.svrly_stntd;
-               d.svr_wstg = +d.svr_wstg;
-               d.mdrtly_wstd = +d.mdrtly_wstd;
-               d.svrly_uw = +d.svrly_uw;
-               d.mdrtly_uw = +d.mdrtly_uw;
-               d.nb_lbw = +d.nb_lbw;
-               d.wasting_percent = d.wasting_percent;
-           });
-        //    console.log(data);
-            var aproperty = [];
-            var sproperty = [];
-            var oproperty = [];
-            data.forEach(d=>{
-                var temp = {}
-                temp['block_n'] = d.block_n;
-                temp['nb_lbw'] = d.nb_lbw;
-                temp['wasting_percent'] = d.wasting_percent;
-                temp['stunting_percent'] = d.stunting_percent;
-                temp['underweight_percent'] = d.underweight_percent;
-                temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
-                temp['stntd_chld'] = d.stntd_chld;
-                temp['wstd_chld'] = d.wstd_chld;
-                temp['uw_chld'] = d.uw_chld;
-                temp['mdrtly_stntd']= d.mdrtly_stntd;
-                temp['svrly_stntd']=d.svrly_stntd;
-                temp['svr_wstg']=d.svr_wstg;
-                temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
-                temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
-                temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-                temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
-                temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
-                temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
-                temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
-                temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
-                temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
-                temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
-                temp['prnt_child_6to8mnths_intd_cf']= d.prnt_child_6to8mnths_intd_cf;
-                temp['prnt_child_6to24mnths_intd_cf'] = d.prnt_child_6to24mnths_intd_cf;
-                temp['prnt_child_1yr_cmpltd_immunzt'] =d.prnt_child_1yr_cmpltd_immunzt;
-                if(d.month_n == "Aug"){
-                    aproperty.push(temp);
-            }else if (d.month_n == "Sep"){
-                sproperty.push(temp);
-            }else if (d.month_n == "Oct"){
-                oproperty.push(temp);
-            }
-            // console.log( data)
-        })
-
-        var listdata = [aproperty,sproperty,oproperty]
-        // console.log(listdata)
-
-        return listdata;
-        }
-       
+    const render = data =>{
+  
         
-       
-     
-        
-        
-       
-  
-        data_from_django = {{ data|safe }};
-  var data = []
-  data_from_django.forEach(element => {
-    data.push(element.fields);
-  });
-  monthwiseData = monthwise(data);
-  
-  // d3.select("#monthdropdown")
-  // .on("change", () =>{
-  //       let val = document.getElementById("monthdropdown").value
-  //       console.log(val);
-  //       let tableData = tbData(val, monthwiseData);
-  //       render(tableData);
-
-  //   });
-  
-    $(".month a").click(function(){
-	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-      var val = $(this).text();
-      tableData = tbData(val, monthwiseData);
-
-      render(tableData);
+         }
       
-});
-
-$(function(){
-  //bind event
-  $(".month a").click(function(){
-    var selText = $(this).text();
-    // console.log(selText);
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedMonth"></span>');
-  });
-   $(".category a").click(function(){
-    var selText = $(this).text();
-    // console.log(selText);
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedCategory"></span>');
-  });
-
-  //trigger event
-  $('.month a').first().trigger('click');
-  $(".category a").first().trigger('click');
-});
-
-
-
-  
-  augData = monthwiseData[0];
-  // sortedData = sortData(augData,'HeightP');
-  // render(sortedData); 
-  tables(monthwiseData[0]); 
-  
-
-        const tbData =  (val,monthwiseData) =>{
-
-        if(val == "aug"){
-            return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[0]);
-        }else if (val == "sep"){
-            return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[1]);
-        }else if (val == 'oct'){
-            return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[2]);      
-            }
-            
-        }
-                    
-        const buttons = d3.selectAll('input');
-        buttons.on('change', function(d) {
-           const selection = this.value;
-// $( "div#table" ).remove();
-           tables(selection, monthwiseData[0]);
-            });    
-function tables(selection, data){
-// console.log(data);
-
-   
-
- if(selection == "set1")
- {
-    //  data = monthwiseData[0];
-   
-var tbdata = [];
-            
-            data.forEach(d=>{
-                // console.log(data)
-                var tbd = {}
-                tbd['Block'] = d.block_n;
-                tbd['Stunted Children'] = d.stntd_chld;
-                tbd['Stunting Percent(%)'] = d.stunting_percent;
-                tbd['Wasted Children'] = d.wstd_chld;
-                tbd['Wasting Percent(%)'] = d.wasting_percent;
-                tbd['Underweight Children'] = d.uw_chld;
-                tbd['Underweight Percent(%)'] = d.underweight_percent;
-                tbd['No. of Newborn with Low Birth Weight'] = d.nb_lbw;
-                tbd['Low Birth Weight Percent(%)'] = d.low_birth_weight_percent;
-               
-               
-                tbdata.push(tbd);
-                // console.log(tbdata)
-            });
-
-            column_data = {"block_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
-            
-            
-            data.forEach(d=>{
-            column_data.block_n.push(d.Block);
-            column_data.stntd_chld.push(+d.stntd_chld);
-            column_data.stunting_percent.push(+d.stunting_percent);
-            column_data.wstd_chld.push(+d.wstd_chld);
-            column_data.wasting_percent.push(+d.wasting_percent);
-            column_data.uw_chld.push(+d.uw_chld);
-            column_data.underweight_percent.push(+d.underweight_percent);
-            column_data.nb_lbw.push(+d.nb_lbw);
-            column_data.lbw_per.push(+d.low_birth_weight_percent);
-            
+         const monthwise = (data) => {
+             
+             data.forEach(d => {
+                 d.district_n = d.district_n;
+                 d.mdrtly_stntd = +d.mdrtly_stntd;
+                 d.svrly_stntd = +d.svrly_stntd;
+                 d.svr_wstg = +d.svr_wstg;
+                 d.mdrtly_wstd = +d.mdrtly_wstd;
+                 d.svrly_uw = +d.svrly_uw;
+                 d.mdrtly_uw = +d.mdrtly_uw;
+                 d.nb_lbw = +d.nb_lbw;
+                 d.wasting_percent = d.wasting_percent;
+             });
+              var aproperty = [];
+              var sproperty = [];
+              var oproperty = [];
+              data.forEach(d=>{
+                  var temp = {}
+                  temp['block_n'] = d.block_n;
+                  temp['nb_lbw'] = d.nb_lbw;
+                  temp['wasting_percent'] = d.wasting_percent;
+                  temp['stunting_percent'] = d.stunting_percent;
+                  temp['underweight_percent'] = d.underweight_percent;
+                  temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
+                  temp['stntd_chld'] = d.stntd_chld;
+                  temp['wstd_chld'] = d.wstd_chld;
+                  temp['uw_chld'] = d.uw_chld;
+                  temp['mdrtly_stntd']= d.mdrtly_stntd;
+                  temp['svrly_stntd']=d.svrly_stntd;
+                  temp['svr_wstg']=d.svr_wstg;
+                  temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
+                  temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
+                  temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                  temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
+                  temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
+                  temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                  temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
+                  temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+                  temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                  temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
+                  temp['prnt_child_6to8mnths_intd_cf']= d.prnt_child_6to8mnths_intd_cf;
+                  temp['prnt_child_6to24mnths_intd_cf'] = d.prnt_child_6to24mnths_intd_cf;
+                  temp['prnt_child_1yr_cmpltd_immunzt'] =d.prnt_child_1yr_cmpltd_immunzt;
+                  if(d.month_n == "Aug"){
+                      aproperty.push(temp);
+              }else if (d.month_n == "Sep"){
+                  sproperty.push(temp);
+              }else if (d.month_n == "Oct"){
+                  oproperty.push(temp);
+              }
           })
-// console.log(d3.min(column_data.stunting_percent))
-
-        var enroll_Color = d3.scaleSequential().domain([d3.max(column_data.stntd_chld),d3.min(column_data.stntd_chld)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var stntg_percent = d3.scaleSequential().domain([d3.max(column_data.stunting_percent),d3.min(column_data.stunting_percent)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var elgb_ht_Color = d3.scaleSequential().domain([d3.max(column_data.wstd_chld),d3.min(column_data.wstd_chld)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var wt_Color = d3.scaleSequential().domain([d3.max(column_data.wasting_percent),d3.min(column_data.wasting_percent)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var ht_Color = d3.scaleSequential().domain([d3.max(column_data.uw_chld),d3.min(column_data.uw_chld)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var wt_ht_Color = d3.scaleSequential().domain([d3.max(column_data.underweight_percent),d3.min(column_data.underweight_percent)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var no_lbw_Color = d3.scaleSequential().domain([d3.max(column_data.nb_lbw),d3.min(column_data.nb_lbw)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var lbw_per_Color = d3.scaleSequential().domain([d3.max(column_data.lbw_per),d3.min(column_data.lbw_per)])
-        .interpolator(d3.interpolateRdYlGn);
-
-
+  
+          var listdata = [aproperty,sproperty,oproperty]
+  
+          return listdata;
+          }
+         
+          
+         
+       
+          
+          
+         
     
-        var table = d3.select('div#table').append('table');
-        // .attr('class','hello');
-          
-        // console.log(tbdata[0]);
-		  var titles = d3.keys(tbdata[0]);
+          d3.csv("{% static 'data/csv/feat5/f5_block.csv'%}").then(data => {
       
-		  var headers = table.append('thead').append('tr')
-		                   .selectAll('th')
-		                   .data(titles).enter()
-		                   .append('th')
-		                   .text(function (d) {
-			                    return d;
-		                    });
-		             
-		 
-		  var rows = table.append('tbody').selectAll('tr')
-		               .data(tbdata).enter()
-                       .append('tr');
-                    //    console.log(tbdata)
-          rows.selectAll('td')
-               
-		    .data(function (d)
-             {
-                //  console.log(d);
-		    	return titles.map(function (k) {
-		    		return { 'value': d[k], 'name': k};
-		    	});
-		    }).enter()
-            .append('td')
-            .style("background-color", function(d) {
-                // console.log(d)
-                if(d.name == 'Stunted Children'){
-                    // console.log(d.value)
-                            return enroll_Color(d.value);
-                }
-                else if(d.name == 'Stunting Percent(%)'){
-                    // console.log(d.value)
-                    return stntg_percent (d.value);
-                }
-                else if(d.name == 'Wasting Percent(%)'){
-                    return wt_Color(d.value);
-                }
-                else if(d.name == 'Wasted Children'){
-                    return elgb_ht_Color(d.value);
-                }
-                else if(d.name == 'Underweight Children'){
-                    return ht_Color(d.value);
-                }
-              
-                else if(d.name == 'Underweight Percent(%)'){
-                    return wt_ht_Color(d.value);
-                } 
-                else if(d.name == 'No. of Newborn with Low Birth Weight'){
-                    return no_lbw_Color(d.value);
-                } 
-                else if(d.name == 'Low Birth Weight Percent(%)'){
-                    return lbw_per_Color(d.value);
-                } 
-            })
-    .text(function (d) {
-        return d.value;
-    });
- }
- else if(selection == 'set2'){
-
-    var tbdata2 = [];
-            
-            data.forEach(d=>{
-                var tabdt = {}
-                tabdt['Block'] = d.block_n;
-                tabdt['Children Breastfeed at Birth(%)'] = d.prnt_chld_bf_at_birth;
-                tabdt['Children(0-6) Exclusively Breastfed(%)'] = d.prnt_chld_excly_bf;
-                tabdt['Children (6-8months) Initiated CF(%)']= d.prnt_child_6to8mnths_intd_cf;
-                tabdt['Children (6-24months) Initiated CF(%)']= d.prnt_child_6to24mnths_intd_cf;
-                tabdt['Children(6-24months) receiving CF with Diet Diversity(%)'] = d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
-                tabdt['Children(6-24months) receiving CF with Diet Quantity(%)'] = d.prnt_chld_cf_wid_adq_dt_qnty;
-                tabdt['Children(6-24months) receiving CF with Appropriate Hand Washing(%)'] = d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
-               tabdt['Children with 1 year completed Immunization(%)']= d.prnt_child_1yr_cmpltd_immunzt;
-
-                tbdata2.push(tabdt);
-            });
-            // console.log(tbdata1)
-            column_data = {"block_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
-            
-            
-            data.forEach(d=>{
-            column_data.block_n.push(d.Block);
-            column_data.stntd_chld.push(+d.prnt_chld_bf_at_birth);
-            column_data.stunting_percent.push(+d.prnt_chld_excly_bf);
-            column_data.wstd_chld.push(+d.prnt_child_6to8mnths_intd_cf);
-            column_data.wasting_percent.push(+d.prnt_child_6to24mnths_intd_cf);
-            column_data.uw_chld.push(+d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty);
-            column_data.underweight_percent.push(+d.prnt_chld_cf_wid_adq_dt_qnty);
-            column_data.nb_lbw.push(+d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg);
-            column_data.lbw_per.push(+d.prnt_child_1yr_cmpltd_immunzt);
-            
-          })
-// console.log(d3.min(column_data.stunting_percent))
-
-        var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.wstd_chld),d3.max(column_data.wstd_chld)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var wt_Color = d3.scaleSequential().domain([d3.min(column_data.wasting_percent),d3.max(column_data.wasting_percent)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var wt_ht_Color = d3.scaleSequential().domain([d3.min(column_data.underweight_percent),d3.max(column_data.underweight_percent)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var no_lbw_Color = d3.scaleSequential().domain([d3.min(column_data.nb_lbw),d3.max(column_data.nb_lbw)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var lbw_per_Color = d3.scaleSequential().domain([d3.min(column_data.lbw_per),d3.max(column_data.lbw_per)])
-        .interpolator(d3.interpolateRdYlGn);
-
-
-            var table = d3.select('div#table').append('table').attr('class','hello');
-          
-          // console.log(tbData[0]);
-            var titles = d3.keys(tbdata2[0]);
+    monthwiseData = monthwise(data);
+       
+      $(".month a").click(function(){
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+        var val = $(this).text();
+      selectMonth=val;
+        tableData = tbData(val, monthwiseData);
+  
+        render(tableData);
+      
         
-            var headers = table.append('thead').append('tr')
-                             .selectAll('th')
-                             .data(titles).enter()
-                             .append('th')
-                             .text(function (d) {
-                                  return d;
-                              });
-                       
-           
-            var rows = table.append('tbody').selectAll('tr')
-                         .data(tbdata2).enter()
-                         .append('tr');
-                         
-            rows.selectAll('td')
-                 
-              .data(function (d) {
-                  return titles.map(function (k) {
-                      return { 'value': d[k], 'name': k};
-                  });
-              }).enter()
-              .append('td')
-              .style("background-color", function(d) {
-                // console.log(d)
-                if(d.name == 'Children Breastfeed at Birth(%)'){
-                    // console.log(d.value)
-                            return stntd_chld(d.value);
-                }
-                else if(d.name == 'Children(0-6) Exclusively Breastfed(%)'){
-                    // console.log(d.value)
-                    return stntg_percent (d.value);
-                }
-                else if(d.name == 'Children (6-24months) Initiated CF(%)'){
-                    return wt_Color(d.value);
-                }
-                else if(d.name == 'Children (6-8months) Initiated CF(%)'){
-                    return elgb_ht_Color(d.value);
-                }
-                else if(d.name == 'Children(6-24months) receiving CF with Diet Diversity(%)'){
-                    return ht_Color(d.value);
-                }
+      });
+  
+ 
+  
+  
+    
+    augData = monthwiseData[0];
+  let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
+  render(tbleData);
+    
+  })
+          const tbData =  (val,monthwiseData) =>{
+  
+          if(val == "August"){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[0]);
+          }else if (val == "September"){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[1]);
+          }else if (val == 'October'){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[2]);      
+              }
               
-                else if(d.name == 'Children(6-24months) receiving CF with Diet Quantity(%)'){
-                    return wt_ht_Color(d.value);
-                } 
-                else if(d.name == 'Children(6-24months) receiving CF with Appropriate Hand Washing(%)'){
-                    return no_lbw_Color(d.value);
-                } 
-                else if(d.name == 'Children with 1 year completed Immunization(%)'){
-                    return lbw_per_Color(d.value);
-                } 
-            })
-          .text(function (d) {
-                  return d.value;
-              });
-
- }
- else if(selection == 'set3'){
+          }
+                
+   const buttons = d3.selectAll('input');
+          buttons.on('change', function(d) {
+             const selection = this.value;
+  if(selectMonth == "August"){
+             let tblData =  tables(selection, monthwiseData[0]);
+         render(tblData);
+          }else if (selectMonth == "September"){
+            let tblData =  tables(selection, monthwiseData[1]);
+        render(tblData);
+          }else if (selectMonth == 'October'){
+      let tblData =  tables(selection, monthwiseData[2]);
+      render(tblData);
+              }
+            
+              });			  
+              
+  function tables(selection, data){   
+  
+   if(selection == "set1")
+   {
+   
+   
+  $( "div#table" ).find(".hello" ).remove();
      
-
-
-            var tbdata2 = [];
+  var tbdata = [];
+              
+              data.forEach(d=>{
+                  var tbd = {}
+                  tbd['Block'] = d.block_n;
+                  tbd['Stunted Children'] = d.stntd_chld;
+                  tbd['Stunting Percent(%)'] = d.stunting_percent;
+                  tbd['Wasted Children'] = d.wstd_chld;
+                  tbd['Wasting Percent(%)'] = d.wasting_percent;
+                  tbd['Underweight Children'] = d.uw_chld;
+                  tbd['Underweight Percent(%)'] = d.underweight_percent;
+                  tbd['No. of Newborn with Low Birth Weight'] = d.nb_lbw;
+                  tbd['Low Birth Weight Percent(%)'] = d.low_birth_weight_percent;
+                 
+                 
+                  tbdata.push(tbd);
+              });
+  
+              column_data = {"block_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+              column_data.stntd_chld.push(+d.stntd_chld);
+              column_data.stunting_percent.push(+d.stunting_percent);
+              column_data.wstd_chld.push(+d.wstd_chld);
+              column_data.wasting_percent.push(+d.wasting_percent);
+              column_data.uw_chld.push(+d.uw_chld);
+              column_data.underweight_percent.push(+d.underweight_percent);
+              column_data.nb_lbw.push(+d.nb_lbw);
+              column_data.lbw_per.push(+d.low_birth_weight_percent);
+              
+            })
+  
+          var enroll_Color = d3.scaleSequential().domain([d3.max(column_data.stntd_chld),d3.min(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.max(column_data.stunting_percent),d3.min(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.max(column_data.wstd_chld),d3.min(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.max(column_data.wasting_percent),d3.min(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.max(column_data.uw_chld),d3.min(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_ht_Color = d3.scaleSequential().domain([d3.max(column_data.underweight_percent),d3.min(column_data.underweight_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var no_lbw_Color = d3.scaleSequential().domain([d3.max(column_data.nb_lbw),d3.min(column_data.nb_lbw)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var lbw_per_Color = d3.scaleSequential().domain([d3.max(column_data.lbw_per),d3.min(column_data.lbw_per)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+  
+      
+          var table = d3.select('div#table').append('table')
+          .attr('class','hello');
             
-            data.forEach(d=>{
-                var tbdt = {}
-                tbdt['Block'] = d.block_n;
-                tbdt['Anaemic women(%)'] = d.prnt_anwmic_wmn;
-                tbdt['Pregnant Women had 4 ANC Visit(%)'] = d.prnt_4_anc_vst_dlvry;
-                tbdt['Pregnant Women resting during Pregnancy(%)']=d.prnt_wmn_rstg_drg_prgncy;
-                tbdt['Pregnant Women eating extra meal during Pregnancy(%)'] = d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-               tbdt['Pregnant Women counselled for BF in Trimester(%)']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
-               
-
-                tbdata2.push(tbdt);
-            });
-            // console.log(tbdata1)
-            column_data = {"block_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
-            
-            
-            data.forEach(d=>{
-            column_data.block_n.push(d.Block);
-            column_data.stntd_chld.push(+d.prnt_anwmic_wmn);
-            column_data.stunting_percent.push(+d.prnt_4_anc_vst_dlvry);
-            column_data.wstd_chld.push(+d.prnt_wmn_rstg_drg_prgncy);
-            column_data.wasting_percent.push(+d.prnt_wmn_etg_xtr_ml_drng_prgncy);
-            column_data.uw_chld.push(+d.prnt_trmstr_3wmn_cnsld_imdtbf);
-            // column_data.underweight_percent.push(+d.prnt_chld_cf_wid_adq_dt_qnty);
-            // column_data.nb_lbw.push(+d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg);
-            // column_data.lbw_per.push(+d.prnt_child_1yr_cmpltd_immunzt);
-            
-          })
-// console.log(d3.min(column_data.stunting_percent))
-
-        var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.wstd_chld),d3.max(column_data.wstd_chld)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var wt_Color = d3.scaleSequential().domain([d3.min(column_data.wasting_percent),d3.max(column_data.wasting_percent)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
-        .interpolator(d3.interpolateRdYlGn);
-
-        // var wt_ht_Color = d3.scaleSequential().domain([d3.min(column_data.underweight_percent),d3.max(column_data.underweight_percent)])
-        // .interpolator(d3.interpolateRdYlGn);
-
-        // var no_lbw_Color = d3.scaleSequential().domain([d3.min(column_data.nb_lbw),d3.max(column_data.nb_lbw)])
-        // .interpolator(d3.interpolateRdYlGn);
-
-        // var lbw_per_Color = d3.scaleSequential().domain([d3.min(column_data.lbw_per),d3.max(column_data.lbw_per)])
-        // .interpolator(d3.interpolateRdYlGn);
-
-
-            var table = d3.select('div#table').append('table').attr('class','hello');
-          
-          // console.log(tbData[0]);
-            var titles = d3.keys(tbdata2[0]);
+        var titles = d3.keys(tbdata[0]);
         
-            var headers = table.append('thead').append('tr')
-                             .selectAll('th')
-                             .data(titles).enter()
-                             .append('th')
-                             .text(function (d) {
-                                  return d;
-                              });
-                       
-           
-            var rows = table.append('tbody').selectAll('tr')
-                         .data(tbdata2).enter()
+        var headers = table.append('thead').append('tr')
+                         .selectAll('th')
+                         .data(titles).enter()
+                         .append('th')
+                         .text(function (d) {
+                            return d;
+                          });
+                   
+       
+        var rows = table.append('tbody').selectAll('tr')
+                     .data(tbdata).enter()
                          .append('tr');
-                         
             rows.selectAll('td')
                  
-              .data(function (d) {
-                  return titles.map(function (k) {
-                      return { 'value': d[k], 'name': k};
-                  });
-              }).enter()
+          .data(function (d)
+               {
+            return titles.map(function (k) {
+              return { 'value': d[k], 'name': k};
+            });
+          }).enter()
               .append('td')
               .style("background-color", function(d) {
-                // console.log(d)
-                if(d.name == 'Anaemic women(%)'){
-                    // console.log(d.value)
-                            return stntd_chld(d.value);
-                }
-                else if(d.name == 'Pregnant Women had 4 ANC Visit(%)'){
-                    // console.log(d.value)
-                    return stntg_percent (d.value);
-                }
-                else if(d.name == 'Pregnant Women resting during Pregnancy(%)'){
-                    return wt_Color(d.value);
-                }
-                else if(d.name == 'Pregnant Women eating extra meal during Pregnancy(%)'){
-                    return elgb_ht_Color(d.value);
-                }
-                else if(d.name == 'Pregnant Women counselled for BF in Trimester(%)'){
-                    return ht_Color(d.value);
-                }
+                  if(d.name == 'Stunted Children'){
+                              return enroll_Color(d.value);
+                  }
+                  else if(d.name == 'Stunting Percent(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Wasting Percent(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Wasted Children'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Underweight Children'){
+                      return ht_Color(d.value);
+                  }
+                
+                  else if(d.name == 'Underweight Percent(%)'){
+                      return wt_ht_Color(d.value);
+                  } 
+                  else if(d.name == 'No. of Newborn with Low Birth Weight'){
+                      return no_lbw_Color(d.value);
+                  } 
+                  else if(d.name == 'Low Birth Weight Percent(%)'){
+                      return lbw_per_Color(d.value);
+                  } 
               })
-          .text(function (d) {
-                  return d.value;
+      .text(function (d) {
+          return d.value;
+      });
+   }
+   else if(selection == 'set2'){
+   $( "div#table" ).find(".hello" ).remove();
+  
+      var tbdata2 = [];
+              
+              data.forEach(d=>{
+                  var tabdt = {}
+                  tabdt['Block'] = d.block_n;
+                  tabdt['Children Breastfeed at Birth(%)'] = d.prnt_chld_bf_at_birth;
+                  tabdt['Children(0-6) Exclusively Breastfed(%)'] = d.prnt_chld_excly_bf;
+                  tabdt['Children (6-8months) Initiated CF(%)']= d.prnt_child_6to8mnths_intd_cf;
+                  tabdt['Children (6-24months) Initiated CF(%)']= d.prnt_child_6to24mnths_intd_cf;
+                  tabdt['Children(6-24months) receiving CF with Diet Diversity(%)'] = d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                  tabdt['Children(6-24months) receiving CF with Diet Quantity(%)'] = d.prnt_chld_cf_wid_adq_dt_qnty;
+                  tabdt['Children(6-24months) receiving CF with Appropriate Hand Washing(%)'] = d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+                 tabdt['Children with 1 year completed Immunization(%)']= d.prnt_child_1yr_cmpltd_immunzt;
+  
+                  tbdata2.push(tabdt);
               });
- }
- }
-}
-  </script>
+              column_data = {"block_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+              column_data.stntd_chld.push(+d.prnt_chld_bf_at_birth);
+              column_data.stunting_percent.push(+d.prnt_chld_excly_bf);
+              column_data.wstd_chld.push(+d.prnt_child_6to8mnths_intd_cf);
+              column_data.wasting_percent.push(+d.prnt_child_6to24mnths_intd_cf);
+              column_data.uw_chld.push(+d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty);
+              column_data.underweight_percent.push(+d.prnt_chld_cf_wid_adq_dt_qnty);
+              column_data.nb_lbw.push(+d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg);
+              column_data.lbw_per.push(+d.prnt_child_1yr_cmpltd_immunzt);
+              
+            })
+  
+          var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.wstd_chld),d3.max(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.min(column_data.wasting_percent),d3.max(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_ht_Color = d3.scaleSequential().domain([d3.min(column_data.underweight_percent),d3.max(column_data.underweight_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var no_lbw_Color = d3.scaleSequential().domain([d3.min(column_data.nb_lbw),d3.max(column_data.nb_lbw)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var lbw_per_Color = d3.scaleSequential().domain([d3.min(column_data.lbw_per),d3.max(column_data.lbw_per)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+  
+              var table = d3.select('div#table').append('table').attr('class','hello');
+            
+              var titles = d3.keys(tbdata2[0]);
+          
+              var headers = table.append('thead').append('tr')
+                               .selectAll('th')
+                               .data(titles).enter()
+                               .append('th')
+                               .text(function (d) {
+                                    return d;
+                                });
+                         
+             
+              var rows = table.append('tbody').selectAll('tr')
+                           .data(tbdata2).enter()
+                           .append('tr');
+                           
+              rows.selectAll('td')
+                   
+                .data(function (d) {
+                    return titles.map(function (k) {
+                        return { 'value': d[k], 'name': k};
+                    });
+                }).enter()
+                .append('td')
+                .style("background-color", function(d) {
+                  if(d.name == 'Children Breastfeed at Birth(%)'){
+                              return stntd_chld(d.value);
+                  }
+                  else if(d.name == 'Children(0-6) Exclusively Breastfed(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Children (6-24months) Initiated CF(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Children (6-8months) Initiated CF(%)'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Children(6-24months) receiving CF with Diet Diversity(%)'){
+                      return ht_Color(d.value);
+                  }
+                
+                  else if(d.name == 'Children(6-24months) receiving CF with Diet Quantity(%)'){
+                      return wt_ht_Color(d.value);
+                  } 
+                  else if(d.name == 'Children(6-24months) receiving CF with Appropriate Hand Washing(%)'){
+                      return no_lbw_Color(d.value);
+                  } 
+                  else if(d.name == 'Children with 1 year completed Immunization(%)'){
+                      return lbw_per_Color(d.value);
+                  } 
+              })
+            .text(function (d) {
+                    return d.value;
+                });
+  
+   }
+   else if(selection == 'set3'){
+       
+  $( "div#table" ).find(".hello" ).remove();
+  
+              var tbdata2 = [];
+              
+              data.forEach(d=>{
+                  var tbdt = {}
+                  tbdt['Block'] = d.block_n;
+                  tbdt['Anaemic women(%)'] = d.prnt_anwmic_wmn;
+                  tbdt['Pregnant Women had 4 ANC Visit(%)'] = d.prnt_4_anc_vst_dlvry;
+                  tbdt['Pregnant Women resting during Pregnancy(%)']=d.prnt_wmn_rstg_drg_prgncy;
+                  tbdt['Pregnant Women eating extra meal during Pregnancy(%)'] = d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                 tbdt['Pregnant Women counselled for BF in Trimester(%)']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                 
+  
+                  tbdata2.push(tbdt);
+              });
+              column_data = {"block_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+              column_data.stntd_chld.push(+d.prnt_anwmic_wmn);
+              column_data.stunting_percent.push(+d.prnt_4_anc_vst_dlvry);
+              column_data.wstd_chld.push(+d.prnt_wmn_rstg_drg_prgncy);
+              column_data.wasting_percent.push(+d.prnt_wmn_etg_xtr_ml_drng_prgncy);
+              column_data.uw_chld.push(+d.prnt_trmstr_3wmn_cnsld_imdtbf);
+              
+            })
+  
+          var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.wstd_chld),d3.max(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.min(column_data.wasting_percent),d3.max(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+              var table = d3.select('div#table').append('table').attr('class','hello');
+            
+              var titles = d3.keys(tbdata2[0]);
+          
+              var headers = table.append('thead').append('tr')
+                               .selectAll('th')
+                               .data(titles).enter()
+                               .append('th')
+                               .text(function (d) {
+                                    return d;
+                                });
+                         
+             
+              var rows = table.append('tbody').selectAll('tr')
+                           .data(tbdata2).enter()
+                           .append('tr');
+                           
+              rows.selectAll('td')
+                   
+                .data(function (d) {
+                    return titles.map(function (k) {
+                        return { 'value': d[k], 'name': k};
+                    });
+                }).enter()
+                .append('td')
+                .style("background-color", function(d) {
+                  if(d.name == 'Anaemic women(%)'){
+                              return stntd_chld(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women had 4 ANC Visit(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Pregnant Women resting during Pregnancy(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women eating extra meal during Pregnancy(%)'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women counselled for BF in Trimester(%)'){
+                      return ht_Color(d.value);
+                  }
+                })
+            .text(function (d) {
+                    return d.value;
+                });
+   }
+   }
+  }
+  
+  
+  
+  function project()
+  {
+  const render = data =>{
+      
+    
+         }
+        
+         const monthwise = (data) => {
+             
+             data.forEach(d => {
+                 d.district_n = d.district_n;
+                 d.mdrtly_stntd = +d.mdrtly_stntd;
+                 d.svrly_stntd = +d.svrly_stntd;
+                 d.svr_wstg = +d.svr_wstg;
+                 d.mdrtly_wstd = +d.mdrtly_wstd;
+                 d.svrly_uw = +d.svrly_uw;
+                 d.mdrtly_uw = +d.mdrtly_uw;
+                 d.nb_lbw = +d.nb_lbw;
+                 d.wasting_percent = d.wasting_percent;
+             });
+              var aproperty = [];
+              var sproperty = [];
+              var oproperty = [];
+              data.forEach(d=>{
+                  var temp = {}
+                  temp['block_n'] = d.block_n;
+          temp['project_n'] = d.project_n;
+                  temp['nb_lbw'] = d.nb_lbw;
+                  temp['wasting_percent'] = d.wasting_percent;
+                  temp['stunting_percent'] = d.stunting_percent;
+                  temp['underweight_percent'] = d.underweight_percent;
+                  temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
+                  temp['stntd_chld'] = d.stntd_chld;
+                  temp['wstd_chld'] = d.wstd_chld;
+                  temp['uw_chld'] = d.uw_chld;
+                  temp['mdrtly_stntd']= d.mdrtly_stntd;
+                  temp['svrly_stntd']=d.svrly_stntd;
+                  temp['svr_wstg']=d.svr_wstg;
+                  temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
+                  temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
+                  temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                  temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
+                  temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
+                  temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                  temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
+                  temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+                  temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                  temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
+                  temp['prnt_intd_6to8mnth_cf_child']= d.prnt_intd_6to8mnth_cf_child;
+                  temp['prnt_intd_cf_6to24mnth_child'] = d.prnt_intd_cf_6to24mnth_child;
+                  temp['prnt_child_1yr_immnztn'] =d.prnt_child_1yr_immnztn;
+                  if(d.month_n == "Aug"){
+                      aproperty.push(temp);
+              }else if (d.month_n == "Sep"){
+                  sproperty.push(temp);
+              }else if (d.month_n == "Oct"){
+                  oproperty.push(temp);
+              }
+          })
+  
+          var listdata = [aproperty,sproperty,oproperty]
+  
+          return listdata;
+          }
+         
+          
+         
+       
+          
+          
+         
+    
+          d3.csv("{% static 'data/csv/feat5/f5_project.csv'%}").then(data => {
+             
+              monthwiseData = monthwise(data);
+                   $(".month a").click(function(){
+          $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+          $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+          var val = $(this).text();
+          selectMonth=val;
+          tableData = tbData(val, monthwiseData);
+  
+          render(tableData);
+      
+        
+        });
+  
+          let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
+      render(tbleData);
+               })
+  
+      
+  
+          const tbData =  (val,monthwiseData) =>{
+  
+          if(val == "August"){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[0]);
+          }else if (val == "September"){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[1]);
+          }else if (val == 'October'){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[2]);      
+              }
+              
+          }
+                      
+          const buttons = d3.selectAll('input');
+          buttons.on('change', function(d) {
+             const selection = this.value;
+  if(selectMonth == "August"){
+             let tblData =  tables(selection, monthwiseData[0]);
+         render(tblData);
+          }else if (selectMonth == "September"){
+            let tblData =  tables(selection, monthwiseData[1]);
+        render(tblData);
+          }else if (selectMonth == 'October'){
+      let tblData =  tables(selection, monthwiseData[2]);
+      render(tblData);
+              }
+            
+              });	   
+  function tables(selection, data){
+  
+     
+  
+   if(selection == "set1")
+   {
+    
+     $( "div#table" ).find(".hello" ).remove();
+  var tbdata = [];
+              
+              data.forEach(d=>{
+                  var tbd = {}
+                  tbd['Block'] = d.block_n;
+          tbd['Project'] = d.project_n;
+                  tbd['Stunted Children'] = d.stntd_chld;
+                  tbd['Stunting Percent(%)'] = d.stunting_percent;
+                  tbd['Wasted Children'] = d.wstd_chld;
+                  tbd['Wasting Percent(%)'] = d.wasting_percent;
+                  tbd['Underweight Children'] = d.uw_chld;
+                  tbd['Underweight Percent(%)'] = d.underweight_percent;
+                  tbd['No. of Newborn with Low Birth Weight'] = d.nb_lbw;
+                  tbd['Low Birth Weight Percent(%)'] = d.low_birth_weight_percent;
+                 
+                 
+                  tbdata.push(tbd);
+              });
+  
+              column_data = {"block_n":[],"project_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+        column_data.project_n.push(d.Project);
+              column_data.stntd_chld.push(+d.stntd_chld);
+              column_data.stunting_percent.push(+d.stunting_percent);
+              column_data.wstd_chld.push(+d.wstd_chld);
+              column_data.wasting_percent.push(+d.wasting_percent);
+              column_data.uw_chld.push(+d.uw_chld);
+              column_data.underweight_percent.push(+d.underweight_percent);
+              column_data.nb_lbw.push(+d.nb_lbw);
+              column_data.lbw_per.push(+d.low_birth_weight_percent);
+              
+            })
+  
+          var enroll_Color = d3.scaleSequential().domain([d3.max(column_data.stntd_chld),d3.min(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.max(column_data.stunting_percent),d3.min(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.max(column_data.wstd_chld),d3.min(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.max(column_data.wasting_percent),d3.min(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.max(column_data.uw_chld),d3.min(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_ht_Color = d3.scaleSequential().domain([d3.max(column_data.underweight_percent),d3.min(column_data.underweight_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var no_lbw_Color = d3.scaleSequential().domain([d3.max(column_data.nb_lbw),d3.min(column_data.nb_lbw)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var lbw_per_Color = d3.scaleSequential().domain([d3.max(column_data.lbw_per),d3.min(column_data.lbw_per)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+  
+      
+          var table = d3.select('div#table').append('table').attr('class','hello');
+            
+        var titles = d3.keys(tbdata[0]);
+        
+        var headers = table.append('thead').append('tr')
+                         .selectAll('th')
+                         .data(titles).enter()
+                         .append('th')
+                         .text(function (d) {
+                            return d;
+                          });
+                   
+       
+        var rows = table.append('tbody').selectAll('tr')
+                     .data(tbdata).enter()
+                         .append('tr');
+            rows.selectAll('td')
+                 
+          .data(function (d)
+               {
+            return titles.map(function (k) {
+              return { 'value': d[k], 'name': k};
+            });
+          }).enter()
+              .append('td')
+              .style("background-color", function(d) {
+                  if(d.name == 'Stunted Children'){
+                              return enroll_Color(d.value);
+                  }
+                  else if(d.name == 'Stunting Percent(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Wasting Percent(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Wasted Children'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Underweight Children'){
+                      return ht_Color(d.value);
+                  }
+                
+                  else if(d.name == 'Underweight Percent(%)'){
+                      return wt_ht_Color(d.value);
+                  } 
+                  else if(d.name == 'No. of Newborn with Low Birth Weight'){
+                      return no_lbw_Color(d.value);
+                  } 
+                  else if(d.name == 'Low Birth Weight Percent(%)'){
+                      return lbw_per_Color(d.value);
+                  } 
+              })
+      .text(function (d) {
+          return d.value;
+      });
+   }
+   else if(selection == 'set2'){
+   $( "div#table" ).find(".hello" ).remove();
+      var tbdata2 = [];
+              
+              data.forEach(d=>{
+                  var tabdt = {}
+                  tabdt['Block'] = d.block_n;
+          tabdt['Project'] = d.project_n;
+                  tabdt['Children Breastfeed at Birth(%)'] = d.prnt_chld_bf_at_birth;
+                  tabdt['Children(0-6) Exclusively Breastfed(%)'] = d.prnt_chld_excly_bf;
+                  tabdt['Children (6-8months) Initiated CF(%)']= d.prnt_intd_6to8mnth_cf_child;
+                  tabdt['Children (6-24months) Initiated CF(%)']= d.prnt_intd_cf_6to24mnth_child;
+                  tabdt['Children(6-24months) receiving CF with Diet Diversity(%)'] = d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                  tabdt['Children(6-24months) receiving CF with Diet Quantity(%)'] = d.prnt_chld_cf_wid_adq_dt_qnty;
+                  tabdt['Children(6-24months) receiving CF with Appropriate Hand Washing(%)'] = d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+                 tabdt['Children with 1 year completed Immunization(%)']= d.prnt_child_1yr_immnztn;
+  
+                  tbdata2.push(tabdt);
+              });
+              column_data = {"block_n":[],"project_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+              column_data.project_n.push(d.Project);
+              column_data.stntd_chld.push(+d.prnt_chld_bf_at_birth);
+              column_data.stunting_percent.push(+d.prnt_chld_excly_bf);
+              column_data.wstd_chld.push(+d.prnt_intd_6to8mnth_cf_child);
+              column_data.wasting_percent.push(+d.prnt_intd_cf_6to24mnth_child);
+              column_data.uw_chld.push(+d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty);
+              column_data.underweight_percent.push(+d.prnt_chld_cf_wid_adq_dt_qnty);
+              column_data.nb_lbw.push(+d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg);
+              column_data.lbw_per.push(+d.prnt_child_1yr_immnztn);
+              
+            })
+  
+          var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.wstd_chld),d3.max(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.min(column_data.wasting_percent),d3.max(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_ht_Color = d3.scaleSequential().domain([d3.min(column_data.underweight_percent),d3.max(column_data.underweight_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var no_lbw_Color = d3.scaleSequential().domain([d3.min(column_data.nb_lbw),d3.max(column_data.nb_lbw)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var lbw_per_Color = d3.scaleSequential().domain([d3.min(column_data.lbw_per),d3.max(column_data.lbw_per)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+  
+              var table = d3.select('div#table').append('table').attr('class','hello');
+            
+              var titles = d3.keys(tbdata2[0]);
+          
+              var headers = table.append('thead').append('tr')
+                               .selectAll('th')
+                               .data(titles).enter()
+                               .append('th')
+                               .text(function (d) {
+                                    return d;
+                                });
+                         
+             
+              var rows = table.append('tbody').selectAll('tr')
+                           .data(tbdata2).enter()
+                           .append('tr');
+                           
+              rows.selectAll('td')
+                   
+                .data(function (d) {
+                    return titles.map(function (k) {
+                        return { 'value': d[k], 'name': k};
+                    });
+                }).enter()
+                .append('td')
+                .style("background-color", function(d) {
+                  if(d.name == 'Children Breastfeed at Birth(%)'){
+                              return stntd_chld(d.value);
+                  }
+                  else if(d.name == 'Children(0-6) Exclusively Breastfed(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Children (6-24months) Initiated CF(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Children (6-8months) Initiated CF(%)'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Children(6-24months) receiving CF with Diet Diversity(%)'){
+                      return ht_Color(d.value);
+                  }
+                
+                  else if(d.name == 'Children(6-24months) receiving CF with Diet Quantity(%)'){
+                      return wt_ht_Color(d.value);
+                  } 
+                  else if(d.name == 'Children(6-24months) receiving CF with Appropriate Hand Washing(%)'){
+                      return no_lbw_Color(d.value);
+                  } 
+                  else if(d.name == 'Children with 1 year completed Immunization(%)'){
+                      return lbw_per_Color(d.value);
+                  } 
+              })
+            .text(function (d) {
+                    return d.value;
+                });
+  
+   }
+   else if(selection == 'set3'){
+       
+  
+  $( "div#table" ).find(".hello" ).remove();
+              var tbdata2 = [];
+              
+              data.forEach(d=>{
+                  var tbdt = {}
+                  tbdt['Block'] = d.block_n;
+          tbdt['Project'] = d.project_n;
+                  tbdt['Anaemic women(%)'] = d.prnt_anwmic_wmn;
+                  tbdt['Pregnant Women had 4 ANC Visit(%)'] = d.prnt_4_anc_vst_dlvry;
+                  tbdt['Pregnant Women resting during Pregnancy(%)']=d.prnt_wmn_rstg_drg_prgncy;
+                  tbdt['Pregnant Women eating extra meal during Pregnancy(%)'] = d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                 tbdt['Pregnant Women counselled for BF in Trimester(%)']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                 
+  
+                  tbdata2.push(tbdt);
+              });
+              column_data = {"block_n":[],"project_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+         column_data.project_n.push(d.Project);
+              column_data.stntd_chld.push(+d.prnt_anwmic_wmn);
+              column_data.stunting_percent.push(+d.prnt_4_anc_vst_dlvry);
+              column_data.wstd_chld.push(+d.prnt_wmn_rstg_drg_prgncy);
+              column_data.wasting_percent.push(+d.prnt_wmn_etg_xtr_ml_drng_prgncy);
+              column_data.uw_chld.push(+d.prnt_trmstr_3wmn_cnsld_imdtbf);
+              
+            })
+  
+          var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.wstd_chld),d3.max(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.min(column_data.wasting_percent),d3.max(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+  
+              var table = d3.select('div#table').append('table').attr('class','hello');
+            
+              var titles = d3.keys(tbdata2[0]);
+          
+              var headers = table.append('thead').append('tr')
+                               .selectAll('th')
+                               .data(titles).enter()
+                               .append('th')
+                               .text(function (d) {
+                                    return d;
+                                });
+                         
+             
+              var rows = table.append('tbody').selectAll('tr')
+                           .data(tbdata2).enter()
+                           .append('tr');
+                           
+              rows.selectAll('td')
+                   
+                .data(function (d) {
+                    return titles.map(function (k) {
+                        return { 'value': d[k], 'name': k};
+                    });
+                }).enter()
+                .append('td')
+                .style("background-color", function(d) {
+                  if(d.name == 'Anaemic women(%)'){
+                              return stntd_chld(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women had 4 ANC Visit(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Pregnant Women resting during Pregnancy(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women eating extra meal during Pregnancy(%)'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women counselled for BF in Trimester(%)'){
+                      return ht_Color(d.value);
+                  }
+                })
+            .text(function (d) {
+                    return d.value;
+                });
+   }
+   }
+  }
+  
+  
+  function beat()
+  {
+  const render = data =>{
+  
+     
+        
+         }
+     
+         const monthwise = (data) => {
+             
+             data.forEach(d => {
+                 d.district_n = d.district_n;
+                 d.mdrtly_stntd = +d.mdrtly_stntd;
+                 d.svrly_stntd = +d.svrly_stntd;
+                 d.svr_wstg = +d.svr_wstg;
+                 d.mdrtly_wstd = +d.mdrtly_wstd;
+                 d.svrly_uw = +d.svrly_uw;
+                 d.mdrtly_uw = +d.mdrtly_uw;
+                 d.nb_lbw = +d.nb_lbw;
+                 d.wasting_percent = d.wasting_percent;
+             });
+              var aproperty = [];
+              var sproperty = [];
+              var oproperty = [];
+              data.forEach(d=>{
+                  var temp = {}
+                  temp['block_n'] = d.block_n;
+                  temp['project_n'] = d.project_n;
+                  temp['beat_n'] = d.beat_n;
+                  temp['nb_lbw'] = d.nb_lbw;
+                  temp['wasting_percent'] = d.wasting_percent;
+                  temp['stunting_percent'] = d.stunting_percent;
+                  temp['underweight_percent'] = d.underweight_percent;
+                  temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
+                  temp['stntd_chld'] = d.stntd_chld;
+                  temp['wstd_chld'] = d.wstd_chld;
+                  temp['uw_chld'] = d.uw_chld;
+                  temp['mdrtly_stntd']= d.mdrtly_stntd;
+                  temp['svrly_stntd']=d.svrly_stntd;
+                  temp['svr_wstg']=d.svr_wstg;
+                  temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
+                  temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
+                  temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                  temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
+                  temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
+                  temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                  temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
+                  temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+                  temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                  temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
+                  temp['prnt_intd_6to8mnth_cf_child']= d.prnt_intd_6to8mnth_cf_child;
+                  temp['prnt_intd_cf_6to24mnth_child'] = d.prnt_intd_cf_6to24mnth_child;
+                  temp['prnt_child_1yr_immnztn'] =d.prnt_child_1yr_immnztn;
+                  if(d.month_n == "Aug"){
+                      aproperty.push(temp);
+              }else if (d.month_n == "Sep"){
+                  sproperty.push(temp);
+              }else if (d.month_n == "Oct"){
+                  oproperty.push(temp);
+              }
+          })
+  
+          var listdata = [aproperty,sproperty,oproperty]
+  
+          return listdata;
+          }
+         
+          
+         
+       
+          
+          
+         
+    
+          d3.csv("{% static 'data/csv/feat5/f5_beat.csv'%}").then(data => {
+             
+              monthwiseData = monthwise(data);
+                 $(".month a").click(function(){
+        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+        $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+        var val = $(this).text();
+        selectMonth=val;
+        tableData = tbData(val, monthwiseData);
+  
+        render(tableData);
+      
+        
+        });
+  
+          let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
+      render(tbleData);
+               })
+  
+      
+  
+          const tbData =  (val,monthwiseData) =>{
+  
+          if(val == "August"){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[0]);
+          }else if (val == "September"){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[1]);
+          }else if (val == 'October'){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[2]);      
+              }
+              
+          }
+                      
+          const buttons = d3.selectAll('input');
+          buttons.on('change', function(d) {
+             const selection = this.value;
+  if(selectMonth == "August"){
+             let tblData =  tables(selection, monthwiseData[0]);
+         render(tblData);
+          }else if (selectMonth == "September"){
+            let tblData =  tables(selection, monthwiseData[1]);
+        render(tblData);
+          }else if (selectMonth == 'October'){
+      let tblData =  tables(selection, monthwiseData[2]);
+      render(tblData);
+              }
+            
+              });	    
+  function tables(selection, data){
+  
+   if(selection == "set1")
+   {
+   $( "div#table" ).find(".hello" ).remove();
+     
+  var tbdata = [];
+              
+              data.forEach(d=>{
+                  var tbd = {}
+                  tbd['Block'] = d.block_n;
+                  tbd['Project'] = d.project_n;
+                  tbd['Beat'] = d.beat_n;
+                  tbd['Stunted Children'] = d.stntd_chld;
+                  tbd['Stunting Percent(%)'] = d.stunting_percent;
+                  tbd['Wasted Children'] = d.wstd_chld;
+                  tbd['Wasting Percent(%)'] = d.wasting_percent;
+                  tbd['Underweight Children'] = d.uw_chld;
+                  tbd['Underweight Percent(%)'] = d.underweight_percent;
+                  tbd['No. of Newborn with Low Birth Weight'] = d.nb_lbw;
+                  tbd['Low Birth Weight Percent(%)'] = d.low_birth_weight_percent;
+                 
+                 
+                  tbdata.push(tbd);
+              });
+  
+              column_data = {"block_n":[],"project_n":[],"beat_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+              column_data.project_n.push(d.Project);
+              column_data.beat_n.push(d.beat_n);
+              column_data.stntd_chld.push(+d.stntd_chld);
+              column_data.stunting_percent.push(+d.stunting_percent);
+              column_data.wstd_chld.push(+d.wstd_chld);
+              column_data.wasting_percent.push(+d.wasting_percent);
+              column_data.uw_chld.push(+d.uw_chld);
+              column_data.underweight_percent.push(+d.underweight_percent);
+              column_data.nb_lbw.push(+d.nb_lbw);
+              column_data.lbw_per.push(+d.low_birth_weight_percent);
+              
+            })
+  
+          var enroll_Color = d3.scaleSequential().domain([d3.max(column_data.stntd_chld),d3.min(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.max(column_data.stunting_percent),d3.min(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.max(column_data.wstd_chld),d3.min(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.max(column_data.wasting_percent),d3.min(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.max(column_data.uw_chld),d3.min(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_ht_Color = d3.scaleSequential().domain([d3.max(column_data.underweight_percent),d3.min(column_data.underweight_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var no_lbw_Color = d3.scaleSequential().domain([d3.max(column_data.nb_lbw),d3.min(column_data.nb_lbw)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var lbw_per_Color = d3.scaleSequential().domain([d3.max(column_data.lbw_per),d3.min(column_data.lbw_per)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+  
+      
+          var table = d3.select('div#table').append('table').attr('class','hello');
+            
+        var titles = d3.keys(tbdata[0]);
+        
+        var headers = table.append('thead').append('tr')
+                         .selectAll('th')
+                         .data(titles).enter()
+                         .append('th')
+                         .text(function (d) {
+                            return d;
+                          });
+                   
+       
+        var rows = table.append('tbody').selectAll('tr')
+                     .data(tbdata).enter()
+                         .append('tr');
+            rows.selectAll('td')
+                 
+          .data(function (d)
+               {
+            return titles.map(function (k) {
+              return { 'value': d[k], 'name': k};
+            });
+          }).enter()
+              .append('td')
+              .style("background-color", function(d) {
+                  if(d.name == 'Stunted Children'){
+                              return enroll_Color(d.value);
+                  }
+                  else if(d.name == 'Stunting Percent(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Wasting Percent(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Wasted Children'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Underweight Children'){
+                      return ht_Color(d.value);
+                  }
+                
+                  else if(d.name == 'Underweight Percent(%)'){
+                      return wt_ht_Color(d.value);
+                  } 
+                  else if(d.name == 'No. of Newborn with Low Birth Weight'){
+                      return no_lbw_Color(d.value);
+                  } 
+                  else if(d.name == 'Low Birth Weight Percent(%)'){
+                      return lbw_per_Color(d.value);
+                  } 
+              })
+      .text(function (d) {
+          return d.value;
+      });
+   }
+  
+  
+   else if(selection == 'set2'){
+   $( "div#table" ).find(".hello" ).remove();
+  
+      var tbdata2 = [];
+              
+              data.forEach(d=>{
+                  var tabdt = {}
+                  tabdt['Block'] = d.block_n;
+                  tabdt['Project'] = d.project_n;
+                  tabdt['Beat'] = d.beat_n;
+                  tabdt['Children Breastfeed at Birth(%)'] = d.prnt_chld_bf_at_birth;
+                  tabdt['Children(0-6) Exclusively Breastfed(%)'] = d.prnt_chld_excly_bf;
+                  tabdt['Children (6-8months) Initiated CF(%)']= d.prnt_intd_6to8mnth_cf_child;
+                  tabdt['Children (6-24months) Initiated CF(%)']= d.prnt_intd_cf_6to24mnth_child;
+                  tabdt['Children(6-24months) receiving CF with Diet Diversity(%)'] = d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                  tabdt['Children(6-24months) receiving CF with Diet Quantity(%)'] = d.prnt_chld_cf_wid_adq_dt_qnty;
+                  tabdt['Children(6-24months) receiving CF with Appropriate Hand Washing(%)'] = d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+                 tabdt['Children with 1 year completed Immunization(%)']= d.prnt_child_1yr_immnztn;
+  
+                  tbdata2.push(tabdt);
+              });
+              column_data = {"block_n":[],"project_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+        column_data.project_n.push(d.Project);
+              column_data.stntd_chld.push(+d.prnt_chld_bf_at_birth);
+              column_data.stunting_percent.push(+d.prnt_chld_excly_bf);
+              column_data.wstd_chld.push(+d.prnt_intd_6to8mnth_cf_child);
+              column_data.wasting_percent.push(+d.prnt_intd_cf_6to24mnth_child);
+              column_data.uw_chld.push(+d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty);
+              column_data.underweight_percent.push(+d.prnt_chld_cf_wid_adq_dt_qnty);
+              column_data.nb_lbw.push(+d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg);
+              column_data.lbw_per.push(+d.prnt_child_1yr_immnztn);
+              
+            })
+  
+          var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.wstd_chld),d3.max(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.min(column_data.wasting_percent),d3.max(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_ht_Color = d3.scaleSequential().domain([d3.min(column_data.underweight_percent),d3.max(column_data.underweight_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var no_lbw_Color = d3.scaleSequential().domain([d3.min(column_data.nb_lbw),d3.max(column_data.nb_lbw)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var lbw_per_Color = d3.scaleSequential().domain([d3.min(column_data.lbw_per),d3.max(column_data.lbw_per)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+  
+              var table = d3.select('div#table').append('table').attr('class','hello');
+            
+              var titles = d3.keys(tbdata2[0]);
+          
+              var headers = table.append('thead').append('tr')
+                               .selectAll('th')
+                               .data(titles).enter()
+                               .append('th')
+                               .text(function (d) {
+                                    return d;
+                                });
+                         
+             
+              var rows = table.append('tbody').selectAll('tr')
+                           .data(tbdata2).enter()
+                           .append('tr');
+                           
+              rows.selectAll('td')
+                   
+                .data(function (d) {
+                    return titles.map(function (k) {
+                        return { 'value': d[k], 'name': k};
+                    });
+                }).enter()
+                .append('td')
+                .style("background-color", function(d) {
+                  if(d.name == 'Children Breastfeed at Birth(%)'){
+                              return stntd_chld(d.value);
+                  }
+                  else if(d.name == 'Children(0-6) Exclusively Breastfed(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Children (6-24months) Initiated CF(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Children (6-8months) Initiated CF(%)'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Children(6-24months) receiving CF with Diet Diversity(%)'){
+                      return ht_Color(d.value);
+                  }
+                
+                  else if(d.name == 'Children(6-24months) receiving CF with Diet Quantity(%)'){
+                      return wt_ht_Color(d.value);
+                  } 
+                  else if(d.name == 'Children(6-24months) receiving CF with Appropriate Hand Washing(%)'){
+                      return no_lbw_Color(d.value);
+                  } 
+                  else if(d.name == 'Children with 1 year completed Immunization(%)'){
+                      return lbw_per_Color(d.value);
+                  } 
+              })
+            .text(function (d) {
+                    return d.value;
+                });
+  
+   }
+   else if(selection == 'set3'){
+       
+  $( "div#table" ).find(".hello" ).remove();
+  
+              var tbdata2 = [];
+              
+              data.forEach(d=>{
+                  var tbdt = {}
+                  tbdt['Block'] = d.block_n;
+                  tbdt['Project'] = d.project_n;
+                  tbdt['Beat']=d.beat_n;
+                  tbdt['Anaemic women(%)'] = d.prnt_anwmic_wmn;
+                  tbdt['Pregnant Women had 4 ANC Visit(%)'] = d.prnt_4_anc_vst_dlvry;
+                  tbdt['Pregnant Women resting during Pregnancy(%)']=d.prnt_wmn_rstg_drg_prgncy;
+                  tbdt['Pregnant Women eating extra meal during Pregnancy(%)'] = d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                 tbdt['Pregnant Women counselled for BF in Trimester(%)']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                 
+  
+                  tbdata2.push(tbdt);
+              });
+              column_data = {"block_n":[],"project_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+         column_data.project_n.push(d.Project);
+              column_data.stntd_chld.push(+d.prnt_anwmic_wmn);
+              column_data.stunting_percent.push(+d.prnt_4_anc_vst_dlvry);
+              column_data.wstd_chld.push(+d.prnt_wmn_rstg_drg_prgncy);
+              column_data.wasting_percent.push(+d.prnt_wmn_etg_xtr_ml_drng_prgncy);
+              column_data.uw_chld.push(+d.prnt_trmstr_3wmn_cnsld_imdtbf);
+              
+            })
+  
+          var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.wstd_chld),d3.max(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.min(column_data.wasting_percent),d3.max(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+
+              var table = d3.select('div#table').append('table').attr('class','hello');
+            
+              var titles = d3.keys(tbdata2[0]);
+          
+              var headers = table.append('thead').append('tr')
+                               .selectAll('th')
+                               .data(titles).enter()
+                               .append('th')
+                               .text(function (d) {
+                                    return d;
+                                });
+                         
+             
+              var rows = table.append('tbody').selectAll('tr')
+                           .data(tbdata2).enter()
+                           .append('tr');
+                           
+              rows.selectAll('td')
+                   
+                .data(function (d) {
+                    return titles.map(function (k) {
+                        return { 'value': d[k], 'name': k};
+                    });
+                }).enter()
+                .append('td')
+                .style("background-color", function(d) {
+                  if(d.name == 'Anaemic women(%)'){
+                              return stntd_chld(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women had 4 ANC Visit(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Pregnant Women resting during Pregnancy(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women eating extra meal during Pregnancy(%)'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women counselled for BF in Trimester(%)'){
+                      return ht_Color(d.value);
+                  }
+                })
+            .text(function (d) {
+                    return d.value;
+                });
+   }
+   }
+  }
+  
+  function awc()
+  {
+  const render = data =>{
+  
+     
+         }
+        
+         const monthwise = (data) => {
+             
+             data.forEach(d => {
+                 d.district_n = d.district_n;
+                 d.mdrtly_stntd = +d.mdrtly_stntd;
+                 d.svrly_stntd = +d.svrly_stntd;
+                 d.svr_wstg = +d.svr_wstg;
+                 d.mdrtly_wstd = +d.mdrtly_wstd;
+                 d.svrly_uw = +d.svrly_uw;
+                 d.mdrtly_uw = +d.mdrtly_uw;
+                 d.nb_lbw = +d.nb_lbw;
+                 d.wasting_percent = d.wasting_percent;
+             });
+              var aproperty = [];
+              var sproperty = [];
+              var oproperty = [];
+              data.forEach(d=>{
+                  var temp = {}
+                  temp['block_n'] = d.block_n;
+                  temp['project_n'] = d.project_n;
+                  temp['beat_n'] = d.beat_n;
+                  temp['awc_with_code'] = d.awc_with_code;
+                  temp['nb_lbw'] = d.nb_lbw;
+                  temp['wasting_percent'] = d.wasting_percent;
+                  temp['stunting_percent'] = d.stunting_percent;
+                  temp['underweight_percent'] = d.underweight_percent;
+                  temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
+                  temp['stntd_chld'] = d.stntd_chld;
+                  temp['wstd_chld'] = d.wstd_chld;
+                  temp['uw_chld'] = d.uw_chld;
+                  temp['mdrtly_stntd']= d.mdrtly_stntd;
+                  temp['svrly_stntd']=d.svrly_stntd;
+                  temp['svr_wstg']=d.svr_wstg;
+                  temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
+                  temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
+                  temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                  temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
+                  temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
+                  temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                  temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
+                  temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+                  temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                  temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
+                  temp['prnt_intd_6to8mnth_cf_child']= d.prnt_intd_6to8mnth_cf_child;
+                  temp['prnt_intd_cf_6to24mnth_child'] = d.prnt_intd_cf_6to24mnth_child;
+                  temp['prnt_child_1yr_immnztn'] =d.prnt_child_1yr_immnztn;
+                  if(d.month_n == "Aug"){
+                      aproperty.push(temp);
+              }else if (d.month_n == "Sep"){
+                  sproperty.push(temp);
+              }else if (d.month_n == "Oct"){
+                  oproperty.push(temp);
+              }
+          })
+  
+          var listdata = [aproperty,sproperty,oproperty]
+  
+          return listdata;
+          }
+         
+          
+         
+       
+          
+          
+         
+    
+          d3.csv("{% static 'data/csv/feat5/f5_awc.csv'%}").then(data => {
+             
+              monthwiseData = monthwise(data);
+                  $(".month a").click(function(){
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+        var val = $(this).text();
+      selectMonth=val;
+        tableData = tbData(val, monthwiseData);
+  
+        render(tableData);
+      
+        
+  });
+  
+        let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
+  render(tbleData);
+               })
+  
+      
+  
+          const tbData =  (val,monthwiseData) =>{
+  
+          if(val == "August"){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[0]);
+          }else if (val == "September"){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[1]);
+          }else if (val == 'October'){
+              return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[2]);      
+              }
+              
+          }
+                      
+          const buttons = d3.selectAll('input');
+          buttons.on('change', function(d) {
+             const selection = this.value;
+  if(selectMonth == "August"){
+             let tblData =  tables(selection, monthwiseData[0]);
+         render(tblData);
+          }else if (selectMonth == "September"){
+            let tblData =  tables(selection, monthwiseData[1]);
+        render(tblData);
+          }else if (selectMonth == 'October'){
+      let tblData =  tables(selection, monthwiseData[2]);
+      render(tblData);
+              }
+            
+              });		    
+  function tables(selection, data){
+  
+     
+  
+   if(selection == "set1")
+   {
+   
+   $( "div#table" ).find(".hello" ).remove();
+     
+  var tbdata = [];
+              
+              data.forEach(d=>{
+                  var tbd = {}
+                  tbd['Block'] = d.block_n;
+                  tbd['Project'] = d.project_n;
+                  tbd['Beat'] = d.beat_n;
+                  tbd['Anganwadi']= d.awc_with_code;
+                  tbd['Stunted Children'] = d.stntd_chld;
+                  tbd['Stunting Percent(%)'] = d.stunting_percent;
+                  tbd['Wasted Children'] = d.wstd_chld;
+                  tbd['Wasting Percent(%)'] = d.wasting_percent;
+                  tbd['Underweight Children'] = d.uw_chld;
+                  tbd['Underweight Percent(%)'] = d.underweight_percent;
+                  tbd['No. of Newborn with Low Birth Weight'] = d.nb_lbw;
+                  tbd['Low Birth Weight Percent(%)'] = d.low_birth_weight_percent;
+                 
+                 
+                  tbdata.push(tbd);
+              });
+  
+              column_data = {"block_n":[],"project_n":[],"beat_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+              column_data.project_n.push(d.Project);
+              column_data.beat_n.push(d.beat_n);
+              column_data.stntd_chld.push(+d.stntd_chld);
+              column_data.stunting_percent.push(+d.stunting_percent);
+              column_data.wstd_chld.push(+d.wstd_chld);
+              column_data.wasting_percent.push(+d.wasting_percent);
+              column_data.uw_chld.push(+d.uw_chld);
+              column_data.underweight_percent.push(+d.underweight_percent);
+              column_data.nb_lbw.push(+d.nb_lbw);
+              column_data.lbw_per.push(+d.low_birth_weight_percent);
+              
+            })
+  
+          var enroll_Color = d3.scaleSequential().domain([d3.max(column_data.stntd_chld),d3.min(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.max(column_data.stunting_percent),d3.min(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.max(column_data.wstd_chld),d3.min(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.max(column_data.wasting_percent),d3.min(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.max(column_data.uw_chld),d3.min(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_ht_Color = d3.scaleSequential().domain([d3.max(column_data.underweight_percent),d3.min(column_data.underweight_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var no_lbw_Color = d3.scaleSequential().domain([d3.max(column_data.nb_lbw),d3.min(column_data.nb_lbw)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var lbw_per_Color = d3.scaleSequential().domain([d3.max(column_data.lbw_per),d3.min(column_data.lbw_per)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+  
+      
+          var table = d3.select('div#table').append('table').attr('class','hello');
+            
+        var titles = d3.keys(tbdata[0]);
+        
+        var headers = table.append('thead').append('tr')
+                         .selectAll('th')
+                         .data(titles).enter()
+                         .append('th')
+                         .text(function (d) {
+                            return d;
+                          });
+                   
+       
+        var rows = table.append('tbody').selectAll('tr')
+                     .data(tbdata).enter()
+                         .append('tr');
+            rows.selectAll('td')
+                 
+          .data(function (d)
+               {
+            return titles.map(function (k) {
+              return { 'value': d[k], 'name': k};
+            });
+          }).enter()
+              .append('td')
+              .style("background-color", function(d) {
+                  if(d.name == 'Stunted Children'){
+                              return enroll_Color(d.value);
+                  }
+                  else if(d.name == 'Stunting Percent(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Wasting Percent(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Wasted Children'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Underweight Children'){
+                      return ht_Color(d.value);
+                  }
+                
+                  else if(d.name == 'Underweight Percent(%)'){
+                      return wt_ht_Color(d.value);
+                  } 
+                  else if(d.name == 'No. of Newborn with Low Birth Weight'){
+                      return no_lbw_Color(d.value);
+                  } 
+                  else if(d.name == 'Low Birth Weight Percent(%)'){
+                      return lbw_per_Color(d.value);
+                  } 
+              })
+      .text(function (d) {
+          return d.value;
+      });
+   }
+   else if(selection == 'set2'){
+   $( "div#table" ).find(".hello" ).remove();
+  
+      var tbdata2 = [];
+              
+              data.forEach(d=>{
+                  var tabdt = {}
+                  tabdt['Block'] = d.block_n;
+                  tabdt['Project'] = d.project_n;
+                  tabdt['Beat'] = d.beat_n;
+                  tabdt['Anganwadi']= d.awc_with_code;
+                  tabdt['Children Breastfeed at Birth(%)'] = d.prnt_chld_bf_at_birth;
+                  tabdt['Children(0-6) Exclusively Breastfed(%)'] = d.prnt_chld_excly_bf;
+                  tabdt['Children (6-8months) Initiated CF(%)']= d.prnt_intd_6to8mnth_cf_child;
+                  tabdt['Children (6-24months) Initiated CF(%)']= d.prnt_intd_cf_6to24mnth_child;
+                  tabdt['Children(6-24months) receiving CF with Diet Diversity(%)'] = d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                  tabdt['Children(6-24months) receiving CF with Diet Quantity(%)'] = d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+                  tabdt['Children(6-24months) receiving CF with Appropriate Hand Washing(%)'] = d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+                 tabdt['Children with 1 year completed Immunization(%)']= d.prnt_child_1yr_immnztn;
+  
+                  tbdata2.push(tabdt);
+              });
+              column_data = {"block_n":[],"project_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+        column_data.project_n.push(d.Project);
+              column_data.stntd_chld.push(+d.prnt_chld_bf_at_birth);
+              column_data.stunting_percent.push(+d.prnt_chld_excly_bf);
+              column_data.wstd_chld.push(+d.prnt_intd_6to8mnth_cf_child);
+              column_data.wasting_percent.push(+d.prnt_intd_cf_6to24mnth_child);
+              column_data.uw_chld.push(+d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty);
+              column_data.underweight_percent.push(+d.prnt_chld_cf_wid_adq_dt_qnty);
+              column_data.nb_lbw.push(+d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg);
+              column_data.lbw_per.push(+d.prnt_child_1yr_immnztn);
+              
+            })
+  
+          var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.wstd_chld),d3.max(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.min(column_data.wasting_percent),d3.max(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_ht_Color = d3.scaleSequential().domain([d3.min(column_data.underweight_percent),d3.max(column_data.underweight_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var no_lbw_Color = d3.scaleSequential().domain([d3.min(column_data.nb_lbw),d3.max(column_data.nb_lbw)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var lbw_per_Color = d3.scaleSequential().domain([d3.min(column_data.lbw_per),d3.max(column_data.lbw_per)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+  
+              var table = d3.select('div#table').append('table').attr('class','hello');
+            
+              var titles = d3.keys(tbdata2[0]);
+          
+              var headers = table.append('thead').append('tr')
+                               .selectAll('th')
+                               .data(titles).enter()
+                               .append('th')
+                               .text(function (d) {
+                                    return d;
+                                });
+                         
+             
+              var rows = table.append('tbody').selectAll('tr')
+                           .data(tbdata2).enter()
+                           .append('tr');
+                           
+              rows.selectAll('td')
+                   
+                .data(function (d) {
+                    return titles.map(function (k) {
+                        return { 'value': d[k], 'name': k};
+                    });
+                }).enter()
+                .append('td')
+                .style("background-color", function(d) {
+                  if(d.name == '%Children breastfeed at birth'){
+                              return stntd_chld(d.value);
+                  }
+                  else if(d.name == 'Children(0-6) Exclusively Breastfed(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Children (6-24months) Initiated CF(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Children (6-8months) Initiated CF(%)'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Children(6-24months) receiving CF with Diet Diversity(%)'){
+                      return ht_Color(d.value);
+                  }
+                
+                  else if(d.name == 'Children(6-24months) receiving CF with Diet Quantity(%)'){
+                      return wt_ht_Color(d.value);
+                  } 
+                  else if(d.name == 'Children(6-24months) receiving CF with Appropriate Hand Washing(%)'){
+                      return no_lbw_Color(d.value);
+                  } 
+                  else if(d.name == 'Children with 1 year completed Immunization(%)'){
+                      return lbw_per_Color(d.value);
+                  } 
+              })
+            .text(function (d) {
+                    return d.value;
+                });
+  
+   }
+   else if(selection == 'set3'){
+       
+  $( "div#table" ).find(".hello" ).remove();
+  
+              var tbdata2 = [];
+              
+              data.forEach(d=>{
+                  var tbdt = {}
+                  tbdt['Block'] = d.block_n;
+                  tbdt['Project'] = d.project_n;
+                  tbdt['Beat'] = d.beat_n;
+                  tbdt['Anganwadi']= d.awc_with_code;
+                  tbdt['Anaemic Women(%)'] = d.prnt_anwmic_wmn;
+                  tbdt['Pregnant Women had 4 ANC Visit(%)'] = d.prnt_4_anc_vst_dlvry;
+                  tbdt['Pregnant Women resting during Pregnancy(%)']=d.prnt_wmn_rstg_drg_prgncy;
+                  tbdt['Pregnant Women eating extra meal during Pregnancy(%)'] = d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+                 tbdt['Pregnant Women counselled for BF in Trimester(%)']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
+                 
+  
+                  tbdata2.push(tbdt);
+              });
+              column_data = {"block_n":[],"project_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+              
+              
+              data.forEach(d=>{
+              column_data.block_n.push(d.Block);
+         column_data.project_n.push(d.Project);
+              column_data.stntd_chld.push(+d.prnt_anwmic_wmn);
+              column_data.stunting_percent.push(+d.prnt_4_anc_vst_dlvry);
+              column_data.wstd_chld.push(+d.prnt_wmn_rstg_drg_prgncy);
+              column_data.wasting_percent.push(+d.prnt_wmn_etg_xtr_ml_drng_prgncy);
+              column_data.uw_chld.push(+d.prnt_trmstr_3wmn_cnsld_imdtbf);
+              
+            })
+  
+          var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.wstd_chld),d3.max(column_data.wstd_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var wt_Color = d3.scaleSequential().domain([d3.min(column_data.wasting_percent),d3.max(column_data.wasting_percent)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+          var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
+          .interpolator(d3.interpolateRdYlGn);
+  
+              var table = d3.select('div#table').append('table').attr('class','hello');
+            
+              var titles = d3.keys(tbdata2[0]);
+          
+              var headers = table.append('thead').append('tr')
+                               .selectAll('th')
+                               .data(titles).enter()
+                               .append('th')
+                               .text(function (d) {
+                                    return d;
+                                });
+                         
+             
+              var rows = table.append('tbody').selectAll('tr')
+                           .data(tbdata2).enter()
+                           .append('tr');
+                           
+              rows.selectAll('td')
+                   
+                .data(function (d) {
+                    return titles.map(function (k) {
+                        return { 'value': d[k], 'name': k};
+                    });
+                }).enter()
+                .append('td')
+                .style("background-color", function(d) {
+                  if(d.name == 'Anaemic Women(%)'){
+                              return stntd_chld(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women had 4 ANC Visit(%)'){
+                      return stntg_percent (d.value);
+                  }
+                  else if(d.name == 'Pregnant Women resting during Pregnancy(%)'){
+                      return wt_Color(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women eating extra meal during Pregnancy(%)'){
+                      return elgb_ht_Color(d.value);
+                  }
+                  else if(d.name == 'Pregnant Women counselled for BF in Trimester(%)'){
+                      return ht_Color(d.value);
+                  }
+                })
+            .text(function (d) {
+                    return d.value;
+                });
+   }
+   }
+  }
+  
+  $(function(){
+    //bind event
+    $(".month a").click(function(){
+      var valMonth = $(this).text();
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+    });
+    
+     $("#radio1").prop("checked", true);
+    
+     $(".category a").click(function(){
+      var valCategory = $(this).text();
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+    });
+  
+    //trigger event
+    $('.month a').first().trigger('click');
+    $(".category a").first().trigger('click');
+  
+    
+  });
+  
+  
+    </script>
 {% endblock %}
+

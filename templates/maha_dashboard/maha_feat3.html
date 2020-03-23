@@ -355,7 +355,7 @@ return "translate(" + c[0]*1.45 +"," + c[1]*1.45 + ")rotate(" + getAngle(d) + ")
           var valCategory = $(this).text();
           var displayVal = valCategory.substring(0, valCategory.length-3);
           document.getElementById('paraText').innerHTML= displayVal+" Contribution: ";
-          document.getElementById('bartitleCategory').innerHTML= displayVal+" : District wise Contribution";
+          document.getElementById('bartitleCategory').innerHTML= displayVal+" : District-wise Contribution";
           makeviz(valCategory);
   
           });
@@ -375,7 +375,7 @@ return "translate(" + c[0]*1.45 +"," + c[1]*1.45 + ")rotate(" + getAngle(d) + ")
       var displayVal = valCategory.substring(0, valCategory.length-3);
   
     document.getElementById('paraText').innerHTML= displayVal+" Contribution: ";
-    document.getElementById('bartitleCategory').innerHTML= displayVal+" : Project wise Contribution";
+    document.getElementById('bartitleCategory').innerHTML= displayVal+" : District-wise Contribution";
    
       $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
     });
