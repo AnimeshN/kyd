@@ -319,21 +319,18 @@ line-height: 20px;
                       .attr("fill", function(d) { 
                           return mycolor(arcInitial(d.data)); });
           
-          var getAngle = function(d) {
-            return (180 / Math.PI * (d.startAngle + d.endAngle) / 2 + 90);
-          };  
-                  
+           var getAngle = function(d) {
+          return (180 / Math.PI * (d.startAngle + d.endAngle) / 2 -90);
+};                  
   
               arcEnter.append("text")
               .attr("transform", function(d) {
-                  return "translate(" + label.centroid(d) + ")"
+//                  return "translate(" + label.centroid(d) + ")"
   
-                  var _d = label.centroid(d);
-                  _d[0] *= 1.50;	//multiply by a constant factor
-                  _d[1] *= 1.50;	//multiply by a constant factor
-                  return "translate(" + _d + ")";
+  var c = label.centroid(d);
+return "translate(" + c[0]*1.45 +"," + c[1]*1.45 + ")rotate(" + getAngle(d) + ")";
               })
-              .attr("dy", ".50em")
+              .attr("dy", ".90em")
               .attr("class", "hello")
               .style("text-anchor", "middle")
               .style("fill", "black")
@@ -358,7 +355,7 @@ line-height: 20px;
           var valCategory = $(this).text();
           var displayVal = valCategory.substring(0, valCategory.length-3);
           document.getElementById('paraText').innerHTML= displayVal+" Contribution: ";
-          document.getElementById('bartitleCategory').innerHTML= displayVal+" : Project wise Contribution";
+          document.getElementById('bartitleCategory').innerHTML= displayVal+" : District wise Contribution";
           makeviz(valCategory);
   
           });
