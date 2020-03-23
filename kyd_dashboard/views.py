@@ -61,27 +61,32 @@ class FeatureSix(LoginRequiredMixin, TemplateView):
         return render(request,'kyd_dashboard/feature6.html')
 
 class FeatureSeven(LoginRequiredMixin, TemplateView):
-	login_url = '/login/'
-	redirect_field_name = 'login'
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
     def get(self,request):
         return render(request,'kyd_dashboard/feature7.html')
 
 class FeatureEight(LoginRequiredMixin, TemplateView):
-	login_url = '/login/'
-	redirect_field_name = 'login'
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
     def get(self,request):
-       
-        return render(request,'kyd_dashboard/feature8.html' )
+        return render(request,'kyd_dashboard/feature8.html')
+
 
 
 class FeatureNine(LoginRequiredMixin, TemplateView):
-	login_url = '/login/'
-	redirect_field_name = 'login'
-    def get(self, request):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self,request):
         blockData = F9LcBlk.objects.all()
         jsonBlock = serializers.serialize('json', blockData)
-       
-        return render(request,'kyd_dashboard/feature9.html', {"jsonBlock":jsonBlock}  )
+        return render(request,'kyd_dashboard/feature9.html', {"jsonBlock":jsonBlock})
+
+
+    
 
 class FeatureTen(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
