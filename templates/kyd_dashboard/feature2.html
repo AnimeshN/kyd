@@ -18,8 +18,8 @@
 <div class='heading text-dark mt-2 text-center'>Outcome Indicators</div>
 
     <div class="row header ">
-        <div class="col ">
-            <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
+        <div class="col bg-info">
+            <div class="dropdown" style="float: left; margin:20px;">
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   Select Month
                   <span class="selectedMonth"></span>
@@ -30,41 +30,9 @@
                   <a class="dropdown-item" href="#">October</a>
                 </div>
               </div>
-
-              
-    <div class="dropdown" style="float: left; margin:20px"> 
-        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-          Select Category
-          <span class="selectedCategory"></span>
-        </button>
-        <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">Stunting(%)</a>
-          <a class="dropdown-item" href="#">Wasting(%)</a>
-          <a class="dropdown-item" href="#">Underweight(%)</a>
-          <a class="dropdown-item" href="#">Low Birth Weight(%)</a>
-        </div>
-  
-      </div>
-    
-        </div>
-
-        <div class="col">
-            <div class="dropdown" style="float: left; margin:20px"> 
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                  Select Category
-                  <span class="selectedCategory"></span>
-                </button>
-                <div class="dropdown-menu category2" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="#">Stunting(%)</a>
-                  <a class="dropdown-item" href="#">Wasting(%)</a>
-                  <a class="dropdown-item" href="#">Underweight(%)</a>
-                  <a class="dropdown-item" href="#">Low Birth Weight(%)</a>
-                </div>
-          
-              </div>
-
               <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat1' %}`">Previous Feature</button>
-        <button type="button" class="btn btn-info" style="float: left; margin:20px 20px 0px 10px" onclick="location.href=`{% url 'feat3' %}`">Next Feature</button>
+              <button type="button" class="btn btn-info" style="float: left; margin:20px 20px 0px 10px" onclick="location.href=`{% url 'feat3' %}`">Next Feature</button>
+      
         </div>
 
     </div>
@@ -72,8 +40,63 @@
   <div class="row h-100">
     <div class="col">
       <div class='row h-100'>
-      	<div id = 'b1' class='col  bar1'></div>
-        <div id = 'b2'class='col bar2'></div>
+      	<div id = 'b1' class='col  bar1'>
+
+          <div class="dropdown" style="float: left; margin:20px"> 
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Select Category
+              <span class="selectedCategory"></span>
+            </button>
+            <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">% Stunting</a>
+              <a class="dropdown-item" href="#">% Wasting</a>
+              <a class="dropdown-item" href="#">% Underweight</a>
+              <a class="dropdown-item" href="#">% Low Birth Weight</a>
+              <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
+              <a class="dropdown-item" href="#">% Children breastfed at birth</a>
+              <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
+              <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
+              <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
+              <a class="dropdown-item" href="#">% Anemic pregnant women</a>
+              <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
+              <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
+              <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
+              <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
+              <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
+              <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
+            </div>
+      
+          </div>
+          
+        </div>
+        <div id = 'b2'class='col bar2'>
+          <div class="dropdown" style="float: left; margin:20px"> 
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+              Select Category
+              <span class="selectedCategory"></span>
+            </button>
+            <div class="dropdown-menu category2" aria-labelledby="dropdownMenuButton">
+              <a class="dropdown-item" href="#">% Stunting</a>
+              <a class="dropdown-item" href="#">% Wasting</a>
+              <a class="dropdown-item" href="#">% Underweight</a>
+              <a class="dropdown-item" href="#">% Low Birth Weight</a>
+              <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
+              <a class="dropdown-item" href="#">% Children breastfed at birth</a>
+              <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
+              <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
+              <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
+              <a class="dropdown-item" href="#">% Anemic pregnant women</a>
+              <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
+              <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
+              <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
+              <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
+              <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
+              <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
+              </div>
+      
+          </div>
+
+        </div>
       </div>
     </div>
 
@@ -265,14 +288,22 @@
         $(this).parents(".dropdown").find('.btn').html($(this).text());
         let valCategory = $(this).text();
         switch(valCategory){
-            case "Stunting(%)": yValue = d=> d.stunting_percent;
-                                sortBy = 'stunting_percent'; break;
-            case "Wasting(%)": yValue = d=> d.wasting_percent;
-                                sortBy = 'wasting_percent'; break;
-            case "Underweight(%)": yValue = d=> d.underweight_percent;
-                                sortBy = 'underweight_percent';  break;
-            case "Low Birth Weight(%)": yValue = d=> d.low_birth_weight_percent;
-                                sortBy = 'low_birth_weight_percent'; break;
+            case "% Stunting": yValue = d=> d.stunting_percent; sortBy = 'stunting_percent'; break;
+            case "% Wasting": yValue = d=> d.wasting_percent; sortBy = 'wasting_percent'; break;
+            case "% Underweight": yValue = d=> d.underweight_percent; sortBy = 'underweight_percent';  break;
+            case "% Low Birth Weight": yValue = d=> d.low_birth_weight_percent; sortBy = 'low_birth_weight_percent'; break;
+            case "% Children completed 1 year immunization": yValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortBy = 'prnt_child_1yr_cmpltd_immunzt'; break;
+            case "% Children breastfed at birth": yValue = d => d.prnt_chld_bf_at_birth; sortBy = 'prnt_chld_bf_at_birth'; break;
+            case "% Children exclusively breastfed": yValue = d => d.prnt_chld_excly_bf; sortBy = 'prnt_chld_excly_bf'; break;
+            case "% Children initiated complementary feeding(in the past 30 days)": yValue = d => d.prnt_chld_intd_cf_past30d; sortBy = 'prnt_chld_intd_cf_past30d'; break;
+            case "% Children (6-24 months) initiated appropriate complementary feeding": yValue = d => d.prnt_chld_6to24mnths_intd_cf; sortBy = 'prnt_chld_6to24mnths_intd_cf'; break;
+            case "% Anemic pregnant women": yValue = d => d.prnt_anwmic_wmn ; sortBy = 'prnt_anwmic_wmn'; break;
+            case "% Pregnant women Tenatus Completed": yValue = d => d.prnt_tenatus_cmpltd; sortBy = 'prnt_tenatus_cmpltd'; break;
+            case "% Pregnant women had at least 1 ANC visit by delivery": yValue = d => d.prnt_wmn_1_anc_vst_dlvry ; sortBy = 'prnt_wmn_1_anc_vst_dlvry'; break;
+            case "% Pregnant woment had at least 4 ANC visit by delivery": yValue = d => d.prnt_wmn_4_anc_vst_dlvry ; sortBy = 'prnt_wmn_4_anc_vst_dlvry'; break;
+            case "% Pregnant women resting during pregnancy": yValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+            case "% Pregnant women eating extra meal during pregnancy": yValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+            case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": yValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf ; sortBy = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
         }
         console.log('mon',valMonth);
         monthData = selectData(valMonth,monthwiseData, sortBy);
@@ -284,14 +315,22 @@
         $(this).parents(".dropdown").find('.btn').html($(this).text());
         let valCategory = $(this).text();
         switch(valCategory){
-            case "Stunting(%)": yValue = d=> d.stunting_percent;
-                                sortBy = 'stunting_percent'; break;
-            case "Wasting(%)": yValue = d=> d.wasting_percent;
-                                sortBy = 'wasting_percent'; break;
-            case "Underweight(%)": yValue = d=> d.underweight_percent; 
-                                sortBy = 'underweight_percent';break;
-            case "Low Birth Weight(%)": yValue = d=> d.low_birth_weight_percent;
-                                sortBy = 'low_birth_weight_percent'; break;
+          case "% Stunting": yValue = d=> d.stunting_percent; sortBy = 'stunting_percent'; break;
+            case "% Wasting": yValue = d=> d.wasting_percent; sortBy = 'wasting_percent'; break;
+            case "% Underweight": yValue = d=> d.underweight_percent; sortBy = 'underweight_percent';  break;
+            case "% Low Birth Weight": yValue = d=> d.low_birth_weight_percent; sortBy = 'low_birth_weight_percent'; break;
+            case "% Children completed 1 year immunization": yValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortBy = 'prnt_child_1yr_cmpltd_immunzt'; break;
+            case "% Children breastfed at birth": yValue = d => d.prnt_chld_bf_at_birth; sortBy = 'prnt_chld_bf_at_birth'; break;
+            case "% Children exclusively breastfed": yValue = d => d.prnt_chld_excly_bf; sortBy = 'prnt_chld_excly_bf'; break;
+            case "% Children initiated complementary feeding(in the past 30 days)": yValue = d => d.prnt_chld_intd_cf_past30d; sortBy = 'prnt_chld_intd_cf_past30d'; break;
+            case "% Children (6-24 months) initiated appropriate complementary feeding": yValue = d => d.prnt_chld_6to24mnths_intd_cf; sortBy = 'prnt_chld_6to24mnths_intd_cf'; break;
+            case "% Anemic pregnant women": yValue = d => d.prnt_anwmic_wmn ; sortBy = 'prnt_anwmic_wmn'; break;
+            case "% Pregnant women Tenatus Completed": yValue = d => d.prnt_tenatus_cmpltd; sortBy = 'prnt_tenatus_cmpltd'; break;
+            case "% Pregnant women had at least 1 ANC visit by delivery": yValue = d => d.prnt_wmn_1_anc_vst_dlvry ; sortBy = 'prnt_wmn_1_anc_vst_dlvry'; break;
+            case "% Pregnant woment had at least 4 ANC visit by delivery": yValue = d => d.prnt_wmn_4_anc_vst_dlvry ; sortBy = 'prnt_wmn_4_anc_vst_dlvry'; break;
+            case "% Pregnant women resting during pregnancy": yValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+            case "% Pregnant women eating extra meal during pregnancy": yValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+            case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": yValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf ; sortBy = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
         }
         console.log('mon',valMonth);
         monthData = selectData(valMonth,monthwiseData, sortBy);
