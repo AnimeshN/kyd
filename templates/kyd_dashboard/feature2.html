@@ -10,6 +10,10 @@
 .header {
     height: 50px;
 }
+
+#b2{
+  display: block;
+}
   </style>
 {% endblock %}
 {% block feature %}
@@ -32,7 +36,8 @@
               </div>
               <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat1' %}`">Previous Feature</button>
               <button type="button" class="btn btn-info" style="float: left; margin:20px 20px 0px 10px" onclick="location.href=`{% url 'feat3' %}`">Next Feature</button>
-      
+              <button class='btn toggle' style="float: left; margin:20px">Hide</button>
+
         </div>
 
     </div>
@@ -340,5 +345,18 @@
 
 
   })
+
+
+  $(".toggle").click(function(){
+    $(this).text($(this).text() == 'Hide' ? 'Compare' : 'Hide');
+    let x = document.getElementById("b2");
+    if (x.style.display === "none") {
+      x.style.display = "block";
+      x.text = "Hide";
+    } else {
+      x.style.display = "none";
+      x.text = "Show";
+    }
+  });
   </script>
 {% endblock %}
