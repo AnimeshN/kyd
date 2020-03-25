@@ -51,6 +51,14 @@ class MahaFeatureSix(LoginRequiredMixin, TemplateView):
         return render(request,'maha_dashboard/maha_feat6.html')
 
 
+class MahaFeatureStOw(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self,request):
+        return render(request,'maha_dashboard/maha_feat6so.html')
+
+
 class MahaFeatureSeven(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     redirect_field_name = 'login'
@@ -71,3 +79,19 @@ class MahaFeatureNine(LoginRequiredMixin, TemplateView):
 
     def get(self,request):
         return render(request,'maha_dashboard/maha_feat9.html')
+
+
+class MahaFeatureLCDT(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self,request):
+        return render(request,'maha_dashboard/maha_feat_lcdt.html')
+
+
+class MahaFeatureLCSDT(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self,request):
+        return render(request,'maha_dashboard/maha_feat_lcsdt.html')
