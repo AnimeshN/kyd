@@ -2,6 +2,8 @@
 # Created by https://www.gitignore.io/api/django
 # Edit at https://www.gitignore.io/?templates=django
 kyd_dashboard/static/data/*
+kyd_dashboard/static/Know_your_district_dashboard_manual.pdf
+kyd_dashboard/static/maha_dashboard/data/*
 static/data
 ### Django ###
 *.log
