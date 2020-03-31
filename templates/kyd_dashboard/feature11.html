@@ -243,7 +243,7 @@ g.append("rect")
 			  
 
 // Get the data
-d3.csv("{% static 'data/csv/lc_beat.csv'%}", function(error, csv) {
+d3.csv("{% static 'data/csv/linechart/lc_beat_data.csv'%}", function(error, csv) {
  
  csv.forEach(function(d) {
 		
@@ -594,4 +594,5 @@ function showAll(){
 
   </script>
 {% endblock %}
+
 

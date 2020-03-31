@@ -27,90 +27,105 @@
 		text-align: center; 
         width: 6%;
 	}
+    th.des:after {
+       content: "\21E9";
+     }
+
+     th.aes:after {
+       content: "\21E7";
+     }
    
 </style>
 {% endblock %}
 
 {% block feature %}
-    <div class='heading text-dark mt-2 text-center'>State Overview</div>
-    <div class="row text-center" style="height: 100px;">
-        <div class="col-12 bg-info h-75 w-100" >
-          <!-- select month -->
-          <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Select Month
-              <span class="selectedMonth"></span>
-            </button>
-            <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">November</a>
-              <a class="dropdown-item" href="#">December</a>
-              <a class="dropdown-item" href="#">January</a>
-            </div>
-          </div>
-          <!-- select category -->
-          <div class="dropdown" style="float: left; margin:20px; font-weight:bold"> 
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Select Level
-              <span class="selectedCategory"></span>
-            </button>
-            <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#" onclick="district()">District</a>
-              <a class="dropdown-item" href="#" onclick="block()">Block</a>
-       
-            </div>
-      
-          </div>
-          
-          <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat6'%}`">Previous Feature</button>
-          <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat7'%}`">Next Feature</button>
-        </div>
-      <div class="row" style="float: left; margin:20px">
-      
-          <form name="indicatorRadio" action="#">
-       
-              <label>
-         
-                <input name="states" type="radio" id="radio1" value="set1" />
-         
-                <span>Outcome Indicators</span>
-         
-              </label>
-         
-         
-              <label>
-         
-                <input name="states" type="radio" id="radio2" value="set2" />
-         
-                <span>Child related(IYCF) Indicators</span>
-         
-              </label>
-         
-         
-              <label>
-         
-                <input name="states" type="radio" id="radio3" value="set3" />
-         
-                <span>Pregnant Women related Performance Indicators</span>
-         
-              </label>
-         
-          </form>
-      
-          
-        </div>
-        <div id="table" class="row h-195 bg-light justify-content-center">
+<div class='heading text-dark mt-2 text-center'>State Overview</div>
+<div class="row text-center" style="height: 100px;">
+  <div class="col-12 bg-info h-75 w-100" >
+    <!-- select month -->
+    <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select Month
+		<span class="selectedMonth"></span>
+      </button>
+      <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">November</a>
+        <a class="dropdown-item" href="#">December</a>
+        <a class="dropdown-item" href="#">January</a>
       </div>
+    </div>
+    <!-- select category -->
+    <div class="dropdown" style="float: left; margin:20px; font-weight:bold"> 
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Select Level
+		<span class="selectedCategory"></span>
+      </button>
+      <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#" onclick="district()">District</a>
+        <a class="dropdown-item" href="#" onclick="block()">Block</a>
+ 
+      </div>
+
+    </div>
+    
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat6'%}`">Previous Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat7'%}`">Next Feature</button>
+  </div>
+<div class="row" style="float: left; margin:20px">
+
+    <form name="indicatorRadio" action="#">
+ 
+        <label>
+   
+          <input name="states" type="radio" id="radio1" value="set1" />
+   
+          <span>Outcome Indicators</span>
+   
+        </label>
+   
+   
+        <label>
+   
+          <input name="states" type="radio" id="radio2" value="set2" />
+   
+          <span>Child related(IYCF) Indicators</span>
+   
+        </label>
+   
+   
+        <label>
+   
+          <input name="states" type="radio" id="radio3" value="set3" />
+   
+          <span>Pregnant Women related Performance Indicators</span>
+   
+        </label>
+   
+    </form>   
+  </div>
+  <div class="row" style="font-size:15px; font-weight:bold; top: 120px; position:absolute; right:10px;">
+   Click column headers to sort the table</div>
+  <div id="table" class="row h-195 bg-light justify-content-center">
+</div>
+
       
 {% endblock %}
 
 {% block feature_js %}
 <script>
-    var selectMonth="November"; 
+  var selectMonth="November"; 
 function  district()
 {
+console.log("in block function");
+console.log(d3.select('input[name="states"]:checked').node().value);
 
 	const render = data =>{
 
+      
+       console.log(data);
+	   
+	  
+              
       
        }
        const monthwise = (data) => {
@@ -124,7 +139,26 @@ function  district()
                d.svrly_uw = +d.svrly_uw;
                d.mdrtly_uw = +d.mdrtly_uw;
                d.nb_lbw = +d.nb_lbw;
-               d.wasting_percent = d.wasting_percent;
+               d.wasting_percent = +d.wasting_percent;
+			   d.stunting_percent = +d.stunting_percent;
+			   d.underweight_percent = +d.underweight_percent;
+			   d.low_birth_weight_percent = +d.low_birth_weight_percent;
+			   d.stntd_chld = +d.stntd_chld;
+			   d.wstd_chld = +d.wstd_chld;
+			   d.uw_chld = +d.uw_chld;
+			   d.prnt_anwmic_wmn = +d.prnt_anwmic_wmn;
+			   d.prnt_chld_bf_at_birth = +d.prnt_chld_bf_at_birth;
+			   d.prnt_wmn_etg_xtr_ml_drng_prgncy = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+			   d.prnt_chld_excly_bf = +d.prnt_chld_excly_bf;
+			   d.prnt_4_anc_vst_dlvry = +d.prnt_4_anc_vst_dlvry;
+			   d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty = +d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+			   d.prnt_chld_cf_wid_adq_dt_qnty = +d.prnt_chld_cf_wid_adq_dt_qnty;
+			   d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg = +d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+			   d.prnt_trmstr_3wmn_cnsld_imdtbf = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
+			   d.prnt_wmn_rstg_drg_prgncy = +d.prnt_wmn_rstg_drg_prgncy;
+			   d.prnt_chld_intd_cf_p30d = +d.prnt_chld_intd_cf_p30d;
+			   d.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
+			   d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
            });
             var aproperty = [];
             var sproperty = [];
@@ -169,18 +203,11 @@ function  district()
 
         return listdata;
         }
-       
-        
-       
-     
-        
-        
-       
-  
-        d3.csv("{% static 'maha_dashboard/data/csv/f6_st_ov/f6_district.csv' %}").then(data => {
-		console.log(data)
-  monthwiseData = monthwise(data);
  
+        d3.csv("{% static 'maha_dashboard/data/csv/f6_st_ov/f6_district.csv' %}").then(data => {
+
+            monthwiseData = monthwise(data);
+  console.log(monthwiseData);
   
     $(".month a").click(function(){
 	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
@@ -193,14 +220,14 @@ function  district()
 	  
       
 });
-
-
+  
   augData = monthwiseData[0];
 let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
 render(tbleData);
   
 })
         const tbData =  (val,monthwiseData) =>{
+		console.log(d3.select('input[name="states"]:checked').node().value);
 
         if(val == "November"){
             return tables(d3.select('input[name="states"]:checked').node().value,monthwiseData[0]);
@@ -231,10 +258,10 @@ if(selectMonth == "November"){
 function tables(selection, data){
 
    
-
  if(selection == "set1")
  {
  
+ console.log("in set1");
  
 $( "div#table" ).find(".hello" ).remove();
    
@@ -297,7 +324,7 @@ var tbdata = [];
         .interpolator(d3.interpolateRdYlGn);
 
 
-    
+		var sortAscending = true;
         var table = d3.select('div#table').append('table')
         .attr('class','hello');
           
@@ -309,7 +336,22 @@ var tbdata = [];
 		                   .append('th')
 		                   .text(function (d) {
 			                    return d;
-		                    });
+		                    })
+							.on('click', function (d) {
+                           headers.attr('class', 'header');
+
+                           if (sortAscending) {
+                             rows.sort(function(a, b) { return d3.ascending(b[d], a[d]); });
+                             sortAscending = false;
+                             this.className = 'aes';
+                           } else {
+                             rows.sort(function(a, b) { return d3.descending(b[d], a[d]);  });
+                             sortAscending = true;
+                             this.className = 'des';
+                           }
+
+                       });
+		             
 		             
 		 
 		  var rows = table.append('tbody').selectAll('tr')
@@ -414,7 +456,7 @@ var tbdata = [];
         var lbw_per_Color = d3.scaleSequential().domain([d3.min(column_data.lbw_per),d3.max(column_data.lbw_per)])
         .interpolator(d3.interpolateRdYlGn);
 
-
+			var sortAscending = true;
             var table = d3.select('div#table').append('table').attr('class','hello');
           
             var titles = d3.keys(tbdata2[0]);
@@ -425,7 +467,22 @@ var tbdata = [];
                              .append('th')
                              .text(function (d) {
                                   return d;
-                              });
+                              })
+							  .on('click', function (d) {
+                           headers.attr('class', 'header');
+
+                           if (sortAscending) {
+                             rows.sort(function(a, b) { return d3.ascending(b[d], a[d]); });
+                             sortAscending = false;
+                             this.className = 'aes';
+                           } else {
+                             rows.sort(function(a, b) { return d3.descending(b[d], a[d]);  });
+                             sortAscending = true;
+                             this.className = 'des';
+                           }
+
+                       });
+		             
                        
            
             var rows = table.append('tbody').selectAll('tr')
@@ -481,7 +538,7 @@ $( "div#table" ).find(".hello" ).remove();
             data.forEach(d=>{
                 var tbdt = {}
                 tbdt['District'] = d.district_n;
-                tbdt['Anaemic Women(%)'] = d.prnt_anwmic_wmn;
+                tbdt['Anaemic women(%)'] = d.prnt_anwmic_wmn;
                 tbdt['Pregnant Women had 4 ANC Visit(%)'] = d.prnt_4_anc_vst_dlvry;
                 tbdt['Pregnant Women resting during Pregnancy(%)']=d.prnt_wmn_rstg_drg_prgncy;
                 tbdt['Pregnant Women eating extra meal during Pregnancy(%)'] = d.prnt_wmn_etg_xtr_ml_drng_prgncy;
@@ -500,7 +557,6 @@ $( "div#table" ).find(".hello" ).remove();
             column_data.wstd_chld.push(+d.prnt_wmn_rstg_drg_prgncy);
             column_data.wasting_percent.push(+d.prnt_wmn_etg_xtr_ml_drng_prgncy);
             column_data.uw_chld.push(+d.prnt_trmstr_3wmn_cnsld_imdtbf);
-           
           })
 
         var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
@@ -518,7 +574,7 @@ $( "div#table" ).find(".hello" ).remove();
         var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
         .interpolator(d3.interpolateRdYlGn);
 
-       
+			var sortAscending = true;
             var table = d3.select('div#table').append('table').attr('class','hello');
           
             var titles = d3.keys(tbdata2[0]);
@@ -529,7 +585,21 @@ $( "div#table" ).find(".hello" ).remove();
                              .append('th')
                              .text(function (d) {
                                   return d;
-                              });
+                              })
+							   	.on('click', function (d) {
+                           headers.attr('class', 'header');
+
+                           if (sortAscending) {
+                             rows.sort(function(a, b) { return d3.ascending(b[d], a[d]); });
+                             sortAscending = false;
+                             this.className = 'aes';
+                           } else {
+                             rows.sort(function(a, b) { return d3.descending(b[d], a[d]);  });
+                             sortAscending = true;
+                             this.className = 'des';
+                           }
+
+                       });
                        
            
             var rows = table.append('tbody').selectAll('tr')
@@ -576,8 +646,6 @@ const render = data =>{
     
   
        }
-    
-      
        const monthwise = (data) => {
            
            data.forEach(d => {
@@ -589,7 +657,26 @@ const render = data =>{
                d.svrly_uw = +d.svrly_uw;
                d.mdrtly_uw = +d.mdrtly_uw;
                d.nb_lbw = +d.nb_lbw;
-               d.wasting_percent = d.wasting_percent;
+               d.wasting_percent = +d.wasting_percent;
+			   d.stunting_percent = +d.stunting_percent;
+			   d.underweight_percent = +d.underweight_percent;
+			   d.low_birth_weight_percent = +d.low_birth_weight_percent;
+			   d.stntd_chld = +d.stntd_chld;
+			   d.wstd_chld = +d.wstd_chld;
+			   d.uw_chld = +d.uw_chld;
+			   d.prnt_anwmic_wmn = +d.prnt_anwmic_wmn;
+			   d.prnt_chld_bf_at_birth = +d.prnt_chld_bf_at_birth;
+			   d.prnt_wmn_etg_xtr_ml_drng_prgncy = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+			   d.prnt_chld_excly_bf = +d.prnt_chld_excly_bf;
+			   d.prnt_4_anc_vst_dlvry = +d.prnt_4_anc_vst_dlvry;
+			   d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty = +d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+			   d.prnt_chld_cf_wid_adq_dt_qnty = +d.prnt_chld_cf_wid_adq_dt_qnty;
+			   d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg = +d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+			   d.prnt_trmstr_3wmn_cnsld_imdtbf = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
+			   d.prnt_wmn_rstg_drg_prgncy = +d.prnt_wmn_rstg_drg_prgncy;
+			   d.prnt_chld_intd_cf_p30d = +d.prnt_chld_intd_cf_p30d;
+			   d.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
+			   d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
            });
             var aproperty = [];
             var sproperty = [];
@@ -632,20 +719,13 @@ const render = data =>{
         })
 
         var listdata = [aproperty,sproperty,oproperty]
+        console.log(listdata)
 
         return listdata;
         }
-       
-        
-       
-     
-        
-        
-       
-  
+         
         d3.csv("{% static 'maha_dashboard/data/csv/f6_st_ov/f6_subdistrict.csv' %}").then(data => {
-           console.log(data)
-           
+          
             monthwiseData = monthwise(data);
                  $(".month a").click(function(){
 				$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
@@ -761,7 +841,7 @@ var tbdata = [];
         .interpolator(d3.interpolateRdYlGn);
 
 
-    
+		var sortAscending = true;
         var table = d3.select('div#table').append('table').attr('class','hello');
           
 		  var titles = d3.keys(tbdata[0]);
@@ -772,7 +852,21 @@ var tbdata = [];
 		                   .append('th')
 		                   .text(function (d) {
 			                    return d;
-		                    });
+		                    })
+							 	.on('click', function (d) {
+                           headers.attr('class', 'header');
+
+                           if (sortAscending) {
+                             rows.sort(function(a, b) { return d3.ascending(b[d], a[d]); });
+                             sortAscending = false;
+                             this.className = 'aes';
+                           } else {
+                             rows.sort(function(a, b) { return d3.descending(b[d], a[d]);  });
+                             sortAscending = true;
+                             this.className = 'des';
+                           }
+
+                       });
 		             
 		 
 		  var rows = table.append('tbody').selectAll('tr')
@@ -878,7 +972,7 @@ var tbdata = [];
         var lbw_per_Color = d3.scaleSequential().domain([d3.min(column_data.lbw_per),d3.max(column_data.lbw_per)])
         .interpolator(d3.interpolateRdYlGn);
 
-
+			var sortAscending = true;
             var table = d3.select('div#table').append('table').attr('class','hello');
           
             var titles = d3.keys(tbdata2[0]);
@@ -889,7 +983,21 @@ var tbdata = [];
                              .append('th')
                              .text(function (d) {
                                   return d;
-                              });
+                              })
+							  .on('click', function (d) {
+                           headers.attr('class', 'header');
+
+                           if (sortAscending) {
+                             rows.sort(function(a, b) { return d3.ascending(b[d], a[d]); });
+                             sortAscending = false;
+                             this.className = 'aes';
+                           } else {
+                             rows.sort(function(a, b) { return d3.descending(b[d], a[d]);  });
+                             sortAscending = true;
+                             this.className = 'des';
+                           }
+
+                       });
                        
            
             var rows = table.append('tbody').selectAll('tr')
@@ -984,7 +1092,7 @@ $( "div#table" ).find(".hello" ).remove();
         var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
         .interpolator(d3.interpolateRdYlGn);
 
-        
+			var sortAscending = true;
             var table = d3.select('div#table').append('table').attr('class','hello');
           
             var titles = d3.keys(tbdata2[0]);
@@ -995,7 +1103,21 @@ $( "div#table" ).find(".hello" ).remove();
                              .append('th')
                              .text(function (d) {
                                   return d;
-                              });
+                              })
+							  .on('click', function (d) {
+                           headers.attr('class', 'header');
+
+                           if (sortAscending) {
+                             rows.sort(function(a, b) { return d3.ascending(b[d], a[d]); });
+                             sortAscending = false;
+                             this.className = 'aes';
+                           } else {
+                             rows.sort(function(a, b) { return d3.descending(b[d], a[d]);  });
+                             sortAscending = true;
+                             this.className = 'des';
+                           }
+
+                       });
                        
            
             var rows = table.append('tbody').selectAll('tr')
@@ -1035,6 +1157,7 @@ $( "div#table" ).find(".hello" ).remove();
 }
 
 $(function(){
+ console.log("in on load");
   //bind event
   $(".month a").click(function(){
     var valMonth = $(this).text();
@@ -1060,6 +1183,6 @@ $(function(){
 
 
 
-
 </script>
 {% endblock %}
+

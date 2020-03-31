@@ -1,374 +1,797 @@
 {% extends 'dashboard/dash_base.html' %}
+
 {% load static %}
+
 {% block feature_css %}
+
   <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+
   <style>
+
     .full-height {
+
   height: 100%;
+
 }
+
+
 
 .header {
+
     height: 50px;
+
 }
 
+
+
 #b2{
+
   display: block;
+
 }
+
+
+
 
 
   </style>
+
 {% endblock %}
+
 {% block feature %}
+
 <div class="container-fluid full-height">
 
+
+
   
+
 <div class='heading text-dark mt-2 text-center'>Outcome Indicators</div>
 
+
+
     <div class="row header ">
+
         <div class="col bg-info">
+
             <div class="dropdown" style="float: left; margin:20px;">
+
                 <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
                   Select Month
+
                   <span class="selectedMonth"></span>
+
                 </button>
+
                 <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-                  <a class="dropdown-item" href="#">August</a>
-                  <a class="dropdown-item" href="#">September</a>
-                  <a class="dropdown-item" href="#">October</a>
+
+                  <a class="dropdown-item" href="#">November</a>
+
+                  <a class="dropdown-item" href="#">December</a>
+
+                  <a class="dropdown-item" href="#">January</a>
+
                 </div>
+
               </div>
+
               <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'feat1' %}`">Previous Feature</button>
+
               <button type="button" class="btn btn-info" style="float: left; margin:20px 20px 0px 10px" onclick="location.href=`{% url 'feat3' %}`">Next Feature</button>
-              <button class='btn toggle' style="float: left; margin:20px">Hide</button>
+
+              <button class='btn toggle' style="float: left; margin:20px">Compare</button>
+
+
 
         </div>
 
+
+
     </div>
+
     
+
   <div class="row h-100">
+
     <div id = 'sw' class="spinner-wrapper">
+
       <div class="spinner"></div>
+
     </div>
+
+
 
     <div class="col">
+
       <div class='row h-100'>
+
       	<div id = 'b1' class='col  bar1'>
 
+
+
           <div class="dropdown" style="float: left; margin:20px"> 
+
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
               Select Category
+
               <span class="selectedCategory"></span>
+
             </button>
+
             <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+
               <a class="dropdown-item" href="#">% Stunting</a>
+
               <a class="dropdown-item" href="#">% Wasting</a>
+
               <a class="dropdown-item" href="#">% Underweight</a>
+
               <a class="dropdown-item" href="#">% Low Birth Weight</a>
+
               <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
+
               <a class="dropdown-item" href="#">% Children breastfed at birth</a>
+
               <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
+
               <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
+
               <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
+
               <a class="dropdown-item" href="#">% Anemic pregnant women</a>
+
               <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
+
               <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
+
               <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
+
               <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
+
               <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
+
               <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
+
             </div>
+
       
-          </div>
-          
-        </div>
-        <div id = 'b2'class='col bar2'>
-          <div class="dropdown" style="float: left; margin:20px"> 
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Select Category
-              <span class="selectedCategory"></span>
-            </button>
-            <div class="dropdown-menu category2" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">% Stunting</a>
-              <a class="dropdown-item" href="#">% Wasting</a>
-              <a class="dropdown-item" href="#">% Underweight</a>
-              <a class="dropdown-item" href="#">% Low Birth Weight</a>
-              <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
-              <a class="dropdown-item" href="#">% Children breastfed at birth</a>
-              <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
-              <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
-              <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
-              <a class="dropdown-item" href="#">% Anemic pregnant women</a>
-              <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
-              <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
-              <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
-              <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
-              <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
-              <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
-              </div>
-      
+
           </div>
 
+          
+
         </div>
+
+        <div id = 'b2'class='col bar2'>
+
+          <div class="dropdown" style="float: left; margin:20px"> 
+
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+              Select Category
+
+              <span class="selectedCategory"></span>
+
+            </button>
+
+            <div class="dropdown-menu category2" aria-labelledby="dropdownMenuButton">
+
+              <a class="dropdown-item" href="#">% Stunting</a>
+
+              <a class="dropdown-item" href="#">% Wasting</a>
+
+              <a class="dropdown-item" href="#">% Underweight</a>
+
+              <a class="dropdown-item" href="#">% Low Birth Weight</a>
+
+              <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
+
+              <a class="dropdown-item" href="#">% Children breastfed at birth</a>
+
+              <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
+
+              <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
+
+              <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
+
+              <a class="dropdown-item" href="#">% Anemic pregnant women</a>
+
+              <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
+
+              <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
+
+              <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
+
+              <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
+
+              <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
+
+              <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
+
+              </div>
+
+      
+
+          </div>
+
+
+
+        </div>
+
       </div>
+
     </div>
+
+
 
 </div>
 
+
+
 {% endblock %}
+
+
+
 
 
 {% block feature_js %}
 
+
+
 <script>
 
+
+
     const width = document.getElementById("b1").offsetWidth/1.2;
+
     const height = document.getElementById("b1").offsetHeight/2;
+
     const tansitionDuration = 500;
+
     let bar1 = d3.select('.bar1').append("svg").attr('width',width).attr('height',height);
+
     let bar2 = d3.select('.bar2').append("svg").attr('width',width).attr('height',height);
+
     let yValue  = d => d.stunting_percent;
+
     let xValue = d => d.block_n;
-    const margin = {left:50,top:60 ,right:0,bottom:30};
+
+    const margin = {left:50,top:160 ,right:0,bottom:30};
+
     const innerWidth = width - margin.left - margin.right;
+
     const innerHeight = height - margin.top - margin.bottom;
+
     const g1 = bar1.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
+
     const g2 = bar2.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
+
     const yScale = d3.scaleLinear().domain([100,0]).range([0,innerHeight]);
+
     const xScale = d3.scaleBand().range([0,innerWidth]).padding(0.1);
+
     
 
+
+
     const drawLeft = data =>{
+
       xScale.domain(data.map(xValue))
+
       let getColor = d3.scaleSequential().domain([d3.min(data,yValue),d3.max(data,yValue)])
+
         .interpolator(d3.interpolateRdYlGn);
+
         
+
       let chart = g1.selectAll("rect").data(data)
+
       let chartText = g1.selectAll('text').data(data)
+
       chart.exit().remove();
+
       chartText.exit().remove();
+
       chart.enter().append('rect')
+
             .attr('x', d => xScale(d.block_n))
+
             .attr('y', d => yScale(yValue(d)))
+
             .attr('height',d => innerHeight - yScale(yValue(d)))
+
             .attr('width', d=> innerWidth/15)
+
             .attr("fill", d => getColor(yValue(d)))
+
       chartText.enter().append('text')
+
             .text(d => yValue(d).toFixed(2))
+
             .attr('x', d => xScale(d.block_n))
+
             .attr('y', d => yScale(yValue(d))-5)
+
             .attr("font-family", "sans-serif")
+
             .attr("font-size", "10px")
+
             .attr("fill", "blue")
 
+            .attr("font-weight", "bold")
+
+
+
+
       chart.transition().duration(tansitionDuration)
+
             .attr('x', d => xScale(d.block_n))
+
             .attr('y', d => yScale(yValue(d)))
+
             .attr('height',d => innerHeight - yScale(yValue(d)))
+
             .attr("fill", d => getColor(yValue(d)))
+
       chartText.transition().duration(tansitionDuration)
+
             .text(d => yValue(d).toFixed(2))
+
             .attr('x', d => xScale(d.block_n))
+
             .attr('y', d => yScale(yValue(d))-5)
+
             
 
+
+
       let xaxisLeft = g1.append('g').call(d3.axisBottom(xScale))
+
                 .attr('transform',`translate(0, ${innerHeight})`)
+
                 .attr("font-size", "10px")
+
                 .attr("font-weight", "bold");
+
 			 
 
+
+
         let yaxisLeft = g1.append('g')
+
             .call(d3.axisLeft(yScale))
+
             .attr("font-size", "10px")
+
             .attr("font-weight", "bold");
+
   }
+
+
+
+
 
 
 
   //******************************
 
+
+
   const drawRight = data =>{
+
       xScale.domain(data.map(xValue))
+
       let getColor = d3.scaleSequential().domain([d3.min(data,yValue),d3.max(data,yValue)])
+
         .interpolator(d3.interpolateRdYlGn);
+
         
+
       let chart = g2.selectAll("rect").data(data)
+
       let chartText = g2.selectAll('text').data(data)
+
       chart.exit().remove();
+
       chartText.exit().remove();
+
       chart.enter().append('rect')
+
             .attr('x', d => xScale(d.block_n))
+
             .attr('y', d => yScale(yValue(d)))
+
             .attr('height',d => innerHeight - yScale(yValue(d)))
+
             .attr('width', d=> innerWidth/15)
+
             .attr("fill", d => getColor(yValue(d)))
+
       chartText.enter().append('text')
+
             .text(d => yValue(d).toFixed(2))
+
             .attr('x', d => xScale(d.block_n))
+
             .attr('y', d => yScale(yValue(d))-5)
+
             .attr("font-family", "sans-serif")
+
             .attr("font-size", "10px")
+
             .attr("fill", "blue")
 
+            .attr("font-weight", "bold")
+
+
+
+
       chart.transition().duration(tansitionDuration)
+
             .attr('x', d => xScale(d.block_n))
+
             .attr('y', d => yScale(yValue(d)))
+
             .attr('height',d => innerHeight - yScale(yValue(d)))
+
             .attr("fill", d => getColor(yValue(d)))
+
       chartText.transition().duration(tansitionDuration)
+
             .text(d => yValue(d).toFixed(2))
+
             .attr('x', d => xScale(d.block_n))
+
             .attr('y', d => yScale(yValue(d))-5)
+
             
 
+
+
       let xaxisRight = g2.append('g').call(d3.axisBottom(xScale))
+
                 .attr('transform',`translate(0, ${innerHeight})`)
+
                 .attr("font-size", "10px")
+
                 .attr("font-weight", "bold");
+
 			 
 
+
+
         let yaxisRight = g2.append('g')
+
             .call(d3.axisLeft(yScale))
+
             .attr("font-size", "10px")
+
             .attr("font-weight", "bold");
+
   }
+
+
 
   const monthwise = (data) => {
-    let listdata = {"Aug":[],"Sep":[],"Oct":[]}
+
+    let listdata = {"Nov":[],"Dec":[],"Jan":[]}
+
     data.forEach(d =>{
+
       var temp = {};
+
         temp['block_n'] = d.block_n;
+
         temp['stunting_percent'] = +d.stunting_percent;
+
         temp['wasting_percent'] = +d.wasting_percent;
+
         temp['underweight_percent'] = +d.underweight_percent;
+
         temp['low_birth_weight_percent'] = +d.low_birth_weight_percent;
+
         temp['prnt_child_1yr_cmpltd_immunzt'] = +d.prnt_child_1yr_cmpltd_immunzt;
+
         temp['prnt_chld_bf_at_birth'] = +d.prnt_chld_bf_at_birth;
+
         temp['prnt_chld_excly_bf'] = +d.prnt_chld_excly_bf;
+
         temp['prnt_chld_intd_cf_past30d'] = +d.prnt_chld_intd_cf_past30d;
+
         temp['prnt_chld_6to24mnths_intd_cf'] = +d.prnt_chld_6to24mnths_intd_cf;
+
         temp['prnt_anwmic_wmn'] = +d.prnt_anwmic_wmn;
+
         temp['prnt_tenatus_cmpltd'] = +d.prnt_tenatus_cmpltd;
+
         temp['prnt_wmn_1_anc_vst_dlvry'] = +d.prnt_wmn_1_anc_vst_dlvry;
+
         temp['prnt_wmn_4_anc_vst_dlvry'] = +d.prnt_wmn_4_anc_vst_dlvry;
+
         temp['prnt_wmn_rstg_drg_prgncy'] = +d.prnt_wmn_rstg_drg_prgncy;
+
         temp['prnt_wmn_etg_xtr_ml_drng_prgncy'] = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+
         temp['prnt_trmstr_3wmn_cnsld_imdtbf'] = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
+
         listdata[d.month_n].push(temp);
+
     })
+
   return listdata;
+
   }
+
   
+
   const selectData =  (val,monthwiseData,sortBy) =>{
-  if(val === "August"){
-        monthwiseData.Aug = sortData(monthwiseData.Aug,sortBy);
-        return monthwiseData.Aug;
-    }else if (val === "September"){
-        monthwiseData.Sep = sortData(monthwiseData.Sep,sortBy);
-        return monthwiseData.Sep;
-    }else if (val === 'October'){
-        monthwiseData.Oct = sortData(monthwiseData.Oct,sortBy);
-        return monthwiseData.Oct       
+
+  if(val === "November"){
+
+        monthwiseData.Nov = sortData(monthwiseData.Nov,sortBy);
+
+        return monthwiseData.Nov;
+
+    }else if (val === "December"){
+
+        monthwiseData.Dec = sortData(monthwiseData.Dec,sortBy);
+
+        return monthwiseData.Dec;
+
+    }else if (val === 'January'){
+
+        monthwiseData.Jan = sortData(monthwiseData.Jan,sortBy);
+
+        return monthwiseData.Jan       
+
       }
+
   }
+
   const sortData = (data,parameter) =>{
+
     let sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
+
     return sortedData;
+
   }
+
   
-  d3.csv("{% static 'data/csv/feat2data.csv'%}").then(data=>{
+
+  d3.csv("{% static 'data/csv/f2.csv'%}").then(data=>{
+
     let monthwiseData = monthwise(data);
-    augData = monthwiseData.Aug;
+
+    augData = monthwiseData.Nov;
+
     augSortedData = sortData(augData,'stunting_percent');
+
     drawLeft(augSortedData);
+
     drawRight(augSortedData);
 
-    let valMonth = "August";
+
+
+    let valMonth = "November";
+
     let sortBy = 'stunting_percent';
 
+
+
     $(".month a").click(function(){
+
         $(this).parents(".dropdown").find('.btn').html($(this).text());
+
+
 
         valMonth = $(this).text();
+
         monthData = selectData(valMonth,monthwiseData,sortBy);
+
         drawLeft(monthData);
+
         drawRight(monthData);
+
+
 
       
+
     });
+
+
 
     $(".category a").click(function(){
+
         $(this).parents(".dropdown").find('.btn').html($(this).text());
+
         let valCategory = $(this).text();
+
         switch(valCategory){
+
             case "% Stunting": yValue = d=> d.stunting_percent; sortBy = 'stunting_percent'; break;
+
             case "% Wasting": yValue = d=> d.wasting_percent; sortBy = 'wasting_percent'; break;
+
             case "% Underweight": yValue = d=> d.underweight_percent; sortBy = 'underweight_percent';  break;
+
             case "% Low Birth Weight": yValue = d=> d.low_birth_weight_percent; sortBy = 'low_birth_weight_percent'; break;
+
             case "% Children completed 1 year immunization": yValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortBy = 'prnt_child_1yr_cmpltd_immunzt'; break;
+
             case "% Children breastfed at birth": yValue = d => d.prnt_chld_bf_at_birth; sortBy = 'prnt_chld_bf_at_birth'; break;
+
             case "% Children exclusively breastfed": yValue = d => d.prnt_chld_excly_bf; sortBy = 'prnt_chld_excly_bf'; break;
+
             case "% Children initiated complementary feeding(in the past 30 days)": yValue = d => d.prnt_chld_intd_cf_past30d; sortBy = 'prnt_chld_intd_cf_past30d'; break;
+
             case "% Children (6-24 months) initiated appropriate complementary feeding": yValue = d => d.prnt_chld_6to24mnths_intd_cf; sortBy = 'prnt_chld_6to24mnths_intd_cf'; break;
+
             case "% Anemic pregnant women": yValue = d => d.prnt_anwmic_wmn ; sortBy = 'prnt_anwmic_wmn'; break;
+
             case "% Pregnant women Tenatus Completed": yValue = d => d.prnt_tenatus_cmpltd; sortBy = 'prnt_tenatus_cmpltd'; break;
+
             case "% Pregnant women had at least 1 ANC visit by delivery": yValue = d => d.prnt_wmn_1_anc_vst_dlvry ; sortBy = 'prnt_wmn_1_anc_vst_dlvry'; break;
+
             case "% Pregnant woment had at least 4 ANC visit by delivery": yValue = d => d.prnt_wmn_4_anc_vst_dlvry ; sortBy = 'prnt_wmn_4_anc_vst_dlvry'; break;
+
             case "% Pregnant women resting during pregnancy": yValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+
             case "% Pregnant women eating extra meal during pregnancy": yValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+
             case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": yValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf ; sortBy = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
+
         }
+
         console.log('mon',valMonth);
+
         monthData = selectData(valMonth,monthwiseData, sortBy);
+
         drawLeft(monthData);
 
+
+
     });
+
+
 
     $(".category2 a").click(function(){
+
         $(this).parents(".dropdown").find('.btn').html($(this).text());
+
         let valCategory = $(this).text();
+
         switch(valCategory){
+
           case "% Stunting": yValue = d=> d.stunting_percent; sortBy = 'stunting_percent'; break;
+
             case "% Wasting": yValue = d=> d.wasting_percent; sortBy = 'wasting_percent'; break;
+
             case "% Underweight": yValue = d=> d.underweight_percent; sortBy = 'underweight_percent';  break;
+
             case "% Low Birth Weight": yValue = d=> d.low_birth_weight_percent; sortBy = 'low_birth_weight_percent'; break;
+
             case "% Children completed 1 year immunization": yValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortBy = 'prnt_child_1yr_cmpltd_immunzt'; break;
+
             case "% Children breastfed at birth": yValue = d => d.prnt_chld_bf_at_birth; sortBy = 'prnt_chld_bf_at_birth'; break;
+
             case "% Children exclusively breastfed": yValue = d => d.prnt_chld_excly_bf; sortBy = 'prnt_chld_excly_bf'; break;
+
             case "% Children initiated complementary feeding(in the past 30 days)": yValue = d => d.prnt_chld_intd_cf_past30d; sortBy = 'prnt_chld_intd_cf_past30d'; break;
+
             case "% Children (6-24 months) initiated appropriate complementary feeding": yValue = d => d.prnt_chld_6to24mnths_intd_cf; sortBy = 'prnt_chld_6to24mnths_intd_cf'; break;
+
             case "% Anemic pregnant women": yValue = d => d.prnt_anwmic_wmn ; sortBy = 'prnt_anwmic_wmn'; break;
+
             case "% Pregnant women Tenatus Completed": yValue = d => d.prnt_tenatus_cmpltd; sortBy = 'prnt_tenatus_cmpltd'; break;
+
             case "% Pregnant women had at least 1 ANC visit by delivery": yValue = d => d.prnt_wmn_1_anc_vst_dlvry ; sortBy = 'prnt_wmn_1_anc_vst_dlvry'; break;
+
             case "% Pregnant woment had at least 4 ANC visit by delivery": yValue = d => d.prnt_wmn_4_anc_vst_dlvry ; sortBy = 'prnt_wmn_4_anc_vst_dlvry'; break;
+
             case "% Pregnant women resting during pregnancy": yValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+
             case "% Pregnant women eating extra meal during pregnancy": yValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+
             case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": yValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf ; sortBy = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
+
         }
+
         console.log('mon',valMonth);
+
         monthData = selectData(valMonth,monthwiseData, sortBy);
+
         drawRight(monthData);
 
+
+
     });
+
+
+
 
 
   })
+
+
+
 
 
   $(".toggle").click(function(){
-    $(this).text($(this).text() == 'Hide' ? 'Compare' : 'Hide');
+
+    $(this).text($(this).text() == 'Compare' ? 'Hide' : 'Compare');
+
     let x = document.getElementById("b2");
+
     if (x.style.display === "none") {
+
       x.style.display = "block";
+
       x.text = "Hide";
+
     } else {
+
       x.style.display = "none";
+
       x.text = "Show";
+
     }
+
+    $(".category2 a").click(function(){
+
+    var valCategory = $(this).text();
+
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory2"></span>');
+
   });
 
+
+
+  //trigger event
+
+  $(".category2 a").first().trigger('click');
+
+
+
+  });
+
+
+
   $(window).on('load',function(){
+
+	document.getElementById("b2").style.display = 'none';
+
     document.getElementById('sw').style.display = 'none';
+
+    $(".month a").click(function(){
+
+    var valMonth = $(this).text();
+
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+
+  }); 
+
+  
+
+   $(".category a").click(function(){
+
+    var valCategory = $(this).text();
+
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+
+  });
+
+
+
+  //trigger event
+
+  $('.month a').first().trigger('click');
+
+  $(".category a").first().trigger('click');
+
   })
+
   </script>
+
 {% endblock %}

@@ -121,6 +121,7 @@ fill: #fff;
                         
   </div>
 
+  <p style="font-size: 16px; font-weight: bold;">Click rectangle box besides Project names to view month wise trend for the Beats</strong> </p> 
    
 <div id="legendContainer" class="legendContainer">
 	<svg id="legend"></svg>
@@ -243,13 +244,12 @@ g.append("rect")
 			  
 
 // Get the data
-d3.csv("{% static 'data/csv/lc_prjt.csv'%}", function(error, csv) {
+d3.csv("{% static 'data/csv/linechart/lc_project_data.csv'%}", function(error, csv) {
  
  csv.forEach(function(d) {
-		
-		d.svrly_wasting_percent = +d.svrly_wasting_percent;
+	d.svr_wasting_percent = +d.svrly_wasting_percent;
 		d.wasting_percent = +d.wasting_percent;
-		d.svrly_stunting_percent = +d.svrly_stunting_percent;
+		d.svrly_stunted_percent = +d.svrly_stunted_percent;
 		d.stunting_percent = +d.stunting_percent;
 		d.svrly_underweight_percent = +d.svrly_underweight_percent;
 		d.underweight_percent = +d.underweight_percent;
@@ -258,7 +258,7 @@ d3.csv("{% static 'data/csv/lc_prjt.csv'%}", function(error, csv) {
   });
 			
 		var section;
-		section='svrly_stunting_percent';
+		section='svrly_stunted_percent';
 		var choices = parseURLParameters(window.location.href);	
 		var data;
 		if(choices.length > 0)
@@ -266,11 +266,11 @@ d3.csv("{% static 'data/csv/lc_prjt.csv'%}", function(error, csv) {
 		selectedCategory=choices[1];
 		var choiceOneVal= choices[1].replace(/_/g, ' ');
 		if(choiceOneVal == 'Severly Stunted Children')
-			section ='svrly_stunting_percent';
+			section ='svrly_stunted_percent';
 			else if (choiceOneVal == 'Stunted Children')
 			section ='stunting_percent';
 			else if(choiceOneVal == 'Severly Wasted(SAM) Children')
-			section ='svrly_wasting_percent';
+			section ='svr_wasting_percent';
 			else if(choiceOneVal == 'Wasted Children')
 			section = 'wasting_percent';
 			else if(choiceOneVal == 'Severly Underweight(SUW) Children')
@@ -278,7 +278,7 @@ d3.csv("{% static 'data/csv/lc_prjt.csv'%}", function(error, csv) {
 			else if (choiceOneVal == 'Underweight Children')
 			section = 'underweight_percent'
 			else 
-			section = 'low_birth_weight_percent'		
+			section = 'low_birth_weight_percent'	
 		$('.category a').val(section);
 		data = filterCSV(csv, 'block_n', choices[0]);
 		setData(data,section);	
@@ -295,11 +295,11 @@ d3.csv("{% static 'data/csv/lc_prjt.csv'%}", function(error, csv) {
 			var val = $(this).text();
 			selectedCategory=val;
 			if(val == 'Severly Stunted Children')
-			section ='svrly_stunting_percent';
+			section ='svrly_stunted_percent';
 			else if (val == 'Stunted Children')
 			section ='stunting_percent';
 			else if(val == 'Severly Wasted(SAM) Children')
-			section ='svrly_wasting_percent';
+			section ='svr_wasting_percent';
 			else if(val == 'Wasted Children')
 			section = 'wasting_percent';
 			else if(val == 'Severly Underweight(SUW) Children')
@@ -308,6 +308,7 @@ d3.csv("{% static 'data/csv/lc_prjt.csv'%}", function(error, csv) {
 			section = 'underweight_percent'
 			else 
 			section = 'low_birth_weight_percent'
+			
 			mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
 			mouseG.selectAll('.mouse-per-line').selectAll('text').remove();
 			setData(data,section);

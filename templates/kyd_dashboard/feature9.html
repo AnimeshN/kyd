@@ -137,404 +137,412 @@ fill: #fff;
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 
 <script>
-    var svg = d3.select('svg');
- var width = +svg.attr('width');
- var height = +svg.attr('height');
- var ticks;
- var selectedCategory ='Severly Stunted Children';
-
-var mouseG
-
-var margin = {top: 50, right: 20, bottom: 30, left: 160},
-       innerWidth = width - margin.left - margin.right,
-       innerHeight = height - margin.top - margin.bottom;
-	  
-  
-// Set the ranges
-//var x = d3.time.scale().range([0, width]);
-var xScale = d3.scale.ordinal().rangePoints([0, innerWidth], 0.5);
-//var x = d3.time.scale().domain([d3.time.format("Aug").parseMonth, d3.time.format("Dec").parseMonth]).range([0, width]);
-var yScale = d3.scale.linear().range([innerHeight, 0]);
-
-// Define the axes
-var xAxis = d3.svg.axis().scale(xScale)
-    .orient("bottom")
-
-var yAxis = d3.svg.axis().scale(yScale)
-    .orient("left");
-
-// Define the line
-var stateline = d3.svg.line()
-		.interpolate("linear")
-    .x(function(d) { return xScale(d.month); })
-    .y(function(d) { return yScale(d.value); });
-	
-
-  
-  
-  
-<!-- var yScale = d3.scaleLinear() -->
-          <!-- .range([innerHeight,0]); -->
-      
-<!-- var xScale = d3.scalePoint() -->
-          <!-- .range([0, innerWidth], 0.5) -->
-          <!-- .padding(0.1); -->
-      
-     <!-- // xScale.domain(data.map(xValue)) -->
-
-	 <!-- // Define the line -->
-	<!-- var stateline = d3.line()		 -->
-    <!-- .x(function(d) {return xScale(d.month); }) -->
-    <!-- .y(function(d) { return yScale(d.value); }); -->
-	
-  var g = svg.append('g')
-          .attr('transform', `translate(${margin.left}, ${margin.top})`); 
-  
-  //make a rectangle so there is something to click on
-g.append("rect")
-    .attr("width", innerWidth)
-    .attr("height", innerHeight)
-    .attr("class", "plot");
-
- //make a clip path for the graph  
- var clip = g.append("clipPath")
-    .attr("id", "clip")
-    .append("svg:rect")
-    .attr("x", 0)
-    .attr("y", 0)
-    .attr("width", innerWidth)
-    .attr("height", innerHeight);  
-
-      
-     var color = d3.scale.category10();
-
-
-const render = data =>{
-console.log(data);
-
-	 
-      
-console.log("in update graph")
-    // Scale the range of the data
-	
-	//x.domain(data.map(function(d) { return d.month; }));
-	//x.domain(d3.extent(data, function(d) { 
-	
-	//console.log(d.month)
-	//return d.month; }));
-   // x.domain(d3.extent(data, function(d) { return d.month; }));
-   ticks = data.map(function(d) {
-      return d.month
-    });
-    xScale.domain(ticks);
+  var svg = d3.select('svg');
+  var width = +svg.attr('width');
+  var height = +svg.attr('height');
+  var ticks;
+  var selectedCategory ='Severly Stunted Children';
+ 
+ var mouseG
+ 
+ var margin = {top: 50, right: 20, bottom: 30, left: 160},
+        innerWidth = width - margin.left - margin.right,
+        innerHeight = height - margin.top - margin.bottom;
+     
    
-   console.log("inside ydomain");
-    yScale.domain([d3.min(data, function(d) { return d.value; }), d3.max(data, function(d) { return d.value; })]);
-	
-
-
-    // Nest the entries by block
-	
-    dataNest = d3.nest()
-        .key(function(d) {return d.block})
-        .entries(data);
-	
-	console.log("print data nest");
-	console.log(dataNest);
-
-	
- 		var result = dataNest.filter(function(val,idx, arr){
-				  return $("." + val.key).attr("fill") != "#ccc" 
-				  // matching the data with selector status
-				})
-		
-//{
-				//  return $("." + val.key).attr("fill") != "#ccc" 
-				  // matching the data with selector status
-				//})
-				
-	console.log("print result");
-		console.log(result);		
- 		var block = g.selectAll(".line")
-      .data(result, function(d){return d.key});
-
-		block.enter().append("path")
-			.attr("class", "line");
-			
-			
-
-		block.transition()
-			.style("stroke", function(d,i) { return d.color = color(d.key); })
-			.attr("id", function(d){ return 'tag'+d.key.replace(/\s+/g, '');}) // assign ID
-			.attr("d", function(d){
-			console.log(d.values)
-				return stateline(d.values);
-			});
-			
-		
-		block.exit().remove();
-
-		var legend = d3.select("#legend")
-			.selectAll("text")
-			.data(dataNest, function(d){return d.key});
-			console.log(legend);
-
-		//checkboxes
-		legend.enter().append("rect")
-		  .attr("width", 20)
-		  .attr("height", 20)
-		  .attr("x", 0)
-		  .attr("y", function (d, i) { return 0 +i*30; })  // spacing
-		  .attr("fill",function(d) { 
-		    return color(d.key);
-		    
-		  })
-		  .attr("class", function(d,i){return "legendcheckbox " + d.key})
-			.on("click", function(d){
-			console.log("in legend")
-			var sect =  selectedCategory;
-			console.log(sect);
-			sect= sect.replace(/ /g, '_');
-			console.log(sect);
-			var url = "http://104.43.197.79/kyd_dashboard/feature10?id1="+d.key+"&id2="+sect;
-              $(location).attr('href', url);
-              window.location = url;
-			 
-					
-			})
-			
-		        
-    // Add the Legend text
-    legend.enter().append("text")
-      .attr("x", 25)
-      .attr("y", function(d,i){return 15 +i*30;})
-      .attr("class", "legend");
-
-		legend.transition()
-      .style("fill", "#777" )
-      .text(function(d){return d.key;});
-
-		legend.exit().remove();
-
-		svg.selectAll(".axis").remove();
-
-    // Add the X Axis
-    g.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + innerHeight + ")")
-        .call(xAxis)
-		.attr("font-size", "20px")
-		 .attr("font-weight", "bold");
-		
-    // Add the Y Axis
-    g.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-		.attr("font-size", "20px")
-		.attr("font-weight", "bold")
-		 .append("text")		 
-      .attr("transform", "rotate(-90)")
-      .attr("y", 6)
-      .attr("dy", ".71em");
-	  
-	    
-	 mouseG = g.append("g")
-      .attr("class", "mouse-over-effects");
-	 
-	
-    mouseG.append("path") // this is the black vertical line to follow mouse
-      .data(result)
-	  .attr("class", "mouse-line")
-      .style("stroke", "black")
-      .style("stroke-width", "1px")
-      .style("opacity", "0");
-
+ // Set the ranges
+ //var x = d3.time.scale().range([0, width]);
+ var xScale = d3.scale.ordinal().rangePoints([0, innerWidth], 0.5);
+ //var x = d3.time.scale().domain([d3.time.format("Aug").parseMonth, d3.time.format("Dec").parseMonth]).range([0, width]);
+ var yScale = d3.scale.linear().range([innerHeight, 0]);
+ 
+ // Define the axes
+ var xAxis = d3.svg.axis().scale(xScale)
+     .orient("bottom")
+ 
+ var yAxis = d3.svg.axis().scale(yScale)
+     .orient("left");
+ 
+ // Define the line
+ var stateline = d3.svg.line()
+     .interpolate("linear")
+     .x(function(d) { return xScale(d.month); })
+     .y(function(d) { return yScale(d.value); });
+   
+ 
+   
+   
+   
+ <!-- var yScale = d3.scaleLinear() -->
+           <!-- .range([innerHeight,0]); -->
+       
+ <!-- var xScale = d3.scalePoint() -->
+           <!-- .range([0, innerWidth], 0.5) -->
+           <!-- .padding(0.1); -->
+       
+      <!-- // xScale.domain(data.map(xValue)) -->
+ 
+    <!-- // Define the line -->
+   <!-- var stateline = d3.line()		 -->
+     <!-- .x(function(d) {return xScale(d.month); }) -->
+     <!-- .y(function(d) { return yScale(d.value); }); -->
+   
+   var g = svg.append('g')
+           .attr('transform', `translate(${margin.left}, ${margin.top})`); 
+   
+   //make a rectangle so there is something to click on
+ g.append("rect")
+     .attr("width", innerWidth)
+     .attr("height", innerHeight)
+     .attr("class", "plot");
+ 
+  //make a clip path for the graph  
+  var clip = g.append("clipPath")
+     .attr("id", "clip")
+     .append("svg:rect")
+     .attr("x", 0)
+     .attr("y", 0)
+     .attr("width", innerWidth)
+     .attr("height", innerHeight);  
+ 
+       
+      var color = d3.scale.category10();
+ 
+ 
+ const render = data =>{
+ console.log(data);
+ 
     
-	
-    var lines = document.getElementsByClassName('line');
-	
-    var mousePerLine = mouseG.selectAll('.mouse-per-line')
-      .data(result)
-      .enter()
-      .append("g")
-      .attr("class", "mouse-per-line");
-
-
-
-	mousePerLine.append("circle")
-	.attr('class', 'topic-circle')
-      .attr("r", 7)
-      .style("stroke", function (d) {
-	  console.log(d.key);
+       
+ console.log("in update graph")
+     // Scale the range of the data
+   
+   //x.domain(data.map(function(d) { return d.month; }));
+   //x.domain(d3.extent(data, function(d) { 
+   
+   //console.log(d.month)
+   //return d.month; }));
+    // x.domain(d3.extent(data, function(d) { return d.month; }));
+    ticks = data.map(function(d) {
+       return d.month
+     });
+     xScale.domain(ticks);
+    
+    console.log("inside ydomain");
+     yScale.domain([d3.min(data, function(d) { return d.value; }), d3.max(data, function(d) { return d.value; })]);
+   
+ 
+ 
+     // Nest the entries by block
+   
+     dataNest = d3.nest()
+         .key(function(d) {return d.block})
+         .entries(data);
+   
+   console.log("print data nest");
+   console.log(dataNest);
+ 
+   
+      var result = dataNest.filter(function(val,idx, arr){
+           return $("." + val.key).attr("fill") != "#ccc" 
+           // matching the data with selector status
+         })
+     
+ //{
+         //  return $("." + val.key).attr("fill") != "#ccc" 
+           // matching the data with selector status
+         //})
+         
+   console.log("print result");
+     console.log(result);		
+      var block = g.selectAll(".line")
+       .data(result, function(d){return d.key});
+ 
+     block.enter().append("path")
+       .attr("class", "line");
+       
+       
+ 
+     block.transition()
+       .style("stroke", function(d,i) { return d.color = color(d.key); })
+       .attr("id", function(d){ return 'tag'+d.key.replace(/\s+/g, '');}) // assign ID
+       .attr("d", function(d){
+       console.log(d.values)
+         return stateline(d.values);
+       });
+       
+     
+     block.exit().remove();
+ 
+     var legend = d3.select("#legend")
+       .selectAll("text")
+       .data(dataNest, function(d){return d.key});
+       console.log(legend);
+ 
+     //checkboxes
+     legend.enter().append("rect")
+       .attr("width", 20)
+       .attr("height", 20)
+       .attr("x", 0)
+       .attr("y", function (d, i) { return 0 +i*30; })  // spacing
+       .attr("fill",function(d) { 
+         return color(d.key);
+         
+       })
+       .attr("class", function(d,i){return "legendcheckbox " + d.key})
+       .on("click", function(d){
+       console.log("in legend")
+       var sect =  selectedCategory;
+       console.log(sect);
+       sect= sect.replace(/ /g, '_');
+       console.log(sect);
+       var url = "http://104.43.197.79/kyd_dashboard/feature10?id1="+d.key+"&id2="+sect;
+               $(location).attr('href', url);
+               window.location = url;
+        
+           
+       })
+       
+             
+     // Add the Legend text
+     legend.enter().append("text")
+       .attr("x", 25)
+       .attr("y", function(d,i){return 15 +i*30;})
+       .attr("class", "legend");
+ 
+     legend.transition()
+       .style("fill", "#777" )
+       .text(function(d){return d.key;});
+ 
+     legend.exit().remove();
+ 
+     svg.selectAll(".axis").remove();
+ 
+     // Add the X Axis
+     g.append("g")
+         .attr("class", "x axis")
+         .attr("transform", "translate(0," + innerHeight + ")")
+         .call(xAxis)
+     .attr("font-size", "20px")
+      .attr("font-weight", "bold");
+     
+     // Add the Y Axis
+     g.append("g")
+         .attr("class", "y axis")
+         .call(yAxis)
+     .attr("font-size", "20px")
+     .attr("font-weight", "bold")
+      .append("text")		 
+       .attr("transform", "rotate(-90)")
+       .attr("y", 6)
+       .attr("dy", ".71em");
+     
+       
+    mouseG = g.append("g")
+       .attr("class", "mouse-over-effects");
+    
+   
+     mouseG.append("path") // this is the black vertical line to follow mouse
+       .data(result)
+     .attr("class", "mouse-line")
+       .style("stroke", "black")
+       .style("stroke-width", "1px")
+       .style("opacity", "0");
+ 
+     
+   
+     var lines = document.getElementsByClassName('line');
+   
+     var mousePerLine = mouseG.selectAll('.mouse-per-line')
+       .data(result)
+       .enter()
+       .append("g")
+       .attr("class", "mouse-per-line");
+ 
+ 
+ 
+   mousePerLine.append("circle")
+   .attr('class', 'topic-circle')
+       .attr("r", 7)
+       .style("stroke", function (d) {
+     console.log(d.key);
+         return color(d.key);
+       })
+       .style("fill", "none")
+       .style("stroke-width", "1px")
+       .style("opacity", "0");
+     
+ 
+     mousePerLine.append("text")
+       .attr("transform", "translate(10,3)");
+ 
+     mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
+       .attr('width', width) // can't catch mouse events on a g element
+       .attr('height', height)
+       .attr('fill', 'none')
+       .attr('pointer-events', 'all')
+       .on('mouseout', function () { // on mouse out hide line, circles and text
+         d3.select(".mouse-line")
+           .style("opacity", "0");
+         d3.selectAll(".mouse-per-line circle")
+           .style("opacity", "0");
+         d3.selectAll(".mouse-per-line text")
+           .style("opacity", "0");
+       })
+       .on('mouseover', function () { // on mouse in show line, circles and text
+         d3.select(".mouse-line")
+           .style("opacity", "1");
+         d3.selectAll(".mouse-per-line circle")
+           .style("opacity", "1");
+         d3.selectAll(".mouse-per-line text")
+           .style("opacity", "1");
+       
+       })
+      .on('mousemove', function () { // mouse moving over canvas
+         var tickPos = xScale.range();
+     var m = d3.mouse(this),
+     lowDiff = 1e99,
+           xI = null;
+         d3.selectAll(".mouse-per-line")
+           .attr("transform", function (d, i) {		 
+              for (var i = 0; i < tickPos.length; i++){
+         var diff = Math.abs(m[0] - tickPos[i]);
+         if (diff < lowDiff){
+           lowDiff = diff;
+           xI = i;
+         }
+       }
+     
+   d3.select(this).select('text')
+               .text(yScale.invert(yScale(d.values[xI].value)).toFixed(2));
+     
+      d3.select(".mouse-line")
+               .attr("d", function () {
+                 var data = "M" + xScale(d.values[xI].month) + "," + height;
+                 data += " " + xScale(d.values[xI].month) + "," + 0;					
+                 return data;
+               });
+ 
+              return "translate(" + xScale(d.values[xI].month) + "," + yScale(d.values[xI].value) + ")";     
+           });
+        
+       });
+ 
+ 
+      
+ };
+ 
+ function clearAll(){
+   d3.selectAll(".line")
+   .transition().duration(100)
+       .attr("d", function(d){
+         return null;
+       });
+   d3.select("#legend").selectAll("rect")
+   .transition().duration(100)
+       .attr("fill", "#ccc");
+ };
+ 
+ function showAll(){
+   d3.selectAll(".line")
+   .transition().duration(100)
+       .attr("d", function(d){
+         return stateline(d.values);
+       });
+   d3.select("#legend").selectAll("rect")
+   .attr("fill",function(d) {
+     if (d.active == true){
         return color(d.key);
-      })
-      .style("fill", "none")
-      .style("stroke-width", "1px")
-      .style("opacity", "0");
-	  
-
-    mousePerLine.append("text")
-      .attr("transform", "translate(10,3)")
-	      .attr("font-size", "20px");
-
-
-    mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
-      .attr('width', width) // can't catch mouse events on a g element
-      .attr('height', height)
-      .attr('fill', 'none')
-      .attr('pointer-events', 'all')
-      .on('mouseout', function () { // on mouse out hide line, circles and text
-        d3.select(".mouse-line")
-          .style("opacity", "0");
-        d3.selectAll(".mouse-per-line circle")
-          .style("opacity", "0");
-        d3.selectAll(".mouse-per-line text")
-          .style("opacity", "0");
-      })
-      .on('mouseover', function () { // on mouse in show line, circles and text
-        d3.select(".mouse-line")
-          .style("opacity", "1");
-        d3.selectAll(".mouse-per-line circle")
-          .style("opacity", "1");
-        d3.selectAll(".mouse-per-line text")
-          .style("opacity", "1");
-		  
-      })
-	   .on('mousemove', function () { // mouse moving over canvas
-        var tickPos = xScale.range();
-		var m = d3.mouse(this),
-		lowDiff = 1e99,
-          xI = null;
-        d3.selectAll(".mouse-per-line")
-          .attr("transform", function (d, i) {		 
-             for (var i = 0; i < tickPos.length; i++){
-        var diff = Math.abs(m[0] - tickPos[i]);
-        if (diff < lowDiff){
-          lowDiff = diff;
-          xI = i;
-        }
       }
-	  
-	d3.select(this).select('text')
-              .text(yScale.invert(yScale(d.values[xI].value)).toFixed(2));
-	  
-	   d3.select(".mouse-line")
-              .attr("d", function () {
-                var data = "M" + xScale(d.values[xI].month) + "," + height;
-                data += " " + xScale(d.values[xI].month) + "," + 0;					
-                return data;
-              });
-
-             return "translate(" + xScale(d.values[xI].month) + "," + yScale(d.values[xI].value) + ")";     
-          });
-		   
-      });
-
-
-   	
-};
-
-function clearAll(){
-  d3.selectAll(".line")
-	.transition().duration(100)
-			.attr("d", function(d){
-        return null;
-      });
-  d3.select("#legend").selectAll("rect")
-  .transition().duration(100)
-      .attr("fill", "#ccc");
-};
-
-function showAll(){
-  d3.selectAll(".line")
-	.transition().duration(100)
-			.attr("d", function(d){
-        return stateline(d.values);
-      });
-  d3.select("#legend").selectAll("rect")
-  .attr("fill",function(d) {
-    if (d.active == true){
-       return color(d.key);
-     }
-   })
-};
+    })
+ };
+ 
+ // Get the data
+ d3.csv("{% static 'data/csv/linechart/lc_block_data.csv'%}", function(error, data) {
+  //  console.log(data)
   
-  //
-  data_from_django = {{ jsonBlock|safe }};
-  var data = []
-  data_from_django.forEach(element => {
-    data.push(element.fields);
-  });
-  
-
-	
-	$(".category a").click(function(){
-        var val = $(this).text();
-		selectedCategory =val;
-		var section;
-			if(val == 'Severly Stunted Children')
-			section ='svrly_stunting_percent';
-			else if (val == 'Stunted Children')
+  data.forEach(function(d) {
+     
+    d.svr_wasting_percent = +d.svrly_wasting_percent;
+		d.wasting_percent = +d.wasting_percent;
+		d.svrly_stunted_percent = +d.svrly_stunted_percent;
+		d.stunting_percent = +d.stunting_percent;
+		d.svrly_underweight_percent = +d.svrly_underweight_percent;
+		d.underweight_percent = +d.underweight_percent;
+		d.low_birth_weight_percent = +d.low_birth_weight_percent;
+		
+   });
+ 
+   
+   $(".category a").click(function(){
+         var val = $(this).text();
+     selectedCategory =val;
+     var section;
+     if(choiceOneVal == 'Severly Stunted Children')
+			section ='svrly_stunted_percent';
+			else if (choiceOneVal == 'Stunted Children')
 			section ='stunting_percent';
-			else if(val == 'Severly Wasted(SAM) Children')
-			section ='svrly_wasting_percent';
-			else if(val == 'Wasted Children')
+			else if(choiceOneVal == 'Severly Wasted(SAM) Children')
+			section ='svr_wasting_percent';
+			else if(choiceOneVal == 'Wasted Children')
 			section = 'wasting_percent';
-			else if(val == 'Severly Underweight(SUW) Children')
+			else if(choiceOneVal == 'Severly Underweight(SUW) Children')
 			section = 'svrly_underweight_percent';
-			else if (val == 'Underweight Children')
+			else if (choiceOneVal == 'Underweight Children')
 			section = 'underweight_percent'
 			else 
 			section = 'low_birth_weight_percent'
-			
-			mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
-			mouseG.selectAll('.mouse-per-line').selectAll('text').remove();	
-			
-			var dataFilter = data.map(function(d){return {month: d.month_n, block: d.block_n, value: d[section]} })
-			
-	      
-	      //debugger
-	      
-		    dataFilter.forEach(function(d) {
-    			
-    			d.value =+d.value;
-    			d.active = true;
-    		});
-    		
-		   
-		    //debugger
-				render(dataFilter);
-
-			
-				jQuery('h1.page-header').html(section);
-			});
-
-    var dataFilter = data.map(function(d){return {month: d.month_n, block: d.block_n, value: d.svrly_stunting_percent} })
-	// generate initial graph
-	//data = filterCSV(csv, 'type', 'Stunting');
-	 
-	render(dataFilter);	
-
-
        
-	
-	
-    
-
-
-$(function(){
-  //bind event
+       mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
+       mouseG.selectAll('.mouse-per-line').selectAll('text').remove();	
+       
+       var dataFilter = data.map(function(d){return {month: d.month_n, block: d.block_n, value: d[section]} })
+       
+         
+         //debugger
+         
+         dataFilter.forEach(function(d) {
+           
+           d.value =+d.value;
+           d.active = true;
+         });
+         
+        
+         //debugger
+         render(dataFilter);
  
-   $(".category a").click(function(){
-    var valCategory = $(this).text();
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
-  });
-
-  //trigger event
-  $(".category a").first().trigger('click');
+       
+         jQuery('h1.page-header').html(section);
+       });
+ 
+     var dataFilter = data.map(function(d){return {month: d.month_n, block: d.block_n, value: d.svrly_stunted_percent} })
+   // generate initial graph
+  //  data = filterCSV(csv, 'type', 'Stunting');
+    
+   render(dataFilter);	
+ 
+ 
+        
+   
+   
+     
+ });
+ 
+ $(function(){
+   //bind event
   
-});
-  </script>
+    $(".category a").click(function(){
+     var valCategory = $(this).text();
+     $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+   });
+ 
+   //trigger event
+   $(".category a").first().trigger('click');
+   
+ });
+ 
+ 
+ </script>
 {% endblock %}
 
 

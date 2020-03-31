@@ -1,402 +1,811 @@
 {% extends 'dashboard/dash_base.html' %}
+
 {% load static %}
+
+
 
 {% block feature_css %}
 
+
+
 <style>
+
   
+
     label{
+
       font-size: large;
+
     }
+
               
+
    .projectCheckBox{
+
     font-size: 20px;
+
     font-weight: bold;
+
     height:500px;
+
    overflow-x:scroll;
+
    }
+
    
+
    .checkBoxButton{
+
     font-size: 20px;
+
     font-weight: bold;
+
    }
+
    
+
    #wrapper {
+
   float: right;
+
   width: 300px;
+
 }
+
+
 
 #myChart{
+
 width: 60%;
+
 height: 40%;
+
 }
+
   </style>
+
 {% endblock %}
 
+
+
 {% block feature %}
+
+<div class='heading text-dark mt-2 text-center' >Radar Diagram - Outcome Indicators</div>
+
 <div class="row text-center" style="height: 100px;">
+
     <div class="col-12 bg-info h-75 w-100" >  
+
    <div class="dropdown" style="float: left; margin:20px" id="monthDrop">
+
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
           Select Month
+
           <span class="selectedMonth" id="selMonth"></span>
+
         </button>	  
+
         <div class="dropdown-menu month"  aria-labelledby="dropdownMenuButton">
+
           <a class="dropdown-item" href="#">November</a>
+
           <a class="dropdown-item" href="#">December</a>
+
           <a class="dropdown-item" href="#">January</a>
+
         </div>
+
         
+
       </div>
+
     <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat3' %}`">Previous Feature</button>
+
     <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat5' %}`">Next Feature</button>
 
+
+
   </div>
+
   
+
   
+
   <div class="row h-100 w-100 " style="align-self:flex-start">
+
     <div class="col-9 " >
+
       <canvas id="myChart"></canvas>
+
     </div>
+
   </div>
+
   
+
   </div>
+
   
+
   <div id="wrapper">
+
   <div class="projectCheckBox">  
+
   <p>Select Project </p>	
+
         <form id="projectList" >
+
         <label><input type="checkbox" id="myBestDistrict" value="BestDistrict"/><span> Best District</span></label> <br>
+
         <label><input type="checkbox" id="myMH" value="Maharashtra"/><span> Maharashtra</span></label> <br>
+
         <label><input type="checkbox" id="myAhmadnagar" value="Ahmadnagar"/><span> Ahmadnagar</span></label> <br>
+
         <label><input type="checkbox" id="myAkola" value="Akola"/> <span>Akola</span></label> <br>
+
         <label><input type="checkbox" id="myAmravati" value="Amravati"/> <span>Amravati</span></label> <br>
+
         <label><input type="checkbox" id="myAurangabad" value="Aurangabad"/><span> Aurangabad</span></label> <br>
+
         <label><input type="checkbox" id="myBeed" value="Beed"/> <span>Beed </span></label><br>
+
         <label><input type="checkbox" id="myBhandara" value="Bhandara"/><span> Bhandara</span></label> <br>
+
         <label><input type="checkbox" id="myBuldana" value="Buldana"/><span> Buldana</span></label> <br>
+
         <label><input type="checkbox" id="myChandrapur" value="Chandrapur"/> <span>Chandrapur</span></label>  <br>     
+
         <label><input type="checkbox" id="myDhule" value="Dhule"/><span> Dhule</span></label> <br>
+
         <label><input type="checkbox" id="myGadchiroli" value="Gadchiroli"/><span> Gadchiroli</span></label> <br>
+
         <label><input type="checkbox" id="myGondia" value="Gondia"/><span> Gondia </span></label><br>
+
         <label><input type="checkbox" id="myHingoli" value="Hingoli"/><span>Hingoli</span></label> <br>
+
         <label><input type="checkbox" id="myJalgaon" value="Jalgaon"/> <span>Jalgaon</span></label> <br>		
+
         <label><input type="checkbox" id="myJalna" value="Jalna"/><span> Jalna</span></label> <br>
+
         <label><input type="checkbox" id="myKolhapur" value="Kolhapur"/><span> Kolhapur</span></label> <br>
+
         <label><input type="checkbox" id="myLatur" value="Latur"/><span> Latur</span></label> <br>
+
         <label><input type="checkbox" id="myMumbaiCity" value="Mumbai City"/><span> Mumbai City</span></label> <br>
+
         <label><input type="checkbox" id="myMumbaiSuburban" value="Mumbai Suburban"/> <span>Mumbai Suburban</span></label> <br>
+
         <label><input type="checkbox" id="myNagpur" value="Nagpur"/><span> Nagpur </span></label><br>
+
         <label><input type="checkbox" id="myNanded" value="Nanded"/> <span>Nanded</span></label> <br>
+
         <label><input type="checkbox" id="myNandurbar" value="Nandurbar"/> <span>Nandurbar</span></label> <br>
+
         <label><input type="checkbox" id="myNashik" value="Nashik"/> <span>Nashik</span></label> <br>
+
         <label><input type="checkbox" id="myOsmanabad" value="Osmanabad"/><span> Osmanabad</span></label><br>     
+
         <label><input type="checkbox" id="myPalghar" value="Palghar"/> <span>Palghar</span></label> <br>
+
         <label><input type="checkbox" id="myParbhani" value="Parbhani"/><span>Parbhani</span></label> <br>
+
         <label><input type="checkbox" id="myPune" value="Pune"/><span> Pune</span></label><br>
+
         <label><input type="checkbox" id="myRaigad" value="Raigad"/><span>Raigad</span></label> <br>
+
         <label><input type="checkbox" id="myRatnagiri" value="Ratnagiri"/><span> Ratnagiri</span></label> <br>	
+
         <label><input type="checkbox" id="mySangli" value="Sangli"/> <span>Sangli</span></label> <br>
+
         <label><input type="checkbox" id="mySatara" value="Satara"/><span>Satara </span></label><br>
+
         <label><input type="checkbox" id="mySindhudurg" value="Sindhudurg"/><span> Sindhudurg </span></label><br>
+
         <label><input type="checkbox" id="mySolapur" value="Solapur"/> <span>Solapur</span></label><br>     
+
         <label><input type="checkbox" id="myThane" value="Thane"/> <span>Thane</span></label> <br>
+
         <label><input type="checkbox" id="myWardha" value="Wardha"/><span>Wardha</span></label> <br>
+
         <label><input type="checkbox" id="myWashim" value="Washim"/><span> Washim</span></label><br>
+
         <label><input type="checkbox" id="myYavatmal" value="Yavatmal"/><span>Yavatmal</span></label> <br>     
+
        </form>    
+
   </div>
+
   <div class="checkBoxButton"> <input type = "button"  value = "Update Chart" onclick = "GetSelected()" /> </div>
+
   </div>
+
+
 
   {% endblock %}
 
+
+
 {% block feature_js %}
 
+
+
 <script>
+
    
+
  
+
      
+
     let chartStatData=[];
+
      const monthwise = (data) => {
+
      var aproperty = [];
+
      var sproperty = [];
+
     
+
      var oproperty = [];
+
     
+
    data.forEach(d =>{
+
      var temp = {};
+
      temp['district_n'] = d.district_n;
+
      temp['stunting_percent'] = +d.stunting_percent;
+
      temp['underweight_percent'] = +d.underweight_percent;
+
      temp['wasting_percent'] = +d.wasting_percent;
+
      temp['low_birth_weight_percent'] = +d.low_birth_weight_percent;
+
       temp['svrly_stunting_percent']= +d.svrly_stunting_percent;
+
      temp['svr_wasting_percent'] = +d.svr_wasting_percent;
+
      
+
      if(d.month_n == "Nov"){
+
  
+
        aproperty.push(temp);}
+
        else if (d.month_n == "Dec"){
+
        sproperty.push(temp);
+
      }else if (d.month_n == "Jan"){
+
     
+
      oproperty.push(temp)
+
      }
+
      
+
    })
+
  var listdata = [
+
  aproperty,sproperty,oproperty
+
  ]
+
  // console.log(listdata)
+
  return listdata;
+
  }
+
  
+
  dataforchart = (data) =>{
+
    
+
  let mydata = { data: {
+
   // labels: ["svrly_stntd","svr_wstg","wasting_percent","stunting_percent","underweight_percent"]
+
    labels: ["Stunting", "Underweight","Wasting","Low BirthWeight","Severly Stunting","Severly Wasted"],
+
    datasets:[]
+
  }}
+
  
+
  let mydataset = [];
+
  // mybackgroundcolor = [];
+
  mybordercolor = ['#B0E0E6','#F4A460','#778899','#7FFFD4','#6B8E23','#BDB76B','#C71585','#800080','#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080'];
+
  
+
  let itr = 0;
+
  
+
    data.forEach((d,itr) => {
+
      let temp = {};
+
      temp.label = d.district_n,
+
      // temp.defaultFontSize= "12",
+
      temp.borderColor = 'Gray',
+
      temp.pointBorderColor = 'Black',
+
      temp.pointBackgroundColor= 'Black',
+
      //temp.pointHoverBackgroundColor = "#fff";
+
      temp.pointHoverBorderColor = "rgba(179,181,198,1)",
+
      temp.backgroundColor = "transparent",
+
      temp.pointRadius = 5,
+
      temp.pointHoverRadius = 10,
+
      temp.pointHoverBackgroundColor = 'red'
+
      temp.pointHitRadius = 1,
+
      //temp.showTooltips = true,
+
     //temp.borderColor = mybordercolor[itr],
+
     // temp.data = [d.svrly_stntd,d.svr_wstg,d.wasting_percent,d.stunting_percent,d.underweight_percent];
+
       temp.data = [d.stunting_percent,d.underweight_percent,d.wasting_percent,d.low_birth_weight_percent,d.svrly_stunting_percent,d.svr_wasting_percent]
+
      
+
      mydataset.push(temp);
+
     
+
  })
+
  
+
  mydata.data.datasets = mydataset;
+
  return mydataset;
+
  }
+
  
+
  
+
  
+
        d3.csv("{% static 'maha_dashboard/data/csv/Radar_Nutrition_status_MH.csv' %}").then(data => {
+
           monthwisesplit = monthwise(data);
+
          
+
           data.forEach(element => {
+
             element.district_n = element.district_n;
+
            // element.svrly_stntd = +element.svrly_stntd;
+
            // element.svr_wstg = +element.svr_wstg;
+
             element.stunting_percent = +element.stunting_percent;
+
              element.underweight_percent = +element.underweight_percent;
+
             element.wasting_percent  = +element.wasting_percent;
+
             element.low_birth_weight_percent  = +element.low_birth_weight_percent;
+
             element.svrly_stunting_percent = +element.svrly_stunting_percent; 
+
             element.svr_wasting_percent = +element.svr_wasting_percent;
+
             
+
          });
+
          $(".month a").click(function(){
+
              $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+
              $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+
               var projectList = document.getElementById("projectList"); 
+
              var chks = projectList.getElementsByTagName("INPUT");	
+
              for (var i = 0; i < chks.length; i++) 
+
              {
+
              chks[i].checked = false;
+
              }
+
            var val = $(this).text();
+
            mydata = selectData(val,monthwisesplit);
+
              chartStatData= dataforchart(mydata);
+
              console.log(chartStatData);
+
                render(dataforchart(mydata));
+
            // console.log(mydata);
+
           
+
        });
+
        // console.log(monthwisesplit[0][13]);
+
        // render(best)
+
    
+
       chartStatData=dataforchart(monthwisesplit[0]);
+
     render(dataforchart(monthwisesplit[0]));
+
  
+
  
+
  
+
  });
+
  
+
  
+
  
+
  const selectData =  (val,monthwisesplit) =>{
+
        if(val == "November"){
+
               return monthwisesplit[0];
+
        }else if (val == "December"){ 
+
          return monthwisesplit[1];
+
  
+
        }else if (val == "January"){ 
+
          return monthwisesplit[2]
+
  
+
       }
+
   }
+
  
+
  $(function(){
+
    //bind event
+
    $(".month a").click(function(){
+
      var valMonth = $(this).text();
+
      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+
    });
+
    
+
    //trigger event
+
    $('.month a').first().trigger('click');
+
  
+
    
+
  });
+
  
+
            
+
            
+
  function GetSelected() {
+
          //Create an Array.
+
          var selected = new Array();
+
   
+
          //Reference the Table.
+
          var projectList = document.getElementById("projectList");
+
   
+
          //Reference all the CheckBoxes in Table.
+
          var chks = projectList.getElementsByTagName("INPUT");
+
   
+
          // Loop and push the checked CheckBox value in Array.
+
          for (var i = 0; i < chks.length; i++) {
+
              if (chks[i].checked) {
+
                  selected.push(chks[i].value);
+
              }
+
          }		
+
          //Display the selected CheckBox values.		
+
          makeviz(selected);
+
      };
+
    
+
      
+
    const render = rdata =>{
+
    console.log(rdata);
+
     document.getElementById("myBestDistrict").checked = true;
+
    document.getElementById("myMH").checked = true;
+
   
+
    var rdata2=[];
+
    
+
    for (var i=0; i < rdata.length; i++)
+
    {
+
    if(rdata[i].label== "BestDistrict"  || rdata[i].label== "Maharashtra")
+
    {
+
    
+
    rdata2.push(rdata[i]); 
+
    }  
+
    }
+
    
+
    var ctx = document.getElementById('myChart').getContext('2d');
+
  
+
      var chart = new Chart(ctx, {
+
          // The type of chart we want to create
+
          type: 'radar',
+
  
+
          // The data for our dataset
+
          data: {
+
             
+
               labels: ["Stunting", "Underweight","Wasting","Low BirthWeight","Severly Stunting","Severly Wasted"],
+
     // pointLabelFontSize : 160,
+
     // scaleFontSize: 160,
+
      
+
      
+
              datasets: [rdata2[0], rdata2[1]],
+
            
+
          },
+
  
+
          // Configuration options go here
+
          options: {
+
            //defaultFontSize: 120,
+
            //maintainAspectRation: false,
+
            tooltips: {
+
                  mode: 'index',
-                 intersect: false,
+
                  callbacks: {
+
                      label: function(tooltipItem, data) {
+
                          return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
                      }
+
                  }
+
              },
+
              hover: {
+
              mode: 'index',
-             intersect: false
+
              
+
              },
+
          
+
      scale: {
+
          angleLines: {
+
              display: true
+
          },
+
          ticks: {
+
              reverse: true,
+
              suggestedMin: 0,
+
              suggestedMax: 100,
+
              stepSize: 20
+
          },
+
          pointLabels:{
+
         fontColor:"blue",
+
         fontSize: 20
+
      }
+
      },
+
      
+
      
+
      
+
  }
+
  
+
      });  
+
  
+
      makeviz = opt =>{
+
     
+
    console.log(opt.length);
+
      var rdata1=[];
+
       for(var i=0; i < chartStatData.length; i++) 
+
       {
+
           for(var j=0; j < opt.length; j++)
+
           { 
+
       
+
         if(opt[j] == chartStatData[i].label)
+
               {
+
               console.log(opt[j]);
+
               rdata1.push(chartStatData[i]);
+
       
+
               } 
+
      
+
            }
+
        }
+
        //rdata1.push(best);
+
        // rdata1.push(pal)
+
        console.log(rdata1);
+
        chart.data.datasets=[];	 
+
       // document.getElementById("myChart").innerHTML = "";
+
      for(var i=0; i < rdata1.length; i++)
+
      {
+
      chart.data.datasets[i]=rdata1[i];
-     } 	
-     
-     
-     chart.update();
-        
+
+
+
+     if(rdata1[i].label != 'BestDistrict' && rdata1[i].label != 'Maharashtra')
+
+      {
+
+        chart.data.datasets[i].borderColor="red";
+
       }
+
+     } 	
+
      
+
+     
+
+     chart.update();
+
+        
+
+      }
+
+     
+
        }
+
    // console.log(data)
+
      </script>
+
+
 
 {% endblock %}

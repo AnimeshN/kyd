@@ -62,9 +62,9 @@ td{
           		<span class="selectedMonth"></span>
             </button>
             <div class="dropdown-menu drop-month" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">August</a>
-              <a class="dropdown-item" href="#">September</a>
-              <a class="dropdown-item" href="#">October</a>
+              <a class="dropdown-item" href="#">November</a>
+              <a class="dropdown-item" href="#">December</a>
+              <a class="dropdown-item" href="#">January</a>
             </div>
           </div>
           <div class="dropdown" style="float: left; margin:10px"> 
@@ -89,8 +89,10 @@ td{
 
     </div>
     </div>
-    
+
   <div class="row h-100 scrollable">
+    
+
     <div class="col">
       <div class='row'> 
   
@@ -99,12 +101,15 @@ td{
           <button type="button" class="btn back-button m-4">back</button>
 
           <span class='info info-hirar'>Palghar</span> <br>
-          <p style="font-size: large;">Click on the Polygon(Block/Project/Beat) to view the Lower Level</p>
+          <p style="font-size: medium;">Click on the Polygon(Block/Project/Beat) to view the Lower Level</p>
 
 
 				</div>
       </div>
       <div class='row' style="height:900px" >
+        <div id = 'sw' class="spinner-wrapper">
+          <div class="spinner"></div>
+        </div>
       	<div class='col-8' id = "mymap">
             <div class="text-center">
                 <p id="value-range"></p>
@@ -142,7 +147,7 @@ const margin = {left:200,top:300 ,right:40,bottom:20};
 const transitionDuration = 1000;
 let level = 0; 
 let levelLocation = [];
-let month_hack = "aug";
+let month_hack = "Nov";
 let direction = 1;
 let circleEnter,rowEnter;
 let zoomBox = {'translate':[],'scale':[]};
@@ -183,9 +188,9 @@ const svg = d3
 const g = svg.append("g");
 const mercator = d3
   .geoMercator()
-  .scale(25000)
+  .scale(16000)
   .translate([innerWidth / 2, innerHeight / 2])
-  .center([73, 19.7]);
+  .center([73, 19.4]);
 const pathGenerator = d3.geoPath().projection(mercator);
 //Zoom
 // svg.call(d3.zoom().on('zoom',() =>{
@@ -207,8 +212,8 @@ const render = (
   let TooltipVal1 = d => d.properties.no_of_chld_cmpltd_1yr_immunzt;
   // let TooltipVal2 = d => "-";
   // let TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-  let ColorValue = d => d.properties.prnt_child_1yr_cmpltd_immunzt;
-  let TPercentValue = d => d.prnt_child_1yr_cmpltd_immunzt;
+  let ColorValue = d => d.properties.prnt_child_1yr_immnztn;
+  let TPercentValue = d => d.prnt_child_1yr_immnztn;
   let TActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt;
   const fillCellColor = (d, percentageColor, actualColor) => {
     if (d.name == "Percentage") return percentageColor(d.value);
@@ -218,14 +223,14 @@ const render = (
   //info-div
   const updateMonth = selectedMonth => {
     switch (month_hack) {
-      case "aug":
-        selectedMonth = "August";
+      case "Nov":
+        selectedMonth = "November";
         break;
-      case "sep":
-        selectedMonth = "September";
+      case "Dec":
+        selectedMonth = "December";
         break;
-      case "oct":
-        selectedMonth = "October";
+      case "Jan":
+        selectedMonth = "January";
         break;
     }
     d3.select(".info-month").text(selectedMonth);
@@ -264,11 +269,11 @@ const render = (
     let max = d3.max(geojson, ColorValue);
     let comp = (max - min) / 3;
     let myColor = (v, low, high) => {
-        if (v < low) return "#24562B";
-        //matte green
-        else if (v >= low && v <= high) return "F4BC1C";
+        if (v < low) return "#B2022F"; 
+        //matte red
+        else if (v >= low && v <= high) return "#F4BC1C";
         //matte yellow
-        else if (v > high) return "#B2022F"; //matte red
+        else if (v > high) return "#24562B"; //matte green
     };
      	let tooltipValue = (d) =>{
       let ttv = `<b>${TextValue(d)}</b><br> 
@@ -331,11 +336,11 @@ const render = (
       .attr("font-family", "sans-serif");
 
     if (level === 0) {
-      textLabel.attr("font-size", "10pt");
+      textLabel.attr("font-size", "8pt").attr("font-weight", "bold");
     } else if (level === 1) {
       textLabel.attr("font-size", "6pt"); 
     } else if (level === 2) {
-      textLabel.attr("font-size", "4pt");
+      textLabel.attr("font-size", "2pt").attr("font-weight", "bold");
     } 
     
 
@@ -380,8 +385,8 @@ const render = (
           TooltipVal1 = d => d.properties.no_of_chld_cmpltd_1yr_immunzt;
   				// TooltipVal2 = d => "-";
   				// TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-  				ColorValue = d => d.properties.prnt_child_1yr_cmpltd_immunzt;
-                TPercentValue = d => d.prnt_child_1yr_cmpltd_immunzt;
+  				ColorValue = d => d.properties.prnt_child_1yr_immnztn;
+                TPercentValue = d => d.prnt_child_1yr_immnztn;
                 TActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt;
 
           break;
@@ -410,8 +415,8 @@ const render = (
           TooltipVal1 = d => d.properties.no_chld_intd_cf_past30d;
   				// TooltipVal2 = d => d.properties.mdrtly_wstd;
   				// TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-          ColorValue = d => d.properties.prnt_chld_intd_cf_past30d;
-          TPercentValue = d => d.prnt_chld_intd_cf_past30d;
+          ColorValue = d => d.properties.prnt_chld_intd_cf_p30d;
+          TPercentValue = d => d.prnt_chld_intd_cf_p30d;
           TActualValue = d => d.no_chld_intd_cf_past30d;
 
           break;
@@ -420,8 +425,8 @@ const render = (
           TooltipVal1 = d => d.properties.no_chld_appr_cf;
   				// TooltipVal2 = d => "-";
   				// TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
-          ColorValue = d => d.properties.prnt_chld_6to24mnths_intd_cf;
-          TPercentValue = d => d.prnt_chld_6to24mnths_intd_cf;
+          ColorValue = d => d.properties.prnt_intd_cf_6to24mnth_child;
+          TPercentValue = d => d.prnt_intd_cf_6to24mnth_child;
           TActualValue = d => d.no_chld_appr_cf;
           
           break;
@@ -601,43 +606,43 @@ const render = (
       let selectedJSON, selectedData;
       let selectedPoints;
       switch (month_hack) {
-        case "aug":
+        case "Nov":
           if (level === 1) {
-            selectedJSON = project.Aug;
-            selectedData = projectData.Aug;
+            selectedJSON = project.Nov;
+            selectedData = projectData.Nov;
           } else if (level === 2) {
-            selectedJSON = beat.Aug;
-            selectedData = beatData.Aug;
+            selectedJSON = beat.Nov;
+            selectedData = beatData.Nov;
           } else if (level === 3) {
-            selectedJSON = beat.Aug;
-            selectedData = awcData.Aug;
-            selectedPoints = awc.Aug;
+            selectedJSON = beat.Nov;
+            selectedData = awcData.Nov;
+            selectedPoints = awc.Nov;
           }
           break;
-        case "sep":
+          case "Dec":
           if (level === 1) {
-            selectedJSON = project.Sep;
-            selectedData = projectData.Sep;
+            selectedJSON = project.Dec;
+            selectedData = projectData.Dec;
           } else if (level === 2) {
-            selectedJSON = beat.Sep;
-            selectedData = beatData.Sep;
+            selectedJSON = beat.Dec;
+            selectedData = beatData.Dec;
           } else if (level === 3) {
-            selectedJSON = beat.Sep;
-            selectedData = awcData.Sep;
-            selectedPoints = awc.Sep;
+            selectedJSON = beat.Dec;
+            selectedData = awcData.Dec;
+            selectedPoints = awc.Dec;
           }
           break;
-        case "oct":
+          case "Jan":
           if (level === 1) {
-            selectedJSON = project.Oct;
-            selectedData = projectData.Oct;
+            selectedJSON = project.Jan;
+            selectedData = projectData.Jan;
           } else if (level === 2) {
-            selectedJSON = beat.Oct;
-            selectedData = beatData.Oct;
+            selectedJSON = beat.Jan;
+            selectedData = beatData.Jan;
           } else if (level === 3) {
-            selectedJSON = beat.Oct;
-            selectedData = awcData.Oct;
-            selectedPoints = awc.Oct;
+            selectedJSON = beat.Jan;
+            selectedData = awcData.Jan;
+            selectedPoints = awc.Jan;
           }
           break;
       }
@@ -737,11 +742,11 @@ const render = (
     });
     let percentageColor = d3
       .scaleSequential()
-      .domain([d3.max(tdata, PercentageValue), d3.min(tdata, PercentageValue)])
+      .domain([ d3.min(tdata, PercentageValue), d3.max(tdata, PercentageValue)])
       .interpolator(d3.interpolateRdYlGn);
     let actualColor = d3
       .scaleSequential()
-      .domain([d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
+      .domain([d3.min(tdata, ActualValue), d3.max(tdata, ActualValue)])
       .interpolator(d3.interpolateRdYlGn);
 
     rowEnter = row
@@ -768,7 +773,7 @@ const render = (
       rowEnter.selectAll("*").remove();
       switch (selCat) {
         case 1:
-          PercentageValue = d => d.prnt_child_1yr_cmpltd_immunzt;
+          PercentageValue = d => d.prnt_child_1yr_immnztn;
           ActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt;
           break;
         case 2:
@@ -780,11 +785,11 @@ const render = (
           ActualValue = d => d.no_chld_excly_bf;
           break;
         case 4:
-          PercentageValue = d => d.prnt_chld_intd_cf_past30d;
+          PercentageValue = d => d.prnt_chld_intd_cf_p30d;
           ActualValue = d => d.no_chld_intd_cf_past30d;
           break;
         case 5:
-          PercentageValue = d => d.prnt_chld_6to24mnths_intd_cf;
+          PercentageValue = d => d.prnt_intd_cf_6to24mnth_child;
           ActualValue = d => d.no_chld_appr_cf;
           break;
         
@@ -865,17 +870,17 @@ const render = (
       let LocationMonth, LocationDataMonth;
       if (level === 0) {
         switch (month_hack) {
-          case "aug":
-            LocationMonth = block.Aug;
-            LocationDataMonth = blockData.Aug;
+          case "Nov":
+            LocationMonth = block.Nov;
+            LocationDataMonth = blockData.Nov;
             break;
-          case "sep":
-            LocationMonth = block.Sep;
-            LocationDataMonth = blockData.Sep;
+          case "Dec":
+            LocationMonth = block.Dec;
+            LocationDataMonth = blockData.Dec;
             break;
-          case "oct":
-            LocationMonth = block.Oct;
-            LocationDataMonth = blockData.Oct;
+          case "Jan":
+            LocationMonth = block.Jan;
+            LocationDataMonth = blockData.Jan;
             break;
         }
 
@@ -883,17 +888,17 @@ const render = (
       } else if (level === 1) {
 
         switch (month_hack) {
-          case "aug":
-            LocationMonth = project.Aug;
-            LocationDataMonth = projectData.Aug;
+          case "Nov":
+            LocationMonth = project.Nov;
+            LocationDataMonth = projectData.Nov;
             break;
-          case "sep":     
-            LocationMonth = project.Sep;
-            LocationDataMonth = projectData.Sep;
+          case "Dec":     
+            LocationMonth = project.Dec;
+            LocationDataMonth = projectData.Dec;
             break;
-          case "oct":
-            LocationMonth = project.Oct;
-            LocationDataMonth = projectData.Oct;
+          case "Jan":
+            LocationMonth = project.Jan;
+            LocationDataMonth = projectData.Jan;
             break;
         }
         let previousBlock = levelLocation[levelLocation.length -1]; 
@@ -904,19 +909,20 @@ const render = (
         makemap(selectedjson, selectedcsv);
       }else if(level === 2){
         switch (month_hack) {
-          case "aug":
-        		LocationMonth = beat.Aug;
-          	LocationDataMonth = beatData.Aug;
+          case "Nov":
+        		LocationMonth = beat.Nov;
+          	LocationDataMonth = beatData.Nov;
             break;
-         case "sep":  
-            LocationMonth = beat.Sep;
-            LocationDataMonth = beatData.Sep;
+         case "Dec":  
+            LocationMonth = beat.Dec;
+            LocationDataMonth = beatData.Dec;
             break;
-          case "oct":
-            LocationMonth = beat.Oct;
-            LocationDataMonth = beatData.Oct;
+          case "Jan":
+            LocationMonth = beat.Jan;
+            LocationDataMonth = beatData.Jan;
             break;
         }             
+      
         //select beats map from project_name
          let previousProject = levelLocation[levelLocation.length -1];
         	let selectedjson = selectedSubFeature(LocationMonth, previousProject); 
@@ -932,27 +938,27 @@ const render = (
 }
 const selectGeoJSON = (val, allMonthGeoJSONData) => {
       switch (val) {
-        case "aug":
-          return allMonthGeoJSONData.Aug;
+        case "Nov":
+          return allMonthGeoJSONData.Nov;
           break;
-        case "sep":
-          return allMonthGeoJSONData.Sep;
+        case "Dec":
+          return allMonthGeoJSONData.Dec;
           break;
-        case "oct":
-          return allMonthGeoJSONData.Oct;
+        case "Jan":
+          return allMonthGeoJSONData.Jan;
           break;
       }
     };
     const selectCSV = (val, allMonthCSVData) => {
       switch (val) {
-        case "aug":
-          return allMonthCSVData.Aug;
+        case "Nov":
+          return allMonthCSVData.Nov;
           break;
-        case "sep":
-          return allMonthCSVData.Sep;
+        case "Dec":
+          return allMonthCSVData.Dec;
           break;
-        case "oct":
-          return allMonthCSVData.Oct;
+        case "Jan":
+          return allMonthCSVData.Jan;
           break;
       }
     };
@@ -961,13 +967,12 @@ $(".drop-month a").click(function(){
     // $('.drop-category').parents(".dropdown").find('.btn').text('severely stunted children')
 	// $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
       var val = $(this).text();
-
-      if(val === 'August'){
-        month_hack = 'aug'
-      }else if(val === 'September'){
-        month_hack = 'sep'
-      }else if(val === 'October'){
-        month_hack = 'oct'
+      if(val === 'November'){
+        month_hack = 'Nov'
+      }else if(val === 'December'){
+        month_hack = 'Dec'
+      }else if(val === 'January'){
+        month_hack = 'Jan'
       }
         let monthjson = selectGeoJSON(month_hack,block);
     	let monthdata = selectCSV(month_hack,blockData);
@@ -980,7 +985,7 @@ $(".drop-month a").click(function(){
       	makemap(monthjson,monthdata);
   })
   //initial map
-  makemap(block.Aug, blockData.Aug);
+  makemap(block.Nov, blockData.Nov);
 };
 
 async function fetchGeoJSON() {
@@ -1000,7 +1005,7 @@ async function fetchGeoJSON() {
 }
 
 const monthWiseCSV = data => {
-  let month = { Aug: [], Sep: [], Oct: [] };
+  let month = { Nov: [], Dec: [], Jan: [] };
   data.forEach(d => {
     let temp = {};
     if (d.project_n) temp.project_n = d.project_n;
@@ -1013,11 +1018,11 @@ const monthWiseCSV = data => {
     temp.no_chld_excly_bf = +d.no_chld_excly_bf;
     temp.no_chld_intd_cf_past30d = +d.no_chld_intd_cf_past30d;
     temp.no_chld_appr_cf = +d.no_chld_appr_cf;
-    temp.prnt_child_1yr_cmpltd_immunzt = +d.prnt_child_1yr_cmpltd_immunzt;
+    temp.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
     temp.prnt_chld_bf_at_birth = +d.prnt_chld_bf_at_birth;
     temp.prnt_chld_excly_bf = +d.prnt_chld_excly_bf;
-    temp.prnt_chld_intd_cf_past30d = +d.prnt_chld_intd_cf_past30d;
-    temp.prnt_chld_6to24mnths_intd_cf = +d.prnt_chld_6to24mnths_intd_cf;
+    temp.prnt_chld_intd_cf_p30d = +d.prnt_chld_intd_cf_p30d;
+    temp.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
     month[d.month_n].push(temp);
     
   });
@@ -1047,11 +1052,11 @@ const addProperty = (data, geojson) => {
 				geojson[j].properties.no_chld_excly_bf = data[i].no_chld_excly_bf;
     		geojson[j].properties.no_chld_intd_cf_past30d = data[i].no_chld_intd_cf_past30d;
 				geojson[j].properties.no_chld_appr_cf = data[i].no_chld_appr_cf;
-        geojson[j].properties.prnt_child_1yr_cmpltd_immunzt = data[i].prnt_child_1yr_cmpltd_immunzt;
+        geojson[j].properties.prnt_child_1yr_immnztn = data[i].prnt_child_1yr_immnztn;
         geojson[j].properties.prnt_chld_bf_at_birth = data[i].prnt_chld_bf_at_birth;
         geojson[j].properties.prnt_chld_excly_bf = data[i].prnt_chld_excly_bf;
-        geojson[j].properties.prnt_chld_intd_cf_past30d = data[i].prnt_chld_intd_cf_past30d;
-        geojson[j].properties.prnt_chld_6to24mnths_intd_cf = data[i].prnt_chld_6to24mnths_intd_cf;
+        geojson[j].properties.prnt_chld_intd_cf_p30d = data[i].prnt_chld_intd_cf_p30d;
+        geojson[j].properties.prnt_intd_cf_6to24mnth_child = data[i].prnt_intd_cf_6to24mnth_child;
       }
     }
   }
@@ -1059,7 +1064,7 @@ const addProperty = (data, geojson) => {
 async function mergeData(geoJSON) {
   //merging block data
   let blockGeoJSON = geoJSON.blockJSON;
-  let blockCSV = await d3.csv("{% static 'data/csv/iycf/f7_block.csv'%}");
+  let blockCSV = await d3.csv("{% static 'data/csv/f7/iycf_block.csv'%}");
   console.log(blockCSV);
 
   let blockMonthWiseCSV = monthWiseCSV(blockCSV);
@@ -1068,67 +1073,64 @@ async function mergeData(geoJSON) {
   let blockGeoJSONSep = JSON.parse(JSON.stringify(blockGeoJSON));
   let blockGeoJSONOct = JSON.parse(JSON.stringify(blockGeoJSON));
   //call by reference so need to return
-  addProperty(blockMonthWiseCSV.Aug, blockGeoJSONAug);
-  addProperty(blockMonthWiseCSV.Sep, blockGeoJSONSep);
-  addProperty(blockMonthWiseCSV.Oct, blockGeoJSONOct);
+  addProperty(blockMonthWiseCSV.Nov, blockGeoJSONAug);
+  addProperty(blockMonthWiseCSV.Dec, blockGeoJSONSep);
+  addProperty(blockMonthWiseCSV.Jan, blockGeoJSONOct);
   const mergedBlock = {
-    Aug: blockGeoJSONAug,
-    Sep: blockGeoJSONSep,
-    Oct: blockGeoJSONOct
+    Nov: blockGeoJSONAug,
+    Dec: blockGeoJSONSep,
+    Jan: blockGeoJSONOct
   };
   //merging project data
   let projectGeoJSON = geoJSON.projectJSON;
-  let projectCSV = await d3.csv("{% static 'data/csv/iycf/f7_project.csv'%}");
-  console.log(projectCSV);
+  let projectCSV = await d3.csv("{% static 'data/csv/f7/iycf_project.csv'%}");
 
   let projectMonthWiseCSV = monthWiseCSV(projectCSV);
   let projectGeoJSONAug = JSON.parse(JSON.stringify(projectGeoJSON));
   let projectGeoJSONSep = JSON.parse(JSON.stringify(projectGeoJSON));
   let projectGeoJSONOct = JSON.parse(JSON.stringify(projectGeoJSON));
-  addProperty(projectMonthWiseCSV.Aug, projectGeoJSONAug);
-  addProperty(projectMonthWiseCSV.Sep, projectGeoJSONSep);
-  addProperty(projectMonthWiseCSV.Oct, projectGeoJSONOct);
+  addProperty(projectMonthWiseCSV.Nov, projectGeoJSONAug);
+  addProperty(projectMonthWiseCSV.Dec, projectGeoJSONSep);
+  addProperty(projectMonthWiseCSV.Jan, projectGeoJSONOct);
   const mergedProject = {
-    Aug: projectGeoJSONAug,
-    Sep: projectGeoJSONSep,
-    Oct: projectGeoJSONOct
+    Nov: projectGeoJSONAug,
+    Dec: projectGeoJSONSep,
+    Jan: projectGeoJSONOct
   };
 
   //merging beat data
   let beatGeoJSON = geoJSON.beatJSON;
-  let beatCSV = await d3.csv("{% static 'data/csv/iycf/f7_beat.csv'%}");
-  console.log(beatCSV);
+  let beatCSV = await d3.csv("{% static 'data/csv/f7/iycf_beat.csv'%}");
 
   let beatMonthWiseCSV = monthWiseCSV(beatCSV);
   let beatGeoJSONAug = JSON.parse(JSON.stringify(beatGeoJSON));
   let beatGeoJSONSep = JSON.parse(JSON.stringify(beatGeoJSON));
   let beatGeoJSONOct = JSON.parse(JSON.stringify(beatGeoJSON));
-  addProperty(beatMonthWiseCSV.Aug, beatGeoJSONAug);
-  addProperty(beatMonthWiseCSV.Sep, beatGeoJSONSep);
-  addProperty(beatMonthWiseCSV.Oct, beatGeoJSONOct);
+  addProperty(beatMonthWiseCSV.Nov, beatGeoJSONAug);
+  addProperty(beatMonthWiseCSV.Dec, beatGeoJSONSep);
+  addProperty(beatMonthWiseCSV.Jan, beatGeoJSONOct);
   const mergedBeat = {
-    Aug: beatGeoJSONAug,
-    Sep: beatGeoJSONSep,
-    Oct: beatGeoJSONOct
+    Nov: beatGeoJSONAug,
+    Dec: beatGeoJSONSep,
+    Jan: beatGeoJSONOct
   };
 
   //merging awc data
   let awcGeoJSON = geoJSON.awcJSON;
-  let awcCSV = await d3.csv("{% static 'data/csv/iycf/f7_awc.csv'%}");
-  console.log(awcCSV)
+  let awcCSV = await d3.csv("{% static 'data/csv/f7/iycf_awc.csv'%}");
 
   let awcMonthWiseCSV = monthWiseCSV(awcCSV);
   let awcGeoJSONAug = JSON.parse(JSON.stringify(awcGeoJSON));
   let awcGeoJSONSep = JSON.parse(JSON.stringify(awcGeoJSON));
   let awcGeoJSONOct = JSON.parse(JSON.stringify(awcGeoJSON));
-  addProperty(awcMonthWiseCSV.Aug, awcGeoJSONAug);
-  addProperty(awcMonthWiseCSV.Sep, awcGeoJSONSep);
-  addProperty(awcMonthWiseCSV.Oct, awcGeoJSONOct);
+  addProperty(awcMonthWiseCSV.Nov, awcGeoJSONAug);
+  addProperty(awcMonthWiseCSV.Dec, awcGeoJSONSep);
+  addProperty(awcMonthWiseCSV.Jan, awcGeoJSONOct);
 
   const mergedAWC = {
-    Aug: awcGeoJSONAug,
-    Sep: awcGeoJSONSep,
-    Oct: awcGeoJSONOct
+    Nov: awcGeoJSONAug,
+    Dec: awcGeoJSONSep,
+    Jan: awcGeoJSONOct
   };
 
   render(
@@ -1181,7 +1183,11 @@ d3.select("g.slider")
   .attr("stroke-linecap", "round");
 
 d3.select("line.track-fill").attr("stroke", "yellow");
-d3.select("line.leftcolor").attr("stroke", "green");
-d3.select("line.track-inset").attr("stroke", "red");
+d3.select("line.leftcolor").attr("stroke", "red");
+d3.select("line.track-inset").attr("stroke", "green");
+
+$(window).on('load',function(){
+    document.getElementById('sw').style.display = 'none';
+  })
 </script>
 {% endblock %}

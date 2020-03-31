@@ -1,45 +1,149 @@
 {% extends 'base.html' %}
 
+{% load static %}
+
 {% block content%}
-        
+
+<style>
+
+    img{
+
+
+
+width: 80px;
+
+
+
+height:80px;
+
+
+
+}
+
+</style>
+
           
+
         <div class="container">
-            <div class=" mt-5" style="height:100%;">
-               
-                <p class="text-center">
-                   <u> Dashboard covers the 18 Nutrition indicators categorized in 3 parts</u>
-                    <br><br>
-                   
-                </p>
-                <ul class="text-center">
-                    <li><a href="#"><u>Outcome indicators:</u></a>
-                                        It includes the nutrition status (Stunting/Wasting/Underweight/Low Birth Weight) of the children.
-                    </li> <br>                    
-                    <li><a href="#"><u>Child Related(IYCF) Indicators:</u></a>
-                                        It includes the Brestfeeding and Complementary feeding practices followed for 0-6 months and 6-24 months children.
-                    </li><br>
-                    <li><a href="#"><u>Pregnant Women Related Indicators:</u></a>
-                                        It includes ANC visits, number of Anaemic women.
-                    </li>
-                </ul>
+
+	<div class="row" style="font-size:20px; font-weight:bold; top: 60px; position:absolute; right:10px;"><u><i>
+
+                <a href="{% static 'Know_your_district_dashboard_manual.pdf' %}" target="_blank" style="color: rgb(38, 112, 112);">Dashboard Manual</a></i></u>
+
             </div>
-        </div>  
-        {% if messages %}
-            {% for message in messages %}
-            <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
-            {% endfor %}
-        {% endif %}
-        {% if user.is_authenticated %}
-            <div class="dash-button container text-center">
-                <div class="">
-                    <button type="button" class="btn btn-lg m-3" onclick="location.href=`{% url 'feat1' %}`"> Palghar Dashboard</button>
+
+            <div class="row">
+
+                <div class="col">
+
+                <a class="navbar-brand" href="/"><img src="{% static 'dashboard/img/iitb_logo.jpg'%}" class=""></img></a>
+
                 </div>
 
-                <div class="">
-                    <button type="button" class="btn btn-lg" onclick="location.href=`{% url 'maha-feat1' %}`"> Maharashtra Dashboard</button>
+                <div class="col">
+
+         	    <a class="navbar-brand" href="#"><img src="{% static 'dashboard/img/WCD.jpg'%}" class="" style="width: 100px;"></img></a>
+
                 </div>
+
+                <div class="col">
+
+       		    <a class="navbar-brand" href="#"><img src="{% static 'dashboard/img/unicef_india.jpg'%}" class=""></img></a>
+
+                </div>
+
+                <div class="col">
+
+       		    <a class="navbar-brand" href="#"><img src="{% static 'dashboard/img/ctara.jpg'%}" class=""></img></a>
+
+                </div>
+
+              </div>
+
+
+
+
+
+
+
+            <div class=" mt-5" style="height:100%;">
+
+                
+
+               
+
+                <p class="text-center">
+
+                   <u> Dashboard covers the 18 Nutrition indicators categorized in 3 parts</u>
+
+                    <br><br>
+
+                   
+
+                </p>
+
+                <ul class="text-center">
+
+                    <li><a href="#"><u>Outcome indicators:</u></a>
+
+                                        It includes the nutrition status (Stunting/Wasting/Underweight/Low Birth Weight) of the children.
+
+                    </li> <br>                    
+
+                    <li><a href="#"><u>Child Related(IYCF) Indicators:</u></a>
+
+                                        It includes the Brestfeeding and Complementary feeding practices followed for 0-6 months and 6-24 months children.
+
+                    </li><br>
+
+                    <li><a href="#"><u>Pregnant Women Related Indicators:</u></a>
+
+                                        It includes ANC visits, number of Anaemic women.
+
+                    </li>
+
+                </ul>
+
             </div>
-		<br><br>
-            <p class="text-center">"This is Beta Version"</p>
+
+        </div>  
+
+        {% if messages %}
+
+            {% for message in messages %}
+
+            <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
+
+            {% endfor %}
+
         {% endif %}
+
+        {% if user.is_authenticated %}
+
+            <div class="dash-button container text-center">
+
+                <div class="">
+
+                    <button type="button" class="btn btn-lg m-3" onclick="location.href=`{% url 'feat1' %}`"> Palghar Dashboard</button>
+
+                </div>
+
+
+
+                <div class="">
+
+                    <button type="button" class="btn btn-lg" onclick="location.href=`{% url 'maha-feat1' %}`"> Maharashtra Dashboard</button>
+
+                </div>
+
+            </div>
+
+		<br><br>
+
+            <p class="text-center">"This is Beta Version"</p>
+
+        {% endif %}
+
    {% endblock %}
+
+   
