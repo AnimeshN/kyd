@@ -7,9 +7,13 @@ from django.shortcuts import redirect
 
 
 # Create your views here.
+from .models import ConsoChildNdj
 
 class DashboardView(TemplateView):
-    template_name = "dashboard/dash.html"
+
+    def get(self,request):
+        dt_name = ConsoChildNdj.objects.order_by('district_n').values('district_n').distinct()
+        return render(request,'dashboard/dash.html', {'dd_dt_data':dt_name})
 
 
 def login_request(request):

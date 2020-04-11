@@ -129,18 +129,8 @@
 </div>
 
 
-
-
-
 {% endblock %}
-
-
-
-
-
 {% block feature_js %}
-
-
 
 <script>
 
@@ -204,31 +194,6 @@
 
       .interpolator(d3.interpolateRdYlGn);
 
-        //tooltip
-
-  // Define the div for the tooltip
-
-  //const onMouseOver = d =>{	
-
-     //         div.transition().duration(200).style("opacity", 1);		
-
-      //        div.html(yValue(d))
-
-     //             .style("left", d3.event.pageX + "px")
-
-      //            .style("top",  d3.event.pageY - 30 + "px")
-
-		//		  .style("font-size", "50px");	
-
-          //    }
-
- // var div = d3.select("body").append("div")	
-
-  //    .attr("class", "tooltip")				
-
-  //    .style("opacity", 0);
-
-    
 
           var bars =   g.selectAll("rect").data(data)
 
@@ -246,19 +211,6 @@
 
               .attr("fill", d => myColor(yValue(d)))
 
-              //.on("mouseover", d => onMouseOver(d))					
-
-             // .on("mouseout", function(d) {		
-
-           //   div.transition()		
-
-           //       .duration(500)		
-
-         //         .style("opacity", 0);
-
-         // });
-
-          
 
           //update new values
 
@@ -602,13 +554,6 @@
 
   }
 
-  
-
-  
-
-  
-
-  
 
   /////
 
@@ -630,31 +575,7 @@ console.log(data)
 
   monthwiseData = monthwise(data);
 
-  
-
-//   d3.select("#monthdropdown")
-
-//   .on("change", () =>{
-
-//         let val = document.getElementById("monthdropdown").value
-
-//         console.log(val);
-
-//         let mydata = selectData(val,monthwiseData);
-
-//         let tableData = tbData(val, monthwiseData);
-
-//         svg.selectAll("*").remove();
-
-//         render(mydata,tableData);
-
-// updateMonth();
-
-
-
-//     });
-
-  
+ 
 
     $(".month a").click(function(){
 
@@ -792,73 +713,6 @@ $(function(){
 
             });
 
-            
-
-
-
-          //   column_data = {"block_n":[],"no_enrolled":[],"tot_elgb_wghd":[],"tot_elgb_hght":[],"no_wt":[],"no_ht":[],"no_wt_ht":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
-
-            
-
-          //   data.forEach(d=>{
-
-          //   column_data.block_n.push(d.block);
-
-          //   column_data.no_enrolled.push(+d.no_enrolled);
-
-          //   column_data.tot_elgb_wghd.push(+d.tot_elgb_wghd);
-
-          //   column_data.tot_elgb_hght.push(+d.tot_elgb_hght);
-
-          //   column_data.no_wt.push(+d.no_wt);
-
-          //   column_data.no_ht.push(+d.no_ht);
-
-          //   column_data.no_wt_ht.push(+d.no_wt_ht);
-
-            
-
-          // })
-
-
-
-
-
-        // var enroll_Color = d3.scaleSequential().domain([d3.min(column_data.no_enrolled),d3.max(column_data.no_enrolled)])
-
-        // .interpolator(d3.interpolateRdYlGn);
-
-
-
-        // var elgb_wt_Color = d3.scaleSequential().domain([d3.min(column_data.tot_elgb_wghd),d3.max(column_data.tot_elgb_wghd)])
-
-        // .interpolator(d3.interpolateRdYlGn);
-
-
-
-        // var elgb_ht_Color = d3.scaleSequential().domain([d3.min(column_data.tot_elgb_hght),d3.max(column_data.tot_elgb_hght)])
-
-        // .interpolator(d3.interpolateRdYlGn);
-
-
-
-        // var wt_Color = d3.scaleSequential().domain([d3.min(column_data.no_wt),d3.max(column_data.no_wt)])
-
-        // .interpolator(d3.interpolateRdYlGn);
-
-
-
-        // var ht_Color = d3.scaleSequential().domain([d3.min(column_data.no_ht),d3.max(column_data.no_ht)])
-
-        // .interpolator(d3.interpolateRdYlGn);
-
-
-
-        // var wt_ht_Color = d3.scaleSequential().domain([d3.min(column_data.no_wt_ht),d3.max(column_data.no_wt_ht)])
-
-        // .interpolator(d3.interpolateRdYlGn);
-
-
 
           var table = d3.select('div#table').append('table').attr('class','hello');
 
@@ -880,75 +734,27 @@ $(function(){
 
 		                    });
 
-		             
-
-		 
 
 		  var rows = table.append('tbody').selectAll('tr')
 
 		               .data(tbdata).enter()
 
                        .append('tr');
-
-                       
+  
 
           rows.selectAll('td')
 
-               
+          .data(function (d) {
 
-		    .data(function (d) {
+            return titles.map(function (k) {
 
-		    	return titles.map(function (k) {
+              return { 'value': d[k], 'name': k};
 
-		    		return { 'value': d[k], 'name': k};
+            });
 
-		    	});
-
-		    }).enter()
+		      }).enter()
 
             .append('td')
-
-            // .style("background-color", function(d) {
-
-                
-
-            //   if(d.name == 'Number of Children 0-6 years old enrolled for services'){
-
-            //                         return enroll_Color(d.value);
-
-            //             }
-
-            //             else if(d.name == 'Total No. of Children Eligible to be Weighed'){
-
-            //                 return elgb_wt_Color(d.value);
-
-            //             }
-
-            //             else if(d.name == 'Total No. of Children Eligible for measuring Height'){
-
-            //                 return elgb_ht_Color(d.value);
-
-            //             }
-
-            //             else if(d.name == 'Total No. of Children Weighed'){
-
-            //                 return ht_Color(d.value);
-
-            //             } 
-
-            //             else if(d.name == 'Total No. of Children whose Height has been measured'){
-
-            //                 return ht_Color(d.value);
-
-            //             } 
-
-            //             else if(d.name == 'Total No. of Children whose Height and Weight has been measured'){
-
-            //                 return wt_ht_Color(d.value);
-
-            //             } 
-
-            //         })
 
 		    .text(function (d) {
 
@@ -957,12 +763,6 @@ $(function(){
             });
 
         }
-
-
-
-
-
-
 
   </script>
 

@@ -3,6 +3,8 @@
 {% load static %}
 
 {% block content%}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
 
 <style>
 
@@ -112,7 +114,7 @@ height:80px;
 
             {% for message in messages %}
 
-            <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
+            <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});            </script>
 
             {% endfor %}
 
@@ -122,11 +124,11 @@ height:80px;
 
             <div class="dash-button container text-center">
 
-                <div class="">
+                <!-- <div class="">
 
                     <button type="button" class="btn btn-lg m-3" onclick="location.href=`{% url 'feat1' %}`"> Palghar Dashboard</button>
 
-                </div>
+                </div> -->
 
 
 
@@ -135,14 +137,67 @@ height:80px;
                     <button type="button" class="btn btn-lg" onclick="location.href=`{% url 'maha-feat1' %}`"> Maharashtra Dashboard</button>
 
                 </div>
+                <div class="">
+                    <div class="input-field col-4" style="margin-left: 350px;">
+                        <form action="{% url 'f1' %}" name="myForm" onsubmit="return validateForm()" >
+                            {% csrf_token %}
+                        
+                            <b><i>Select a District :</i> </b>
+                            <select name = "dist_select" id="distList" class="check"> 
+                                <option value="" disabled selected>Select District</option>
+                                {% for dist_select in dd_dt_data %} 
+                                    <option value = "{{ dist_select.district_n }}">{{ dist_select.district_n }}
+                                    </option>
+                                {% endfor %}                              
+                            </select>
+                            <b>Password :</b>
+                            <input type="password" name="password" id="password" /> 
+                            <button type="submit">Submit</button>
+                        </form>
+                    </div>  
+                </div>
 
             </div>
 
-		<br><br>
+		<br><br>     
 
             <p class="text-center">"This is Beta Version"</p>
 
         {% endif %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js"></script>
+               
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<script>
+  
+    $(document).ready(function(){
+      $('select').formSelect();
+    });
+
+   
+
+function validateForm() {
+    var pass = document.forms["myForm"]["password"].value;
+    var dSelect = document.forms["myForm"]["dist_select"].value;
+    if((dSelect=="Nandurbar" && pass=="knowyourNandurbar") || (dSelect=="Palghar" && pass=="knowyourPalghar"))
+    {
+        return true;
+    }
+    else
+    {
+        alert("Password is incorrect or empty");
+        return false;
+    }
+
+}
+
+</script>
+
 
    {% endblock %}
 

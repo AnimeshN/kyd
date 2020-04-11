@@ -19,7 +19,11 @@ from dashboard.views import DashboardView
 from kyd_dashboard.views import (KYDDashboardView, FeatureOne, 
     FeatureTwo, FeatureThree, FeatureFour,FeatureFive, FeatureSix,
     FeatureSeven, FeatureEight, FeatureNine,FeatureTen, 
-    FeatureEleven, FeatureComp, FeatureRadar, FeatureRadar2)
+    FeatureEleven, FeatureComp, FeatureRadar, FeatureRadar2,
+    Demo_dd, 
+    F1MsrmntEffcyBlk, F1MsrmntEffcyBlk_post, F2OtcmIndctrBlk, F4DtProfile,
+    F3PieProject, F5DtOverview, F6OiMap, F7IycfMap, F8PwMap,
+    FtLcBlock, FtLcProject, FtLcBeats, FtRdr1, FtRdr2)
 from maha_dashboard.views import (MahaFeatureOne, MahaFeatureTwo, MahaFeatureThree,
  MahaFeatureFour, MahaFeatureFive, MahaFeatureSix,MahaFeatureSeven,MahaFeatureEight,MahaFeatureNine,
 MahaFeatureStOw, MahaFeatureLCDT, MahaFeatureLCSDT)
@@ -29,6 +33,7 @@ from dashboard import views
 
 urlpatterns = [
     url(r'^$', DashboardView.as_view(), name='home'),
+    url(r'^dashboard/demo_dash$', Demo_dd.as_view(), name='demo_dd'),
     url(r'^kyd_dashboard$', KYDDashboardView.as_view(), name='kyd_dashboard'),
     url(r'^kyd_dashboard/feature1$', FeatureOne.as_view(), name='feat1'),
     url(r'^kyd_dashboard/feature2$', FeatureTwo.as_view(), name='feat2'),
@@ -44,6 +49,21 @@ urlpatterns = [
     url(r'^kyd_dashboard/feature_comp$', FeatureComp.as_view(), name='feat-comp'),
     url(r'^kyd_dashboard/feature_radar$', FeatureRadar.as_view(), name='feat-radar'),
     url(r'^kyd_dashboard/feature_radar2$', FeatureRadar2.as_view(), name='feat-radar2'),
+    url(r'^kyd_dashboard/f1_msrmnt_effcy_blk$', F1MsrmntEffcyBlk_post.as_view(), name='f1'),
+    url(r'^kyd_dashboard/f1_msrmnt_effcy_blk/(?P<dist_name>\w+)$', F1MsrmntEffcyBlk.as_view(), name='f1'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/f2_oi_blk$', F2OtcmIndctrBlk.as_view(), name='f2'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/f3_pie_prjt$', F3PieProject.as_view(), name='f3'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/f4_dt_profile$', F4DtProfile.as_view(), name='f4'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/f5_dt_overview$', F5DtOverview.as_view(), name='f5'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/f6_oi_map$', F6OiMap.as_view(), name='f6'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/f7_iycf_map$', F7IycfMap.as_view(), name='f7'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/f8_pw_map$', F8PwMap.as_view(), name='f8'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/ft_lc_block$', FtLcBlock.as_view(), name='ftlcblk'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/ft_lc_project$', FtLcProject.as_view(), name='ftlcprjt'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/ft_lc_beat$', FtLcBeats.as_view(), name='ftlcbt'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/ft_radar1$', FtRdr1.as_view(), name='ftrdr1'),
+    url(r'^(?P<dist_name>\w+)/kyd_dashboard/ft_radar2$', FtRdr2.as_view(), name='ftrdr2'),
+
     
     url(r'^maha_dashboard/maha_feature1$', MahaFeatureOne.as_view(), name='maha-feat1'),
     url(r'^maha_dashboard/maha_feature2$', MahaFeatureTwo.as_view(), name='maha-feat2'),
@@ -67,4 +87,3 @@ urlpatterns = [
     # url(r'logout', views.logout_request, name="logout"),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
-
