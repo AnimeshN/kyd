@@ -15,16 +15,17 @@ body {
   overflow: hidden;
 }
 div.tooltip { 
-    position: absolute;     
-    text-align: center;     
-    width: 150px;          
-    height: 60px;          
-    padding: 2px;       
-    font: 12px sans-serif;    
-    background: #fff; 
-    border: 0px;
-  	border-radius: 50px;
-    pointer-events: none;     
+  position: absolute;     
+  text-align: center;     
+  width: 300px;          
+  height: 70px;          
+  padding: 2px;       
+  font: 15px sans-serif;  
+  font-weight: bold;    
+  background: #fff; 
+  border: 0px;
+  border-radius: 50px;
+  pointer-events: none;    
 }
 
 .boundary {
@@ -37,7 +38,7 @@ div.tooltip {
 }
 
 .info-hirar{
-	font-size:1.5em;
+	font-size:1.3em;
 
 }
 td{
@@ -52,7 +53,7 @@ td{
 {% endblock %}
 {% block feature %}
 <div class=" full-height">
-    <div class='heading text-dark mt-2 text-center' >Pregnant Women Related Indicators</div>
+    <div class='heading text-dark mt-2 text-center' >Pregnant Woman Related Indicators</div>
 
     <div class="row ">
           <div class="row bg-info w-100 m-0">
@@ -226,6 +227,7 @@ const render = (
 ) => {
   //initial value of tooltip
   let TextValue = null;
+  let Tooltipheader1 = d => "Anaemic Women:";
   let TooltipVal1 = d => d.properties.no_anemic_wmn;
   let ColorValue = d => d.properties.prnt_anwmic_wmn;
   let TPercentValue = d => d.prnt_anwmic_wmn;
@@ -300,8 +302,8 @@ const render = (
         else if (v > high) return "#24562B"; //matte green
     };
      	let tooltipValue = (d) =>{
-      let ttv = `<b>${TextValue(d)}</b><br> 
-									Actual Value: ${TooltipVal1(d)}<br>`;
+        let ttv = `<b>${TextValue(d)}</b><br> 
+      ${Tooltipheader1(d)} ${TooltipVal1(d)}<br>`;
      	return ttv;
      	}
         const onMouseOverPoly = d => {
@@ -362,7 +364,7 @@ const render = (
     if (level === 0) {
       textLabel.attr("font-size", "8pt").attr("font-weight", "bold");
     } else if (level === 1) {
-      textLabel.attr("font-size", "6pt"); 
+      textLabel.attr("font-size", "4pt").attr("font-weight", "bold");
     } else if (level === 2) {
       textLabel.attr("font-size", "2pt").attr("font-weight", "bold");
     } 
@@ -406,14 +408,16 @@ const render = (
       switch (selectedCat) {
         case 1:
           updatedCat = "Anaemic Women (%)";
+          Tooltipheader1 = d => "Anaemic Women:";
           TooltipVal1 = d => d.properties.no_anemic_wmn;
   				ColorValue = d => d.properties.prnt_anwmic_wmn;
-                TPercentValue = d => d.prnt_anwmic_wmn;
-                TActualValue = d => d.no_anemic_wmn;
+          TPercentValue = d => d.prnt_anwmic_wmn;
+          TActualValue = d => d.no_anemic_wmn;
 
           break;
         case 2:
           updatedCat = "Tenatus Completed (%)";
+          Tooltipheader1 = d => "Tenatus Completed:";
           TooltipVal1 = d => d.properties.no_tenatus_cmpltd;
                 ColorValue = d => d.properties.prnt_tenatus_cmpltd;
                 TPercentValue = d => d.prnt_tenatus_cmpltd;
@@ -422,6 +426,7 @@ const render = (
           break;
         case 3:
           updatedCat = "Women had atleast 1 ANC visit by delivery (%)";
+          Tooltipheader1 = d => "Women had atleast 1 ANC visit by delivery:";
           TooltipVal1 = d => d.properties.no_wmn_1_anc_vst_dlvry;
           ColorValue = d => d.properties.prnt_wmn_1_anc_vst_dlvry;
           TPercentValue = d => d.prnt_wmn_1_anc_vst_dlvry;
@@ -430,6 +435,7 @@ const render = (
           break;
         case 4:
           updatedCat = "Women had atleast 4 ANC visit by delivery (%)";
+          Tooltipheader1 = d => "Women had atleast 4 ANC visit by delivery:";
           TooltipVal1 = d => d.properties.no_wmn_4_anc_vst_dlvry;
           ColorValue = d => d.properties.prnt_wmn_4_anc_vst_dlvry;
           TPercentValue = d => d.prnt_wmn_4_anc_vst_dlvry;
@@ -438,6 +444,7 @@ const render = (
           break;
         case 5:
           updatedCat = "Women Resting During Pregnancy (%)";
+          Tooltipheader1 = d => "Women Resting During Pregnancy:";
           TooltipVal1 = d => d.properties.no_wmn_rstg_drg_prgncy;
           ColorValue = d => d.properties.prnt_wmn_rstg_drg_prgncy;
           TPercentValue = d => d.prnt_wmn_rstg_drg_prgncy;
@@ -446,6 +453,7 @@ const render = (
           break;
         case 6:
           updatedCat = "Women Eating Extra Meal During Pregnancy (%)";
+          Tooltipheader1 = d => "Women Eating Extra Meal During Pregnancy:";
           TooltipVal1 = d => d.properties.no_wmn_etg_xtr_ml_drg_prgncy;
           ColorValue = d => d.properties.prnt_wmn_etg_xtr_ml_drng_prgncy;
           TPercentValue = d => d.prnt_wmn_etg_xtr_ml_drng_prgncy;
@@ -454,6 +462,7 @@ const render = (
           break;
         case 7:
           updatedCat = "Trimester 3 women counselled on immediate breastfeeding (%)";
+          Tooltipheader1 = d => "Trimester 3 women counselled on immediate breastfeeding:";
           TooltipVal1 = d => d.properties.no_trmstr_3wmn_cnsld_imdtbf;
           ColorValue = d => d.properties.prnt_trmstr_3wmn_cnsld_imdtbf;
           TPercentValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf;
@@ -1054,7 +1063,7 @@ async function fetchGeoJSON() {
     else{
         var beatJSON = await d3.json("{% static 'data/beat.json'%}");
     }
-    if(dist_name == "Nandurbar")
+    if(dist_name == "Palghar")
     {
         var awcJSON = await d3.json("{% static 'data/awc.json'%}");
     }
@@ -1115,7 +1124,7 @@ const addProperty = (data, geojson) => {
         y = geojson[j].properties.Block;
       }
 
-      if (x === y) {
+      if (x.trim() === y.trim()) {
         geojson[j].properties.no_anemic_wmn = data[i].no_anemic_wmn;
         geojson[j].properties.no_tenatus_cmpltd = data[i].no_tenatus_cmpltd;
         geojson[j].properties.no_wmn_1_anc_vst_dlvry = data[i].no_wmn_1_anc_vst_dlvry;

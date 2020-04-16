@@ -15,16 +15,17 @@ body {
   overflow: hidden;
 }
 div.tooltip { 
-    position: absolute;     
-    text-align: center;     
-    width: 150px;          
-    height: 60px;          
-    padding: 2px;       
-    font: 12px sans-serif;    
-    background: #fff; 
-    border: 0px;
-  	border-radius: 50px;
-    pointer-events: none;     
+  position: absolute;     
+  text-align: center;     
+  width: 300px;          
+  height: 100px;          
+  padding: 2px;       
+  font: 15px sans-serif;  
+  font-weight: bold;    
+  background: #fff; 
+  border: 0px;
+  border-radius: 50px;
+  pointer-events: none;     
 }
 
 .boundary {
@@ -236,9 +237,12 @@ const render = (
 ) => {
   //initail value of tooltip
   let TextValue = null;
+  let Tooltipheader1 = d => "Severely Stunted Children:";
+  let Tooltipheader2 = d => "";
+  let Tooltipheader3 = d => "Height measurement efficiency:";
   let TooltipVal1 = d => d.properties.svrly_stntd;
-//  let TooltipVal2 = d => "-";
-  //let TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+  let TooltipVal2 = d => "";
+  let TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
   let ColorValue = d => d.properties.svrly_stunting_percent;
   console.log(ColorValue)
   let TPercentValue = d => d.svrly_stunting_percent;
@@ -317,9 +321,10 @@ const render = (
         else if (v > high) return "#B2022F"; //matte red
     };
      	let tooltipValue = (d) =>{
-      let ttv = `<b>${TextValue(d)}</b><br> 
-		Actual Value: ${TooltipVal1(d)}<br>`;
-
+        let ttv = `<b>${TextValue(d)}</b><br> 
+      ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
+      ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
+      ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>`;
                   // Moderate Value: ${TooltipVal2(d)}<br>
 		// Efficiency Value: ${TooltipVal3(d)}<br>
      	return ttv;
@@ -426,39 +431,52 @@ const render = (
       switch (selectedCat) {
         case 1:
           updatedCat = "Severely Stunted Children";
+          Tooltipheader1 = d => "Severely Stunted Children:";
+          Tooltipheader2 = d => "";
+          Tooltipheader3 = d => "Height Measurement efficiency:";
           TooltipVal1 = d => d.properties.svrly_stntd;
-  		//		TooltipVal2 = d => "-";
-  		//		TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+  		    TooltipVal2 = d => "-";
+  		    TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
   				ColorValue = d => d.properties.svrly_stunting_percent;
-                TPercentValue = d => d.svrly_stunting_percent;
-                TActualValue = d => d.svrly_stntd;
-
+          TPercentValue = d => d.svrly_stunting_percent;
+          TActualValue = d => d.svrly_stntd;
+          
           break;
         case 2:
           updatedCat = "Stunted Children";
+          Tooltipheader1 = d => "Stunted Children:";
+          Tooltipheader2 = d => "Moderately Stunted Children:";
+          Tooltipheader3 = d =>"Height Measurement efficiency:";
           TooltipVal1 = d => d.properties.stunted_child;
-  		//		TooltipVal2 = d => d.properties.mdrtly_stntd;
-  		//		TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-                ColorValue = d => d.properties.stunting_percent;
-                TPercentValue = d => d.stunting_percent;
-                TActualValue = d => d.stunted_child;
+  		  	TooltipVal2 = d => d.properties.mdrtly_stntd;
+  		    TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+          ColorValue = d => d.properties.stunting_percent;
+          TPercentValue = d => d.stunting_percent;
+          TActualValue = d => d.stunted_child;
 
           break;
         case 3:
           updatedCat = "Severely Wasted Children";
+          Tooltipheader1 = d => "Severely Wasted Children:";
+          Tooltipheader2 = d => "";
+          Tooltipheader3 = d => "Height Measurement efficiency:";
           TooltipVal1 = d => d.properties.svr_wstg;
-  		//		TooltipVal2 = d => "-";
-  		//		TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+  		    TooltipVal2 = d => "-";
+  		    TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
           ColorValue = d => d.properties.svr_wasting_percent;
           TPercentValue = d => d.svr_wasting_percent;
           TActualValue = d => d.svr_wstg;
 
+
           break;
         case 4:
           updatedCat = "Wasted Children";
+          Tooltipheader1 = d => "Wasted Children:";
+          Tooltipheader2 = d => "Moderately Wasted Children:";
+          Tooltipheader3 = d => "Height Measurement efficiency:";
           TooltipVal1 = d => d.properties.wasted_child;
-  		//		TooltipVal2 = d => d.properties.mdrtly_wstd;
-  		//		TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+  		    TooltipVal2 = d => d.properties.mdrtly_wstd;
+  		    TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
           ColorValue = d => d.properties.wasting_percent;
           TPercentValue = d => d.wasting_percent;
           TActualValue = d => d.wasted_child;
@@ -466,9 +484,12 @@ const render = (
           break;
         case 5:
           updatedCat = "Severely Underweight Children";
+          Tooltipheader1 = d => "Severely Underweight Children:";
+          Tooltipheader2 = d => "";
+          Tooltipheader3 = d => "Weight Measurement efficiency:";
           TooltipVal1 = d => d.properties.svrly_uw;
-  		//		TooltipVal2 = d => "-";
-  		//		TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
+  		    TooltipVal2 = d => "-";
+  		    TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
           ColorValue = d => d.properties.svrly_underweight_percent;
           TPercentValue = d => d.svrly_underweight_percent;
           TActualValue = d => d.svrly_uw;
@@ -476,19 +497,24 @@ const render = (
           break;
         case 6:
           updatedCat = "Underweight Children";
+          Tooltipheader1 = d => "Underweight Children:";
+          Tooltipheader2 = d => "Moderately Underweight Children:";
+          Tooltipheader3 = d => "Weight Measurement efficiency:";
           TooltipVal1 = d => d.properties.uw_child;
-  		//		TooltipVal2 = d => d.properties.mdrtly_uw;
-  		//		TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
+  		    TooltipVal2 = d => d.properties.mdrtly_uw;
+  		    TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
           ColorValue = d => d.properties.underweight_percent;
           TPercentValue = d => d.underweight_percent;
           TActualValue = d => d.uw_child;
 
           break;
         case 7:
-          updatedCat = "New born with low birth rate";
+        Tooltipheader1 = d => "New born with low birth rate:";
+          Tooltipheader2 = d => "";
+          Tooltipheader3 = d => "";
           TooltipVal1 = d => d.properties.nb_lbw;
-  		//		TooltipVal2 = d => "-";
-  		//		TooltipVal3 = d => "-";
+  		    TooltipVal2 = d => "";
+  		    TooltipVal3 = d => "-";
           ColorValue = d => d.properties.low_birth_weight_percent;
           TPercentValue = d => d.low_birth_weight_percent;
           TActualValue = d => d.nb_lbw;

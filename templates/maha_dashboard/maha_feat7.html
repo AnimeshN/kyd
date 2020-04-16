@@ -55,7 +55,7 @@ td{
 
 {% block feature %}
 <div class=" full-height">
-    <div class='h2 text-dark mt-2 text-center' >Outcome Indicators</div>
+    <div class='heading text-dark mt-2 text-center' >Outcome Indicators</div>
 
     <div class="row ">
           <div class="row bg-info w-100 m-0">
@@ -85,10 +85,10 @@ td{
               <a class="dropdown-item" href="#">Newborn with low birth rate</a>
             </div>
           </div>
-          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'maha-feat6'%}`">Previous Feature</button>
+          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'maha-feat6so' %}`">Previous Feature</button>
           <div id="slider-range" style="float: left;"></div>
 
-          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`#`">Next Feature</button>
+          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'maha-feat8' %}`">Next Feature</button>
 
 
 
@@ -268,7 +268,7 @@ td{
             //matte yellow
             else if (v > high) return "#B2022F"; //matte red
         };
-           let tooltipValue = (d) =>{
+          let tooltipValue = (d) =>{
           let ttv = `<b>${TextValue(d)}</b><br> 
                       ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
                       ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>

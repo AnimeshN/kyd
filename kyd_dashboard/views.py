@@ -5,9 +5,7 @@ from django.views.generic import TemplateView
 from .models import (F1, F2, F3, F4, F5Awc, F5Beat, F5Blk, F5Prjt, FtLcPrjt, FtLcBlk, FtLcBeat, FtRadar1, 
        F6OiBlock, F6OiProject, F6OiBeat, F6OiAwc, 
        F7IycfAw, F7IycfBlock, F7IycfBt, F7IycfProject,
-       F8PwProject, F8PwBlock, F8PwBeat, F8PwAwc,
-       ConsoChildNdj)
-# from .models import 
+       F8PwProject, F8PwBlock, F8PwBeat, F8PwAwc)
 
 from django.core import serializers
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -293,7 +291,6 @@ class F8PwMap(LoginRequiredMixin, TemplateView):
         }
 
         return render(request,'kyd_dashboard/f8_pw_map.html', {'context':context, 'dist_name':district_n})
-
 
 
 class FtLcBlock(LoginRequiredMixin, TemplateView):

@@ -559,7 +559,7 @@ $( "div#table" ).find(".hello" ).remove();
             column_data.uw_chld.push(+d.prnt_trmstr_3wmn_cnsld_imdtbf);
           })
 
-        var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
+        var stntd_chld = d3.scaleSequential().domain([d3.max(column_data.stntd_chld), d3.min(column_data.stntd_chld)])
         .interpolator(d3.interpolateRdYlGn);
 
         var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
@@ -1077,7 +1077,7 @@ $( "div#table" ).find(".hello" ).remove();
             
           })
 
-        var stntd_chld = d3.scaleSequential().domain([d3.min(column_data.stntd_chld),d3.max(column_data.stntd_chld)])
+        var stntd_chld = d3.scaleSequential().domain([d3.max(column_data.stntd_chld), d3.min(column_data.stntd_chld)])
         .interpolator(d3.interpolateRdYlGn);
 
         var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])

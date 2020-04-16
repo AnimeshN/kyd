@@ -15,16 +15,17 @@ body {
   overflow: hidden;
 }
 div.tooltip { 
-    position: absolute;     
-    text-align: center;     
-    width: 150px;          
-    height: 60px;          
-    padding: 2px;       
-    font: 12px sans-serif;    
-    background: #fff; 
-    border: 0px;
-  	border-radius: 50px;
-    pointer-events: none;     
+  position: absolute;     
+  text-align: center;     
+  width: 300px;          
+  height: 100px;          
+  padding: 2px;       
+  font: 15px sans-serif;  
+  font-weight: bold;    
+  background: #fff; 
+  border: 0px;
+  border-radius: 50px;
+  pointer-events: none;  
 }
 
 .boundary {
@@ -37,7 +38,7 @@ div.tooltip {
 }
 
 .info-hirar{
-	font-size:1.5em;
+	font: size 1.3em;
 
 }
 td{
@@ -225,9 +226,8 @@ const render = (
 ) => {
   //initail value of tooltip
   let TextValue = null;
+  let Tooltipheader1 = d => "Children Completed 1 year Immunization:";
   let TooltipVal1 = d => d.properties.no_of_chld_cmpltd_1yr_immunzt;
-  // let TooltipVal2 = d => "-";
-  // let TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
   let ColorValue = d => d.properties.prnt_child_1yr_immnztn;
   let TPercentValue = d => d.prnt_child_1yr_immnztn;
   let TActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt;
@@ -301,8 +301,8 @@ const render = (
         else if (v > high) return "#24562B"; //matte green
     };
      	let tooltipValue = (d) =>{
-      let ttv = `<b>${TextValue(d)}</b><br> 
-									Actual Value: ${TooltipVal1(d)}<br>`;
+        let ttv = `<b>${TextValue(d)}</b><br> 
+      ${Tooltipheader1(d)} ${TooltipVal1(d)}<br>`;
      	return ttv;
      	}
         const onMouseOverPoly = d => {
@@ -363,7 +363,7 @@ const render = (
     if (level === 0) {
       textLabel.attr("font-size", "9pt").attr("font-weight", "bold");
     } else if (level === 1) {
-      textLabel.attr("font-size", "6pt"); 
+      textLabel.attr("font-size", "4pt").attr("font-weight", "bold");
     } else if (level === 2) {
       textLabel.attr("font-size", "2pt").attr("font-weight", "bold");
     } 
@@ -407,29 +407,26 @@ const render = (
       switch (selectedCat) {
         case 1:
           updatedCat = "Children Completed 1 year Immunization (%)";
+          Tooltipheader1 = d => "Children Completed 1 year Immunization:";
           TooltipVal1 = d => d.properties.no_of_chld_cmpltd_1yr_immunzt;
-  				// TooltipVal2 = d => "-";
-  				// TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
   				ColorValue = d => d.properties.prnt_child_1yr_immnztn;
-                TPercentValue = d => d.prnt_child_1yr_immnztn;
-                TActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt;
+          TPercentValue = d => d.prnt_child_1yr_immnztn;
+          TActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt;
 
           break;
         case 2:
           updatedCat = "Children Breastfeed at Birth (%)";
+          Tooltipheader1 = d => "Children Breastfeed at Birth:";
           TooltipVal1 = d => d.properties.no_chld_bf_at_birth;
-  				// TooltipVal2 = d => d.properties.mdrtly_stntd;
-  				// TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-                ColorValue = d => d.properties.prnt_chld_bf_at_birth;
-                TPercentValue = d => d.prnt_chld_bf_at_birth;
-                TActualValue = d => d.no_chld_bf_at_birth;
+          ColorValue = d => d.properties.prnt_chld_bf_at_birth;
+          TPercentValue = d => d.prnt_chld_bf_at_birth;
+          TActualValue = d => d.no_chld_bf_at_birth;
+
 
           break;
         case 3:
           updatedCat = "Children Exclusively Breastfeed (%)";
-          TooltipVal1 = d => d.properties.no_chld_excly_bf;
-  				// TooltipVal2 = d => "-";
-  				// TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+          Tooltipheader1 = d => "Children Exclusively Breastfeed:";
           ColorValue = d => d.properties.prnt_chld_excly_bf;
           TPercentValue = d => d.prnt_chld_excly_bf;
           TActualValue = d => d.no_chld_excly_bf;
@@ -437,19 +434,16 @@ const render = (
           break;
         case 4:
           updatedCat = "Children Initiated Complementary Feeding (in the past 30 days) (%)";
+          Tooltipheader1 = d => "Children Initiated Complementary Feeding (in the past 30 days):";
           TooltipVal1 = d => d.properties.no_chld_intd_cf_past30d;
-  				// TooltipVal2 = d => d.properties.mdrtly_wstd;
-  				// TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
           ColorValue = d => d.properties.prnt_chld_intd_cf_p30d;
           TPercentValue = d => d.prnt_chld_intd_cf_p30d;
           TActualValue = d => d.no_chld_intd_cf_past30d;
-
           break;
         case 5:
           updatedCat = "Children (6-24 months) Initiated Appropriate Complementary Feeding (%)";
+          Tooltipheader1 = d => "Children (6-24 months) Initiated Appropriate Complementary Feeding:";
           TooltipVal1 = d => d.properties.no_chld_appr_cf;
-  				// TooltipVal2 = d => "-";
-  				// TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
           ColorValue = d => d.properties.prnt_intd_cf_6to24mnth_child;
           TPercentValue = d => d.prnt_intd_cf_6to24mnth_child;
           TActualValue = d => d.no_chld_appr_cf;
@@ -1040,7 +1034,7 @@ async function fetchGeoJSON() {
     else{
         var beatJSON = await d3.json("{% static 'data/beat.json'%}");
     }
-    if(dist_name == "Nandurbar")
+    if(dist_name == "Palghar")
     {
         var awcJSON = await d3.json("{% static 'data/awc.json'%}");
     }
@@ -1098,7 +1092,7 @@ const addProperty = (data, geojson) => {
         y = geojson[j].properties.Block;
       }
 
-      if (x === y) {
+      if (x.trim() === y.trim()) {
         geojson[j].properties.no_of_chld_cmpltd_1yr_immunzt = data[i].no_of_chld_cmpltd_1yr_immunzt;
     		geojson[j].properties.no_chld_bf_at_birth = data[i].no_chld_bf_at_birth;
 				geojson[j].properties.no_chld_excly_bf = data[i].no_chld_excly_bf;
