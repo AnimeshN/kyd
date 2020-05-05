@@ -102,7 +102,13 @@ td{
           <button type="button" class="btn back-button m-4">back</button>
     {% if dist_name == "Palghar" %}
           <span class='info info-hirar'>Palghar</span>
-	        <a href="{% url 'feat9'%}">
+	        <a href="{% url 'ftlcblk' dist_name %}">
+            <h6 style="float: right; margin:10px">Want to see Month-wise Trend
+            <i class="fa fa-chevron-right" aria-hidden="true"></i>
+          </a></h6>
+          {% elif dist_name == "Latur" %}
+          <span class='info info-hirar'>Latur</span>
+	        <a href="{% url 'ftlcblk' dist_name %}">
             <h6 style="float: right; margin:10px">Want to see Month-wise Trend
             <i class="fa fa-chevron-right" aria-hidden="true"></i>
           </a></h6>
@@ -205,18 +211,27 @@ console.log(dist_name);
 
 if(dist_name == "Nandurbar")
 {
-    var mercator = d3
-  .geoMercator()
-  .scale(16000)
-  .translate([innerWidth / 2, innerHeight / 2])
-  .center([74, 21]);
+  var mercator = d3
+    .geoMercator()
+    .scale(16000)
+    .translate([innerWidth / 2, innerHeight / 2])
+    .center([74, 21]);
+}
+else if (dist_name == "Latur")
+{
+  var mercator = d3
+    .geoMercator()
+    .scale(16000)
+    .translate([innerWidth / 2, innerHeight / 2])
+    .center([76.7, 17.9]);
+
 }
 else{
-    var mercator = d3
-  .geoMercator()
-  .scale(16000)
-  .translate([innerWidth / 2, innerHeight / 2])
-  .center([72.5, 19.4]);
+  var mercator = d3
+    .geoMercator()
+    .scale(16000)
+    .translate([innerWidth / 2, innerHeight / 2])
+    .center([72.5, 19.4]);
 }
 
 const pathGenerator = d3.geoPath().projection(mercator);
@@ -283,6 +298,10 @@ const render = (
         {
             var hirarchy = "Nandurbar";
         }
+        else if(dist_name == "Latur")
+        {
+            var hirarchy = "Latur";
+        }
         else{
             var hirarchy = "Palghar";
         }
@@ -293,18 +312,18 @@ const render = (
     })
     updateMonth();
     if (level == 0 && direction == 1) {
-      TextValue = d => d.properties.Block;
+      TextValue = d => d.properties.block;
     } else if (level == 1 && direction == 1) {
-      TextValue = d => d.properties.Project;
+      TextValue = d => d.properties.project;
       // ActualValue = d => d.properties. 
     } else if (level == 2 && direction == 1) {
       TextValue = d => d.properties.beat_na;
     } else if (level == 2 && direction == 0) {
       TextValue = d => d.properties.beat_na;
     } else if (level == 1 && direction == 0) {
-      TextValue = d => d.properties.Project;
+      TextValue = d => d.properties.project;
     } else if (level == 0 && direction == 0) {
-      TextValue = d => d.properties.Block;
+      TextValue = d => d.properties.block;
     } 
     let min = d3.min(geojson, ColorValue);
     console.log(min)
@@ -617,11 +636,11 @@ const render = (
       // } 
       geojson.forEach(sel => {
         if (level === 1 ) {
-          if (sel.properties.Block === location) {
+          if (sel.properties.block === location) {
             selection.push(sel);
           }
         } else if (level === 2 ) {
-          if (sel.properties.Project === location) {
+          if (sel.properties.project === location) {
             selection.push(sel);
           }
         } else if (level === 3 ) {
@@ -684,9 +703,9 @@ const render = (
       zoomToBoundingBox(d);
       let clickedLocation;
       if (level === 1) {
-        clickedLocation = d.properties.Block;
+        clickedLocation = d.properties.block;
       } else if (level === 2) {
-        clickedLocation = d.properties.Project;
+        clickedLocation = d.properties.project;
       } else if (level === 3) {
         clickedLocation = d.properties.beat_na;
       }
@@ -811,7 +830,7 @@ const render = (
     //makeTable
     
     let tbdata = [];
-    let LocationValue = d => d.Block;
+    let LocationValue = d => d.block;
     let PercentageValue = TPercentValue;
     let ActualValue = TActualValue; 
     tdata.forEach(d => {
@@ -1095,38 +1114,14 @@ $(".drop-month a").click(function(){
 
 async function fetchGeoJSON() {
   let geoJSONBundle = {};
-    var dist_name = "{{ dist_name }}"
-    console.log(dist_name);
 
-    if(dist_name == "Nandurbar")
-    {
-        var blockJSON = await d3.json("{% static 'data/ndbr_block.json'%}");
-    }
-    else{
-        var blockJSON = await d3.json("{% static 'data/block.json'%}");
-    }
-    if(dist_name == "Nandurbar")
-    {
-        var projectJSON = await d3.json("{% static 'data/ndbr_project.json'%}");
-    }
-    else{
-        var projectJSON = await d3.json("{% static 'data/project.json'%}");
-    }
-    if(dist_name == "Nandurbar")
-    {
-        var beatJSON = await d3.json("{% static 'data/ndbr_beat.json'%}");
-    }
-    else{
-        var beatJSON = await d3.json("{% static 'data/beat.json'%}");
-    }
-    if(dist_name == "Palghar")
-    {
-        var awcJSON = await d3.json("{% static 'data/awc.json'%}");
-    }
-    else{
-      var awcJSON = await d3.json("{% static 'data/awc.json' %}");
-    }
-   
+    var blockJSON = {{ context.blk_geodata|safe }};
+
+    var projectJSON = {{ context.prjt_geodata|safe }};
+
+    var beatJSON = {{ context.bt_geodata|safe }};
+
+    var awcJSON = {{ context.awc_geodata|safe }};
 
   geoJSONBundle.blockJSON = blockJSON.features;
   geoJSONBundle.projectJSON = projectJSON.features;
@@ -1183,12 +1178,12 @@ const addProperty = (data, geojson) => {
       } else if (geojson[j].properties.beat_na) {
         x = data[i].beat_n;
         y = geojson[j].properties.beat_na;        
-      } else if (geojson[j].properties.Project) {
+      } else if (geojson[j].properties.project) {
         x = data[i].project_n;
-        y = geojson[j].properties.Project;
+        y = geojson[j].properties.project;
       } else {
         x = data[i].block_n;
-        y = geojson[j].properties.Block;
+        y = geojson[j].properties.block;
       }
 
       if (x.trim() === y.trim()) {
@@ -1221,18 +1216,14 @@ async function mergeData(geoJSON) {
   let blockGeoJSON = geoJSON.blockJSON;
 
   data_from_django = {{ context.block_data|safe }};
-  console.log(data_from_django)
   var data = []
   data_from_django.forEach(element => {
     data.push(element.fields);
   });
   let blockCSV = data;
-  console.log(blockCSV);
 // await d3.csv("{% static 'data/csv/feat6/pal_block.csv'%}");
 
   let blockMonthWiseCSV = monthWiseCSV(blockCSV);
-  // console.log(blockMonthWiseCSV);
-
   let blockGeoJSONAug = JSON.parse(JSON.stringify(blockGeoJSON));
   let blockGeoJSONSep = JSON.parse(JSON.stringify(blockGeoJSON));
   let blockGeoJSONOct = JSON.parse(JSON.stringify(blockGeoJSON));
@@ -1255,7 +1246,6 @@ async function mergeData(geoJSON) {
         data.push(element.fields);
     });
   let projectCSV = data;
-  console.log(projectCSV)
 //   await d3.csv("{% static 'data/csv/feat6/pal_project.csv'%}");
 
   let projectMonthWiseCSV = monthWiseCSV(projectCSV);
@@ -1281,7 +1271,6 @@ console.log(mergedProject)
     data.push(element.fields);
   });
   let beatCSV = data;
-  console.log(beatCSV)
 //   await d3.csv("{% static 'data/csv/feat6/pal_beat.csv'%}");
 
   let beatMonthWiseCSV = monthWiseCSV(beatCSV);
@@ -1307,7 +1296,6 @@ console.log(mergedBeat)
     data.push(element.fields);
   });
   let awcCSV = data;
-  console.log(awcCSV)
 //   await d3.csv("{% static 'data/csv/feat6/pal_awc.csv'%}");
 
   let awcMonthWiseCSV = monthWiseCSV(awcCSV);

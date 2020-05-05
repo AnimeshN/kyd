@@ -124,14 +124,6 @@ height:80px;
 
             <div class="dash-button container text-center">
 
-                <!-- <div class="">
-
-                    <button type="button" class="btn btn-lg m-3" onclick="location.href=`{% url 'feat1' %}`"> Palghar Dashboard</button>
-
-                </div> -->
-
-
-
                 <div class="">
 
                     <button type="button" class="btn btn-lg" onclick="location.href=`{% url 'maha-feat1' %}`"> Maharashtra Dashboard</button>
@@ -184,7 +176,7 @@ height:80px;
 function validateForm() {
     var pass = document.forms["myForm"]["password"].value;
     var dSelect = document.forms["myForm"]["dist_select"].value;
-    if((dSelect=="Nandurbar" && pass=="knowyourNandurbar") || (dSelect=="Palghar" && pass=="knowyourPalghar"))
+    if((dSelect=="Nandurbar" && pass=="knowyourNandurbar") || (dSelect=="Palghar" && pass=="knowyourPalghar") || (dSelect=="Latur" && pass=="knowyourLatur"))
     {
         return true;
     }

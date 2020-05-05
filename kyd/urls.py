@@ -16,11 +16,7 @@ Including another URLconf
 from django.contrib import admin 
 from django.conf.urls import url
 from dashboard.views import DashboardView
-from kyd_dashboard.views import (KYDDashboardView, FeatureOne, 
-    FeatureTwo, FeatureThree, FeatureFour,FeatureFive, FeatureSix,
-    FeatureSeven, FeatureEight, FeatureNine,FeatureTen, 
-    FeatureEleven, FeatureComp, FeatureRadar, FeatureRadar2,
-    Demo_dd, 
+from kyd_dashboard.views import (KYDDashboardView, 
     F1MsrmntEffcyBlk, F1MsrmntEffcyBlk_post, F2OtcmIndctrBlk, F4DtProfile,
     F3PieProject, F5DtOverview, F6OiMap, F7IycfMap, F8PwMap,
     FtLcBlock, FtLcProject, FtLcBeats, FtRdr1, FtRdr2)
@@ -33,22 +29,7 @@ from dashboard import views
 
 urlpatterns = [
     url(r'^$', DashboardView.as_view(), name='home'),
-    url(r'^dashboard/demo_dash$', Demo_dd.as_view(), name='demo_dd'),
     url(r'^kyd_dashboard$', KYDDashboardView.as_view(), name='kyd_dashboard'),
-    url(r'^kyd_dashboard/feature1$', FeatureOne.as_view(), name='feat1'),
-    url(r'^kyd_dashboard/feature2$', FeatureTwo.as_view(), name='feat2'),
-    url(r'^kyd_dashboard/feature3$', FeatureThree.as_view(), name='feat3'),
-    url(r'^kyd_dashboard/feature4$', FeatureFour.as_view(), name='feat4'),
-    url(r'^kyd_dashboard/feature5$', FeatureFive.as_view(), name='feat5'),
-    url(r'^kyd_dashboard/feature6$', FeatureSix.as_view(), name='feat6'),
-    url(r'^kyd_dashboard/feature7$', FeatureSeven.as_view(), name='feat7'),
-    url(r'^kyd_dashboard/feature8$', FeatureEight.as_view(), name='feat8'),
-    url(r'^kyd_dashboard/feature9$', FeatureNine.as_view(), name='feat9'),
-    url(r'^kyd_dashboard/feature10$', FeatureTen.as_view(), name='feat10'),
-    url(r'^kyd_dashboard/feature11$', FeatureEleven.as_view(), name='feat11'),
-    url(r'^kyd_dashboard/feature_comp$', FeatureComp.as_view(), name='feat-comp'),
-    url(r'^kyd_dashboard/feature_radar$', FeatureRadar.as_view(), name='feat-radar'),
-    url(r'^kyd_dashboard/feature_radar2$', FeatureRadar2.as_view(), name='feat-radar2'),
     url(r'^kyd_dashboard/f1_msrmnt_effcy_blk$', F1MsrmntEffcyBlk_post.as_view(), name='f1'),
     url(r'^kyd_dashboard/f1_msrmnt_effcy_blk/(?P<dist_name>\w+)$', F1MsrmntEffcyBlk.as_view(), name='f1'),
     url(r'^(?P<dist_name>\w+)/kyd_dashboard/f2_oi_blk$', F2OtcmIndctrBlk.as_view(), name='f2'),
@@ -63,7 +44,6 @@ urlpatterns = [
     url(r'^(?P<dist_name>\w+)/kyd_dashboard/ft_lc_beat$', FtLcBeats.as_view(), name='ftlcbt'),
     url(r'^(?P<dist_name>\w+)/kyd_dashboard/ft_radar1$', FtRdr1.as_view(), name='ftrdr1'),
     url(r'^(?P<dist_name>\w+)/kyd_dashboard/ft_radar2$', FtRdr2.as_view(), name='ftrdr2'),
-
     
     url(r'^maha_dashboard/maha_feature1$', MahaFeatureOne.as_view(), name='maha-feat1'),
     url(r'^maha_dashboard/maha_feature2$', MahaFeatureTwo.as_view(), name='maha-feat2'),

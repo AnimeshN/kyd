@@ -255,7 +255,7 @@
 
     let xValue = d => d.block_n;
 
-    const margin = {left:50,top:160 ,right:0,bottom:30};
+    const margin = {left:50,top:160 ,right:0,bottom:90};
 
     const innerWidth = width - margin.left - margin.right;
 
@@ -299,7 +299,7 @@
 
             .attr('height',d => innerHeight - yScale(yValue(d)))
 
-            .attr('width', d=> innerWidth/10)
+            .attr('width', d=> innerWidth/15)
 
             .attr("fill", d => getColor(yValue(d)))
 
@@ -346,12 +346,14 @@
 
       let xaxisLeft = g1.append('g').call(d3.axisBottom(xScale))
 
-                .attr('transform',`translate(0, ${innerHeight})`)
+                .attr('transform',`translate(0, ${innerHeight})`);
 
-                .attr("font-size", "10px")
-
-                .attr("font-weight", "bold");
-
+                xaxisLeft.selectAll("text").attr("font-size", "12px")
+            .attr("font-weight", "bold")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-45)" );
 			 
 
 
@@ -402,7 +404,7 @@
 
             .attr('height',d => innerHeight - yScale(yValue(d)))
 
-            .attr('width', d=> innerWidth/10)
+            .attr('width', d=> innerWidth/15)
 
             .attr("fill", d => getColor(yValue(d)))
 
@@ -449,12 +451,14 @@
 
       let xaxisRight = g2.append('g').call(d3.axisBottom(xScale))
 
-                .attr('transform',`translate(0, ${innerHeight})`)
+                .attr('transform',`translate(0, ${innerHeight})`);
 
-                .attr("font-size", "10px")
-
-                .attr("font-weight", "bold");
-
+          xaxisRight.selectAll("text").attr("font-size", "12px")
+            .attr("font-weight", "bold")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-45)" );
 			 
 
 

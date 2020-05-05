@@ -27,7 +27,7 @@
 	width:200px;
 }
 #legend{
-	width:120px;
+	width:150px;
 	height:500px;
 }
 .legend {
@@ -91,7 +91,6 @@ fill: #fff;
 </style>
   {% endblock %}
 {% block feature %}
-{{ dist_name }}
 
 <div class='heading text-dark mt-2 text-center'> Outcome Indicators Block-Wise</div>
 
@@ -154,9 +153,7 @@ fill: #fff;
      
    
  // Set the ranges
- //var x = d3.time.scale().range([0, width]);
  var xScale = d3.scale.ordinal().rangePoints([0, innerWidth], 0.5);
- //var x = d3.time.scale().domain([d3.time.format("Aug").parseMonth, d3.time.format("Dec").parseMonth]).range([0, width]);
  var yScale = d3.scale.linear().range([innerHeight, 0]);
  
  // Define the axes
@@ -176,19 +173,19 @@ fill: #fff;
    
    
    
- <!-- var yScale = d3.scaleLinear() -->
-           <!-- .range([innerHeight,0]); -->
+//  <!-- var yScale = d3.scaleLinear() -->
+//            <!-- .range([innerHeight,0]); -->
        
- <!-- var xScale = d3.scalePoint() -->
-           <!-- .range([0, innerWidth], 0.5) -->
-           <!-- .padding(0.1); -->
+//  <!-- var xScale = d3.scalePoint() -->
+//            <!-- .range([0, innerWidth], 0.5) -->
+//            <!-- .padding(0.1); -->
        
-      <!-- // xScale.domain(data.map(xValue)) -->
+//       <!-- // xScale.domain(data.map(xValue)) -->
  
-    <!-- // Define the line -->
-   <!-- var stateline = d3.line()		 -->
-     <!-- .x(function(d) {return xScale(d.month); }) -->
-     <!-- .y(function(d) { return yScale(d.value); }); -->
+//     <!-- // Define the line -->
+//    <!-- var stateline = d3.line()		 -->
+//      <!-- .x(function(d) {return xScale(d.month); }) -->
+//      <!-- .y(function(d) { return yScale(d.value); }); -->
    
    var g = svg.append('g')
            .attr('transform', `translate(${margin.left}, ${margin.top})`); 
@@ -298,9 +295,9 @@ fill: #fff;
        var sect =  selectedCategory;
        console.log(sect);
        sect= sect.replace(/ /g, '_');
-       console.log(sect)
+       var selectedBlock = d.key.replace(/ /g, '_');
     
-       var url = "{% url 'ftlcprjt' dist_name%}?id1="+d.key+"&id2="+sect;
+       var url = "{% url 'ftlcprjt' dist_name%}?id1="+selectedBlock+"&id2="+sect;
                $(location).attr('href', url);
                window.location = url;
          

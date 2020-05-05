@@ -1,4 +1,58 @@
 from django.db import models
+from django.contrib.gis.db import models
+
+class DistrictBlockWiseGeojson(models.Model):
+    ogc_fid = models.AutoField(primary_key=True)
+    block = models.CharField(max_length=15, blank=True, null=True)
+    wkb_geometry = models.GeometryField(blank=True, null=True)
+    district = models.CharField(max_length=15, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'district_block_wise_geojson'
+
+
+class DistrictProjectWiseGeojson(models.Model):
+    project = models.CharField(max_length=20, blank=True, null=True)
+    block = models.CharField(max_length=15, blank=True, null=True)
+    wkb_geometry = models.MultiPolygonField(blank=True, null=True)
+    district = models.CharField(max_length=15, blank=True, null=True)
+    ogc_fid = models.AutoField(primary_key=True)
+
+    class Meta:
+        managed = False
+        db_table = 'district_project_wise_geojson'
+
+
+class DistrictAwcGeojson(models.Model):
+    block = models.CharField(max_length=15, blank=True, null=True)
+    beat = models.CharField(max_length=100, blank=True, null=True)
+    beat_code = models.IntegerField(blank=True, null=True)
+    beat_withc = models.CharField(max_length=100, blank=True, null=True)
+    awc_with_c = models.CharField(max_length=100, blank=True, null=True)
+    awc = models.CharField(max_length=100, blank=True, null=True)
+    awc_code = models.FloatField(blank=True, null=True)
+    latitude = models.FloatField(blank=True, null=True)
+    longitude = models.FloatField(blank=True, null=True)
+    wkb_geometry = models.PointField(blank=True, null=True)
+    district = models.CharField(max_length=15, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'district_awc_geojson'
+
+
+class DistrictBeatWiseGeojson(models.Model):
+    ogc_fid = models.AutoField(primary_key=True)
+    beat_na = models.CharField(max_length=100, blank=True, null=True)
+    project = models.CharField(max_length=20, blank=True, null=True)
+    block = models.CharField(max_length=15, blank=True, null=True)
+    wkb_geometry = models.MultiPolygonField(blank=True, null=True)
+    district = models.CharField(max_length=15, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'district_beat_wise_geojson'
 
 
 class F1(models.Model):
@@ -48,49 +102,50 @@ class F2(models.Model):
 
 class F3(models.Model):
     month_n = models.CharField(max_length=10, blank=True, null=True)
-    district_n = models.CharField(max_length=25, blank=True, null=True)
-    block_n = models.CharField(max_length=25, blank=True, null=True)
+    district_n = models.CharField(max_length=20, blank=True, null=True)
+    block_n = models.CharField(max_length=20, blank=True, null=True)
     project_n = models.CharField(max_length=25, blank=True, null=True)
-    stunting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    wasting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    underweight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    low_birth_weight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    per_no_enrld = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    stunting_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    wasting_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    underweight_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    low_birth_weight_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    no_of_enrolled_children = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    per_no_enrld = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'f3'
-
+        
 
 class F4(models.Model):
-    month_n = models.CharField(max_length=10, blank=True, null=True)
-    district_n = models.CharField(max_length=25, blank=True, null=True)
-    nb_lbw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    month_n = models.CharField(max_length=20, blank=True, null=True)
+    state_n = models.CharField(max_length=20, blank=True, null=True)
+    district_n = models.CharField(max_length=20, blank=True, null=True)
     wstd_chld = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     stntd_chld = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     uw_chld = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    wasting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    stunting_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    underweight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    low_birth_weight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_chld_bf_at_birth = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_chld_excly_bf = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_chld_rcvg_cf_wid_adq_dt_dvsty = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_chld_cf_wid_adq_dt_qnty = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    per_no_chld_cf_wid_appr_hndwhg_bfr_fdg = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_chld_intd_cf_p30d = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_child_1yr_immnztn = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_intd_cf_6to24mnth_child = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_anwmic_wmn = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_4_anc_vst_dlvry = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_wmn_etg_xtr_ml_drng_prgncy = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_wmn_rstg_drg_prgncy = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-    prnt_trmstr_3wmn_cnsld_imdtbf = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    nb_lbw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    stunting_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    wasting_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    low_birth_weight_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    underweight_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_child_1yr_immnztn = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_chld_bf_at_birth = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_chld_excly_bf = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_chld_rcvg_cf_wid_adq_dt_dvsty = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_chld_cf_wid_adq_dt_qnty = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    per_no_chld_cf_wid_appr_hndwhg_bfr_fdg = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_chld_intd_cf_p30d = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_intd_cf_6to24mnth_child = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_anwmic_wmn = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_4_anc_vst_dlvry = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_wmn_rstg_drg_prgncy = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_wmn_etg_xtr_ml_drng_prgncy = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_trmstr_3wmn_cnsld_imdtbf = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
 
     class Meta:
         managed = False
         db_table = 'f4'
-
 
 
 class F5Awc(models.Model):
@@ -659,3 +714,28 @@ class FtRadar1(models.Model):
     class Meta:
         managed = False
         db_table = 'ft_radar1'
+
+
+class FtRadar2(models.Model):
+    month_n = models.CharField(max_length=10, blank=True, null=True)
+    district_n = models.CharField(max_length=20, blank=True, null=True)
+    block_n = models.CharField(max_length=20, blank=True, null=True)
+    project_n = models.CharField(max_length=25, blank=True, null=True)
+    prnt_aneamic_free_wmn = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_child_1yr_cmpltd_immunzt = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_chld_bf_at_birth = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_chld_excly_bf = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_chld_6to8_intd_cf = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    prnt_chld_intd_cf = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    norm_anemic_free_wmn = models.DecimalField(max_digits=2, decimal_places=1, blank=True, null=True)
+    norm_chld_bf_at_birth = models.DecimalField(max_digits=2, decimal_places=1, blank=True, null=True)
+    norm_child_immunization = models.DecimalField(max_digits=2, decimal_places=1, blank=True, null=True)
+    norm_chld_excly_bf = models.DecimalField(max_digits=2, decimal_places=1, blank=True, null=True)
+    norm_chld_6to8_intd_cf = models.DecimalField(max_digits=2, decimal_places=1, blank=True, null=True)
+    norm_chld_intd_cf = models.DecimalField(max_digits=2, decimal_places=1, blank=True, null=True)
+    norm_chld_bf = models.DecimalField(max_digits=2, decimal_places=1, blank=True, null=True)
+    norm_chld_cf = models.DecimalField(max_digits=2, decimal_places=1, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'ft_radar2'

@@ -129,83 +129,22 @@ height: 40%;
   <div  class="projectCheckBox" >  
 
   <p>Select Project </p>	
-  {% if dist_name == "Palghar" %}
+  
 
         <form id="projectList" >
 
-          <!-- <input type="checkbox" class="myCheckbox" value="Am"/> All Projects <br> -->
+          {% for project in projectList %}        
 
-        <label><input type="checkbox" id="myBestProject" value="BestProject"/><span> Best Project </span></label><br>
-
-        <label><input type="checkbox" id="myDistrict" value="District"/><span> Palghar District</span></label> <br>
-
-        <label><input type="checkbox" id="myMH" value="Maharashtra"/><span> Maharashtra </span></label><br>
-
-        <label><input type="checkbox" id="myDahanu" value="Dahanu"/><span> Dahanu</span></label> <br>
-
-        <label><input type="checkbox" id="myCheckbox" value="Kasa"/><span> Kasa </span></label><br>
-
-        <label><input type="checkbox" id="myJawhar1" value="Jawhar 1"/><span> Jawhar-1</span></label> <br>
-
-        <label><input type="checkbox" id="myJawhar-2" value="Jawhar-2"/> <span>Jawhar-2 </span></label><br>
-
-        <label><input type="checkbox" id="myMokhada" value="Mokhada"/><span> Mokhada </span></label><br>
-
-        <label><input type="checkbox" id="myCheckbox" value="Manor"/><span> Manor</span></label> <br>
-
-        <label><input type="checkbox" id="myManor" value="Palghar"/><span> Palghar </span></label><br>
-
-        <label><input type="checkbox" id="myTalasari" value="Talasari"/><span> Talasari </span></label>  <br>     
-
-        <label><input type="checkbox" id="myVasai" value="Vasai"/><span> Vasai</span></label> <br>
-
-        <label><input type="checkbox" id="myVasai-2" value="Vasai-2"/><span> Vasai-2 </span></label><br>
-
-        <label><input type="checkbox" id="myVikramgad" value="Vikramgad"/><span>Vikramgad</span></label> <br>
-
-        <label><input type="checkbox" id="myWada-1" value="Wada-1"/><span>Wada-1 </span></label><br>
-
-        <label><input type="checkbox" id="myWada-2" value="Wada-2"/><span> Wada-2 </span></label><br>
-
-        <label><input type = "button" value = "Update Chart" onclick = "GetSelected()" />
-
-       </form>             
-       {% else %}
-
-       <form id="projectList" >
-     
-           <label><input type="checkbox" id="myBestProject" value="BestProject"/><span> Best Project</span> </label><br>
-     
+          <label><input type="checkbox" id="my{{project.project_n}}" value="{{ project.project_n }}"/><span>{{ project.project_n }}</span> </label><br>                    
+         
+          {% endfor %}
+      
            <label><input type="checkbox" id="myMH" value="Maharashtra"/> <span>Maharashtra </span></label><br>
      
-           <label><input type="checkbox" id="myDistrict" value="District"/><span> Nandurbar District</span> </label><br>
-     
-           <label><input type="checkbox" id="myAkkalkuwa" value="Akkalkuwa"/><span>Akkalkuwa</span> </label><br>
-     
-           <label><input type="checkbox" id="myMolgi" value="Molgi"/> <span>Molgi</span> </label><br>
-     
-           <label><input type="checkbox" id="myPimplkhunta" value="Pimplkhunta"/> <span>Pimplkhunta</span> </label><br>
-     
-           <label><input type="checkbox" id="myDhadgaon" value="Dhadgaon"/> <span>Dhadgaon </span></label><br>
-     
-           <label><input type="checkbox" id="myToranmal" value="Toranmal"/><span> Toranmal </span></label> <br>
-     
-           <label><input type="checkbox" id="myCheckbox" value="Manor"/> <span>Nandurbar</span></label> <br>
-     
-           <label><input type="checkbox" id="myRanala" value="Ranala"/><span>Ranala</span></label> <br>
-     
-           <label><input type="checkbox" id="myNawapur" value="Nawapur"/><span>Nawapur</span> </label> <br>     
-     
-           <label><input type="checkbox" id="myShahada" value="Shahada"/><span>Shahada</span> </label><br>
-     
-           <label><input type="checkbox" id="myShahadaMh" value="Shahada (Mhasawad)-[02]"/><span>Shahada (Mhasawad)-[02]</span></label><br>
-     
-           <label><input type="checkbox" id="myTolada" value="Tolada"/><span>Tolada</span></label><br>
-     
-           <label><input type = "button" value = "Update Chart" onclick = "GetSelected()" />
+          <label><input type = "button" value = "Update Chart" onclick = "GetSelected()" />
      
       </form>        
-      {% endif %}
+     
      
   
 
@@ -220,7 +159,215 @@ height: 40%;
     let chartStatData=[];
 
  
+    const render = rdata =>{
 
+console.log(rdata);
+
+document.getElementById("myBestProject").checked = true;
+
+document.getElementById("myDistrict").checked = true;
+
+document.getElementById("myMH").checked = true;
+
+
+
+var rdata2=[];
+
+
+
+for (var i=0; i < rdata.length; i++)
+
+{
+
+if(rdata[i].label== "BestProject" ||  rdata[i].label== "District" || rdata[i].label== "Maharashtra")
+
+{
+
+
+
+rdata2.push(rdata[i]); 
+
+}  
+
+}
+
+
+
+var ctx = document.getElementById('myChart').getContext('2d');
+
+
+
+  var chart = new Chart(ctx, {
+
+      // The type of chart we want to create
+
+      type: 'radar',
+
+
+
+      // The data for our dataset
+
+      data: {
+
+         
+
+           labels: ["Anemia Free Women", "Children Immunization","Children(0-6 months) BF Practices","Children (6-24 months) CF Practices"],
+
+          datasets: [rdata2[0], rdata2[1], rdata2[2]],
+
+        
+
+      },
+
+
+
+      // Configuration options go here
+
+      options: {
+
+        //defaultFontSize: 120,
+
+        //maintainAspectRation: false,
+
+        tooltips: {
+
+              mode: 'index',
+
+              callbacks: {
+
+                  label: function(tooltipItem, data) {
+
+                      return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+                  }
+
+              }
+
+          },
+
+          hover: {
+
+          mode: 'index',
+
+          },
+
+      
+
+  scale: {
+
+      angleLines: {
+
+          display: true
+
+      },
+
+      ticks: {
+
+          suggestedMin: 0,
+
+          suggestedMax: 1,
+
+          stepSize: 0.2
+
+      },
+
+      pointLabels:{
+
+     fontColor:"blue",
+
+     fontSize: 20
+
+  }
+
+  }
+
+  
+
+  
+
+}
+
+
+
+  });  
+
+
+
+  makeviz = opt =>{
+
+ 
+
+console.log(opt.length);
+
+  var rdata1=[];
+
+   for(var i=0; i < chartStatData.length; i++) 
+
+   {
+
+       for(var j=0; j < opt.length; j++)
+
+       { 
+
+   
+
+     if(opt[j] == chartStatData[i].label)
+
+           {
+
+           console.log(opt[j]);
+
+           rdata1.push(chartStatData[i]);
+
+   
+
+           } 
+
+  
+
+        }
+
+    }
+
+    //rdata1.push(best);
+
+    // rdata1.push(pal)
+
+    console.log(rdata1);
+
+    chart.data.datasets=[];	 
+
+   // document.getElementById("myChart").innerHTML = "";
+
+  for(var i=0; i < rdata1.length; i++)
+
+  {
+
+  chart.data.datasets[i]=rdata1[i];
+
+  if(rdata1[i].label!= "BestProject" &&  rdata1[i].label!= "District" && rdata1[i].label != "Maharashtra")
+
+   {
+
+     chart.data.datasets[i].borderColor="red";
+
+    }
+
+  } 	
+
+  
+
+  
+
+  chart.update();
+
+     
+
+   }
+
+  
+
+    }
     
 
  const monthwise = (data) => {
@@ -245,13 +392,13 @@ height: 40%;
 
      temp['project_n'] = d.project_n;
 
-     temp['anemic_free_women'] = +d.anemic_free_women;
+     temp['norm_anemic_free_wmn'] = +d.norm_anemic_free_wmn;
 
-     temp['child_immunization'] = +d.child_immunization;
+     temp['norm_child_immunization'] = +d.norm_child_immunization;
 
-     temp['child_bf_practices'] = +d.child_bf_practices;
+     temp['norm_chld_bf'] = +d.norm_chld_bf;
 
-     temp['child_cf_practices'] = +d.child_cf_practices;
+     temp['norm_chld_cf'] = +d.norm_chld_cf;
 
  
 
@@ -355,7 +502,7 @@ height: 40%;
 
     // temp.data = [d.svrly_stntd,d.svr_wstg,d.wasting_percent,d.stunting_percent,d.underweight_percent];
 
-      temp.data = [d.anemic_free_women,d.child_immunization,d.child_bf_practices,d.child_cf_practices]
+      temp.data = [d.norm_anemic_free_wmn,d.norm_child_immunization,d.norm_chld_bf,d.norm_chld_cf]
 
      
 
@@ -373,42 +520,23 @@ height: 40%;
 
  }
 
- var dist_name = "{{ dist_name }}"
+ data_from_django = {{ data|safe }};
 
- if(dist_name == "Nandurbar")
- {
-  var csvFile = d3.csv("{% static 'data/csv/radar/radar2_nand.csv' %}");
- }
- else
- {
-  var csvFile = d3.csv("{% static 'data/csv/radar/radar2_Palghar.csv' %}");
- }
+var data = []
+
+data_from_django.forEach(element => {
+
+  data.push(element.fields);
+
+});
 
  
 
-    csvFile.then(data => {
+  
 
           monthwisesplit = monthwise(data);
 
-         
-
-          data.forEach(element => {
-
-            element.project_n = element.project_n;
-
-           // element.svrly_stntd = +element.svrly_stntd;
-
-           // element.svr_wstg = +element.svr_wstg;
-
-            element.anemic_free_women = +element.anemic_free_women;
-
-             element.child_immunization = +element.child_immunization;
-
-            element.child_bf_practices  = +element.child_bf_practices;
-
-            element.child_cf_practices  = +element.child_cf_practices;         
-
-         });
+      
 
          $(".month a").click(function(){
 
@@ -460,7 +588,7 @@ height: 40%;
 
  
 
- });
+
 
  
 
@@ -564,220 +692,11 @@ height: 40%;
 
      
 
-   const render = rdata =>{
 
-   console.log(rdata);
-
-  document.getElementById("myBestProject").checked = true;
-
-  document.getElementById("myDistrict").checked = true;
-
-   document.getElementById("myMH").checked = true;
-
-  
-
-   var rdata2=[];
-
-   
-
-   for (var i=0; i < rdata.length; i++)
-
-   {
-
-   if(rdata[i].label== "BestProject" ||  rdata[i].label== "District" || rdata[i].label== "Maharashtra")
-
-   {
-
-   
-
-   rdata2.push(rdata[i]); 
-
-   }  
-
-   }
-
-   
-
-   var ctx = document.getElementById('myChart').getContext('2d');
-
- 
-
-     var chart = new Chart(ctx, {
-
-         // The type of chart we want to create
-
-         type: 'radar',
-
- 
-
-         // The data for our dataset
-
-         data: {
-
-            
-
-              labels: ["Anemia Free Women", "Children Immunization","Children(0-6 months) BF Practices","Children (6-24 months) CF Practices"],
-
-             datasets: [rdata2[0], rdata2[1], rdata2[2]],
-
-           
-
-         },
-
- 
-
-         // Configuration options go here
-
-         options: {
-
-           //defaultFontSize: 120,
-
-           //maintainAspectRation: false,
-
-           tooltips: {
-
-                 mode: 'index',
-
-                 callbacks: {
-
-                     label: function(tooltipItem, data) {
-
-                         return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-
-                     }
-
-                 }
-
-             },
-
-             hover: {
-
-             mode: 'index',
-
-             },
-
-         
-
-     scale: {
-
-         angleLines: {
-
-             display: true
-
-         },
-
-         ticks: {
-
-             suggestedMin: 0,
-
-             suggestedMax: 1,
-
-             stepSize: 0.2
-
-         },
-
-         pointLabels:{
-
-        fontColor:"blue",
-
-        fontSize: 20
-
-     }
-
-     }
-
-     
-
-     
-
- }
-
- 
-
-     });  
-
- 
-
-     makeviz = opt =>{
-
-    
-
-   console.log(opt.length);
-
-     var rdata1=[];
-
-      for(var i=0; i < chartStatData.length; i++) 
-
-      {
-
-          for(var j=0; j < opt.length; j++)
-
-          { 
-
-      
-
-        if(opt[j] == chartStatData[i].label)
-
-              {
-
-              console.log(opt[j]);
-
-              rdata1.push(chartStatData[i]);
-
-      
-
-              } 
-
-     
-
-           }
-
-       }
-
-       //rdata1.push(best);
-
-       // rdata1.push(pal)
-
-       console.log(rdata1);
-
-       chart.data.datasets=[];	 
-
-      // document.getElementById("myChart").innerHTML = "";
-
-     for(var i=0; i < rdata1.length; i++)
-
-     {
-
-     chart.data.datasets[i]=rdata1[i];
-
-     if(rdata1[i].label!= "BestProject" &&  rdata1[i].label!= "District" && rdata1[i].label != "Maharashtra")
-
-      {
-
-        chart.data.datasets[i].borderColor="red";
-
-       }
-
-     } 	
-
-     
-
-     
-
-     chart.update();
-
-        
-
-      }
-
-     
-
-       }
 
    // console.log(data)
 
      </script>
 
 {% endblock %}
-
 

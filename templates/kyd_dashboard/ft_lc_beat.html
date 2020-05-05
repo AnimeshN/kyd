@@ -28,7 +28,7 @@
 	width:200px;
 }
 #legend{
-	width:120px;
+	width:150px;
 	height:500px;
 }
 .legend {
@@ -475,6 +475,7 @@ console.log("in update graph")
 		if(choices.length > 0)
 		{
 		selectedCategory=choices[1];
+    var selectedProject=choices[0].replace(/_/g, ' ');
 		var choiceOneVal= choices[1].replace(/_/g, ' ');
 		if(choiceOneVal == 'Severly Stunted Children')
 			section ='svrly_stunting_percent';
@@ -490,7 +491,7 @@ console.log("in update graph")
 			section = 'underweight_percent'
 			else 
 			section = 'low_birth_weight_percent'
-      filterdata = filterCSV(data, 'project_n', choices[0]);
+      filterdata = filterCSV(data, 'project_n', selectedProject);
       console.log(filterdata);
 		  setData(filterdata,section);	
 		}

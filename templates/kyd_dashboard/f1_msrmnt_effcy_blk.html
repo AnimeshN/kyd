@@ -153,7 +153,7 @@
 
       const xValue = d => d.block_n;
 
-      const margin = {left:50,top:10 ,right:400,bottom:30};
+      const margin = {left:150,top:10 ,right:150,bottom:90};
 
       const innerWidth = width - margin.left - margin.right;
 
@@ -363,9 +363,12 @@
 
           .call(d3.axisBottom(xScale));
 
-  
-
-            
+          xaxis.selectAll("text").attr("font-size", "13px")
+            .attr("font-weight", "bolder")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-45)" );            
 
           }   
 

@@ -1,134 +1,23 @@
-
 from django.shortcuts import render
 from django.views.generic import TemplateView
+from django.db.models import Q
 
-from .models import (F1, F2, F3, F4, F5Awc, F5Beat, F5Blk, F5Prjt, FtLcPrjt, FtLcBlk, FtLcBeat, FtRadar1, 
+from .models import (F1, F2, F3, F4, F5Awc, F5Beat, F5Blk, F5Prjt, FtLcPrjt, FtLcBlk, FtLcBeat, FtRadar1, FtRadar2,
        F6OiBlock, F6OiProject, F6OiBeat, F6OiAwc, 
        F7IycfAw, F7IycfBlock, F7IycfBt, F7IycfProject,
-       F8PwProject, F8PwBlock, F8PwBeat, F8PwAwc)
+       F8PwProject, F8PwBlock, F8PwBeat, F8PwAwc,
+       DistrictBlockWiseGeojson, DistrictProjectWiseGeojson,
+       DistrictBeatWiseGeojson, DistrictAwcGeojson)
 
 from django.core import serializers
+from django.core.serializers import serialize
 from django.contrib.auth.mixins import LoginRequiredMixin
 
 # Create your views here.
 
 class KYDDashboardView(LoginRequiredMixin, TemplateView):
-    # def get(self,request):
-        # dt_name = ConsoChildNdj.objects.order_by('district_n').values('district_n').distinct()
     template_name = "kyd_dashboard/kyd_base.html"
-
-class FeatureOne(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-    def get(self,request):
-        return render(request,'kyd_dashboard/feature1.html')
-
-class FeatureTwo(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request, 'kyd_dashboard/feature2.html')
-
-class FeatureThree(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request, 'kyd_dashboard/feature3.html')
-
-class FeatureFour(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request, 'kyd_dashboard/feature4.html')
-
-class FeatureFive(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request, 'kyd_dashboard/feature5.html')
-
-
-class FeatureSix(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request,'kyd_dashboard/feature6.html')
-
-class FeatureSeven(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request,'kyd_dashboard/feature7.html')
-
-class FeatureEight(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request,'kyd_dashboard/feature8.html')
-
-
-class FeatureNine(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request,'kyd_dashboard/feature9.html')
-
-
-class FeatureTen(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request,'kyd_dashboard/feature10.html')
-
-class FeatureEleven(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request,'kyd_dashboard/feature11.html')
-
-class FeatureComp(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request,'kyd_dashboard/feature_comp.html')
-
-
-class FeatureRadar(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request,'kyd_dashboard/feat_radar.html')
-
-
-class FeatureRadar2(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        return render(request,'kyd_dashboard/feat_radar2.html')
         
-
-class Demo_dd(LoginRequiredMixin, TemplateView):
-    login_url = '/login/'
-    redirect_field_name = 'login'
-
-    def get(self,request):
-        dt_name = ConsoChildNdj.objects.order_by('district_n').values('district_n').distinct()
-        # return render(request,'dashboard/dash.html', {'dd_dt_data':dt_name})
-        return render(request,'dashboard/demo_dash.html', {'dd_dt_data':dt_name})
-
 
 class F1MsrmntEffcyBlk_post(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -232,13 +121,31 @@ class F6OiMap(LoginRequiredMixin, TemplateView):
         Beat_jsondata = serializers.serialize('json', Beat_data)
         Awc_jsondata = serializers.serialize('json', Awc_data)
 
+        
+        
+        block_geodata = serialize('geojson', DistrictBlockWiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','district'))
+        project_geodata = serialize('geojson', DistrictProjectWiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','project','district'))
+        beat_geodata = serialize('geojson', DistrictBeatWiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','project','beat_na','district'))
+        awc_geodata = serialize('geojson', DistrictAwcGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','beat', 'beat_code', 'beat_withc','awc', 'awc_code', 'awc_with_c','district'))
+
         context = {
             'block_data': Block_jsondata,
             'project_data': Project_jsondata,
             'beat_data': Beat_jsondata,
-            'awc_data': Awc_jsondata
+            'awc_data': Awc_jsondata,
+            'blk_geodata':block_geodata,
+            'prjt_geodata':project_geodata,
+            'bt_geodata':beat_geodata,
+            'awc_geodata':awc_geodata,
         }
-
         return render(request,'kyd_dashboard/f6_oi_map.html', {'context':context, 'dist_name':district_n})
 
 
@@ -258,11 +165,28 @@ class F7IycfMap(LoginRequiredMixin, TemplateView):
         Beat_jsondata = serializers.serialize('json', Beat_data)
         Awc_jsondata = serializers.serialize('json', Awc_data)
 
+        block_geodata = serialize('geojson', DistrictBlockWiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','district'))
+        project_geodata = serialize('geojson', DistrictProjectWiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','project','district'))
+        beat_geodata = serialize('geojson', DistrictBeatWiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','project','beat_na','district'))
+        awc_geodata = serialize('geojson', DistrictAwcGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','beat', 'beat_code', 'beat_withc','awc', 'awc_code', 'awc_with_c','district'))
+
         context = {
             'block_data': Block_jsondata,
             'project_data': Project_jsondata,
             'beat_data': Beat_jsondata,
-            'awc_data': Awc_jsondata
+            'awc_data': Awc_jsondata,
+            'blk_geodata':block_geodata,
+            'prjt_geodata':project_geodata,
+            'bt_geodata':beat_geodata,
+            'awc_geodata':awc_geodata,
         }
 
         return render(request,'kyd_dashboard/f7_iycf_map.html', {'context':context, 'dist_name':district_n})
@@ -283,11 +207,28 @@ class F8PwMap(LoginRequiredMixin, TemplateView):
         Beat_jsondata = serializers.serialize('json', Beat_data)
         Awc_jsondata = serializers.serialize('json', Awc_data)
 
+        block_geodata = serialize('geojson', DistrictBlockWiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','district'))
+        project_geodata = serialize('geojson', DistrictProjectWiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','project','district'))
+        beat_geodata = serialize('geojson', DistrictBeatWiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','project','beat_na','district'))
+        awc_geodata = serialize('geojson', DistrictAwcGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','beat', 'beat_code', 'beat_withc','awc', 'awc_code', 'awc_with_c','district'))
+
         context = {
             'block_data': Block_jsondata,
             'project_data': Project_jsondata,
             'beat_data': Beat_jsondata,
-            'awc_data': Awc_jsondata
+            'awc_data': Awc_jsondata,
+            'blk_geodata':block_geodata,
+            'prjt_geodata':project_geodata,
+            'bt_geodata':beat_geodata,
+            'awc_geodata':awc_geodata,
         }
 
         return render(request,'kyd_dashboard/f8_pw_map.html', {'context':context, 'dist_name':district_n})
@@ -335,10 +276,10 @@ class FtRdr1(LoginRequiredMixin, TemplateView):
 
     def get(self, request, dist_name = None):
             district_n = request.GET.get('dist_name', dist_name)
-            # data = FtRadar1.objects.all().filter(district_n = district_n)
-            # jsondata = serializers.serialize('json',data)
-
-            return render(request,'kyd_dashboard/ft_radar1.html', {'dist_name':district_n})
+            data = FtRadar1.objects.all().filter(Q(district_n=district_n) | Q(district_n='Maharashtra'))
+            dataCheck= FtRadar1.objects.all().filter(district_n = district_n ).order_by('district_n').values('project_n').distinct()
+            jsondata = serializers.serialize('json',data)
+            return render(request,'kyd_dashboard/ft_radar1.html', {'data':jsondata, 'projectList':dataCheck, 'dist_name':district_n})
 
 
 class FtRdr2(LoginRequiredMixin, TemplateView):
@@ -347,6 +288,10 @@ class FtRdr2(LoginRequiredMixin, TemplateView):
 
     def get(self, request, dist_name = None):
             district_n = request.GET.get('dist_name', dist_name)
-            # data = FtRadar1.objects.all().filter(district_n = district_n)
-            # jsondata = serializers.serialize('json',data)
-            return render(request,'kyd_dashboard/ft_radar2.html', {'dist_name':district_n})    
+            fr2 = FtRadar2()
+            fr2.save()
+            data = FtRadar2.objects.all().filter(Q(district_n=district_n) | Q(district_n='Maharashtra'))
+            dataCheck= FtRadar2.objects.all().filter(district_n = district_n ).order_by('district_n').values('project_n').distinct()
+            print (dataCheck)
+            jsondata = serializers.serialize('json',data)
+            return render(request,'kyd_dashboard/ft_radar2.html', {'data':jsondata, 'projectList':dataCheck, 'dist_name':district_n})   

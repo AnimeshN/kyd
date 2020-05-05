@@ -27,7 +27,7 @@
 	width:200px;
 }
 #legend{
-	width:120px;
+	width:150px;
 	height:500px;
 }
 .legend {
@@ -317,7 +317,8 @@ console.log("in update graph")
 			.on("click", function(d){	
 			var sect2 = selectedCategory;  
 			sect2=sect2.replace(/ /g, '_');
-			var url = "{% url 'ftlcbt' dist_name %}?id1="+d.key+"&id2="+sect2;
+      var selectedProject = d.key.replace(/ /g, '_');
+			var url = "{% url 'ftlcbt' dist_name %}?id1="+selectedProject+"&id2="+sect2;
               $(location).attr('href', url);
               window.location = url;
 					
@@ -483,6 +484,7 @@ console.log("in update graph")
 		if(choices.length > 0)
 		{
 		selectedCategory=choices[1];
+    var selectedBlock=choices[0].replace(/_/g, ' ');
 		var choiceOneVal= choices[1].replace(/_/g, ' ');
 		if(choiceOneVal == 'Severly Stunted Children')
 			section ='svrly_stunted_percent';
@@ -499,7 +501,7 @@ console.log("in update graph")
 			else 
 			section = 'low_birth_weight_percent'	
 		$('.category a').val(section);
-		filterdata = filterCSV(data, 'block_n', choices[0]);
+		filterdata = filterCSV(data, 'block_n', selectedBlock);
 		setData(filterdata,section);	
 		}
 		else

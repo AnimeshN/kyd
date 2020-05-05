@@ -130,80 +130,19 @@ height: 40%;
 
   <p>Select Project</p>	
   
-{% if dist_name == "Palghar" %}
         <form id="projectList" >
+          {% for project in projectList %}        
 
-            <label><input type="checkbox" id="myBestProject" value="BestProject"/><span> Best Project</span> </label><br>
-
-            <label><input type="checkbox" id="myMH" value="Maharashtra"/> <span>Maharashtra </span></label><br>
-
-            <label><input type="checkbox" id="myDist" value="District"/><span> Palghar District</span> </label><br>
-
-            <label><input type="checkbox" id="myDahanu" value="Dahanu"/><span>Dahanu</span> </label><br>
-
-            <label><input type="checkbox" id="myKasa" value="Kasa"/> <span>Kasa</span> </label><br>
-
-            <label><input type="checkbox" id="myJawhar1" value="Jawhar 1"/> <span>Jawhar-1</span> </label><br>
-
-            <label><input type="checkbox" id="myJawhar-2" value="Jawhar-2"/> <span>Jawhar-2 </span></label><br>
-
-            <label><input type="checkbox" id="myMokhada" value="Mokhada"/><span> Mokhada</span></label> <br>
-
-            <label><input type="checkbox" id="myManor" value="Manor"/> <span>Manor</span></label> <br>
-
-            <label><input type="checkbox" id="myPalghar" value="Palghar"/><span> Palghar</span></label> <br>
-
-            <label><input type="checkbox" id="myTalasari" value="Talasari"/><span> Talasari </span> </label> <br>     
-
-            <label><input type="checkbox" id="myVasai" value="Vasai"/><span> Vasai</span> </label><br>
-
-            <label><input type="checkbox" id="myVasai-2" value="Vasai-2"/><span> Vasai-2 </span></label><br>
-
-            <label><input type="checkbox" id="myVikramgad" value="Vikramgad"/><span> Vikramgad </span></label><br>
-
-            <label><input type="checkbox" id="myWada-1" value="Wada-1"/><span>Wada-1 </span></label><br>
-
-            <label><input type="checkbox" id="myWada-2" value="Wada-2"/><span> Wada-2 </span></label><br>
-
-            <label><input type = "button" value = "Update Chart" onclick = "GetSelected()" />
-
-       </form>        
-  {% else %}
-
-  <form id="projectList" >
-
-      <label><input type="checkbox" id="myBestProject" value="BestProject"/><span> Best Project</span> </label><br>
-
-      <label><input type="checkbox" id="myMH" value="Maharashtra"/> <span>Maharashtra </span></label><br>
-
-      <label><input type="checkbox" id="myDist" value="District"/><span> Nandurbar District</span> </label><br>
-
-      <label><input type="checkbox" id="myAkkalkuwa" value="Akkalkuwa"/><span>Akkalkuwa</span> </label><br>
-
-      <label><input type="checkbox" id="myMolgi" value="Molgi"/> <span>Molgi</span> </label><br>
-
-      <label><input type="checkbox" id="myPimplkhunta" value="Pimplkhunta"/> <span>Pimplkhunta</span> </label><br>
-
-      <label><input type="checkbox" id="myDhadgaon" value="Dhadgaon"/> <span>Dhadgaon </span></label><br>
-
-      <label><input type="checkbox" id="myToranmal" value="Toranmal"/><span> Toranmal </span></label> <br>
-
-      <label><input type="checkbox" id="myCheckbox" value="Manor"/> <span>Nandurbar</span></label> <br>
-
-      <label><input type="checkbox" id="myRanala" value="Ranala"/><span>Ranala</span></label> <br>
-
-      <label><input type="checkbox" id="myNawapur" value="Nawapur"/><span>Nawapur</span> </label> <br>     
-
-      <label><input type="checkbox" id="myShahada" value="Shahada"/><span>Shahada</span> </label><br>
-
-      <label><input type="checkbox" id="myShahadaMh" value="Shahada (Mhasawad)-[02]"/><span>Shahada (Mhasawad)-[02]</span></label><br>
-
-      <label><input type="checkbox" id="myTolada" value="Tolada"/><span>Tolada</span></label><br>
+          <label><input type="checkbox" id="my{{project.project_n}}" value="{{ project.project_n }}"/><span>{{ project.project_n }}</span> </label><br>                    
+         
+          {% endfor %} 
+          
+          <label><input type="checkbox" id="myMH" value="Maharashtra"/> <span>Maharashtra </span></label><br>  
 
       <label><input type = "button" value = "Update Chart" onclick = "GetSelected()" />
 
  </form>        
- {% endif %}
+ 
 
   </div>
 
@@ -222,6 +161,202 @@ height: 40%;
 <script>
 
     let chartStatData=[];
+
+
+const render = rdata =>{
+
+document.getElementById("myBestProject").checked = true;
+
+document.getElementById("myDistrict").checked = true;
+
+ document.getElementById("myMH").checked = true;
+
+
+
+ var rdata2=[];
+
+ 
+
+ for (var i=0; i < rdata.length; i++)
+
+ {
+
+ if(rdata[i].label== "BestProject" ||  rdata[i].label== "District" || rdata[i].label== "Maharashtra")
+
+ {
+
+ 
+
+ rdata2.push(rdata[i]); 
+
+ }  
+
+ }
+
+ 
+
+ var ctx = document.getElementById('myChart').getContext('2d');
+
+
+
+   var chart = new Chart(ctx, {
+
+       // The type of chart we want to create
+
+       type: 'radar',
+
+
+
+       // The data for our dataset
+
+       data: {
+
+          
+
+            labels: ["% Stunting Percent", "% Underweight Percent","% Wasting Percent","% Low BirthWeight Percent","% Severly Stunting Percent","% Severly Wasted Percent"],
+
+  // pointLabelFontSize : 160,
+
+  // scaleFontSize: 160,
+
+   
+
+   
+
+           datasets: [rdata2[0], rdata2[1], rdata2[2]],
+
+         
+
+       },
+
+
+
+       // Configuration options go here
+
+       options: {
+
+         //defaultFontSize: 120,
+
+         //maintainAspectRation: false,
+
+         tooltips: {
+
+               mode: 'index',
+
+               callbacks: {
+
+                   label: function(tooltipItem, data) {
+
+                       return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+                   }
+
+               }
+
+           },
+
+           hover: {
+
+           mode: 'index',
+
+           },
+
+       
+
+   scale: {
+
+       angleLines: {
+
+           display: true
+
+       },
+
+       ticks: {
+
+           reverse: true,
+
+           suggestedMin: 0,
+
+           suggestedMax: 100,
+
+           stepSize: 20
+
+       }
+
+   }
+
+   
+
+   
+
+}
+
+
+
+   });  
+
+
+
+  makeviz = opt =>{
+
+ console.log(opt.length);
+
+   var rdata1=[];
+
+    for(var i=0; i < chartStatData.length; i++) 
+
+    {
+
+        for(var j=0; j < opt.length; j++)
+
+        { 
+
+      if(opt[j] == chartStatData[i].label)
+
+            {
+
+            console.log(opt[j]);
+
+            rdata1.push(chartStatData[i]);
+
+            } 
+         }
+
+     }
+
+     //rdata1.push(best);
+
+     // rdata1.push(pal)
+
+     console.log(rdata1);
+
+     chart.data.datasets=[];	 
+
+    // document.getElementById("myChart").innerHTML = "";
+
+   for(var i=0; i < rdata1.length; i++)
+
+   {
+
+   chart.data.datasets[i]=rdata1[i];
+
+   if(rdata1[i].label!= "BestProject" &&  rdata1[i].label!= "District" && rdata1[i].label != "Maharashtra")
+
+    {
+
+      chart.data.datasets[i].borderColor="red";
+
+    }
+
+   } 	 
+
+   chart.update();
+
+      
+
+    }
+
+}
 
     
 
@@ -375,52 +510,21 @@ height: 40%;
 
  }
 
- var dist_name = "{{ dist_name }}"
- console.log(dist_name);
+ data_from_django = {{ data|safe }};
 
- if(dist_name == "Nandurbar")
- {
-  var csvFile = d3.csv("{% static 'data/csv/radar/Nbdr_rdr1.csv' %}");
- }
- else
- {
-  var csvFile = d3.csv("{% static 'data/csv/radar/plgr_rdr1.csv' %}");
- }
+var data = []
+
+data_from_django.forEach(element => {
+
+  data.push(element.fields);
+
+});
   
 
 
-       csvFile.then(data => {
-         console.log(data)
-
           monthwisesplit = monthwise(data);
 
-         
-
-          data.forEach(element => {
-             
-
-            element.project_n = element.project_n;
-
-           // element.svrly_stntd = +element.svrly_stntd;
-
-           // element.svr_wstg = +element.svr_wstg;
-
-            element.stunting_percent = +element.stunting_percent;
-
-             element.underweight_percent = +element.underweight_percent;
-
-            element.wasting_percent  = +element.wasting_percent;
-
-            element.low_birth_weight_percent  = +element.low_birth_weight_percent;
-
-            element.svrly_stunting_percent = +element.svrly_stunting_percent; 
-
-            element.svr_wasting_percent = +element.svr_wasting_percent;
-
-            console.log(element.project_n);
-
-         });
-
+          
          $(".month a").click(function(){
 
              $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
@@ -449,9 +553,7 @@ height: 40%;
 
    
 
-      chartStatData=dataforchart(monthwisesplit[0]);
-
-    render(dataforchart(monthwisesplit[0]));
+      
 
  
 
@@ -459,7 +561,7 @@ height: 40%;
 
  
 
- });
+
 
  
 
@@ -560,226 +662,15 @@ height: 40%;
      };
 
    
+    chartStatData=dataforchart(monthwisesplit[0]);
 
+    render(dataforchart(monthwisesplit[0]));
      
 
-   const render = rdata =>{
 
-  //  console.log(rdata);
-
-  document.getElementById("myBestProject").checked = true;
-
-  document.getElementById("myDist").checked = true;
-
-   document.getElementById("myMH").checked = true;
-
-  
-
-   var rdata2=[];
-
-   
-
-   for (var i=0; i < rdata.length; i++)
-
-   {
-
-   if(rdata[i].label== "BestProject" ||  rdata[i].label== "District" || rdata[i].label== "Maharashtra")
-
-   {
-
-   
-
-   rdata2.push(rdata[i]); 
-
-   }  
-
-   }
-
-   
-
-   var ctx = document.getElementById('myChart').getContext('2d');
-
- 
-
-     var chart = new Chart(ctx, {
-
-         // The type of chart we want to create
-
-         type: 'radar',
-
- 
-
-         // The data for our dataset
-
-         data: {
-
-            
-
-              labels: ["% Stunting Percent", "% Underweight Percent","% Wasting Percent","% Low BirthWeight Percent","% Severly Stunting Percent","% Severly Wasted Percent"],
-
-    // pointLabelFontSize : 160,
-
-    // scaleFontSize: 160,
-
-     
-
-     
-
-             datasets: [rdata2[0], rdata2[1], rdata2[2]],
-
-           
-
-         },
-
- 
-
-         // Configuration options go here
-
-         options: {
-
-           //defaultFontSize: 120,
-
-           //maintainAspectRation: false,
-
-           tooltips: {
-
-                 mode: 'index',
-
-                 callbacks: {
-
-                     label: function(tooltipItem, data) {
-
-                         return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-
-                     }
-
-                 }
-
-             },
-
-             hover: {
-
-             mode: 'index',
-
-             },
-
-         
-
-     scale: {
-
-         angleLines: {
-
-             display: true
-
-         },
-
-         ticks: {
-
-             reverse: true,
-
-             suggestedMin: 0,
-
-             suggestedMax: 100,
-
-             stepSize: 20
-
-         }
-
-     }
-
-     
-
-     
-
- }
-
- 
-
-     });  
-
- 
-
-     makeviz = opt =>{
-
-    
-
-   console.log(opt.length);
-
-     var rdata1=[];
-
-      for(var i=0; i < chartStatData.length; i++) 
-
-      {
-
-          for(var j=0; j < opt.length; j++)
-
-          { 
-
-      
-
-        if(opt[j] == chartStatData[i].label)
-
-              {
-
-              console.log(opt[j]);
-
-              rdata1.push(chartStatData[i]);
-
-      
-
-              } 
-
-     
-
-           }
-
-       }
-
-       //rdata1.push(best);
-
-       // rdata1.push(pal)
-
-       console.log(rdata1);
-
-       chart.data.datasets=[];	 
-
-      // document.getElementById("myChart").innerHTML = "";
-
-     for(var i=0; i < rdata1.length; i++)
-
-     {
-
-     chart.data.datasets[i]=rdata1[i];
-
-     if(rdata1[i].label!= "BestProject" &&  rdata1[i].label!= "District" && rdata1[i].label != "Maharashtra")
-
-      {
-
-        chart.data.datasets[i].borderColor="red";
-
- 
-
-      }
-
-     } 	
-
-     
-
-     
-
-     chart.update();
-
-        
-
-      }
-
-     
-
-       }
 
    // console.log(data)
 
      </script>
 
 {% endblock %}
-
