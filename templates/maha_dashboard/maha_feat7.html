@@ -65,9 +65,9 @@ td{
           		<span class="selectedMonth"></span>
             </button>
             <div class="dropdown-menu drop-month" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">November</a>
-              <a class="dropdown-item" href="#">December</a>
-              <a class="dropdown-item" href="#">January</a>
+              {% for month_select in monthList %} 
+              <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+              {% endfor %} 
             </div>
           </div>
           <div class="dropdown" style="float: left; margin:10px"> 
@@ -85,10 +85,10 @@ td{
               <a class="dropdown-item" href="#">Newborn with low birth rate</a>
             </div>
           </div>
-          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'maha-feat6so' %}`">Previous Feature</button>
+          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'maha-feat6so' quarter %}`">Previous Feature</button>
           <div id="slider-range" style="float: left;"></div>
 
-          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'maha-feat8' %}`">Next Feature</button>
+          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'maha-feat8' quarter %}`">Next Feature</button>
 
 
 
@@ -128,8 +128,17 @@ td{
 
 {% block feature_js %}
 <script>
-
+function filterCSV(csv, key, value) {
+  var result = [];
+  csv.forEach(function(val,idx,arr){
+  
+    if(val[key] == value){
     
+      result.push(val)
+    }
+  })
+  return result;
+}
 
     const width = document.getElementById("mymap").offsetWidth;
     const height = document.getElementById("mymap").offsetHeight;
@@ -186,7 +195,7 @@ td{
       .geoMercator()
       .scale(4000)
       .translate([innerWidth / 2, innerHeight / 2])
-      .center([73, 19.7]);
+      .center([75, 19.7]);
     const pathGenerator = d3.geoPath().projection(mercator);
     //Zoom
     // svg.call(d3.zoom().on('zoom',() =>{
@@ -212,26 +221,29 @@ td{
       let ColorValue = d => d.properties.svrly_stunting_percent;
       let TPercentValue = d => d.svrly_stunting_percent;
       let TActualValue = d => d.svrly_stntd;
+      let low = 25.00;
+      let high= 50.00;
+
       const fillCellColor = (d, percentageColor, actualColor) => {
         if (d.name == "Percentage") return percentageColor(d.value);
         else if (d.name == "Actual Number") return actualColor(d.value);
       };
     
       //info-div
-      const updateMonth = selectedMonth => {
-        switch (month_hack) {
-          case "nov":
-            selectedMonth = "November";
-            break;
-          case "dec":
-            selectedMonth = "December";
-            break;
-          case "jan":
-            selectedMonth = "January";
-            break;
+      const updateMonth = month_hack => {
+        // switch (month_hack) {
+        //   case "nov":
+        //     selectedMonth = "November";
+        //     break;
+        //   case "dec":
+        //     selectedMonth = "December";
+        //     break;
+        //   case "jan":
+        //     selectedMonth = "January";
+        //     break;
         }
-        d3.select(".info-month").text(selectedMonth);
-      };
+        d3.select(".info-month").text(month_hack);
+      // };
     
       const updateCategory = updatedCat => {
         d3.select(".info-category").text(updatedCat);
@@ -297,7 +309,7 @@ td{
           .attr("class", "boundary")
           .style("fill", d => {
             if(level !== 3){
-              return myColor(ColorValue(d), min + comp, max - comp);
+              return myColor(ColorValue(d), low, high);
             }else{
              return "rgba(0,0,0,0)";
             }
@@ -333,9 +345,9 @@ td{
           .attr("font-family", "sans-serif");
     
         if (level === 0) {
-          textLabel.attr("font-size", "10pt");
+          textLabel.attr("font-size", "10pt").attr("font-weight", "bold"); 
         } else if (level === 1) {
-          textLabel.attr("font-size", "6pt"); 
+          textLabel.attr("font-size", "4pt").attr("font-weight", "bold"); 
         } else if (level === 2) {
           textLabel.attr("font-size", "4pt");
         } 
@@ -350,8 +362,8 @@ td{
         sliderRange.on("onchange", val => {
           fillSlider();
           d3.select("p#value-range").text(val.map(d3.format(".1%")).join("-"));
-          let low = (val[0] * 100).toFixed(2);
-          let high = (val[1] * 100).toFixed(2);
+          low = (val[0] * 100).toFixed(2);
+          high = (val[1] * 100).toFixed(2);
           
           pathEnter
             .transition()
@@ -393,7 +405,7 @@ td{
           Tooltipheader1 = d => "Stunted Children:";
           Tooltipheader2 = d => "Moderately Stunted Children:";
           Tooltipheader3 = d =>"Height Measurement efficiency:";
-          TooltipVal1 = d => d.properties.stntd_chld;
+          TooltipVal1 = d => d.properties.stunted_child;
   				TooltipVal2 = d => d.properties.mdrtly_stntd;
   				TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
           ColorValue = d => d.properties.stunting_percent;
@@ -403,17 +415,17 @@ td{
           Tooltipheader1 = d => "Severely Wasted Children:";
           Tooltipheader2 = d => "";
           Tooltipheader3 = d => "Height Measurement efficiency:";
-          TooltipVal1 = d => d.properties.svrly_wstd;
+          TooltipVal1 = d => d.properties.svr_wstg;
   				TooltipVal2 = d => "";
   				TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-          ColorValue = d => d.properties.svrly_wasting_percent;
+          ColorValue = d => d.properties.svr_wasting_percent;
           break;
         case 4:
           updatedCat = "Wasted Children";
           Tooltipheader1 = d => "Wasted Children:";
           Tooltipheader2 = d => "Moderately Wasted Children:";
           Tooltipheader3 = d => "Height Measurement efficiency:";
-          TooltipVal1 = d => d.properties.wstd_chld;
+          TooltipVal1 = d => d.properties.wasted_child;
   				TooltipVal2 = d => d.properties.mdrtly_wstd;
   				TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
           ColorValue = d => d.properties.wasting_percent;
@@ -458,7 +470,7 @@ td{
             .duration(transitionDuration)
             .style("fill", function(d) {
               if(level !== 3){
-              return myColor(ColorValue(d), min + comp, max - comp);
+              return myColor(ColorValue(d), low, high);
               }else{
                 return 'rgba(0,0,0,0)';
               }
@@ -482,7 +494,7 @@ td{
             .transition()
             .duration(transitionDuration)
             .style("fill", d => {
-           return myColor(ColorValue(d),min+comp,max-comp)
+           return myColor(ColorValue(d), low, high);
           }); 
             
             
@@ -603,28 +615,32 @@ td{
     
           let selectedJSON, selectedData;
           let selectedPoints;
-          switch (month_hack) {
-            case "nov":
-              if (level === 1) {
-                selectedJSON = project.Nov;
-                selectedData = projectData.Nov;
-              } 
+          // switch (month_hack) {
+          //   case "nov":
+          //     if (level === 1) {
+          //       selectedJSON = project.Nov;
+          //       selectedData = projectData.Nov;
+          //     } 
              
-              break;
-            case "dec":
-              if (level === 1) {
-                selectedJSON = project.Dec;
-                selectedData = projectData.Dec;
-              } 
+          //     break;
+          //   case "dec":
+          //     if (level === 1) {
+          //       selectedJSON = project.Dec;
+          //       selectedData = projectData.Dec;
+          //     } 
             
-              break;
-            case "jan":
-              if (level === 1) {
-                selectedJSON = project.Jan;
-                selectedData = projectData.Jan;
-              }
+          //     break;
+          //   case "jan":
+          //     if (level === 1) {
+          //       selectedJSON = project.Jan;
+          //       selectedData = projectData.Jan;
+          //     }
           
-              break;
+          //     break;
+          // }
+          if (level === 1) {
+            selectedData = filterCSV(projectData, 'month_n', month_hack); 
+            selectedJSON = addProperty(selectedData, project); 
           }
           let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
           let selecteddata = selectedSubData(selectedData, clickedLocation);
@@ -702,16 +718,16 @@ td{
           break;
         case 2:
           PercentageValue = d => d.stunting_percent;
-          ActualValue = d => d.stntd_chld;
+          ActualValue = d => d.stunted_child;
           break;
         case 3:
-          PercentageValue = d => d.svrly_wasting_percent;
+          PercentageValue = d => d.svr_wasting_percent;
           // console.log(PercentageValue(d))
-          ActualValue = d => d.svrly_wstd;
+          ActualValue = d => d.svr_wstg;
           break;
         case 4:
           PercentageValue = d => d.wasting_percent;
-          ActualValue = d => d.svrly_wstd;
+          ActualValue = d => d.svr_wstg;
           break;
         case 5:
           PercentageValue = d => d.svrly_underweight_percent;
@@ -800,39 +816,48 @@ td{
           
           updateCategory("Severely Stunted Children");
           let LocationMonth, LocationDataMonth;
-          if (level === 0) {
-            switch (month_hack) {
-              case "nov":
-                LocationMonth = block.Nov;
-                LocationDataMonth = blockData.Nov;
-                break;
-              case "dec":
-                LocationMonth = block.Dec;
-                LocationDataMonth = blockData.Dec;
-                break;
-              case "jan":
-                LocationMonth = block.Jan;
-                LocationDataMonth = blockData.Jan;
-                break;
-            }
+          // if (level === 0) {
+          //   switch (month_hack) {
+          //     case "nov":
+          //       LocationMonth = block.Nov;
+          //       LocationDataMonth = blockData.Nov;
+          //       break;
+          //     case "dec":
+          //       LocationMonth = block.Dec;
+          //       LocationDataMonth = blockData.Dec;
+          //       break;
+          //     case "jan":
+          //       LocationMonth = block.Jan;
+          //       LocationDataMonth = blockData.Jan;
+          //       break;
+          //   }
     
-            makemap(LocationMonth, LocationDataMonth);
-          } else if (level === 1) {
+          //   makemap(LocationMonth, LocationDataMonth);
+          // } else if (level === 1) {
     
-            switch (month_hack) {
-              case "nov":
-                LocationMonth = project.Nov;
-                LocationDataMonth = projectData.Nov;
-                break;
-              case "dec":     
-                LocationMonth = project.Dec;
-                LocationDataMonth = projectData.Dec;
-                break;
-              case "jan":
-                LocationMonth = project.Jan;
-                LocationDataMonth = projectData.Jan;
-                break;
-            }
+          //   switch (month_hack) {
+          //     case "nov":
+          //       LocationMonth = project.Nov;
+          //       LocationDataMonth = projectData.Nov;
+          //       break;
+          //     case "dec":     
+          //       LocationMonth = project.Dec;
+          //       LocationDataMonth = projectData.Dec;
+          //       break;
+          //     case "jan":
+          //       LocationMonth = project.Jan;
+          //       LocationDataMonth = projectData.Jan;
+          //       break;
+          //   }
+        if (level === 0) {
+          LocationDataMonth = filterCSV(blockData, 'month_n', month_hack); 
+          LocationMonth = addProperty(LocationDataMonth, block);
+          makemap(LocationMonth, LocationDataMonth);
+        }
+        else if (level === 1) {  
+          LocationDataMonth = filterCSV(projectData, 'month_n', month_hack); 
+          LocationMonth = addProperty(LocationDataMonth, project);
+
             let previousBlock = levelLocation[levelLocation.length -1]; 
     
             let selectedjson = selectedSubFeature(LocationMonth, previousBlock); 
@@ -875,20 +900,22 @@ td{
         };
     $(".drop-month a").click(function(){
         console.log('hello');
-        $(this).parents(".dropdown").find('.btn').html($(this).text());
+    $(this).parents(".dropdown").find('.btn').html($(this).text());
         // $('.drop-category').parents(".dropdown").find('.btn').text('severely stunted children')
       // $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-          var val = $(this).text();
-    
-          if(val === 'November'){
-            month_hack = 'nov'
-          }else if(val === 'December'){
-            month_hack = 'dec'
-          }else if(val === 'January'){
-            month_hack = 'jan'
-          }
-            let monthjson = selectGeoJSON(month_hack,block);
-          let monthdata = selectCSV(month_hack,blockData);
+        var val = $(this).text();
+        month_hack=val;
+          // if(val === 'November'){
+          //   month_hack = 'nov'
+          // }else if(val === 'December'){
+          //   month_hack = 'dec'
+          // }else if(val === 'January'){
+          //   month_hack = 'jan'
+          // }
+          //   let monthjson = selectGeoJSON(month_hack,block);
+          // let monthdata = selectCSV(month_hack,blockData);
+          let monthdata = filterCSV(blockData, 'month_n', val); 
+          let monthjson = addProperty(monthdata, block); 
           level = 0;
         g.selectAll("*").remove();
           rowEnter.selectAll("*").remove();
@@ -898,21 +925,28 @@ td{
             makemap(monthjson,monthdata);
       })
       //initial map
-      makemap(block.Nov, blockData.Nov);
-    };
+      // makemap(block.Nov, blockData.Nov);
+      month_hack=$('.drop-month a').first().text();
+      console.log(blockData);
+      console.log(month_hack);
+      let monthdata = filterCSV(blockData, 'month_n', month_hack); 
+      console.log(monthdata);
+      let monthjson = addProperty(monthdata, block); 
+      console.log(monthjson);
+      makemap(monthjson, monthdata);
+};
     
     async function fetchGeoJSON() {
       let geoJSONBundle = {};
     
       let blockJSON = await d3.json("{% static 'maha_dashboard/data/json/district.geojson'%}");
       let projectJSON = await d3.json("{% static 'maha_dashboard/data/json/block.geojson'%}");
-      // let beatJSON = await d3.json("{% static 'data/beat.json'%}");
-      // let awcJSON = await d3.json("{% static 'data/awc.json'%}");
+      // let blockJSON = {{ context.dt_geodata|safe }};
+      // console.log(blockJSON,'GeoJSON')
+      // let projectJSON = {{ context.subdt_geodata|safe }};
     
       geoJSONBundle.blockJSON = blockJSON.features;
       geoJSONBundle.projectJSON = projectJSON.features;
-      // geoJSONBundle.beatJSON = beatJSON.features;
-      // geoJSONBundle.awcJSON = awcJSON.features;
     
       return geoJSONBundle;
     }
@@ -921,34 +955,29 @@ td{
       let month = { Nov: [], Dec: [], Jan: [] };
       data.forEach(d => {
         let temp = {};
-        if (d.sub_district) temp.sub_district = d.sub_district;
-        // if (d.beat_n) temp.beat_n = d.beat_n;
-        // if (d.awc_with_code) temp.awc_with_code = d.awc_with_code;
-        console.log(d.ht_msrmnt_effcy);
-        temp.district_n = d.district_n;
-    temp.mdrtly_stntd = +d.mdrtly_stntd;
-    temp.svrly_stntd = +d.svrly_stntd;
-    temp.svrly_wstd = +d.svrly_wstd;
-    temp.mdrtly_wstd = +d.mdrtly_wstd;
-    temp.svrly_uw = +d.svrly_uw;
-    temp.mdrtly_uw = +d.mdrtly_uw;
-    temp.nb_lbw = +d.nb_lbw;
-    temp.svrly_wasting_percent = +d.svrly_wasting_percent;
-    temp.wasting_percent = +d.wasting_percent;
-    temp.svrly_stunting_percent = +d.svrly_stunting_percent;
-    temp.stunting_percent = +d.stunting_percent;
-    temp.svrly_underweight_percent = +d.svrly_underweight_percent;
-    temp.underweight_percent = +d.underweight_percent;
-    temp.low_birth_weight_percent = +d.low_birth_weight_percent;
-    temp.wstd_chld = +d.wstd_chld;
-    temp.stntd_chld = +d.stntd_chld;
-		temp.uw_chld = +d.uw_chld;
-    temp.ht_msrmnt_effcy = +d.ht_msrmnt_effcy;
-		temp.wt_msrmnt_effcy = +d.wt_msrmnt_effcy;
-    month[d.month_n].push(temp);
-        
+        if (d.sub_district) sub_district = d.sub_district;
+        district_n = d.district_n;
+        mdrtly_stntd = +d.mdrtly_stntd;
+        svrly_stntd = +d.svrly_stntd;
+        svr_wstg = +d.svr_wstg;
+        mdrtly_wstd = +d.mdrtly_wstd;
+        svrly_uw = +d.svrly_uw;
+        mdrtly_uw = +d.mdrtly_uw;
+        nb_lbw = +d.nb_lbw;
+        svr_wasting_percent = +d.svr_wasting_percent;
+        wasting_percent = +d.wasting_percent;
+        svrly_stunting_percent = +d.svrly_stunting_percent;
+        stunting_percent = +d.stunting_percent;
+        svrly_underweight_percent = +d.svrly_underweight_percent;
+        underweight_percent = +d.underweight_percent;
+        low_birth_weight_percent = +d.low_birth_weight_percent;
+        wasted_child = +d.wasted_child;
+        stunted_child = +d.stunted_child;
+        uw_chld = +d.uw_chld;
+        ht_msrmnt_effcy = +d.ht_msrmnt_effcy;
+        wt_msrmnt_effcy = +d.wt_msrmnt_effcy;
+        d.month_n=d.month_n;
       });
-      return month;
     };
     const addProperty = (data, geojson) => {
       let x, y;
@@ -963,19 +992,20 @@ td{
           }
     
           if (x === y) {
-        geojson[j].properties.wstd_chld = data[i].wstd_chld;
-        geojson[j].properties.stntd_chld = data[i].stntd_chld;
+        geojson[j].properties.month_n = data[i].month_n;
+        geojson[j].properties.wasted_child = data[i].wasted_child;
+        geojson[j].properties.stunted_child = data[i].stunted_child;
         geojson[j].properties.uw_chld = data[i].uw_chld;
         geojson[j].properties.ht_msrmnt_effcy = data[i].ht_msrmnt_effcy;
         geojson[j].properties.wt_msrmnt_effcy = data[i].wt_msrmnt_effcy;
         geojson[j].properties.mdrtly_stntd = data[i].mdrtly_stntd;
         geojson[j].properties.svrly_stntd = data[i].svrly_stntd;
-        geojson[j].properties.svrly_wstd = data[i].svrly_wstd;
+        geojson[j].properties.svr_wstg = data[i].svr_wstg;
         geojson[j].properties.mdrtly_wstd = data[i].mdrtly_wstd;
         geojson[j].properties.svrly_uw = data[i].svrly_uw;
         geojson[j].properties.mdrtly_uw = data[i].mdrtly_uw;
         geojson[j].properties.nb_lbw = data[i].nb_lbw;
-        geojson[j].properties.svrly_wasting_percent = data[i].svrly_wasting_percent;
+        geojson[j].properties.svr_wasting_percent = data[i].svr_wasting_percent;
         geojson[j].properties.wasting_percent = data[i].wasting_percent;
         geojson[j].properties.svrly_stunting_percent = data[i].svrly_stunting_percent;
         geojson[j].properties.stunting_percent = data[i].stunting_percent;
@@ -986,58 +1016,91 @@ td{
           }
         }
       }
+      return geojson;
     };
     async function mergeData(geoJSON) {
       //merging block data
       let blockGeoJSON = geoJSON.blockJSON;
-      let blockCSV = await d3.csv("{% static 'maha_dashboard/data/csv/mapfeature/district.csv'%}");
+      data_from_django = {{ context.dt_data|safe }};
+      var data = []
+      data_from_django.forEach(element => {
+      data.push(element.fields);
+      });
+      let blockCSV = data;
     
-      let blockMonthWiseCSV = monthWiseCSV(blockCSV);
+      // let blockMonthWiseCSV =
+       monthWiseCSV(blockCSV);
       // console.log(blockMonthWiseCSV);
     
       let blockGeoJSONNov = JSON.parse(JSON.stringify(blockGeoJSON));
-      let blockGeoJSONDec = JSON.parse(JSON.stringify(blockGeoJSON));
-      let blockGeoJSONJan = JSON.parse(JSON.stringify(blockGeoJSON));
-      //call by reference so need to return
-      addProperty(blockMonthWiseCSV.Nov, blockGeoJSONNov);
-      addProperty(blockMonthWiseCSV.Dec, blockGeoJSONDec);
-      addProperty(blockMonthWiseCSV.Jan, blockGeoJSONJan);
-      const mergedBlock = {
-        Nov: blockGeoJSONNov,
-        Dec: blockGeoJSONDec,
-        Jan: blockGeoJSONJan
-      };
+      // let blockGeoJSONDec = JSON.parse(JSON.stringify(blockGeoJSON));
+      // let blockGeoJSONJan = JSON.parse(JSON.stringify(blockGeoJSON));
+      // //call by reference so need to return
+      // addProperty(blockMonthWiseCSV.Nov, blockGeoJSONNov);
+      // addProperty(blockMonthWiseCSV.Dec, blockGeoJSONDec);
+      // addProperty(blockMonthWiseCSV.Jan, blockGeoJSONJan);
+      // const mergedBlock = {
+      //   Nov: blockGeoJSONNov,
+      //   Dec: blockGeoJSONDec,
+      //   Jan: blockGeoJSONJan
+      // };
       //merging project data
       let projectGeoJSON = geoJSON.projectJSON;
-      let projectCSV = await d3.csv("{% static 'maha_dashboard/data/csv/mapfeature/subdistrict.csv'%}");
+      data_from_django = {{ context.subdt_data|safe }};
+      var data = []
+      data_from_django.forEach(element => {
+      data.push(element.fields);
+      });
+      let projectCSV = data;
     
-      let projectMonthWiseCSV = monthWiseCSV(projectCSV);
+      // let projectMonthWiseCSV = 
+      monthWiseCSV(projectCSV);
       let projectGeoJSONNov = JSON.parse(JSON.stringify(projectGeoJSON));
-      let projectGeoJSONDec = JSON.parse(JSON.stringify(projectGeoJSON));
-      let projectGeoJSONJan = JSON.parse(JSON.stringify(projectGeoJSON));
-      addProperty(projectMonthWiseCSV.Nov, projectGeoJSONNov);
-      addProperty(projectMonthWiseCSV.Dec, projectGeoJSONDec);
-      addProperty(projectMonthWiseCSV.Jan, projectGeoJSONJan);
-      const mergedProject = {
-        Nov: projectGeoJSONNov,
-        Dec: projectGeoJSONDec,
-        Jan: projectGeoJSONJan
-      };
+      // let projectGeoJSONDec = JSON.parse(JSON.stringify(projectGeoJSON));
+      // let projectGeoJSONJan = JSON.parse(JSON.stringify(projectGeoJSON));
+      // addProperty(projectMonthWiseCSV.Nov, projectGeoJSONNov);
+      // addProperty(projectMonthWiseCSV.Dec, projectGeoJSONDec);
+      // addProperty(projectMonthWiseCSV.Jan, projectGeoJSONJan);
+      // const mergedProject = {
+      //   Nov: projectGeoJSONNov,
+      //   Dec: projectGeoJSONDec,
+      //   Jan: projectGeoJSONJan
+      // };
     
       
     
       render(
-        mergedBlock,
-        mergedProject,
-        // mergedBeat,
-        // mergedAWC,
-        blockMonthWiseCSV,
-        projectMonthWiseCSV,
-        // beatMonthWiseCSV,
-        // awcMonthWiseCSV
+        blockGeoJSONNov,
+        projectGeoJSONNov,
+        blockCSV,
+        projectCSV
+        // mergedBlock,
+        // mergedProject,
+        // blockMonthWiseCSV,
+        // projectMonthWiseCSV,
       );
     }
     fetchGeoJSON().then(mergeData);
+
+$(function(){
+ console.log("in on load");
+  //bind event
+  $(".drop-month a").click(function(){
+    var valMonth = $(this).text();
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+  });
+  
+  
+  
+   $(".drop-category a").click(function(){
+    var valCategory = $(this).text();
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+  });
+  //trigger event
+  $('.drop-month a').first().trigger('click');
+  $(".drop-category a").first().trigger('click');
+  
+});
     
     const sliderRange = d3
       .sliderBottom()

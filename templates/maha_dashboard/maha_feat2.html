@@ -38,198 +38,191 @@
 
 {% endblock %}
 
-{% block feature %}<div class="container-fluid full-height">
+{% block feature %}
+
+<div class="container-fluid full-height">
+
+
+<div class='heading text-dark mt-2 text-center'>Outcome Indicators</div>
 
 
 
-  
+    <div class="row header ">
 
-  <div class='heading text-dark mt-2 text-center'>Outcome Indicators</div>
+        <div class="col bg-info">
 
-  
+            <div class="dropdown" style="float: left; margin:20px;">
 
-      <div class="row header ">
+                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-          <div class="col bg-info">
+                  Select Month
 
-              <div class="dropdown" style="float: left; margin:20px;">
+                  <span class="selectedMonth"></span>
 
-                  <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                </button>
 
-                    Select Month
-
-                    <span class="selectedMonth"></span>
-
-                  </button>
-
-                  <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-
-                    <a class="dropdown-item" href="#">November</a>
-
-                    <a class="dropdown-item" href="#">December</a>
-
-                    <a class="dropdown-item" href="#">January</a>
-
-                  </div>
+                <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
+                  {% for month_select in monthList %} 
+                  <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+                  {% endfor %}   
 
                 </div>
-
-                <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat1' %}`">Previous Feature</button>
-
-                <button type="button" class="btn btn-info" style="float: left; margin:20px 20px 0px 10px" onclick="location.href=`{% url 'maha-feat3' %}`">Next Feature</button>
-
-                <button class='btn toggle' style="float: left; margin:20px">Compare</button>
-
-  
-
-          </div>
-
-  
-
-      </div>
-
-  <div class="row" style="font-size:15px; font-weight:bold; top: 200px; position:absolute; right:10px;">After clicking on "Compare" button, Please Scroll Down to see Comparison Chart</div>
-
-
-      
-
-    <div class="row h-100">
-
-      <div id = 'sw' class="spinner-wrapper">
-
-        <div class="spinner"></div>
-
-      </div>
-
-  
-
-      <div class="col">
-
-        <div class='row h-100'>
-
-          <div id = 'b1' class='col  bar1 h-75'>
-
-  
-
-            <div class="dropdown" style="float: left; margin:20px"> 
-
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-                Select Category
-
-                <span class="selectedCategory"></span>
-
-              </button>
-
-              <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
-
-                <a class="dropdown-item" href="#">% Stunting</a>
-
-                <a class="dropdown-item" href="#">% Wasting</a>
-
-                <a class="dropdown-item" href="#">% Underweight</a>
-
-                <a class="dropdown-item" href="#">% Low Birth Weight</a>
-
-                <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
-
-                <a class="dropdown-item" href="#">% Children breastfed at birth</a>
-
-                <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
-
-                <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
-
-                <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
-
-                <a class="dropdown-item" href="#">% Anemic pregnant women</a>
-
-                <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
-
-                <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
-
-                <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
-
-                <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
-
-                <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
-
-                <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
 
               </div>
 
-        
+              <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat1' quarter %}`">Previous Feature</button>
+
+              <button type="button" class="btn btn-info" style="float: left; margin:20px 20px 0px 10px" onclick="location.href=`{% url 'maha-feat3' quarter %}`">Next Feature</button>
+
+              <button class='btn toggle' style="float: left; margin:20px">Compare</button>
+
+
+
+        </div>
+
+
+
+    </div>
+    <div class="row" style="font-size:15px; font-weight:bold; top: 200px; position:absolute; right:10px;">After clicking on "Compare" button, Please Scroll Down to see Comparison Chart</div>
+    
+
+  <div class="row h-100">
+
+    <div id = 'sw' class="spinner-wrapper">
+
+      <div class="spinner"></div>
+
+    </div>
+
+
+
+    <div class="col">
+
+      <div class='row h-100'>
+
+      	<div id = 'b1' class='col  bar1 h-75'>
+
+
+
+          <div class="dropdown" style="float: left; margin:20px"> 
+
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+              Select Category
+
+              <span class="selectedCategory"></span>
+
+            </button>
+
+            <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+
+              <a class="dropdown-item" href="#">% Stunting</a>
+
+              <a class="dropdown-item" href="#">% Wasting</a>
+
+              <a class="dropdown-item" href="#">% Underweight</a>
+
+              <a class="dropdown-item" href="#">% Low Birth Weight</a>
+
+              <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
+
+              <a class="dropdown-item" href="#">% Children breastfed at birth</a>
+
+              <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
+
+              <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
+
+              <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
+
+              <a class="dropdown-item" href="#">% Anemic pregnant women</a>
+
+              <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
+
+              <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
+
+              <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
+
+              <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
+
+              <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
+
+              <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
 
             </div>
 
-            
+      
 
           </div>
 
-          <div id = 'b2'class='col bar2'>
+          
 
-            <div class="dropdown" style="float: left; margin:20px"> 
+        </div>
 
-              <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <div id = 'b2'class='col bar2'>
 
-                Select Category
+          <div class="dropdown" style="float: left; margin:20px"> 
 
-                <span class="selectedCategory2"></span>
+            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
-              </button>
+              Select Category
 
-              <div class="dropdown-menu category2" aria-labelledby="dropdownMenuButton">
+              <span class="selectedCategory"></span>
 
-                <a class="dropdown-item" href="#">% Stunting</a>
+            </button>
 
-                <a class="dropdown-item" href="#">% Wasting</a>
+            <div class="dropdown-menu category2" aria-labelledby="dropdownMenuButton">
 
-                <a class="dropdown-item" href="#">% Underweight</a>
+              <a class="dropdown-item" href="#">% Stunting</a>
 
-                <a class="dropdown-item" href="#">% Low Birth Weight</a>
+              <a class="dropdown-item" href="#">% Wasting</a>
 
-                <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
+              <a class="dropdown-item" href="#">% Underweight</a>
 
-                <a class="dropdown-item" href="#">% Children breastfed at birth</a>
+              <a class="dropdown-item" href="#">% Low Birth Weight</a>
 
-                <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
+              <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
 
-                <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
+              <a class="dropdown-item" href="#">% Children breastfed at birth</a>
 
-                <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
+              <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
 
-                <a class="dropdown-item" href="#">% Anemic pregnant women</a>
+              <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
 
-                <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
+              <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
 
-                <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
+              <a class="dropdown-item" href="#">% Anemic pregnant women</a>
 
-                <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
+              <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
 
-                <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
+              <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
 
-                <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
+              <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
 
-                <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
+              <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
 
-                </div>
+              <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
 
-        
+              <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
 
-            </div>
+              </div>
 
-  
+      
 
           </div>
+
+
 
         </div>
 
       </div>
 
-  
+    </div>
 
-  </div>
 
-  
+
+</div>
+
+
 
 {% endblock %}
 
@@ -243,11 +236,13 @@
 
 <script>
 
-const width = 1500; 
 
-   // const height = document.getElementById("b1").offsetHeight/0.2;
 
-     const height = 320;
+    // const width = document.getElementById("b1").offsetWidth/1.2;
+
+    // const height = document.getElementById("b1").offsetHeight/2;
+    const width= 1500;
+    const height= 320;
 
     const tansitionDuration = 500;
 
@@ -273,7 +268,17 @@ const width = 1500;
 
     const xScale = d3.scaleBand().range([0,innerWidth]).padding(0.1);
 
-    
+    function filterCSV(csv, key, value) {
+      var result = [];
+      csv.forEach(function(val,idx,arr){
+      
+        if(val[key] == value){
+        
+          result.push(val)
+        }
+      })
+      return result;
+    }
 
 
 
@@ -321,6 +326,9 @@ const width = 1500;
 
             .attr("fill", "blue")
 
+            .attr("font-weight", "bold")
+
+
 
 
       chart.transition().duration(tansitionDuration)
@@ -347,29 +355,16 @@ const width = 1500;
 
       let xaxisLeft = g1.append('g').call(d3.axisBottom(xScale))
 
-                .attr('transform',`translate(0, ${innerHeight})`);
+                .attr('transform',`translate(0, ${innerHeight})`)
 
-				
+               
 
-				
-
-            
-
-		
-
-		xaxisLeft.selectAll("text")
-
-					.attr("font-size", "12px")
-
-					.attr("font-weight", "bold")
-
-		           .attr("transform", "rotate(-90)")
-
-				   .attr("y",0)
-
-					.attr("x",-38);
-
-			 
+        xaxisLeft.selectAll("text").attr("font-size", "12px")
+            .attr("font-weight", "bold")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-90)" );
 
 
 
@@ -419,7 +414,7 @@ const width = 1500;
 
             .attr('height',d => innerHeight - yScale(yValue(d)))
 
-            .attr('width',30)
+            .attr('width', 30)
 
             .attr("fill", d => getColor(yValue(d)))
 
@@ -436,6 +431,9 @@ const width = 1500;
             .attr("font-size", "10px")
 
             .attr("fill", "blue")
+
+            .attr("font-weight", "bold")
+
 
 
 
@@ -465,19 +463,14 @@ const width = 1500;
 
                 .attr('transform',`translate(0, ${innerHeight})`);
 
-		
+               
 
-		xaxisRight.selectAll("text")
-
-					.attr("font-size", "12px")
-
-					.attr("font-weight", "bold")
-
-		           .attr("transform", "rotate(-90)")
-
-				   .attr("y",0)
-
-					.attr("x",-38);	 
+      xaxisRight.selectAll("text").attr("font-size", "12px")
+            .attr("font-weight", "bold")
+            .style("text-anchor", "end")
+            .attr("dx", "-.8em")
+            .attr("dy", ".15em")
+            .attr("transform", "rotate(-90)" );
 
 
 
@@ -577,45 +570,59 @@ const width = 1500;
 
   }
 
-    
+  
 
-  d3.csv("{% static 'maha_dashboard/data/csv/f2.csv'%}").then(data=>{
+//   d3.csv("{% static 'data/csv/f2.csv'%}").then(data=>{
+data_from_django = {{ data|safe }};
 
-    let monthwiseData = monthwise(data);
+var data = []
 
-    augData = monthwiseData.Nov;
+data_from_django.forEach(element => {
 
+  data.push(element.fields);
+
+});
+
+data.forEach(d => {
+  d.district_n = d.district_n;
+  d.stunting_percent= +d.stunting_percent;
+  d.wasting_percent = +d.wasting_percent;
+  d.underweight_percent = +d.underweight_percent;
+  d.low_birth_weight_percent = +d.low_birth_weight_percent;
+  d.prnt_child_1yr_cmpltd_immunzt = +d.prnt_child_1yr_cmpltd_immunzt;
+  d.prnt_chld_bf_at_birth = +d.prnt_chld_bf_at_birth;
+  d.prnt_chld_excly_bf = +d.prnt_chld_excly_bf;
+  d.prnt_chld_intd_cf_past30d = +d.prnt_chld_intd_cf_past30d;
+  d.prnt_chld_6to24mnths_intd_cf = +d.prnt_chld_6to24mnths_intd_cf;
+  d.prnt_anwmic_wmn = +d.prnt_anwmic_wmn;
+  d.prnt_tenatus_cmpltd = +d.prnt_tenatus_cmpltd;
+  d.prnt_wmn_1_anc_vst_dlvry = +d.prnt_wmn_1_anc_vst_dlvry;
+  d.prnt_wmn_4_anc_vst_dlvry = +d.prnt_wmn_4_anc_vst_dlvry;
+  d.prnt_wmn_rstg_drg_prgncy = +d.prnt_wmn_rstg_drg_prgncy;
+  d.prnt_wmn_etg_xtr_ml_drng_prgncy= +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+  d.prnt_trmstr_3wmn_cnsld_imdtbf = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
+  d.month_n = d.month_n;
+		
+  });
+
+ 
+    monthSelect=$('.month a').first().text();
+    augData = filterCSV(data, 'month_n', monthSelect);
     augSortedData = sortData(augData,'stunting_percent');
-
     drawLeft(augSortedData);
-
     drawRight(augSortedData);
 
 
-
-    let valMonth = "November";
-
     let sortBy = 'stunting_percent';
-
-
 
     $(".month a").click(function(){
 
         $(this).parents(".dropdown").find('.btn').html($(this).text());
-
-
-
         valMonth = $(this).text();
-
-        monthData = selectData(valMonth,monthwiseData,sortBy);
-
+        filterdata = filterCSV(data, 'month_n', valMonth);
+        monthData =  sortData(filterdata,sortBy);
         drawLeft(monthData);
-
-        drawRight(monthData);
-
-
-
-      
+        drawRight(monthData);   
 
     });
 
@@ -664,9 +671,8 @@ const width = 1500;
         }
 
         console.log('mon',valMonth);
-
-        monthData = selectData(valMonth,monthwiseData, sortBy);
-
+        filterdata = filterCSV(data, 'month_n', valMonth);
+        monthData = sortData(filterdata,sortBy);
         drawLeft(monthData);
 
 
@@ -718,12 +724,9 @@ const width = 1500;
         }
 
         console.log('mon',valMonth);
-
-        monthData = selectData(valMonth,monthwiseData, sortBy);
-
+        filterdata = filterCSV(data, 'month_n', valMonth);
+        monthData = sortData(filterdata,sortBy);
         drawRight(monthData);
-
-
 
     });
 
@@ -731,7 +734,7 @@ const width = 1500;
 
 
 
-  })
+//   })
 
 
 
@@ -757,7 +760,7 @@ const width = 1500;
 
     }
 
- $(".category2 a").click(function(){
+    $(".category2 a").click(function(){
 
     var valCategory = $(this).text();
 
@@ -771,9 +774,7 @@ const width = 1500;
 
   $(".category2 a").first().trigger('click');
 
-	
 
-	
 
   });
 
@@ -785,7 +786,7 @@ const width = 1500;
 
     document.getElementById('sw').style.display = 'none';
 
-	$(".month a").click(function(){
+    $(".month a").click(function(){
 
     var valMonth = $(this).text();
 

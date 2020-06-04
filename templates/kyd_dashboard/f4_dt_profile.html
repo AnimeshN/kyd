@@ -50,14 +50,14 @@
         <span class="selectedMonth"></span>
       </button>
       <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#">November</a>
-        <a class="dropdown-item" href="#">December</a>
-        <a class="dropdown-item" href="#">January</a>
+        {% for month_select in monthList %} 
+          <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+          {% endfor %} 
       </div>
     </div>
     
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftrdr2' dist_name %}`">Previous Feature</button>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f5' dist_name %}`">Next Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftrdr2' dist_name quarter %}`">Previous Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f5' dist_name quarter %}`">Next Feature</button>
 
 
     
@@ -86,6 +86,18 @@
 {% block feature_js %}
 
 <script>
+  function filterCSV(csv, key, value) {
+  var result = [];
+  csv.forEach(function(val,idx,arr){
+  
+    if(val[key] == value){
+    
+      result.push(val)
+    }
+  })
+  return result;
+}
+
   const render = data =>{
     const dropdownChange = () =>{
     var sel = document.getElementById('opt');
@@ -169,6 +181,38 @@ const monthwise = (data) => {
   data_from_django.forEach(element => {
     data.push(element.fields);
   });
+
+  data.forEach(d => {
+        d.district = d.district;
+        d.mdrtly_stntd = +d.mdrtly_stntd;
+        d.svrly_stntd = +d.svrly_stntd;
+        d.svrly_wstd = +d.svrly_wstd;
+        d.mdrtly_wstd = +d.mdrtly_wstd;
+        d.svrly_uw = +d.svrly_uw;
+        d.mdrtly_uw = +d.mdrtly_uw;
+        d.nb_lbw = +d.nb_lbw;
+        d.wasting_percent = +d.wasting_percent;
+        d.stunting_percent = +d.stunting_percent;
+        d.underweight_percent = +d.underweight_percent;
+        d.low_birth_weight_percent = +d.low_birth_weight_percent;
+        d.stntd_chld = +d.stntd_chld;
+        d.wstd_chld = +d.wstd_chld;
+        d.uw_chld = +d.uw_chld;
+        d.prnt_anwmic_wmn = +d.prnt_anwmic_wmn;
+        d.prnt_chld_bf_at_birth= +d.prnt_chld_bf_at_birth;
+        d.prnt_wmn_etg_xtr_ml_drng_prgncy= +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+        d.prnt_chld_excly_bf =+d.prnt_chld_excly_bf;
+        d.prnt_4_anc_vst_dlvry = +d.prnt_4_anc_vst_dlvry;
+        d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty=+d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
+        d.prnt_chld_cf_wid_adq_dt_qnty=+d.prnt_chld_cf_wid_adq_dt_qnty;
+        d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg=+d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
+        d.prnt_trmstr_3wmn_cnsld_imdtbf=+d.prnt_trmstr_3wmn_cnsld_imdtbf;
+        d.prnt_wmn_rstg_drg_prgncy=+d.prnt_wmn_rstg_drg_prgncy;
+        d.prnt_chld_intd_cf_p30d= +d.prnt_chld_intd_cf_p30d;
+        d.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
+        d.prnt_child_1yr_immnztn =+d.prnt_child_1yr_immnztn;
+    });
+
   console.log(data);
 //   d3.csv("{% static 'data/csv/f4.csv'%}").then(data=>{
   monthwiseData = monthwise(data);
@@ -185,12 +229,14 @@ const monthwise = (data) => {
   
     $(".month a").click(function(){
       var val = $(this).text();
-      tableData = tbData(val, monthwiseData);
+      filterdata = filterCSV(data, 'month_n', val); 
+      tableData =  tables(filterdata);
       console.log(tableData);
       render(tableData);
-
     })
-    tables(monthwiseData[0]); 
+    monthSelect=$('.month a').first().text();
+    augData = filterCSV(data, 'month_n', monthSelect);
+    tables(augData); 
 
 
 // });

@@ -1,16 +1,15 @@
 {% extends 'dashboard/dash_base.html' %}
 {% load static %}
-
 {% block feature_css %}
-<style>
+  <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+  <style>
+   
     table { 
 		width: 85%; 
 		border-collapse: collapse; 
         margin-top: 100px;
         margin-left: 20px;
 	}
-	
-	
 	
 	th ,tr{ 
 		background: #a2d3fa; 
@@ -34,10 +33,9 @@
      th.aes:after {
        content: "\21E7";
      }
-   
-</style>
-{% endblock %}
 
+  </style>
+{% endblock %}
 {% block feature %}
 <div class='heading text-dark mt-2 text-center'>State Overview</div>
 <div class="row text-center" style="height: 100px;">
@@ -49,27 +47,26 @@
 		<span class="selectedMonth"></span>
       </button>
       <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#">November</a>
-        <a class="dropdown-item" href="#">December</a>
-        <a class="dropdown-item" href="#">January</a>
+        {% for month_select in monthList %} 
+        <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+        {% endfor %} 
       </div>
     </div>
     <!-- select category -->
     <div class="dropdown" style="float: left; margin:20px; font-weight:bold"> 
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button class="btn btn-secondary`               dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Select Level
 		<span class="selectedCategory"></span>
       </button>
       <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
         <a class="dropdown-item" href="#" onclick="district()">District</a>
         <a class="dropdown-item" href="#" onclick="block()">Block</a>
- 
       </div>
 
     </div>
     
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat6'%}`">Previous Feature</button>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat7'%}`">Next Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat6'  quarter %}`">Previous Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat7'  quarter %}`">Next Feature</button>
   </div>
 <div class="row" style="float: left; margin:20px">
 
@@ -101,48 +98,65 @@
    
         </label>
    
-    </form>   
+    </form>
+
+    
   </div>
-  <div class="row" style="font-size:15px; font-weight:bold; top: 200px; position:absolute; right:10px;">
+<div class="row" style="font-size:15px; font-weight:bold; top: 200px; position:absolute; right:10px;">
    Click column headers to sort the table</div>
   <div id="table" class="row h-195 bg-light justify-content-center">
 </div>
 
-      
 {% endblock %}
+
 
 {% block feature_js %}
 <script>
-  var selectMonth="November"; 
+   var selectMonth=$('.month a').first().text();; 
+
+   function filterCSV(csv, key, value) {
+  var result = [];
+  csv.forEach(function(val,idx,arr){
+  
+    if(val[key] == value){
+    
+      result.push(val)
+    }
+  })
+  return result;
+}
+
 function  district()
 {
 console.log("in block function");
 console.log(d3.select('input[name="states"]:checked').node().value);
 
 	const render = data =>{
-
       
-       console.log(data);
-	   
-	  
-              
-      
+       console.log(data); 
        }
-       const monthwise = (data) => {
-           
-           data.forEach(d => {
-               d.state_n = d.state_n;
+      
+        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_block.csv'%}").then(data => {
+            /////
+  data_from_django = {{ context.dt_data|safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
+  });
+
+  data.forEach(d => {
+               d.district_n = d.district_n;
                d.mdrtly_stntd = +d.mdrtly_stntd;
                d.svrly_stntd = +d.svrly_stntd;
-               d.svrly_wstd = +d.svrly_wstd;
+               d.svr_wstg = +d.svr_wstg;
                d.mdrtly_wstd = +d.mdrtly_wstd;
                d.svrly_uw = +d.svrly_uw;
                d.mdrtly_uw = +d.mdrtly_uw;
                d.nb_lbw = +d.nb_lbw;
                d.wasting_percent = +d.wasting_percent;
-			   d.stunting_percent = +d.stunting_percent;
+			   d.stunting_percent= +d.stunting_percent;
 			   d.underweight_percent = +d.underweight_percent;
-			   d.low_birth_weight_percent = +d.low_birth_weight_percent;
+			   d.low_birth_weight_percent =+d.low_birth_weight_percent;
 			   d.stntd_chld = +d.stntd_chld;
 			   d.wstd_chld = +d.wstd_chld;
 			   d.uw_chld = +d.uw_chld;
@@ -159,73 +173,32 @@ console.log(d3.select('input[name="states"]:checked').node().value);
 			   d.prnt_chld_intd_cf_p30d = +d.prnt_chld_intd_cf_p30d;
 			   d.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
 			   d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
+			   
            });
-            var aproperty = [];
-            var sproperty = [];
-            var oproperty = [];
-            data.forEach(d=>{
-                var temp = {}
-                temp['district_n'] = d.district_n;
-                temp['nb_lbw'] = d.nb_lbw;
-                temp['wasting_percent'] = d.wasting_percent;
-                temp['stunting_percent'] = d.stunting_percent;
-                temp['underweight_percent'] = d.underweight_percent;
-                temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
-                temp['stntd_chld'] = d.stntd_chld;
-                temp['wstd_chld'] = d.wstd_chld;
-                temp['uw_chld'] = d.uw_chld;
-                temp['mdrtly_stntd']= d.mdrtly_stntd;
-                temp['svrly_stntd']=d.svrly_stntd;
-                temp['svrly_wstd']=d.svrly_wstd;
-                temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
-                temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
-                temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-                temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
-                temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
-                temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
-                temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
-                temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
-                temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
-                temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
-                temp['prnt_chld_intd_cf_p30d']= d.prnt_chld_intd_cf_p30d;
-                temp['prnt_intd_cf_6to24mnth_child'] = d.prnt_intd_cf_6to24mnth_child;
-                temp['prnt_child_1yr_immnztn'] =d.prnt_child_1yr_immnztn;
-                if(d.month_n == "Nov"){
-                    aproperty.push(temp);
-            }else if (d.month_n == "Dec"){
-                sproperty.push(temp);
-            }else if (d.month_n == "Jan"){
-                oproperty.push(temp);
-            }
-        })
+           // monthwiseData = monthwise(data);
+  //console.log(monthwiseData);
 
-        var listdata = [aproperty,sproperty,oproperty]
-
-        return listdata;
-        }
- 
-        d3.csv("{% static 'maha_dashboard/data/csv/f6_st_ov/f6_district.csv' %}").then(data => {
-
-            monthwiseData = monthwise(data);
-  console.log(monthwiseData);
   
     $(".month a").click(function(){
 	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
 	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
       var val = $(this).text();
 	  selectMonth=val;
-      tableData = tbData(val, monthwiseData);
+      filterdata = filterCSV(data, 'month_n', val); 
+      tableData =  tables(d3.select('input[name="states"]:checked').node().value,filterdata);
 
       render(tableData);
 	  
       
 });
-  
-  augData = monthwiseData[0];
-let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
+
+
+monthSelect=$('.month a').first().text();
+augData = filterCSV(data, 'month_n', monthSelect);
+let tbleData= tables(d3.select('input[name="states"]:checked').node().value, augData);
 render(tbleData);
   
-})
+// })
         const tbData =  (val,monthwiseData) =>{
 		console.log(d3.select('input[name="states"]:checked').node().value);
 
@@ -242,22 +215,15 @@ render(tbleData);
  const buttons = d3.selectAll('input');
         buttons.on('change', function(d) {
            const selection = this.value;
-if(selectMonth == "November"){
-           let tblData =  tables(selection, monthwiseData[0]);
+           filterdata = filterCSV(data, 'month_n', selectMonth); 
+           let tblData =  tables(selection, filterdata);
 		   render(tblData);
-        }else if (selectMonth == "December"){
-          let tblData =  tables(selection, monthwiseData[1]);
-		  render(tblData);
-        }else if (selectMonth == 'January'){
-		let tblData =  tables(selection, monthwiseData[2]);
-		render(tblData);
-            }
-          
             });			  
             
 function tables(selection, data){
 
-   
+   console.log(data);
+
  if(selection == "set1")
  {
  
@@ -283,11 +249,11 @@ var tbdata = [];
                 tbdata.push(tbd);
             });
 
-            column_data = {"block_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+            column_data = {"district_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
             
             
             data.forEach(d=>{
-            column_data.block_n.push(d.District);
+            column_data.district_n.push(d.District);
             column_data.stntd_chld.push(+d.stntd_chld);
             column_data.stunting_percent.push(+d.stunting_percent);
             column_data.wstd_chld.push(+d.wstd_chld);
@@ -324,7 +290,7 @@ var tbdata = [];
         .interpolator(d3.interpolateRdYlGn);
 
 
-		var sortAscending = true;
+		 var sortAscending = true;
         var table = d3.select('div#table').append('table')
         .attr('class','hello');
           
@@ -352,7 +318,6 @@ var tbdata = [];
 
                        });
 		             
-		             
 		 
 		  var rows = table.append('tbody').selectAll('tr')
 		               .data(tbdata).enter()
@@ -366,6 +331,7 @@ var tbdata = [];
 		    	});
 		    }).enter()
             .append('td')
+			
             .style("background-color", function(d) {
                 if(d.name == 'Stunted Children'){
                             return enroll_Color(d.value);
@@ -416,11 +382,11 @@ var tbdata = [];
 
                 tbdata2.push(tabdt);
             });
-            column_data = {"block_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+            column_data = {"district_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
             
             
             data.forEach(d=>{
-            column_data.block_n.push(d.District);
+            column_data.district_n.push(d.District);
             column_data.stntd_chld.push(+d.prnt_chld_bf_at_birth);
             column_data.stunting_percent.push(+d.prnt_chld_excly_bf);
             column_data.wstd_chld.push(+d.prnt_chld_intd_cf_p30d);
@@ -468,7 +434,7 @@ var tbdata = [];
                              .text(function (d) {
                                   return d;
                               })
-							  .on('click', function (d) {
+							  	.on('click', function (d) {
                            headers.attr('class', 'header');
 
                            if (sortAscending) {
@@ -524,6 +490,9 @@ var tbdata = [];
                     return lbw_per_Color(d.value);
                 } 
             })
+			 .attr('data-th', function (d) {
+            return d.name;
+        })
           .text(function (d) {
                   return d.value;
               });
@@ -547,11 +516,11 @@ $( "div#table" ).find(".hello" ).remove();
 
                 tbdata2.push(tbdt);
             });
-            column_data = {"block_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+            column_data = {"district_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
             
             
             data.forEach(d=>{
-            column_data.block_n.push(d.District);
+            column_data.district_n.push(d.District);
             column_data.stntd_chld.push(+d.prnt_anwmic_wmn);
             column_data.stunting_percent.push(+d.prnt_4_anc_vst_dlvry);
             column_data.wstd_chld.push(+d.prnt_wmn_rstg_drg_prgncy);
@@ -574,6 +543,7 @@ $( "div#table" ).find(".hello" ).remove();
         var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
         .interpolator(d3.interpolateRdYlGn);
 
+
 			var sortAscending = true;
             var table = d3.select('div#table').append('table').attr('class','hello');
           
@@ -586,7 +556,7 @@ $( "div#table" ).find(".hello" ).remove();
                              .text(function (d) {
                                   return d;
                               })
-							   	.on('click', function (d) {
+							  	.on('click', function (d) {
                            headers.attr('class', 'header');
 
                            if (sortAscending) {
@@ -600,6 +570,7 @@ $( "div#table" ).find(".hello" ).remove();
                            }
 
                        });
+		             
                        
            
             var rows = table.append('tbody').selectAll('tr')
@@ -637,30 +608,37 @@ $( "div#table" ).find(".hello" ).remove();
  }
  }
 }
-
-
-
+  
+  
+  
 function block()
 {
 const render = data =>{
     
   
        }
-       const monthwise = (data) => {
-           
-           data.forEach(d => {
-               d.state_n = d.state_n;
+ 
+        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_project.csv'%}").then(data => {
+            /////
+  data_from_django = {{ context.subdt_data|safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
+  });
+
+  data.forEach(d => {
+               d.district_n = d.district_n;
                d.mdrtly_stntd = +d.mdrtly_stntd;
                d.svrly_stntd = +d.svrly_stntd;
-               d.svrly_wstd = +d.svrly_wstd;
+               d.svr_wstg = +d.svr_wstg;
                d.mdrtly_wstd = +d.mdrtly_wstd;
                d.svrly_uw = +d.svrly_uw;
                d.mdrtly_uw = +d.mdrtly_uw;
                d.nb_lbw = +d.nb_lbw;
                d.wasting_percent = +d.wasting_percent;
-			   d.stunting_percent = +d.stunting_percent;
+			   d.stunting_percent= +d.stunting_percent;
 			   d.underweight_percent = +d.underweight_percent;
-			   d.low_birth_weight_percent = +d.low_birth_weight_percent;
+			   d.low_birth_weight_percent =+d.low_birth_weight_percent;
 			   d.stntd_chld = +d.stntd_chld;
 			   d.wstd_chld = +d.wstd_chld;
 			   d.uw_chld = +d.uw_chld;
@@ -678,70 +656,26 @@ const render = data =>{
 			   d.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
 			   d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
            });
-            var aproperty = [];
-            var sproperty = [];
-            var oproperty = [];
-            data.forEach(d=>{
-                var temp = {}
-                temp['district_n'] = d.district_n;
-				temp['sub_district'] = d.sub_district;
-                temp['nb_lbw'] = d.nb_lbw;
-                temp['wasting_percent'] = d.wasting_percent;
-                temp['stunting_percent'] = d.stunting_percent;
-                temp['underweight_percent'] = d.underweight_percent;
-                temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
-                temp['stntd_chld'] = d.stntd_chld;
-                temp['wstd_chld'] = d.wstd_chld;
-                temp['uw_chld'] = d.uw_chld;
-                temp['mdrtly_stntd']= d.mdrtly_stntd;
-                temp['svrly_stntd']=d.svrly_stntd;
-                temp['svrly_wstd']=d.svrly_wstd;
-                temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
-                temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
-                temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-                temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
-                temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
-                temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
-                temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
-                temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
-                temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
-                temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
-                temp['prnt_chld_intd_cf_p30d']= d.prnt_chld_intd_cf_p30d;
-                temp['prnt_intd_cf_6to24mnth_child'] = d.prnt_intd_cf_6to24mnth_child;
-                temp['prnt_child_1yr_immnztn'] =d.prnt_child_1yr_immnztn;
-                if(d.month_n == "Nov"){
-                    aproperty.push(temp);
-            }else if (d.month_n == "Dec"){
-                sproperty.push(temp);
-            }else if (d.month_n == "Jan"){
-                oproperty.push(temp);
-            }
-        })
-
-        var listdata = [aproperty,sproperty,oproperty]
-        console.log(listdata)
-
-        return listdata;
-        }
-         
-        d3.csv("{% static 'maha_dashboard/data/csv/f6_st_ov/f6_subdistrict.csv' %}").then(data => {
-          
-            monthwiseData = monthwise(data);
+             
+     
                  $(".month a").click(function(){
 				$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
 				$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
 				var val = $(this).text();
 				selectMonth=val;
-				tableData = tbData(val, monthwiseData);
-
+                filterdata = filterCSV(data, 'month_n', val); 
+                tableData =  tables(d3.select('input[name="states"]:checked').node().value,filterdata);
+				
 				render(tableData);
 	  
       
 			});
-
-        let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
+        
+        monthSelect=$('.month a').first().text();
+        augData = filterCSV(data, 'month_n', monthSelect);
+        let tbleData= tables(d3.select('input[name="states"]:checked').node().value, augData);
 		render(tbleData);
-             })
+            //  })
 
     
 
@@ -760,16 +694,9 @@ const render = data =>{
         const buttons = d3.selectAll('input');
         buttons.on('change', function(d) {
            const selection = this.value;
-if(selectMonth == "November"){
-           let tblData =  tables(selection, monthwiseData[0]);
+           filterdata = filterCSV(data, 'month_n', selectMonth); 
+           let tblData =  tables(selection, filterdata);
 		   render(tblData);
-        }else if (selectMonth == "December"){
-          let tblData =  tables(selection, monthwiseData[1]);
-		  render(tblData);
-        }else if (selectMonth == 'January'){
-		let tblData =  tables(selection, monthwiseData[2]);
-		render(tblData);
-            }
           
             });	   
 function tables(selection, data){
@@ -799,12 +726,12 @@ var tbdata = [];
                 tbdata.push(tbd);
             });
 
-            column_data = {"block_n":[],"project_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+            column_data = {"district_n":[],"sub_district":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
             
             
             data.forEach(d=>{
-            column_data.block_n.push(d.District);
-			column_data.project_n.push(d.Block);
+            column_data.district_n.push(d.District);
+			column_data.sub_district.push(d.Block);
             column_data.stntd_chld.push(+d.stntd_chld);
             column_data.stunting_percent.push(+d.stunting_percent);
             column_data.wstd_chld.push(+d.wstd_chld);
@@ -841,7 +768,7 @@ var tbdata = [];
         .interpolator(d3.interpolateRdYlGn);
 
 
-		var sortAscending = true;
+    var sortAscending = true;
         var table = d3.select('div#table').append('table').attr('class','hello');
           
 		  var titles = d3.keys(tbdata[0]);
@@ -853,7 +780,7 @@ var tbdata = [];
 		                   .text(function (d) {
 			                    return d;
 		                    })
-							 	.on('click', function (d) {
+								.on('click', function (d) {
                            headers.attr('class', 'header');
 
                            if (sortAscending) {
@@ -867,6 +794,7 @@ var tbdata = [];
                            }
 
                        });
+		             
 		             
 		 
 		  var rows = table.append('tbody').selectAll('tr')
@@ -931,12 +859,12 @@ var tbdata = [];
 
                 tbdata2.push(tabdt);
             });
-            column_data = {"block_n":[],"project_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+            column_data = {"district_n":[],"sub_district":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
             
             
             data.forEach(d=>{
-            column_data.block_n.push(d.District);
-			column_data.project_n.push(d.Block);
+            column_data.district_n.push(d.District);
+			column_data.sub_district.push(d.Block);
             column_data.stntd_chld.push(+d.prnt_chld_bf_at_birth);
             column_data.stunting_percent.push(+d.prnt_chld_excly_bf);
             column_data.wstd_chld.push(+d.prnt_chld_intd_cf_p30d);
@@ -984,7 +912,7 @@ var tbdata = [];
                              .text(function (d) {
                                   return d;
                               })
-							  .on('click', function (d) {
+							  	.on('click', function (d) {
                            headers.attr('class', 'header');
 
                            if (sortAscending) {
@@ -998,6 +926,7 @@ var tbdata = [];
                            }
 
                        });
+		             
                        
            
             var rows = table.append('tbody').selectAll('tr')
@@ -1063,21 +992,22 @@ $( "div#table" ).find(".hello" ).remove();
 
                 tbdata2.push(tbdt);
             });
-            column_data = {"block_n":[],"project_n":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
+            column_data = {"district_n":[],"sub_district":[],"stntd_chld":[],"stunting_percent":[],"wstd_chld":[],"wasting_percent":[],"uw_chld":[],"underweight_percent":[],"nb_lbw":[],"lbw_per":[]} //"HeightP":[],"WeightP":[], "HeightWeightP":[] }
             
             
             data.forEach(d=>{
-            column_data.block_n.push(d.District);
-			 column_data.project_n.push(d.Block);
+            column_data.district_n.push(d.District);
+			column_data.sub_district.push(d.Block);
             column_data.stntd_chld.push(+d.prnt_anwmic_wmn);
             column_data.stunting_percent.push(+d.prnt_4_anc_vst_dlvry);
             column_data.wstd_chld.push(+d.prnt_wmn_rstg_drg_prgncy);
             column_data.wasting_percent.push(+d.prnt_wmn_etg_xtr_ml_drng_prgncy);
             column_data.uw_chld.push(+d.prnt_trmstr_3wmn_cnsld_imdtbf);
+          
             
           })
 
-        var stntd_chld = d3.scaleSequential().domain([d3.max(column_data.stntd_chld), d3.min(column_data.stntd_chld)])
+        var stntd_chld = d3.scaleSequential().domain([d3.max(column_data.stntd_chld),d3.min(column_data.stntd_chld)])
         .interpolator(d3.interpolateRdYlGn);
 
         var stntg_percent = d3.scaleSequential().domain([d3.min(column_data.stunting_percent),d3.max(column_data.stunting_percent)])
@@ -1092,6 +1022,8 @@ $( "div#table" ).find(".hello" ).remove();
         var ht_Color = d3.scaleSequential().domain([d3.min(column_data.uw_chld),d3.max(column_data.uw_chld)])
         .interpolator(d3.interpolateRdYlGn);
 
+       
+
 			var sortAscending = true;
             var table = d3.select('div#table').append('table').attr('class','hello');
           
@@ -1104,7 +1036,7 @@ $( "div#table" ).find(".hello" ).remove();
                              .text(function (d) {
                                   return d;
                               })
-							  .on('click', function (d) {
+							 .on('click', function (d) {
                            headers.attr('class', 'header');
 
                            if (sortAscending) {
@@ -1118,6 +1050,7 @@ $( "div#table" ).find(".hello" ).remove();
                            }
 
                        });
+		             
                        
            
             var rows = table.append('tbody').selectAll('tr')
@@ -1175,14 +1108,10 @@ $(function(){
   $('.month a').first().trigger('click');
   $(".category a").first().trigger('click');
 
-	
-
-
   
 });
 
-
-
-</script>
+  
+  
+    </script>
 {% endblock %}
-

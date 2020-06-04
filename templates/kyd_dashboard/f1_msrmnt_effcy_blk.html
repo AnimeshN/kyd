@@ -50,6 +50,7 @@
   <div class="col-12 bg-info h-75 w-100" >
 
     <!-- select month -->
+    
 
     <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
 
@@ -62,13 +63,9 @@
       </button>
 
       <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-
-        <a class="dropdown-item" href="#">November</a>
-
-        <a class="dropdown-item" href="#">December</a>
-
-        <a class="dropdown-item" href="#">January</a>
-
+        {% for month_select in monthList %} 
+        <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+        {% endfor %}   
       </div>
 
     </div>
@@ -99,7 +96,7 @@
 
 
 
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f2' dist_name %}`">Next Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f2' dist_name quarter %}`">Next Feature</button>
 
 
 
@@ -145,6 +142,18 @@
 
   let month_hack = 'Nov';   
 
+  function filterCSV(csv, key, value) {
+  var result = [];
+  csv.forEach(function(val,idx,arr){
+  
+    if(val[key] == value){
+    
+      result.push(val)
+    }
+  })
+  return result;
+}
+
   
 
   const render = data =>{
@@ -183,7 +192,7 @@
 
       
 
-      const g = svg.append('g')
+      const g = svg.append('g').attr("preserveAspectRatio", "xMinYMin meet")
 
           .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
@@ -363,12 +372,15 @@
 
           .call(d3.axisBottom(xScale));
 
-          xaxis.selectAll("text").attr("font-size", "13px")
-            .attr("font-weight", "bolder")
+            
+          xaxis.selectAll("text").attr("font-size", "12px")
+            .attr("font-weight", "bold")
             .style("text-anchor", "end")
             .attr("dx", "-.8em")
             .attr("dy", ".15em")
-            .attr("transform", "rotate(-45)" );            
+            .attr("transform", "rotate(-45)" );
+
+            
 
           }   
 
@@ -432,122 +444,9 @@
 
   }
 
-
-
- 
-
   
 
-  const monthwise = (data) => {
-
-  data.forEach(d => {
-
-          d.no_enrolled = +d.no_enrolled;
-
-          d.tot_elgb_wghd = +d.tot_elgb_wghd;
-
-          d.tot_elgb_hght = +d.tot_elgb_hght;
-
-          d.no_wt = +d.no_wt;
-
-          d.no_ht = +d.no_ht;
-
-          d.no_wt_ht = +d.no_wt_ht;
-
-          d.ht_percent = +d.ht_percent;
-
-          d.wt_percent = +d.wt_percent;
-
-          d.ht_wt_percent = +d.ht_wt_percent;
-
-      });
-
-      var aproperty = [];
-
-      var sproperty = [];
-
-      var oproperty = [];
-
-    data.forEach(d =>{
-
-      var temp = {};
-
-      temp['block_n'] = d.block_n;
-
-      temp['no_enrolled'] = d.no_enrolled;
-
-      temp['tot_elgb_wghd'] = d.tot_elgb_wghd;
-
-      temp['tot_elgb_hght'] = d.tot_elgb_hght;
-
-      temp['no_wt'] = d.no_wt;
-
-      temp['no_ht'] = d.no_ht;
-
-      temp['no_wt_ht'] = d.no_wt_ht;
-
-      temp['ht_percent'] = d.ht_percent;
-
-      temp['wt_percent'] = d.wt_percent;
-
-      temp['ht_wt_percent'] = d.ht_wt_percent;
-
-      if(d.month_n == "Nov"){
-
-        aproperty.push(temp);
-
-      }else if (d.month_n == "Dec"){
-
-        sproperty.push(temp);
-
-      }else if (d.month_n == "Jan"){
-
-        oproperty.push(temp);
-
-      }
-
-      
-
-    })
-
   
-
-  var listdata = [
-
-    aproperty,sproperty,oproperty
-
-  ]
-
-  return listdata;
-
-  }
-
-  
-
-  const selectData =  (val,monthwiseData) =>{
-
-  if(val == "November"){
-
-        monthwiseData[0] = sortData(monthwiseData[0],'ht_percent');
-
-        return monthwiseData[0];
-
-    }else if (val == "December"){
-
-        monthwiseData[1] = sortData(monthwiseData[1],'ht_percent');
-
-        return monthwiseData[1];
-
-    }else if (val == 'January'){
-
-        monthwiseData[2] = sortData(monthwiseData[2],'ht_percent');
-
-        return monthwiseData[2]       
-
-      }
-
-  }
-
   const sortData = (data,parameter) =>{
 
   sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
@@ -570,26 +469,38 @@
   });
 
 
+  data.forEach(d => {
+    d.no_enrolled = +d.no_enrolled;
+    d.tot_elgb_wghd = +d.tot_elgb_wghd;
+    d.tot_elgb_hght = +d.tot_elgb_hght;
+    d.no_wt = +d.no_wt;
+    d.no_ht = +d.no_ht;
+    d.no_wt_ht = +d.no_wt_ht;
+    d.ht_percent = +d.ht_percent;
+    d.wt_percent = +d.wt_percent;
+    d.ht_wt_percent = +d.ht_wt_percent;
+    d.month_n = d.month_n;
+		
+  });
+
 
 //   d3.csv("{% static 'data/csv/f1.csv'%}").then(data=>{
 
 console.log(data)
 
-  monthwiseData = monthwise(data);
-
  
-
-    $(".month a").click(function(){
+  $(".month a").click(function(){
 
 	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
 
 	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
 
       var val = $(this).text();
+      
+      filterdata = filterCSV(data, 'month_n', val);
+      mydata = sortData(filterdata,'ht_percent');
 
-      mydata = selectData(val,monthwiseData);
-
-      tableData = tbData(val, monthwiseData);
+      tableData = tables(filterdata);
 
       svg.selectAll("*").remove();
 
@@ -602,6 +513,7 @@ console.log(data)
 
 
 $(function(){
+
 
   //bind event
 
@@ -636,49 +548,17 @@ $(function(){
 });
 
 
-
-
-
-
-
-  
-
-  augData = monthwiseData[0];
-
-  sortedData = sortData(augData,'HeightP');
+  monthSelect=$('.month a').first().text();
+  augData = filterCSV(data, 'month_n', monthSelect);
+  sortedData = sortData(augData,'ht_percent');
 
   render(sortedData); 
 
-  tables(monthwiseData[0]); 
+  tables(augData); 
 
 
 
 //   });
-
-
-
-
-
-  const tbData =  (val,monthwiseData) =>{
-
-        if(val == "November"){
-
-          return [tables(monthwiseData[0])];
-
-        }else if (val == "December"){
-
-            return [tables(monthwiseData[1])];
-
-        }else if (val == 'January'){
-
-            return [tables(monthwiseData[2])];      
-
-            }
-
-            
-
-        }
-
 
 
         function tables(data){
@@ -690,10 +570,6 @@ $(function(){
             data.forEach(d=>{
 
                 var tbd = {}
-
-              
-
-
 
                 tbd["Block"] = d.block_n;
 
@@ -708,8 +584,6 @@ $(function(){
                 tbd["Total No. of Children whose Height has been measured"] = d.no_ht;
 
                 tbd["Total No. of Children whose Height and Weight has been measured"] = d.no_wt_ht;
-
-
 
                 tbdata.push(tbd);
 
@@ -769,5 +643,4 @@ $(function(){
   </script>
 
 {% endblock %}
-
 

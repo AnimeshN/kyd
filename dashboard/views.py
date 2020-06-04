@@ -4,15 +4,22 @@ from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
+from django.contrib.auth.models import User
+from django.db.models import Q
 
 
 # Create your views here.
-from .models import ConsoChildNdj
+from .models import ConsoChildNdj, DistrictPwd
 
 class DashboardView(TemplateView):
-
     def get(self,request):
-        dt_name = ConsoChildNdj.objects.order_by('district_n').values('district_n').distinct()
+        username = request.user.username
+
+        if (username == 'admin' or username == 'admin1'):
+            dt_name = DistrictPwd.objects.all()
+        else:
+            dt_name = DistrictPwd.objects.filter(Q(district_n=username) | Q(district_n='Maharashtra'))
+
         return render(request,'dashboard/dash.html', {'dd_dt_data':dt_name})
 
 

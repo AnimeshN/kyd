@@ -24,10 +24,10 @@
 	left:50px;
 	overflow: auto;
 	height:500px;
-	width:200px;
+	width:auto;
 }
 #legend{
-	width:150px;
+	width:auto;
 	height:500px;
 }
 .legend {
@@ -111,8 +111,8 @@ fill: #fff;
 		<a class="dropdown-item" href="#">Newborns with low birth weight</a>		
       </div>
     </div>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftlcblk' dist_name %}`">Previous Feature</button>   
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftlcbt' dist_name %}`">Next Feature</button>   
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftlcblk' dist_name quarter %}`">Previous Feature</button>   
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftlcbt' dist_name quarter %}`">Next Feature</button>   
   </div>
 
   <div class="col-12 m-5">
@@ -318,7 +318,7 @@ console.log("in update graph")
 			var sect2 = selectedCategory;  
 			sect2=sect2.replace(/ /g, '_');
       var selectedProject = d.key.replace(/ /g, '_');
-			var url = "{% url 'ftlcbt' dist_name %}?id1="+selectedProject+"&id2="+sect2;
+			var url = "{% url 'ftlcbt' dist_name quarter %}?id1="+selectedProject+"&id2="+sect2;
               $(location).attr('href', url);
               window.location = url;
 					

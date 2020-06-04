@@ -2,11 +2,7 @@
 
 {% load static %}
 
-
-
 {% block feature_css %}
-
-
 
 <style>
 
@@ -22,37 +18,33 @@
 
    .projectCheckBox{
 
+  float:right;
+
     font-size: 20px;
 
     font-weight: bold;
 
-    height:500px;
-
-   overflow-x:scroll;
-
    }
 
-   
+	 
 
    .checkBoxButton{
 
-    font-size: 20px;
+	  font-size: 20px;
 
-    font-weight: bold;
+	  font-weight: bold;
 
-   }
+	 }
 
-   
+	 
 
-   #wrapper {
+	 #wrapper {
 
-  float: right;
+    float: right;
 
-  width: 300px;
+    width: 300px;
 
 }
-
-
 
 #myChart{
 
@@ -66,9 +58,11 @@ height: 40%;
 
 {% endblock %}
 
-
-
 {% block feature %}
+
+<script src="{% static 'kyd_dashboard/js/Chart.min.js' %}"></script>
+
+<script src="{% static 'kyd_dashboard/js/d3-scale-radial.js' %}"></script>
 
 <div class='heading text-dark mt-2 text-center' >Radar Diagram - Outcome Indicators</div>
 
@@ -88,11 +82,9 @@ height: 40%;
 
         <div class="dropdown-menu month"  aria-labelledby="dropdownMenuButton">
 
-          <a class="dropdown-item" href="#">November</a>
-
-          <a class="dropdown-item" href="#">December</a>
-
-          <a class="dropdown-item" href="#">January</a>
+          {% for month_select in monthList %} 
+          <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+          {% endfor %} 
 
         </div>
 
@@ -100,11 +92,13 @@ height: 40%;
 
       </div>
 
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat3' %}`">Previous Feature</button>
-
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat5' %}`">Next Feature</button>
 
 
+      <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat3' quarter %}`">Previous Feature</button>
+
+      <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat5' quarter %}`">Next Feature</button>
+
+  
 
   </div>
 
@@ -128,101 +122,33 @@ height: 40%;
 
   
 
-  <div id="wrapper">
+  
 
-  <div class="projectCheckBox">  
+  <div  class="projectCheckBox" >  
 
-  <p>Select Project </p>	
-
+  <p>Select District</p>	
+  
         <form id="projectList" >
+          {% for district in dtList %}        
 
-        <label><input type="checkbox" id="myBestDistrict" value="BestDistrict"/><span> Best District</span></label> <br>
+          <label><input type="checkbox" id="my{{ district.district_n}}" value="{{ district.district_n }}"/><span>{{ district.district_n }}</span> </label><br>                    
+         
+          {% endfor %} 
+          
+          <label><input type="checkbox" id="myMH" value="Maharashtra"/> <span>Maharashtra </span></label><br>  
 
-        <label><input type="checkbox" id="myMH" value="Maharashtra"/><span> Maharashtra</span></label> <br>
+      <label><input type = "button" value = "Update Chart" onclick = "GetSelected()" />
 
-        <label><input type="checkbox" id="myAhmadnagar" value="Ahmadnagar"/><span> Ahmadnagar</span></label> <br>
-
-        <label><input type="checkbox" id="myAkola" value="Akola"/> <span>Akola</span></label> <br>
-
-        <label><input type="checkbox" id="myAmravati" value="Amravati"/> <span>Amravati</span></label> <br>
-
-        <label><input type="checkbox" id="myAurangabad" value="Aurangabad"/><span> Aurangabad</span></label> <br>
-
-        <label><input type="checkbox" id="myBeed" value="Beed"/> <span>Beed </span></label><br>
-
-        <label><input type="checkbox" id="myBhandara" value="Bhandara"/><span> Bhandara</span></label> <br>
-
-        <label><input type="checkbox" id="myBuldana" value="Buldana"/><span> Buldana</span></label> <br>
-
-        <label><input type="checkbox" id="myChandrapur" value="Chandrapur"/> <span>Chandrapur</span></label>  <br>     
-
-        <label><input type="checkbox" id="myDhule" value="Dhule"/><span> Dhule</span></label> <br>
-
-        <label><input type="checkbox" id="myGadchiroli" value="Gadchiroli"/><span> Gadchiroli</span></label> <br>
-
-        <label><input type="checkbox" id="myGondia" value="Gondia"/><span> Gondia </span></label><br>
-
-        <label><input type="checkbox" id="myHingoli" value="Hingoli"/><span>Hingoli</span></label> <br>
-
-        <label><input type="checkbox" id="myJalgaon" value="Jalgaon"/> <span>Jalgaon</span></label> <br>		
-
-        <label><input type="checkbox" id="myJalna" value="Jalna"/><span> Jalna</span></label> <br>
-
-        <label><input type="checkbox" id="myKolhapur" value="Kolhapur"/><span> Kolhapur</span></label> <br>
-
-        <label><input type="checkbox" id="myLatur" value="Latur"/><span> Latur</span></label> <br>
-
-        <label><input type="checkbox" id="myMumbaiCity" value="Mumbai City"/><span> Mumbai City</span></label> <br>
-
-        <label><input type="checkbox" id="myMumbaiSuburban" value="Mumbai Suburban"/> <span>Mumbai Suburban</span></label> <br>
-
-        <label><input type="checkbox" id="myNagpur" value="Nagpur"/><span> Nagpur </span></label><br>
-
-        <label><input type="checkbox" id="myNanded" value="Nanded"/> <span>Nanded</span></label> <br>
-
-        <label><input type="checkbox" id="myNandurbar" value="Nandurbar"/> <span>Nandurbar</span></label> <br>
-
-        <label><input type="checkbox" id="myNashik" value="Nashik"/> <span>Nashik</span></label> <br>
-
-        <label><input type="checkbox" id="myOsmanabad" value="Osmanabad"/><span> Osmanabad</span></label><br>     
-
-        <label><input type="checkbox" id="myPalghar" value="Palghar"/> <span>Palghar</span></label> <br>
-
-        <label><input type="checkbox" id="myParbhani" value="Parbhani"/><span>Parbhani</span></label> <br>
-
-        <label><input type="checkbox" id="myPune" value="Pune"/><span> Pune</span></label><br>
-
-        <label><input type="checkbox" id="myRaigad" value="Raigad"/><span>Raigad</span></label> <br>
-
-        <label><input type="checkbox" id="myRatnagiri" value="Ratnagiri"/><span> Ratnagiri</span></label> <br>	
-
-        <label><input type="checkbox" id="mySangli" value="Sangli"/> <span>Sangli</span></label> <br>
-
-        <label><input type="checkbox" id="mySatara" value="Satara"/><span>Satara </span></label><br>
-
-        <label><input type="checkbox" id="mySindhudurg" value="Sindhudurg"/><span> Sindhudurg </span></label><br>
-
-        <label><input type="checkbox" id="mySolapur" value="Solapur"/> <span>Solapur</span></label><br>     
-
-        <label><input type="checkbox" id="myThane" value="Thane"/> <span>Thane</span></label> <br>
-
-        <label><input type="checkbox" id="myWardha" value="Wardha"/><span>Wardha</span></label> <br>
-
-        <label><input type="checkbox" id="myWashim" value="Washim"/><span> Washim</span></label><br>
-
-        <label><input type="checkbox" id="myYavatmal" value="Yavatmal"/><span>Yavatmal</span></label> <br>     
-
-       </form>    
-
-  </div>
-
-  <div class="checkBoxButton"> <input type = "button"  value = "Update Chart" onclick = "GetSelected()" /> </div>
+ </form>        
+ 
 
   </div>
 
 
 
-  {% endblock %}
+{% endblock %}
+
+
 
 
 
@@ -232,17 +158,222 @@ height: 40%;
 
 <script>
 
-   
+    let chartStatData=[];
+
+    function filterCSV(csv, key, value) {
+  var result = [];
+  csv.forEach(function(val,idx,arr){
+  
+    if(val[key] == value){
+    
+      result.push(val)
+    }
+  })
+  return result;
+}
+
+const render = rdata =>{
+
+document.getElementById("myBestDistrict").checked = true;
+
+ document.getElementById("myMH").checked = true;
+
+
+
+ var rdata2=[];
 
  
 
-     
+ for (var i=0; i < rdata.length; i++)
 
-    let chartStatData=[];
+ {
 
-     const monthwise = (data) => {
+ if(rdata[i].label== "BestDistrict" || rdata[i].label== "Maharashtra")
+
+ {
+
+ 
+
+ rdata2.push(rdata[i]); 
+
+ }  
+
+ }
+
+ 
+
+ var ctx = document.getElementById('myChart').getContext('2d');
+
+
+
+   var chart = new Chart(ctx, {
+
+       // The type of chart we want to create
+
+       type: 'radar',
+
+
+
+       // The data for our dataset
+
+       data: {
+
+          
+
+            labels: ["% Stunting Percent", "% Underweight Percent","% Wasting Percent","% Low BirthWeight Percent","% Severly Stunting Percent","% Severly Wasted Percent"],
+
+  // pointLabelFontSize : 160,
+
+  // scaleFontSize: 160,
+
+   
+
+   
+
+           datasets: [rdata2[0], rdata2[1]],
+
+         
+
+       },
+
+
+
+       // Configuration options go here
+
+       options: {
+
+         //defaultFontSize: 120,
+
+         //maintainAspectRation: false,
+
+         tooltips: {
+
+               mode: 'index',
+
+               callbacks: {
+
+                   label: function(tooltipItem, data) {
+
+                       return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+
+                   }
+
+               }
+
+           },
+
+           hover: {
+
+           mode: 'index',
+
+           },
+
+       
+
+   scale: {
+
+       angleLines: {
+
+           display: true
+
+       },
+
+       ticks: {
+
+           reverse: true,
+
+           suggestedMin: 0,
+
+           suggestedMax: 100,
+
+           stepSize: 20
+
+       }
+
+   }
+
+   
+
+   
+
+}
+
+
+
+   });  
+
+
+
+  makeviz = opt =>{
+
+ console.log(opt.length);
+
+   var rdata1=[];
+
+    for(var i=0; i < chartStatData.length; i++) 
+
+    {
+
+        for(var j=0; j < opt.length; j++)
+
+        { 
+
+      if(opt[j] == chartStatData[i].label)
+
+            {
+
+            console.log(opt[j]);
+
+            rdata1.push(chartStatData[i]);
+
+            } 
+         }
+
+     }
+
+     //rdata1.push(best);
+
+     // rdata1.push(pal)
+
+     console.log(rdata1);
+
+     chart.data.datasets=[];	 
+
+    // document.getElementById("myChart").innerHTML = "";
+
+   for(var i=0; i < rdata1.length; i++)
+
+   {
+
+   chart.data.datasets[i]=rdata1[i];
+
+   if(rdata1[i].label!= "BestDistrict" && rdata1[i].label != "Maharashtra")
+
+    {
+
+      chart.data.datasets[i].borderColor="red";
+
+    }
+
+   } 	 
+
+   chart.update();
+
+      
+
+    }
+
+}
+
+    
+
+ const monthwise = (data) => {
+
+ 
 
      var aproperty = [];
+
+    
 
      var sproperty = [];
 
@@ -316,7 +447,7 @@ height: 40%;
 
   // labels: ["svrly_stntd","svr_wstg","wasting_percent","stunting_percent","underweight_percent"]
 
-   labels: ["Stunting", "Underweight","Wasting","Low BirthWeight","Severly Stunting","Severly Wasted"],
+   labels: ["wasting_percent","stunting_percent","underweight_percent","Best Value"],
 
    datasets:[]
 
@@ -328,9 +459,7 @@ height: 40%;
 
  // mybackgroundcolor = [];
 
- mybordercolor = ['#B0E0E6','#F4A460','#778899','#7FFFD4','#6B8E23','#BDB76B','#C71585','#800080','#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080'];
-
- 
+ //mybordercolor = ['#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080','#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080'];
 
  let itr = 0;
 
@@ -388,63 +517,38 @@ height: 40%;
 
  }
 
- 
+ data_from_django = {{ data|safe }};
 
- 
+var data = []
 
- 
+data_from_django.forEach(element => {
 
-       d3.csv("{% static 'maha_dashboard/data/csv/Radar_Nutrition_status_MH.csv' %}").then(data => {
+  data.push(element.fields);
 
-          monthwisesplit = monthwise(data);
+});
 
-         
+console.log(data,'Db Data');
 
-          data.forEach(element => {
-
-            element.district_n = element.district_n;
-
-           // element.svrly_stntd = +element.svrly_stntd;
-
-           // element.svr_wstg = +element.svr_wstg;
-
-            element.stunting_percent = +element.stunting_percent;
-
-             element.underweight_percent = +element.underweight_percent;
-
-            element.wasting_percent  = +element.wasting_percent;
-
-            element.low_birth_weight_percent  = +element.low_birth_weight_percent;
-
-            element.svrly_stunting_percent = +element.svrly_stunting_percent; 
-
-            element.svr_wasting_percent = +element.svr_wasting_percent;
-
-            
-
-         });
-
+data.forEach(d => {
+  d.district_n = d.district_n;
+  d.stunting_percent = +d.stunting_percent;
+  d.underweight_percent = +d.underweight_percent;
+  d.wasting_percent = +d.wasting_percent;
+  d.low_birth_weight_percent = +d.low_birth_weight_percent;
+  d.svrly_stunting_percent= +d.svrly_stunting_percent;
+  d.svr_wasting_percent = +d.svr_wasting_percent;
+  d.month_n=d.month_n;
+});
+          
          $(".month a").click(function(){
 
              $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
 
              $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
 
-              var projectList = document.getElementById("projectList"); 
-
-             var chks = projectList.getElementsByTagName("INPUT");	
-
-             for (var i = 0; i < chks.length; i++) 
-
-             {
-
-             chks[i].checked = false;
-
-             }
-
            var val = $(this).text();
 
-           mydata = selectData(val,monthwisesplit);
+           mydata = filterCSV(data, 'month_n', val);
 
              chartStatData= dataforchart(mydata);
 
@@ -464,9 +568,7 @@ height: 40%;
 
    
 
-      chartStatData=dataforchart(monthwisesplit[0]);
-
-    render(dataforchart(monthwisesplit[0]));
+      
 
  
 
@@ -474,7 +576,7 @@ height: 40%;
 
  
 
- });
+
 
  
 
@@ -524,7 +626,7 @@ height: 40%;
 
    $('.month a').first().trigger('click');
 
- 
+   $(".category a").first().trigger('click');
 
    
 
@@ -575,237 +677,15 @@ height: 40%;
      };
 
    
+     monthSelect=$('.month a').first().text();
+    augData = filterCSV(data, 'month_n', monthSelect);
+    console.log('augdata',augData )
+    chartStatData=dataforchart(augData);
+    console.log('CSdata',chartStatData )
 
-     
+    render(dataforchart(augData));  
 
-   const render = rdata =>{
-
-   console.log(rdata);
-
-    document.getElementById("myBestDistrict").checked = true;
-
-   document.getElementById("myMH").checked = true;
-
-  
-
-   var rdata2=[];
-
-   
-
-   for (var i=0; i < rdata.length; i++)
-
-   {
-
-   if(rdata[i].label== "BestDistrict"  || rdata[i].label== "Maharashtra")
-
-   {
-
-   
-
-   rdata2.push(rdata[i]); 
-
-   }  
-
-   }
-
-   
-
-   var ctx = document.getElementById('myChart').getContext('2d');
-
- 
-
-     var chart = new Chart(ctx, {
-
-         // The type of chart we want to create
-
-         type: 'radar',
-
- 
-
-         // The data for our dataset
-
-         data: {
-
-            
-
-              labels: ["Stunting", "Underweight","Wasting","Low BirthWeight","Severly Stunting","Severly Wasted"],
-
-    // pointLabelFontSize : 160,
-
-    // scaleFontSize: 160,
-
-     
-
-     
-
-             datasets: [rdata2[0], rdata2[1]],
-
-           
-
-         },
-
- 
-
-         // Configuration options go here
-
-         options: {
-
-           //defaultFontSize: 120,
-
-           //maintainAspectRation: false,
-
-           tooltips: {
-
-                 mode: 'index',
-
-                 callbacks: {
-
-                     label: function(tooltipItem, data) {
-
-                         return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-
-                     }
-
-                 }
-
-             },
-
-             hover: {
-
-             mode: 'index',
-
-             
-
-             },
-
-         
-
-     scale: {
-
-         angleLines: {
-
-             display: true
-
-         },
-
-         ticks: {
-
-             reverse: true,
-
-             suggestedMin: 0,
-
-             suggestedMax: 100,
-
-             stepSize: 20
-
-         },
-
-         pointLabels:{
-
-        fontColor:"blue",
-
-        fontSize: 20
-
-     }
-
-     },
-
-     
-
-     
-
-     
-
- }
-
- 
-
-     });  
-
- 
-
-     makeviz = opt =>{
-
-    
-
-   console.log(opt.length);
-
-     var rdata1=[];
-
-      for(var i=0; i < chartStatData.length; i++) 
-
-      {
-
-          for(var j=0; j < opt.length; j++)
-
-          { 
-
-      
-
-        if(opt[j] == chartStatData[i].label)
-
-              {
-
-              console.log(opt[j]);
-
-              rdata1.push(chartStatData[i]);
-
-      
-
-              } 
-
-     
-
-           }
-
-       }
-
-       //rdata1.push(best);
-
-       // rdata1.push(pal)
-
-       console.log(rdata1);
-
-       chart.data.datasets=[];	 
-
-      // document.getElementById("myChart").innerHTML = "";
-
-     for(var i=0; i < rdata1.length; i++)
-
-     {
-
-     chart.data.datasets[i]=rdata1[i];
-
-
-
-     if(rdata1[i].label != 'BestDistrict' && rdata1[i].label != 'Maharashtra')
-
-      {
-
-        chart.data.datasets[i].borderColor="red";
-
-      }
-
-     } 	
-
-     
-
-     
-
-     chart.update();
-
-        
-
-      }
-
-     
-
-       }
-
-   // console.log(data)
 
      </script>
-
-
 
 {% endblock %}

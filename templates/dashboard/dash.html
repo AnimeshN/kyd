@@ -125,26 +125,28 @@ height:80px;
             <div class="dash-button container text-center">
 
                 <div class="">
-
-                    <button type="button" class="btn btn-lg" onclick="location.href=`{% url 'maha-feat1' %}`"> Maharashtra Dashboard</button>
-
-                </div>
-                <div class="">
                     <div class="input-field col-4" style="margin-left: 350px;">
-                        <form action="{% url 'f1' %}" name="myForm" onsubmit="return validateForm()" >
-                            {% csrf_token %}
+                        <form id="myform"  name="myForm" method="POST" enctype="multipart/form-data">
                         
-                            <b><i>Select a District :</i> </b>
+                                {% csrf_token %}
+                        
+                            <b><i>Select a Region:</i> </b>
                             <select name = "dist_select" id="distList" class="check"> 
-                                <option value="" disabled selected>Select District</option>
+                                <option value="" disabled selected>Select Region</option>
                                 {% for dist_select in dd_dt_data %} 
                                     <option value = "{{ dist_select.district_n }}">{{ dist_select.district_n }}
                                     </option>
                                 {% endfor %}                              
                             </select>
-                            <b>Password :</b>
-                            <input type="password" name="password" id="password" /> 
+
+                            <select name = "quarter_select" id="quarterList" class="check"> 
+                                <option value="q1">Aug-Oct</option>
+                                <option value="q2">Nov-Jan</option>
+                                <!-- <option value="q3">Feb-April</option>
+                                <option value="q4">May-July</option>                                       -->
+                            </select>
                             <button type="submit">Submit</button>
+
                         </form>
                     </div>  
                 </div>
@@ -173,21 +175,36 @@ height:80px;
 
    
 
-function validateForm() {
-    var pass = document.forms["myForm"]["password"].value;
-    var dSelect = document.forms["myForm"]["dist_select"].value;
-    if((dSelect=="Nandurbar" && pass=="knowyourNandurbar") || (dSelect=="Palghar" && pass=="knowyourPalghar") || (dSelect=="Latur" && pass=="knowyourLatur"))
-    {
-        return true;
-    }
-    else
-    {
-        alert("Password is incorrect or empty");
-        return false;
-    }
+// function validateForm() {
+//     var pass = document.forms["myForm"]["password"].value;
+//     var dSelect = document.forms["myForm"]["dist_select"].value;
+//     if((dSelect=="Nandurbar" && pass=="knowyourNandurbar") || (dSelect=="Palghar" && pass=="knowyourPalghar") || (dSelect=="Latur" && pass=="knowyourLatur"))
+//     {
+//         return true;
+//     }
+//     else
+//     {
+//         alert("Password is incorrect or empty");
+//         return false;
+//     }
 
-}
+// }
 
+$(document).ready(function(){
+
+    $("#distList").change(function(){
+        var dSelect = document.forms["myForm"]["dist_select"].value;
+        console.log(dSelect);
+        if(dSelect == "Maharashtra")
+        {
+            $("#myform").attr("action", "{% url 'maha-feat1' %}");
+        }
+        else 
+        {
+            $("#myform").attr("action", "{% url 'f1' %}");
+        }
+    })
+})
 </script>
 
 

@@ -82,11 +82,9 @@ height: 40%;
 
         <div class="dropdown-menu month"  aria-labelledby="dropdownMenuButton">
 
-          <a class="dropdown-item" href="#">November</a>
-
-          <a class="dropdown-item" href="#">December</a>
-
-          <a class="dropdown-item" href="#">January</a>
+          {% for month_select in monthList %} 
+          <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+          {% endfor %} 
 
         </div>
 
@@ -96,9 +94,9 @@ height: 40%;
 
 
 
-      <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftrdr1' dist_name %}`">Previous Feature</button>
+      <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftrdr1' dist_name quarter %}`">Previous Feature</button>
 
-      <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f4'  dist_name %}`">Next Feature</button>
+      <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f4'  dist_name quarter %}`">Next Feature</button>
 
   
 
@@ -158,7 +156,18 @@ height: 40%;
 
     let chartStatData=[];
 
- 
+    function filterCSV(csv, key, value) {
+  var result = [];
+  csv.forEach(function(val,idx,arr){
+  
+    if(val[key] == value){
+    
+      result.push(val)
+    }
+  })
+  return result;
+}
+
     const render = rdata =>{
 
 console.log(rdata);
@@ -530,13 +539,14 @@ data_from_django.forEach(element => {
 
 });
 
- 
-
-  
-
-          monthwisesplit = monthwise(data);
-
-      
+data.forEach(d => {
+  d.project_n = d.project_n;
+  d.norm_anemic_free_wmn = +d.norm_anemic_free_wmn;
+  d.norm_child_immunization = +d.norm_child_immunization;
+  d.norm_chld_bf = +d.norm_chld_bf;
+  d.norm_chld_cf = +d.norm_chld_cf;
+  d.month_n=d.month_n
+});      
 
          $(".month a").click(function(){
 
@@ -558,7 +568,7 @@ data_from_django.forEach(element => {
 
            var val = $(this).text();
 
-           mydata = selectData(val,monthwisesplit);
+           mydata = filterCSV(data, 'month_n', val);
 
              chartStatData= dataforchart(mydata);
 
@@ -566,34 +576,12 @@ data_from_django.forEach(element => {
 
                render(dataforchart(mydata));
 
-           // console.log(mydata);
-
-          
-
        });
 
-       // console.log(monthwisesplit[0][13]);
-
-       // render(best)
-
-   
-
-      chartStatData=dataforchart(monthwisesplit[0]);
-
-    render(dataforchart(monthwisesplit[0]));
-
- 
-
- 
-
- 
-
-
-
- 
-
- 
-
+       monthSelect=$('.month a').first().text();
+      augData = filterCSV(data, 'month_n', monthSelect);
+      chartStatData=dataforchart(augData);
+    render(dataforchart(augData));
  
 
  const selectData =  (val,monthwisesplit) =>{

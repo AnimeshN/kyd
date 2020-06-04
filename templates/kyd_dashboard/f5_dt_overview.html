@@ -47,14 +47,14 @@
 		<span class="selectedMonth"></span>
       </button>
       <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#">November</a>
-        <a class="dropdown-item" href="#">December</a>
-        <a class="dropdown-item" href="#">January</a>
+        {% for month_select in monthList %} 
+        <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+        {% endfor %} 
       </div>
     </div>
     <!-- select category -->
     <div class="dropdown" style="float: left; margin:20px; font-weight:bold"> 
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      <button class="btn btn-secondary`               dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         Select Level
 		<span class="selectedCategory"></span>
       </button>
@@ -67,8 +67,8 @@
 
     </div>
     
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f4' dist_name %}`">Previous Feature</button>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f6' dist_name %}`">Next Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f4' dist_name  quarter %}`">Previous Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f6' dist_name  quarter %}`">Next Feature</button>
   </div>
 <div class="row" style="float: left; margin:20px">
 
@@ -114,24 +114,39 @@
 
 {% block feature_js %}
 <script>
-   var selectMonth="November"; 
+   var selectMonth=$('.month a').first().text();; 
+
+   function filterCSV(csv, key, value) {
+  var result = [];
+  csv.forEach(function(val,idx,arr){
+  
+    if(val[key] == value){
+    
+      result.push(val)
+    }
+  })
+  return result;
+}
+
 function  block()
 {
 console.log("in block function");
 console.log(d3.select('input[name="states"]:checked').node().value);
 
 	const render = data =>{
-
       
-       console.log(data);
-	   
-	  
-              
-      
+       console.log(data); 
        }
-       const monthwise = (data) => {
-           
-           data.forEach(d => {
+      
+        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_block.csv'%}").then(data => {
+            /////
+  data_from_django = {{ context.block_data|safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
+  });
+
+  data.forEach(d => {
                d.district_n = d.district_n;
                d.mdrtly_stntd = +d.mdrtly_stntd;
                d.svrly_stntd = +d.svrly_stntd;
@@ -162,60 +177,8 @@ console.log(d3.select('input[name="states"]:checked').node().value);
 			   d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
 			   
            });
-            console.log(data);
-            var aproperty = [];
-            var sproperty = [];
-            var oproperty = [];
-            data.forEach(d=>{
-                var temp = {}
-                temp['block_n'] = d.block_n;
-                temp['nb_lbw'] = d.nb_lbw;
-                temp['wasting_percent'] = d.wasting_percent;
-                temp['stunting_percent'] = d.stunting_percent;
-                temp['underweight_percent'] = d.underweight_percent;
-                temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
-                temp['stntd_chld'] = d.stntd_chld;
-                temp['wstd_chld'] = d.wstd_chld;
-                temp['uw_chld'] = d.uw_chld;
-                temp['mdrtly_stntd']= d.mdrtly_stntd;
-                temp['svrly_stntd']=d.svrly_stntd;
-                temp['svr_wstg']=d.svr_wstg;
-                temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
-                temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
-                temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-                temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
-                temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
-                temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
-                temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
-                temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
-                temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
-                temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
-                temp['prnt_chld_intd_cf_p30d']= d.prnt_chld_intd_cf_p30d;
-                temp['prnt_intd_cf_6to24mnth_child'] = d.prnt_intd_cf_6to24mnth_child;
-                temp['prnt_child_1yr_immnztn'] =d.prnt_child_1yr_immnztn;
-                if(d.month_n == "Nov"){
-                    aproperty.push(temp);
-            }else if (d.month_n == "Dec"){
-                sproperty.push(temp);
-            }else if (d.month_n == "Jan"){
-                oproperty.push(temp);
-            }
-        })
-
-        var listdata = [aproperty,sproperty,oproperty]
-
-        return listdata;
-        }
-
-        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_block.csv'%}").then(data => {
-            /////
-  data_from_django = {{ context.block_data|safe }};
-  var data = []
-  data_from_django.forEach(element => {
-    data.push(element.fields);
-  });
-            monthwiseData = monthwise(data);
-  console.log(monthwiseData);
+           // monthwiseData = monthwise(data);
+  //console.log(monthwiseData);
 
   
     $(".month a").click(function(){
@@ -223,7 +186,8 @@ console.log(d3.select('input[name="states"]:checked').node().value);
 	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
       var val = $(this).text();
 	  selectMonth=val;
-      tableData = tbData(val, monthwiseData);
+      filterdata = filterCSV(data, 'month_n', val); 
+      tableData =  tables(d3.select('input[name="states"]:checked').node().value,filterdata);
 
       render(tableData);
 	  
@@ -231,11 +195,9 @@ console.log(d3.select('input[name="states"]:checked').node().value);
 });
 
 
-
-
-  
-  augData = monthwiseData[0];
-let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
+monthSelect=$('.month a').first().text();
+augData = filterCSV(data, 'month_n', monthSelect);
+let tbleData= tables(d3.select('input[name="states"]:checked').node().value, augData);
 render(tbleData);
   
 // })
@@ -255,17 +217,9 @@ render(tbleData);
  const buttons = d3.selectAll('input');
         buttons.on('change', function(d) {
            const selection = this.value;
-if(selectMonth == "November"){
-           let tblData =  tables(selection, monthwiseData[0]);
+           filterdata = filterCSV(data, 'month_n', selectMonth); 
+           let tblData =  tables(selection, filterdata);
 		   render(tblData);
-        }else if (selectMonth == "December"){
-          let tblData =  tables(selection, monthwiseData[1]);
-		  render(tblData);
-        }else if (selectMonth == 'January'){
-		let tblData =  tables(selection, monthwiseData[2]);
-		render(tblData);
-            }
-          
             });			  
             
 function tables(selection, data){
@@ -666,10 +620,15 @@ const render = data =>{
   
        }
  
-      
-       const monthwise = (data) => {
-           
-           data.forEach(d => {
+        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_project.csv'%}").then(data => {
+            /////
+  data_from_django = {{ context.project_data|safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
+  });
+
+  data.forEach(d => {
                 d.district_n = d.district_n;
                d.mdrtly_stntd = +d.mdrtly_stntd;
                d.svrly_stntd = +d.svrly_stntd;
@@ -699,81 +658,24 @@ const render = data =>{
 			   d.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
 			   d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
            });
-            var aproperty = [];
-            var sproperty = [];
-            var oproperty = [];
-            data.forEach(d=>{
-                var temp = {}
-                temp['block_n'] = d.block_n;
-				temp['project_n'] = d.project_n;
-                temp['nb_lbw'] = d.nb_lbw;
-                temp['wasting_percent'] = d.wasting_percent;
-                temp['stunting_percent'] = d.stunting_percent;
-                temp['underweight_percent'] = d.underweight_percent;
-                temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
-                temp['stntd_chld'] = d.stntd_chld;
-                temp['wstd_chld'] = d.wstd_chld;
-                temp['uw_chld'] = d.uw_chld;
-                temp['mdrtly_stntd']= d.mdrtly_stntd;
-                temp['svrly_stntd']=d.svrly_stntd;
-                temp['svr_wstg']=d.svr_wstg;
-                temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
-                temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
-                temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-                temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
-                temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
-                temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
-                temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
-                temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
-                temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
-                temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
-                temp['prnt_chld_intd_cf_p30d']= d.prnt_chld_intd_cf_p30d;
-                temp['prnt_intd_cf_6to24mnth_child'] = d.prnt_intd_cf_6to24mnth_child;
-                temp['prnt_child_1yr_immnztn'] =d.prnt_child_1yr_immnztn;
-                if(d.month_n == "Nov"){
-                    aproperty.push(temp);
-            }else if (d.month_n == "Dec"){
-                sproperty.push(temp);
-            }else if (d.month_n == "Jan"){
-                oproperty.push(temp);
-            }
-        })
-
-        var listdata = [aproperty,sproperty,oproperty]
-        console.log(listdata)
-
-        return listdata;
-        }
-         
-          
-         
-       
-          
-          
-         
-    
-        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_project.csv'%}").then(data => {
-            /////
-  data_from_django = {{ context.project_data|safe }};
-  var data = []
-  data_from_django.forEach(element => {
-    data.push(element.fields);
-  });
              
-            monthwiseData = monthwise(data);
+     
                  $(".month a").click(function(){
 				$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
 				$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
 				var val = $(this).text();
 				selectMonth=val;
-				tableData = tbData(val, monthwiseData);
-
+                filterdata = filterCSV(data, 'month_n', val); 
+                tableData =  tables(d3.select('input[name="states"]:checked').node().value,filterdata);
+				
 				render(tableData);
 	  
       
 			});
-
-        let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
+        
+        monthSelect=$('.month a').first().text();
+        augData = filterCSV(data, 'month_n', monthSelect);
+        let tbleData= tables(d3.select('input[name="states"]:checked').node().value, augData);
 		render(tbleData);
             //  })
 
@@ -794,16 +696,9 @@ const render = data =>{
         const buttons = d3.selectAll('input');
         buttons.on('change', function(d) {
            const selection = this.value;
-if(selectMonth == "November"){
-           let tblData =  tables(selection, monthwiseData[0]);
+           filterdata = filterCSV(data, 'month_n', selectMonth); 
+           let tblData =  tables(selection, filterdata);
 		   render(tblData);
-        }else if (selectMonth == "December"){
-          let tblData =  tables(selection, monthwiseData[1]);
-		  render(tblData);
-        }else if (selectMonth == 'January'){
-		let tblData =  tables(selection, monthwiseData[2]);
-		render(tblData);
-            }
           
             });	   
 function tables(selection, data){
@@ -1205,9 +1100,15 @@ const render = data =>{
       
        }
     
-       const monthwise = (data) => {
-           
-           data.forEach(d => {
+  
+        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_beat.csv'%}").then(data => {
+            /////
+  data_from_django = {{ context.beat_data|safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
+  });
+  data.forEach(d => {
                d.district_n = d.district_n;
                d.mdrtly_stntd = +d.mdrtly_stntd;
                d.svrly_stntd = +d.svrly_stntd;
@@ -1237,74 +1138,24 @@ const render = data =>{
 			   d.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
 			   d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
            });
-            var aproperty = [];
-            var sproperty = [];
-            var oproperty = [];
-            data.forEach(d=>{
-                var temp = {}
-                temp['block_n'] = d.block_n;
-                temp['project_n'] = d.project_n;
-                temp['beat_n'] = d.beat_n;
-                temp['nb_lbw'] = d.nb_lbw;
-                temp['wasting_percent'] = d.wasting_percent;
-                temp['stunting_percent'] = d.stunting_percent;
-                temp['underweight_percent'] = d.underweight_percent;
-                temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
-                temp['stntd_chld'] = d.stntd_chld;
-                temp['wstd_chld'] = d.wstd_chld;
-                temp['uw_chld'] = d.uw_chld;
-                temp['mdrtly_stntd']= d.mdrtly_stntd;
-                temp['svrly_stntd']=d.svrly_stntd;
-                temp['svr_wstg']=d.svr_wstg;
-                temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
-                temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
-                temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-                temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
-                temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
-                temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
-                temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
-                temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
-                temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
-                temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
-                temp['prnt_chld_intd_cf_p30d']= d.prnt_chld_intd_cf_p30d;
-                temp['prnt_intd_cf_6to24mnth_child'] = d.prnt_intd_cf_6to24mnth_child;
-                temp['prnt_child_1yr_immnztn'] =d.prnt_child_1yr_immnztn;
-                if(d.month_n == "Nov"){
-                    aproperty.push(temp);
-            }else if (d.month_n == "Dec"){
-                sproperty.push(temp);
-            }else if (d.month_n == "Jan"){
-                oproperty.push(temp);
-            }
-        })
 
-        var listdata = [aproperty,sproperty,oproperty]
-        console.log(listdata)
 
-        return listdata;
-        }
-  
-        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_beat.csv'%}").then(data => {
-            /////
-  data_from_django = {{ context.beat_data|safe }};
-  var data = []
-  data_from_django.forEach(element => {
-    data.push(element.fields);
-  });
-            monthwiseData = monthwise(data);
+           
                $(".month a").click(function(){
 			$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
 			$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
 			var val = $(this).text();
 			selectMonth=val;
-			tableData = tbData(val, monthwiseData);
-
+            filterdata = filterCSV(data, 'month_n', val); 
+            tableData =  tables(d3.select('input[name="states"]:checked').node().value,filterdata);
 			render(tableData);
 	  
       
 			});
-
-        let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
+        
+        monthSelect=$('.month a').first().text();
+        augData = filterCSV(data, 'month_n', monthSelect);
+        let tbleData= tables(d3.select('input[name="states"]:checked').node().value, augData);
 		render(tbleData);
             //  })
 
@@ -1325,16 +1176,9 @@ const render = data =>{
         const buttons = d3.selectAll('input');
         buttons.on('change', function(d) {
            const selection = this.value;
-if(selectMonth == "November"){
-           let tblData =  tables(selection, monthwiseData[0]);
+           filterdata = filterCSV(data, 'month_n', selectMonth); 
+           let tblData =  tables(selection, filterdata);
 		   render(tblData);
-        }else if (selectMonth == "December"){
-          let tblData =  tables(selection, monthwiseData[1]);
-		  render(tblData);
-        }else if (selectMonth == 'January'){
-		let tblData =  tables(selection, monthwiseData[2]);
-		render(tblData);
-            }
           
             });	    
 function tables(selection, data){
@@ -1737,9 +1581,16 @@ const render = data =>{
    
        }
       
-       const monthwise = (data) => {
-           
-           data.forEach(d => {
+
+    
+        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_awc.csv'%}").then(data => {
+            /////
+  data_from_django = {{ context.awc_data|safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
+  });
+  data.forEach(d => {
               d.district_n = d.district_n;
                d.mdrtly_stntd = +d.mdrtly_stntd;
                d.svrly_stntd = +d.svrly_stntd;
@@ -1769,75 +1620,22 @@ const render = data =>{
 			   d.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
 			   d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
            });
-            var aproperty = [];
-            var sproperty = [];
-            var oproperty = [];
-            data.forEach(d=>{
-                var temp = {}
-                temp['block_n'] = d.block_n;
-                temp['project_n'] = d.project_n;
-                temp['beat_n'] = d.beat_n;
-                temp['awc_with_code'] = d.awc_with_code;
-                temp['nb_lbw'] = d.nb_lbw;
-                temp['wasting_percent'] = d.wasting_percent;
-                temp['stunting_percent'] = d.stunting_percent;
-                temp['underweight_percent'] = d.underweight_percent;
-                temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
-                temp['stntd_chld'] = d.stntd_chld;
-                temp['wstd_chld'] = d.wstd_chld;
-                temp['uw_chld'] = d.uw_chld;
-                temp['mdrtly_stntd']= d.mdrtly_stntd;
-                temp['svrly_stntd']=d.svrly_stntd;
-                temp['svr_wstg']=d.svr_wstg;
-                temp['prnt_anwmic_wmn'] = d.prnt_anwmic_wmn;
-                temp['prnt_chld_bf_at_birth']= d.prnt_chld_bf_at_birth;
-                temp['prnt_wmn_etg_xtr_ml_drng_prgncy']= d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-                temp['prnt_chld_excly_bf'] =d.prnt_chld_excly_bf;
-                temp['prnt_4_anc_vst_dlvry'] = d.prnt_4_anc_vst_dlvry;
-                temp['prnt_chld_rcvg_cf_wid_adq_dt_dvsty']=d.prnt_chld_rcvg_cf_wid_adq_dt_dvsty;
-                temp['prnt_chld_cf_wid_adq_dt_qnty']=d.prnt_chld_cf_wid_adq_dt_qnty;
-                temp['per_no_chld_cf_wid_appr_hndwhg_bfr_fdg']=d.per_no_chld_cf_wid_appr_hndwhg_bfr_fdg;
-                temp['prnt_trmstr_3wmn_cnsld_imdtbf']=d.prnt_trmstr_3wmn_cnsld_imdtbf;
-                temp['prnt_wmn_rstg_drg_prgncy']=d.prnt_wmn_rstg_drg_prgncy;
-                temp['prnt_chld_intd_cf_p30d']= d.prnt_chld_intd_cf_p30d;
-                temp['prnt_intd_cf_6to24mnth_child'] = d.prnt_intd_cf_6to24mnth_child;
-                temp['prnt_child_1yr_immnztn'] =d.prnt_child_1yr_immnztn;
-                if(d.month_n == "Nov"){
-                    aproperty.push(temp);
-            }else if (d.month_n == "Dec"){
-                sproperty.push(temp);
-            }else if (d.month_n == "Jan"){
-                oproperty.push(temp);
-            }
-        })
-
-        var listdata = [aproperty,sproperty,oproperty]
-        console.log(listdata)
-
-        return listdata;
-        }
-    
-        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_awc.csv'%}").then(data => {
-            /////
-  data_from_django = {{ context.awc_data|safe }};
-  var data = []
-  data_from_django.forEach(element => {
-    data.push(element.fields);
-  });
-            monthwiseData = monthwise(data);
+            //monthwiseData = monthwise(data);
                 $(".month a").click(function(){
 	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
 	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
       var val = $(this).text();
 	  selectMonth=val;
-      tableData = tbData(val, monthwiseData);
+      filterdata = filterCSV(data, 'month_n', val); 
+      tableData =  tables(d3.select('input[name="states"]:checked').node().value,filterdata);
 
       render(tableData);
 	  
       
 });
-
-      let tbleData= tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
+monthSelect=$('.month a').first().text();
+augData = filterCSV(data, 'month_n', monthSelect);
+let tbleData= tables(d3.select('input[name="states"]:checked').node().value, augData);
 render(tbleData);
             //  })
 
@@ -1858,16 +1656,9 @@ render(tbleData);
         const buttons = d3.selectAll('input');
         buttons.on('change', function(d) {
            const selection = this.value;
-if(selectMonth == "November"){
-           let tblData =  tables(selection, monthwiseData[0]);
+           filterdata = filterCSV(data, 'month_n', selectMonth); 
+           let tblData =  tables(selection, filterdata);
 		   render(tblData);
-        }else if (selectMonth == "December"){
-          let tblData =  tables(selection, monthwiseData[1]);
-		  render(tblData);
-        }else if (selectMonth == 'January'){
-		let tblData =  tables(selection, monthwiseData[2]);
-		render(tblData);
-            }
           
             });		    
 function tables(selection, data){

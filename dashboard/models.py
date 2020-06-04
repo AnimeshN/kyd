@@ -48,3 +48,12 @@ class ConsoChildNdj(models.Model):
     class Meta:
         managed = False
         db_table = 'conso_child_ndj'
+
+
+class DistrictPwd(models.Model):
+    district_n = models.TextField()
+    pwd = models.TextField()
+
+    class Meta:
+        managed = False
+        db_table = 'district_pwd'

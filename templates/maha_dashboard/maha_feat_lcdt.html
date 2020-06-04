@@ -22,7 +22,7 @@
 	left:50px;
 	height:700px;
 	width:200px;
-  overflow-y: scroll;
+  overflow: auto;
   }
 #legend{
 	width:320px;
@@ -110,9 +110,9 @@ fill: #fff;
         <a class="dropdown-item" href="#">Newborns with low birth weight</a>		
           </div>
         </div>
-        <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat7' %}`">Previous Feature</button>   
+        <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat7' quarter %}`">Previous Feature</button>   
 
-        <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat_lcsdt' %}`">Next Feature</button>   
+        <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat_lcsdt' quarter %}`">Next Feature</button>   
 
       </div>
     
@@ -234,7 +234,7 @@ console.log("in update graph")
 				//})
 				
 	console.log("print result");
-		console.log(result);		
+		console.log(result,'R');		
  		var block = g.selectAll(".line")
       .data(result, function(d){return d.key});
 
@@ -275,7 +275,7 @@ console.log("in update graph")
 			var sect =  selectedCategory;		
 			sect= sect.replace(/ /g, '_');
 	
-			var url = "http://104.43.197.79/maha_dashboard/maha_feat_lcsdt?id1="+d.key+"&id2="+sect;
+			var url = "{% url 'maha-feat_lcsdt' quarter %}?id1="+d.key+"&id2="+sect;
               $(location).attr('href', url);
               window.location = url;
 			 
@@ -438,8 +438,11 @@ function showAll(){
 };
 
 // Get the data
- d3.csv("{% static 'maha_dashboard/data/csv/linechart/line_dt.csv' %}", function(error, data) {
-  console.log(data)
+data_from_django = {{ data|safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
+  });
  
  data.forEach(function(d) {
 		
@@ -506,7 +509,7 @@ function showAll(){
 	
 	
     
-});
+// });
 
 $(function(){
   //bind event

@@ -24,11 +24,11 @@
 	left:20px;
 	overflow: auto;
 	height:500px;
-	width:200px;
+	width:auto;
 }
 #legend{
 	width:150px;
-	height:500px;
+	height:auto;
 }
 .legend {
     font-size: 20px;
@@ -112,8 +112,8 @@ fill: #fff;
         <a class="dropdown-item" href="#">Newborns with low birth weight</a>		
       </div>
     </div>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f6' dist_name %}`">Previous Feature</button>   
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftlcprjt' dist_name %}`">Next Feature</button>   
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f6' dist_name quarter %}`">Previous Feature</button>   
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftlcprjt' dist_name quarter %}`">Next Feature</button>   
 
   </div>
 
@@ -297,7 +297,7 @@ fill: #fff;
        sect= sect.replace(/ /g, '_');
        var selectedBlock = d.key.replace(/ /g, '_');
     
-       var url = "{% url 'ftlcprjt' dist_name%}?id1="+selectedBlock+"&id2="+sect;
+       var url = "{% url 'ftlcprjt' dist_name quarter%}?id1="+selectedBlock+"&id2="+sect;
                $(location).attr('href', url);
                window.location = url;
          

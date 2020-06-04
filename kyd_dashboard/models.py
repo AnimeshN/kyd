@@ -1,6 +1,16 @@
 from django.db import models
 from django.contrib.gis.db import models
 
+
+class QuarterSelect(models.Model):
+    quarter = models.CharField(max_length=10, blank=True, null=True)
+    month = models.CharField(max_length=20, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'quarter_select'
+
+
 class DistrictBlockWiseGeojson(models.Model):
     ogc_fid = models.AutoField(primary_key=True)
     block = models.CharField(max_length=15, blank=True, null=True)

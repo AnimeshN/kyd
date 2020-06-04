@@ -56,9 +56,9 @@
           <span class="selectedMonth"></span>
         </button>
         <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-          <a class="dropdown-item" href="#">November</a>
-          <a class="dropdown-item" href="#">December</a>
-          <a class="dropdown-item" href="#">January</a>
+          {% for month_select in monthList %} 
+                  <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+          {% endfor %}   
         </div>
       </div>
       <!-- select category -->
@@ -75,8 +75,8 @@
         </div>
       </div>
   
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f2' dist_name %}`">Previous Feature</button>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftrdr1' dist_name %}`">Next Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f2' dist_name quarter %}`">Previous Feature</button>
+    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftrdr1' dist_name quarter %}`">Next Feature</button>
 
    
   </div>
@@ -107,6 +107,18 @@
   const height = +svg.attr('height');
   var radius = Math.min(width, height) / 3;
  var outerRadius1 = radius-10;
+
+ function filterCSV(csv, key, value) {
+      var result = [];
+      csv.forEach(function(val,idx,arr){
+      
+        if(val[key] == value){
+        
+          result.push(val)
+        }
+      })
+      return result;
+    }
 
 const render = data =>{
 
@@ -429,16 +441,25 @@ const monthwise = (data) => {
       data.push(element.fields);
   });
 
-  monthwiseData = monthwise(data);
-//   d3.csv("{% static 'data/csv/f3.csv'%}").then(data=>{
-            monthwiseData = monthwise(data);
-  d3.select("#monthdropdown")
-  .on("change", () =>{
-          val = document.getElementById("monthdropdown").value
-          mydata = selectData(val,monthwiseData);
-          svg.selectAll("*").remove();
-          render(mydata);
-      });
+//   monthwiseData = monthwise(data);
+// //   d3.csv("{% static 'data/csv/f3.csv'%}").then(data=>{
+//             monthwiseData = monthwise(data);
+//   d3.select("#monthdropdown")
+//   .on("change", () =>{
+//           val = document.getElementById("monthdropdown").value
+//           mydata = selectData(val,monthwiseData);
+//           svg.selectAll("*").remove();
+//           render(mydata);
+//       });
+data.forEach(d => {
+    d.wasting_percent = +d.wasting_percent;
+    d.stunting_percent = +d.stunting_percent;
+    d.underweight_percent = +d.underweight_percent;
+    d.low_birth_weight_percent = +d.low_birth_weight_percent;
+    d.per_no_enrld = +d.per_no_enrld;
+    d.month_n = d.month_n;
+  });
+
   
       $(".month a").click(function(){
       var val = $(this).text();
@@ -447,13 +468,17 @@ $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
       var valMonth = $(this).text();
    document.getElementById('bartitleMonth').innerHTML= valMonth;
 
-      mydata = selectData(val,monthwiseData);
+      mydata = filterCSV(data, 'month_n', valMonth);
+      // mydata = selectData(val,monthwiseData);
+
       svg.selectAll("*").remove();
       render(mydata);
 
   });
   
-  augData = monthwiseData[0];
+  // augData = monthwiseData[0];
+  monthSelect=$('.month a').first().text();
+  augData = filterCSV(data, 'month_n', monthSelect);
   render(augData); 
 //   })
   </script>
