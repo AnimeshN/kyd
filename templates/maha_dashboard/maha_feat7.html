@@ -16,17 +16,17 @@ body {
   overflow: hidden;
 }
 div.tooltip { 
-    position: absolute;     
-    text-align: center;     
-    width: 300px;          
-    height: 100px;          
-    padding: 2px;       
-    font: 15px sans-serif;  
-    font-weight: bold;    
-    background: #fff; 
-    border: 0px;
-  	border-radius: 50px;
-    pointer-events: none;     
+  position: absolute;     
+  text-align: center;     
+  width: 300px;          
+  height: 100px;          
+  padding: 2px;       
+  font: 15px sans-serif;  
+  font-weight: bold;    
+  background: #fff; 
+  border: 0px;
+  border-radius: 50px;
+  pointer-events: none;     
 }
 
 .boundary {
@@ -52,7 +52,6 @@ td{
 
 </style>
 {% endblock %}
-
 {% block feature %}
 <div class=" full-height">
     <div class='heading text-dark mt-2 text-center' >Outcome Indicators</div>
@@ -66,7 +65,7 @@ td{
             </button>
             <div class="dropdown-menu drop-month" aria-labelledby="dropdownMenuButton">
               {% for month_select in monthList %} 
-              <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+                <a class="dropdown-item" href="#">{{ month_select.month }}</a>
               {% endfor %} 
             </div>
           </div>
@@ -125,20 +124,19 @@ td{
 
 </div>
 {% endblock %}
-
 {% block feature_js %}
 <script>
-function filterCSV(csv, key, value) {
-  var result = [];
-  csv.forEach(function(val,idx,arr){
-  
-    if(val[key] == value){
-    
-      result.push(val)
+    function filterCSV(csv, key, value) {
+      var result = [];
+      csv.forEach(function(val,idx,arr){
+      
+        if(val[key] == value){
+        
+          result.push(val)
+        }
+      })
+      return result;
     }
-  })
-  return result;
-}
 
     const width = document.getElementById("mymap").offsetWidth;
     const height = document.getElementById("mymap").offsetHeight;
@@ -231,19 +229,8 @@ function filterCSV(csv, key, value) {
     
       //info-div
       const updateMonth = month_hack => {
-        // switch (month_hack) {
-        //   case "nov":
-        //     selectedMonth = "November";
-        //     break;
-        //   case "dec":
-        //     selectedMonth = "December";
-        //     break;
-        //   case "jan":
-        //     selectedMonth = "January";
-        //     break;
         }
         d3.select(".info-month").text(month_hack);
-      // };
     
       const updateCategory = updatedCat => {
         d3.select(".info-category").text(updatedCat);
@@ -261,15 +248,14 @@ function filterCSV(csv, key, value) {
         })
         updateMonth();
         if (level == 0 && direction == 1) {
-          TextValue = d => d.properties.District;
+          TextValue = d => d.properties.district;
         } else if (level == 1 && direction == 1) {
-          TextValue = d => d.properties.Block;
-          // ActualValue = d => d.properties. 
+          TextValue = d => d.properties.block;
         } 
        else if (level == 1 && direction == 0) {
-          TextValue = d => d.properties.Block;
+          TextValue = d => d.properties.block;
         } else if (level == 0 && direction == 0) {
-          TextValue = d => d.properties.District;
+          TextValue = d => d.properties.district;
         } 
         let min = d3.min(geojson, ColorValue);
         let max = d3.max(geojson, ColorValue);
@@ -347,10 +333,8 @@ function filterCSV(csv, key, value) {
         if (level === 0) {
           textLabel.attr("font-size", "10pt").attr("font-weight", "bold"); 
         } else if (level === 1) {
-          textLabel.attr("font-size", "4pt").attr("font-weight", "bold"); 
-        } else if (level === 2) {
-          textLabel.attr("font-size", "4pt");
-        } 
+          textLabel.attr("font-size", "3pt").attr("font-weight", "bold"); 
+        }
         
     
         //update slider color
@@ -376,15 +360,16 @@ function filterCSV(csv, key, value) {
               }
             });
           
-          if(level === 3){
-            circleEnter
-            .transition()
-            .duration(transitionDuration)
-            .style("fill", function(d) {
-                return myColor(ColorValue(d), low, high);
-            });
-          }
+          // if(level === 3){
+          //   circleEnter
+          //   .transition()
+          //   .duration(transitionDuration)
+          //   .style("fill", function(d) {
+          //       return myColor(ColorValue(d), low, high);
+          //   });
+          // }
         });
+
         let updatedCat;
         const updateviz = selectedCat => {
           //update tooltip
@@ -557,11 +542,11 @@ function filterCSV(csv, key, value) {
           // } 
           geojson.forEach(sel => {
             if (level === 1 ) {
-              if (sel.properties.District === location) {
+              if (sel.properties.district === location) {
                 selection.push(sel);
               }
             } else if (level === 2 ) {
-              if (sel.properties.Block === location) {
+              if (sel.properties.block === location) {
                 selection.push(sel);
               }
             } 
@@ -596,7 +581,6 @@ function filterCSV(csv, key, value) {
               }
             }  
           });
-          // console.log(selection);
           return selection;
         };
         // clicked
@@ -607,7 +591,7 @@ function filterCSV(csv, key, value) {
           zoomToBoundingBox(d);
           let clickedLocation;
           if (level === 1) {
-            clickedLocation = d.properties.District;
+            clickedLocation = d.properties.district;
           } 
         
     
@@ -615,29 +599,6 @@ function filterCSV(csv, key, value) {
     
           let selectedJSON, selectedData;
           let selectedPoints;
-          // switch (month_hack) {
-          //   case "nov":
-          //     if (level === 1) {
-          //       selectedJSON = project.Nov;
-          //       selectedData = projectData.Nov;
-          //     } 
-             
-          //     break;
-          //   case "dec":
-          //     if (level === 1) {
-          //       selectedJSON = project.Dec;
-          //       selectedData = projectData.Dec;
-          //     } 
-            
-          //     break;
-          //   case "jan":
-          //     if (level === 1) {
-          //       selectedJSON = project.Jan;
-          //       selectedData = projectData.Jan;
-          //     }
-          
-          //     break;
-          // }
           if (level === 1) {
             selectedData = filterCSV(projectData, 'month_n', month_hack); 
             selectedJSON = addProperty(selectedData, project); 
@@ -646,7 +607,6 @@ function filterCSV(csv, key, value) {
           let selecteddata = selectedSubData(selectedData, clickedLocation);
           g.selectAll("*").remove();
           rowEnter.selectAll("*").remove();
-          // tooltip.remove();
           makemap(selectedjson, selecteddata);
           
     
@@ -658,7 +618,7 @@ function filterCSV(csv, key, value) {
         //makeTable
         
         let tbdata = [];
-        let LocationValue = d => d.Block;
+        let LocationValue = d => d.block;
         let PercentageValue = TPercentValue;
         let ActualValue = TActualValue; 
         tdata.forEach(d => {
@@ -722,7 +682,6 @@ function filterCSV(csv, key, value) {
           break;
         case 3:
           PercentageValue = d => d.svr_wasting_percent;
-          // console.log(PercentageValue(d))
           ActualValue = d => d.svr_wstg;
           break;
         case 4:
@@ -816,39 +775,6 @@ function filterCSV(csv, key, value) {
           
           updateCategory("Severely Stunted Children");
           let LocationMonth, LocationDataMonth;
-          // if (level === 0) {
-          //   switch (month_hack) {
-          //     case "nov":
-          //       LocationMonth = block.Nov;
-          //       LocationDataMonth = blockData.Nov;
-          //       break;
-          //     case "dec":
-          //       LocationMonth = block.Dec;
-          //       LocationDataMonth = blockData.Dec;
-          //       break;
-          //     case "jan":
-          //       LocationMonth = block.Jan;
-          //       LocationDataMonth = blockData.Jan;
-          //       break;
-          //   }
-    
-          //   makemap(LocationMonth, LocationDataMonth);
-          // } else if (level === 1) {
-    
-          //   switch (month_hack) {
-          //     case "nov":
-          //       LocationMonth = project.Nov;
-          //       LocationDataMonth = projectData.Nov;
-          //       break;
-          //     case "dec":     
-          //       LocationMonth = project.Dec;
-          //       LocationDataMonth = projectData.Dec;
-          //       break;
-          //     case "jan":
-          //       LocationMonth = project.Jan;
-          //       LocationDataMonth = projectData.Jan;
-          //       break;
-          //   }
         if (level === 0) {
           LocationDataMonth = filterCSV(blockData, 'month_n', month_hack); 
           LocationMonth = addProperty(LocationDataMonth, block);
@@ -867,9 +793,6 @@ function filterCSV(csv, key, value) {
           }
         }//if condition ends here
         });
-    
-    
-    
       
     }
     const selectGeoJSON = (val, allMonthGeoJSONData) => {
@@ -901,19 +824,8 @@ function filterCSV(csv, key, value) {
     $(".drop-month a").click(function(){
         console.log('hello');
     $(this).parents(".dropdown").find('.btn').html($(this).text());
-        // $('.drop-category').parents(".dropdown").find('.btn').text('severely stunted children')
-      // $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
         var val = $(this).text();
         month_hack=val;
-          // if(val === 'November'){
-          //   month_hack = 'nov'
-          // }else if(val === 'December'){
-          //   month_hack = 'dec'
-          // }else if(val === 'January'){
-          //   month_hack = 'jan'
-          // }
-          //   let monthjson = selectGeoJSON(month_hack,block);
-          // let monthdata = selectCSV(month_hack,blockData);
           let monthdata = filterCSV(blockData, 'month_n', val); 
           let monthjson = addProperty(monthdata, block); 
           level = 0;
@@ -925,7 +837,6 @@ function filterCSV(csv, key, value) {
             makemap(monthjson,monthdata);
       })
       //initial map
-      // makemap(block.Nov, blockData.Nov);
       month_hack=$('.drop-month a').first().text();
       console.log(blockData);
       console.log(month_hack);
@@ -939,11 +850,10 @@ function filterCSV(csv, key, value) {
     async function fetchGeoJSON() {
       let geoJSONBundle = {};
     
-      let blockJSON = await d3.json("{% static 'maha_dashboard/data/json/district.geojson'%}");
-      let projectJSON = await d3.json("{% static 'maha_dashboard/data/json/block.geojson'%}");
-      // let blockJSON = {{ context.dt_geodata|safe }};
-      // console.log(blockJSON,'GeoJSON')
-      // let projectJSON = {{ context.subdt_geodata|safe }};
+      // let blockJSON = await d3.json("{% static 'maha_dashboard/data/json/district.geojson'%}");
+      // let projectJSON = await d3.json("{% static 'maha_dashboard/data/json/block.geojson'%}");
+      let blockJSON = {{ context.dt_geodata|safe }};
+      let projectJSON = {{ context.subdt_geodata|safe }};
     
       geoJSONBundle.blockJSON = blockJSON.features;
       geoJSONBundle.projectJSON = projectJSON.features;
@@ -983,12 +893,12 @@ function filterCSV(csv, key, value) {
       let x, y;
       for (let i = 0; i < data.length; i++) {
         for (let j = 0; j < geojson.length; j++) {
-          if(geojson[j].properties.Block) {
+          if(geojson[j].properties.block) {
             x = data[i].sub_district;
-            y = geojson[j].properties.Block;
+            y = geojson[j].properties.block;
           } else {
             x = data[i].district_n;
-            y = geojson[j].properties.District;
+            y = geojson[j].properties.district;
           }
     
           if (x === y) {

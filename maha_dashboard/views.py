@@ -143,11 +143,10 @@ class MahaFeatureSeven(LoginRequiredMixin, TemplateView):
         
         dt_geodata = serialize('geojson', MhDtGeojson.objects.all(),
                                 geometry_field = 'wkb_geometry',
-                                fields = ('district'))
+                                fields = ('ogc_fid','district'))
         Sub_dt_geodata = serialize('geojson', MhSubdtGeojson.objects.all(),
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','district'))
-
         context = {
             'dt_data': Dt_jsondata,
             'subdt_data': Sub_Dt_jsondata,
@@ -172,7 +171,7 @@ class MahaFeatureEight(LoginRequiredMixin, TemplateView):
         
         dt_geodata = serialize('geojson', MhDtGeojson.objects.all(),
                                 geometry_field = 'wkb_geometry',
-                                fields = ('district'))
+                                fields = ('ogc_fid','district'))
         Sub_dt_geodata = serialize('geojson', MhSubdtGeojson.objects.all(),
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','district'))
@@ -202,7 +201,7 @@ class MahaFeatureNine(LoginRequiredMixin, TemplateView):
         
         dt_geodata = serialize('geojson', MhDtGeojson.objects.all(),
                                 geometry_field = 'wkb_geometry',
-                                fields = ('district'))
+                                fields = ('ogc_fid','district'))
         Sub_dt_geodata = serialize('geojson', MhSubdtGeojson.objects.all(),
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','district'))

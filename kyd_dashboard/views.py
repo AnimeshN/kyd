@@ -39,7 +39,7 @@ class F1MsrmntEffcyBlk(LoginRequiredMixin, TemplateView):
 
     def get(self, request, dist_name=None, quarter = None):
         district_n = request.GET.get('dist_name', dist_name) 
-        quarter_S =  request.GET.get['quarter' , quarter]  
+        quarter_S =  request.GET.get('quarter' , quarter)
         months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')          
         data = F1.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
         jsondata = serializers.serialize('json',data)  
@@ -82,7 +82,7 @@ class F4DtProfile(LoginRequiredMixin, TemplateView):
         district_n = request.GET.get('dist_name', dist_name)
         quarter_S = request.GET.get('quarter',quarter)
         months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')
-        data = F4.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
+        data = F4.objects.all().filter(Q(district_n=district_n) | Q(district_n='Maharashtra') & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
         jsondata = serializers.serialize('json',data)
 
         return render(request,'kyd_dashboard/f4_dt_profile.html', {'data':jsondata, 'monthList': months, 'dist_name':district_n, 'quarter': quarter_S})
@@ -96,7 +96,7 @@ class F5DtOverview(LoginRequiredMixin, TemplateView):
         district_n = request.GET.get('dist_name', dist_name)
         quarter_S = request.GET.get('quarter',quarter)
         months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')
-        Block_data = F5Blk.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
+        Block_data = F5Blk.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])) )
         Project_data = F5Prjt.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
         Beat_data = F5Beat.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
         Awc_data = F5Awc.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))

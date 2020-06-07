@@ -1095,14 +1095,9 @@ $( "div#table" ).find(".hello" ).remove();
 function beat()
 {
 const render = data =>{
-
-   
       
        }
     
-  
-        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_beat.csv'%}").then(data => {
-            /////
   data_from_django = {{ context.beat_data|safe }};
   var data = []
   data_from_django.forEach(element => {
@@ -1141,7 +1136,7 @@ const render = data =>{
 
 
            
-               $(".month a").click(function(){
+            $(".month a").click(function(){
 			$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
 			$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
 			var val = $(this).text();

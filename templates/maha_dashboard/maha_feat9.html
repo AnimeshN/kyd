@@ -258,15 +258,15 @@ function filterCSV(csv, key, value) {
         })
         updateMonth();
         if (level == 0 && direction == 1) {
-          TextValue = d => d.properties.District;
+          TextValue = d => d.properties.district;
         } else if (level == 1 && direction == 1) {
-          TextValue = d => d.properties.Block;
+          TextValue = d => d.properties.block;
           // ActualValue = d => d.properties. 
         } 
        else if (level == 1 && direction == 0) {
-          TextValue = d => d.properties.Block;
+          TextValue = d => d.properties.block;
         } else if (level == 0 && direction == 0) {
-          TextValue = d => d.properties.District;
+          TextValue = d => d.properties.district;
         } 
         let min = d3.min(geojson, ColorValue);
         let max = d3.max(geojson, ColorValue);
@@ -357,8 +357,8 @@ function filterCSV(csv, key, value) {
         sliderRange.on("onchange", val => {
           fillSlider();
           d3.select("p#value-range").text(val.map(d3.format(".1%")).join("-"));
-          let low = (val[0] * 100).toFixed(2);
-          let high = (val[1] * 100).toFixed(2);
+          low = (val[0] * 100).toFixed(2);
+          high = (val[1] * 100).toFixed(2);
           
           pathEnter
             .transition()
@@ -524,11 +524,11 @@ function filterCSV(csv, key, value) {
           // } 
           geojson.forEach(sel => {
             if (level === 1 ) {
-              if (sel.properties.District === location) {
+              if (sel.properties.district === location) {
                 selection.push(sel);
               }
             } else if (level === 2 ) {
-              if (sel.properties.Block === location) {
+              if (sel.properties.block === location) {
                 selection.push(sel);
               }
             } 
@@ -574,7 +574,7 @@ function filterCSV(csv, key, value) {
           zoomToBoundingBox(d);
           let clickedLocation;
           if (level === 1) {
-            clickedLocation = d.properties.District;
+            clickedLocation = d.properties.district;
           } 
         
     
@@ -626,7 +626,7 @@ function filterCSV(csv, key, value) {
         //makeTable
         
         let tbdata = [];
-        let LocationValue = d => d.Block;
+        let LocationValue = d => d.block;
         let PercentageValue = TPercentValue;
         let ActualValue = TActualValue; 
         tdata.forEach(d => {
@@ -905,9 +905,11 @@ function filterCSV(csv, key, value) {
     async function fetchGeoJSON() {
       let geoJSONBundle = {};
     
-      let blockJSON = await d3.json("{% static 'maha_dashboard/data/json/district.geojson'%}");
-      let projectJSON = await d3.json("{% static 'maha_dashboard/data/json/block.geojson'%}");
-    
+      // let blockJSON = await d3.json("{% static 'maha_dashboard/data/json/district.geojson'%}");
+      // let projectJSON = await d3.json("{% static 'maha_dashboard/data/json/block.geojson'%}");
+      let blockJSON = {{ context.dt_geodata|safe }};
+      let projectJSON = {{ context.subdt_geodata|safe }};
+
       geoJSONBundle.blockJSON = blockJSON.features;
       geoJSONBundle.projectJSON = projectJSON.features;
     
@@ -942,12 +944,12 @@ function filterCSV(csv, key, value) {
       let x, y;
       for (let i = 0; i < data.length; i++) {
         for (let j = 0; j < geojson.length; j++) {
-          if(geojson[j].properties.Block) {
+          if(geojson[j].properties.block) {
             x = data[i].sub_district;
-            y = geojson[j].properties.Block;
+            y = geojson[j].properties.block;
           } else {
             x = data[i].district_n;
-            y = geojson[j].properties.District;
+            y = geojson[j].properties.district;
           }
     
           if (x === y) {

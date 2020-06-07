@@ -64,8 +64,8 @@ td{
             </button>
             <div class="dropdown-menu drop-month" aria-labelledby="dropdownMenuButton">
               {% for month_select in monthList %} 
-              <a class="dropdown-item" href="#">{{ month_select.month }}</a>
-               {% endfor %} 
+                <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+              {% endfor %} 
             </div>
           </div>
           <div class="dropdown" style="float: left; margin:10px"> 
@@ -128,26 +128,21 @@ td{
  
 
 </div>
-  
-  
-
 {% endblock %}
-
-
 {% block feature_js %}
 
 <script>
     function filterCSV(csv, key, value) {
-  var result = [];
-  csv.forEach(function(val,idx,arr){
-  
+    var result = [];
+    csv.forEach(function(val,idx,arr){
+
     if(val[key] == value){
-    
+
       result.push(val)
     }
-  })
-  return result;
-}
+    })
+    return result;
+    }
 
 const width = document.getElementById("mymap").offsetWidth;
 const height = document.getElementById("mymap").offsetHeight;
@@ -201,8 +196,6 @@ const svg = d3
 const g = svg.append("g");
 
 var dist_name = "{{ dist_name }}"
-console.log(dist_name);
-
 if(dist_name == "Nandurbar")
 {
   var mercator = d3
@@ -274,19 +267,8 @@ const render = (
 
   //info-div
   const updateMonth = month_hack => {
-    // switch (month_hack) {
-    //   case "Nov":
-    //     selectedMonth = "November";
-    //     break;
-    //   case "Dec":
-    //     selectedMonth = "December";
-    //     break;
-    //   case "Jan":
-    //     selectedMonth = "January";
-    //     break;
     }
     d3.select(".info-month").text(month_hack);
-  // };
 
   const updateCategory = updatedCat => {
     d3.select(".info-category").text(updatedCat);
@@ -296,12 +278,7 @@ const render = (
   //makemap
   const makemap = (geojson, tdata) => {
     d3.select('.info-hirar').text(function(){
-        var dist_name = "{{ dist_name }}"
-        console.log(dist_name);
-
-       
-            var hirarchy = "{{dist_name}}";
-        
+      var hirarchy = "{{dist_name}}";
       levelLocation.forEach(loc=>{
       	hirarchy += ">"+loc;
       })
@@ -312,7 +289,6 @@ const render = (
       TextValue = d => d.properties.block;
     } else if (level == 1 && direction == 1) {
       TextValue = d => d.properties.project;
-      // ActualValue = d => d.properties. 
     } else if (level == 2 && direction == 1) {
       TextValue = d => d.properties.beat_na;
     } else if (level == 2 && direction == 0) {
@@ -323,11 +299,7 @@ const render = (
       TextValue = d => d.properties.block;
     } 
     let min = d3.min(geojson, ColorValue);
-    console.log(min)
-   
     let max = d3.max(geojson, ColorValue);
-    console.log(geojson)
-    console.log(max)
     let comp = (max - min) / 3;
     let myColor = (v, low, high) => {
         if (v < low) return "#24562B";
@@ -338,11 +310,9 @@ const render = (
     };
      	let tooltipValue = (d) =>{
         let ttv = `<b>${TextValue(d)}</b><br> 
-      ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
-      ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
-      ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>`;
-                  // Moderate Value: ${TooltipVal2(d)}<br>
-		// Efficiency Value: ${TooltipVal3(d)}<br>
+          ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
+          ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
+          ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>`;
      	return ttv;
      	}
         const onMouseOverPoly = d => {
@@ -441,6 +411,7 @@ const render = (
         });
       }
     });
+    
     let updatedCat;
     const updateviz = selectedCat => {
       //update tooltip

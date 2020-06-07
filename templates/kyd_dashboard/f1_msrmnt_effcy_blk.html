@@ -112,7 +112,8 @@
 
   <div class="col-12 m-5">
 
-    <svg width="1100" height="350"></svg>
+    <svg width="1250" height="350"></svg>
+
 
   </div>
 
@@ -130,10 +131,13 @@
 
 <script>
 
+ 
+  
+  //const width = window.innerWidth;
+
+  
   const svg = d3.select('svg');
-
-  const width = +svg.attr('width');
-
+  var width = +svg.attr('width');
   const height = +svg.attr('height');
 
   const yScale = [];
@@ -158,17 +162,20 @@
 
   const render = data =>{
 
-      let yValue  = d => d.ht_percent;
-
-      const xValue = d => d.block_n;
-
-      const margin = {left:150,top:10 ,right:150,bottom:90};
-
-      const innerWidth = width - margin.left - margin.right;
-
-      const innerHeight = height - margin.top - margin.bottom;
-
+    console.log(data.length);
+    
+    if (data.length > 8)
+    {
+    width = 1200;
+    } else{
+    width = 850;
+    }
   
+      let yValue  = d => d.ht_percent;
+      const xValue = d => d.block_n;
+      const margin = {left:100,top:10 ,right:100,bottom:90};
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
 
       const yScale = d3.scaleLinear()
 
@@ -643,4 +650,3 @@ $(function(){
   </script>
 
 {% endblock %}
-
