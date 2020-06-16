@@ -9,7 +9,7 @@ from .models import (F1, F2, F3, F4, F5Awc, F5Beat, F5Blk, F5Prjt, FtLcPrjt, FtL
        F7IycfAw, F7IycfBlock, F7IycfBt, F7IycfProject,
        F8PwProject, F8PwBlock, F8PwBeat, F8PwAwc,
        DistrictBlockWiseGeojson, DistrictProjectWiseGeojson,
-       DistrictBeatWiseGeojson, DistrictAwcGeojson, 
+       DistrictBeatWiseGeojson, DistrictAwcGeojson, DistrictVillagewiseGeojson,
        QuarterSelect)
 
 
@@ -57,8 +57,10 @@ class F2OtcmIndctrBlk(LoginRequiredMixin, TemplateView):
         months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')
         data = F2.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
         jsondata = serializers.serialize('json',data)
-           
-        return render(request,'kyd_dashboard/f2_oi_blk.html', {'data':jsondata, 'monthList': months, 'dist_name':district_n, 'quarter': quarter_S})
+        if district_n=='Amravati':    
+            return render(request,'kyd_dashboard/f2_oi_blk_am.html', {'data':jsondata, 'monthList': months, 'dist_name':district_n, 'quarter': quarter_S})
+        else:      
+            return render(request,'kyd_dashboard/f2_oi_blk.html', {'data':jsondata, 'monthList': months, 'dist_name':district_n, 'quarter': quarter_S})
 
 class F3PieProject(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -145,7 +147,14 @@ class F6OiMap(LoginRequiredMixin, TemplateView):
         beat_geodata = serialize('geojson', DistrictBeatWiseGeojson.objects.all().filter(district = district_n),
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','project','beat_na','district'))
-        awc_geodata = serialize('geojson', DistrictAwcGeojson.objects.all().filter(district = district_n),
+                        
+        if district_n=='Amravati':  
+        
+            awc_geodata = serialize('geojson', DistrictVillagewiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','project','beat_na', 'village','district'))
+        else:
+            awc_geodata = serialize('geojson', DistrictAwcGeojson.objects.all().filter(district = district_n),
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','beat', 'beat_code', 'beat_withc','awc', 'awc_code', 'awc_with_c','district'))
 
@@ -159,7 +168,10 @@ class F6OiMap(LoginRequiredMixin, TemplateView):
             'bt_geodata':beat_geodata,
             'awc_geodata':awc_geodata,
         }
-        return render(request,'kyd_dashboard/f6_oi_map.html', {'context':context, 'monthList': months, 'dist_name':district_n, 'quarter': quarter_S})
+        if district_n=='Amravati':  
+            return render(request,'kyd_dashboard/f6_oi_map_am.html', {'context':context, 'monthList': months, 'dist_name':district_n, 'quarter': quarter_S})
+        else:
+            return render(request,'kyd_dashboard/f6_oi_map.html', {'context':context, 'monthList': months, 'dist_name':district_n, 'quarter': quarter_S})
 
 
 class F7IycfMap(LoginRequiredMixin, TemplateView):
@@ -189,7 +201,14 @@ class F7IycfMap(LoginRequiredMixin, TemplateView):
         beat_geodata = serialize('geojson', DistrictBeatWiseGeojson.objects.all().filter(district = district_n),
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','project','beat_na','district'))
-        awc_geodata = serialize('geojson', DistrictAwcGeojson.objects.all().filter(district = district_n),
+        
+        if district_n=='Amravati':  
+        
+            awc_geodata = serialize('geojson', DistrictVillagewiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','project','beat_na', 'village','district'))
+        else:
+            awc_geodata = serialize('geojson', DistrictAwcGeojson.objects.all().filter(district = district_n),
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','beat', 'beat_code', 'beat_withc','awc', 'awc_code', 'awc_with_c','district'))
 
@@ -204,7 +223,11 @@ class F7IycfMap(LoginRequiredMixin, TemplateView):
             'awc_geodata':awc_geodata,
         }
 
-        return render(request,'kyd_dashboard/f7_iycf_map.html', {'context':context, 'monthList': months,  'dist_name':district_n, 'quarter': quarter_S})
+        if district_n=='Amravati': 
+            return render(request,'kyd_dashboard/f7_iycf_map_am.html', {'context':context, 'monthList': months,  'dist_name':district_n, 'quarter': quarter_S})
+        else:
+            return render(request,'kyd_dashboard/f7_iycf_map.html', {'context':context, 'monthList': months,  'dist_name':district_n, 'quarter': quarter_S})
+
 
 class F8PwMap(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -233,7 +256,14 @@ class F8PwMap(LoginRequiredMixin, TemplateView):
         beat_geodata = serialize('geojson', DistrictBeatWiseGeojson.objects.all().filter(district = district_n),
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','project','beat_na','district'))
-        awc_geodata = serialize('geojson', DistrictAwcGeojson.objects.all().filter(district = district_n),
+        
+        if district_n=='Amravati':  
+        
+            awc_geodata = serialize('geojson', DistrictVillagewiseGeojson.objects.all().filter(district = district_n),
+                                geometry_field = 'wkb_geometry',
+                                fields = ('block','project','beat_na', 'village','district'))
+        else:
+            awc_geodata = serialize('geojson', DistrictAwcGeojson.objects.all().filter(district = district_n),
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','beat', 'beat_code', 'beat_withc','awc', 'awc_code', 'awc_with_c','district'))
 
@@ -248,7 +278,10 @@ class F8PwMap(LoginRequiredMixin, TemplateView):
             'awc_geodata':awc_geodata,
         }
 
-        return render(request,'kyd_dashboard/f8_pw_map.html', {'context':context, 'monthList': months,  'dist_name':district_n, 'quarter': quarter_S})
+        if district_n=='Amravati':  
+            return render(request,'kyd_dashboard/f8_pw_map_am.html', {'context':context, 'monthList': months,  'dist_name':district_n, 'quarter': quarter_S})
+        else:
+            return render(request,'kyd_dashboard/f8_pw_map.html', {'context':context, 'monthList': months,  'dist_name':district_n, 'quarter': quarter_S})
 
 
 class FtLcBlock(LoginRequiredMixin, TemplateView):

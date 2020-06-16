@@ -470,22 +470,34 @@ console.log(opt.length);
  // mybackgroundcolor = [];
 
  //mybordercolor = ['#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080','#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080'];
+ mybordercolor = ['#0000FF','#00FF00','#FFFF00'];	
 
  let itr = 0;
-
+ let i=0;	
+ let mycolour;
  
 
    data.forEach((d,itr) => {
 
      let temp = {};
+     if (d.project_n == 'BestProject' || d.project_n == 'Maharashtra' ||  d.project_n == 'District')	
+    {	
+      mycolour = mybordercolor[i]	
+      i++;	
+    }	
+    else{	
+      mycolour = 'Gray'	
+    }	
+
 
      temp.label = d.project_n,
+     temp.borderColor = mycolour,	
 
      // temp.defaultFontSize= "12",
 
      temp.pointLabelFontColor = "Red",
 
-     temp.borderColor = 'Gray',
+    //  temp.borderColor = 'Gray',
 
      temp.pointBorderColor = 'Black',
 

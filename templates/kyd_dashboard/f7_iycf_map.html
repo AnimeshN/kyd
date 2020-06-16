@@ -670,7 +670,7 @@ const render = (
       .attr("x", d => mercator(d.geometry.coordinates)[0]+1)
       .attr("y", d => mercator(d.geometry.coordinates)[1])
       .attr("font-family", "sans-serif")
-    	.attr("font-size","3px"); 
+    	.attr("font-size","2px"); 
 
       }
     }// if condition ends here
@@ -930,16 +930,13 @@ async function fetchGeoJSON() {
         .translate([innerWidth/2, innerHeight/2]);
 
     var projectJSON = {{ context.prjt_geodata|safe }};
-    console.log("Project GeoData", projectJSON)
     var scaleCenter = calculateScaleCenter(projectJSON);
 
     var beatJSON = {{ context.bt_geodata|safe }};
-    console.log("Beat GeoData", beatJSON)
     var scaleCenter = calculateScaleCenter(beatJSON);
 
     var awcJSON = {{ context.awc_geodata|safe }};
-    console.log("AWC GeoData", awcJSON) 
-    var scaleCenter = calculateScaleCenter(beatJSON);
+    var scaleCenter = calculateScaleCenter(awcJSON);
 
   
   geoJSONBundle.blockJSON = blockJSON.features;
@@ -961,7 +958,7 @@ function calculateScaleCenter(features) {
                     var bbox_feature = d3.geoBounds(features),
                     center = [
                         (bbox_feature[1][0] + bbox_feature[0][0]) / 2,
-                        ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)- 0.2]; 
+                        ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)]; 
                     
                     console.log(center,"center")
               

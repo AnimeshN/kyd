@@ -18,7 +18,7 @@ div.tooltip {
   position: absolute;     
   text-align: center;     
   width: 300px;          
-  height: 120px;          
+  height: 150px;          
   padding: 2px;       
   font: 15px sans-serif;  
   font-weight: bold;    
@@ -64,8 +64,8 @@ td{
             </button>
             <div class="dropdown-menu drop-month" aria-labelledby="dropdownMenuButton">
               {% for month_select in monthList %} 
-                <a class="dropdown-item" href="#">{{ month_select.month }}</a>
-              {% endfor %} 
+              <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+               {% endfor %} 
             </div>
           </div>
           <div class="dropdown" style="float: left; margin:10px"> 
@@ -98,26 +98,27 @@ td{
       <div class='row'> 
   
        
-        <div class='col h-50 '>   
-          <a href="{% url 'ftlcblk' dist_name quarter %}" style="float: right; margin:10px; font-size: medium;">
-            Want to see Month-wise Trend
-            <i class="fa fa-chevron-right" aria-hidden="true"></i>
-          </a>
+        <div class='col '>   
           <button type="button" class="btn back-button m-4">back</button>
           <span class='info info-hirar'>{{dist_name}}</span>
+          <a href="{% url 'ftlcblk' dist_name quarter %}">
+          <h6 style="float: right; margin:10px">Want to see Month-wise Trend
+          <i class="fa fa-chevron-right" aria-hidden="true"></i>
+          </a></h6>
           <p style="font-size: medium;">Click on the Polygon(Block/Project/Beat) to view the Lower Level</p>
 
 	<br>
 
 				</div>
       </div>
-      <div class='row'  >
+      <div class='row' style="height:900px" >
       	<div class='col-8' id = "mymap">
             <div class="text-center">
                 <p id="value-range"></p>
             </div>
-              <svg></svg>
-				    </div>
+
+                    <svg></svg>
+				</div>
         <div class='col-4'>            
           <div class='data-table scrollable'></div>
 				</div>
@@ -127,27 +128,31 @@ td{
  
 
 </div>
+  
+  
+
 {% endblock %}
+
+
 {% block feature_js %}
 
 <script>
     function filterCSV(csv, key, value) {
-    var result = [];
-    csv.forEach(function(val,idx,arr){
-
+  var result = [];
+  csv.forEach(function(val,idx,arr){
+  
     if(val[key] == value){
-
+    
       result.push(val)
     }
-    })
-    return result;
-    }
+  })
+  return result;
+}
 
 const width = document.getElementById("mymap").offsetWidth;
-const height = 1200;
-// document.getElementById("mymap").offsetHeight;
+const height = document.getElementById("mymap").offsetHeight;
 
-const margin = {left:0,top:0 ,right:0,bottom:0};
+const margin = {left:200,top:300 ,right:40,bottom:20};
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
     
@@ -158,6 +163,7 @@ let levelLocation = [];
 let month_hack = "Nov";
 let direction = 1;
 let circleEnter,rowEnter;
+let tooltipValue;
 let zoomBox = {'translate':[],'scale':[]};
 let table = d3
   .select(".data-table")
@@ -193,7 +199,6 @@ const svg = d3
   .select("svg")
   .attr("width", width)
   .attr("height", height);
-
 const g = svg.append("g");
 
 var mercator = d3
@@ -201,7 +206,6 @@ var mercator = d3
   .scale(1);
 
 const pathGenerator = d3.geoPath().projection(mercator);
-
 //Zoom
 // svg.call(d3.zoom().on('zoom',() =>{
 // 	g.attr('transform',event.transform)
@@ -222,6 +226,10 @@ const render = (
   let Tooltipheader1 = d => "Severely Stunted Children:";
   let Tooltipheader2 = d => "";
   let Tooltipheader3 = d => "Height measurement efficiency:";
+  let Tooltipheader4 = d => "NGO Present:";
+  let TooltipVal4 = d => d.properties.ngo_count;
+  let Tooltipheader5 = d => "NGO names:";
+  let TooltipVal5 = d => d.properties.ngo_names;
   let TooltipVal1 = d => d.properties.svrly_stntd;
   let TooltipVal2 = d => "";
   let TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
@@ -238,17 +246,34 @@ const render = (
 
   //info-div
   const updateMonth = month_hack => {
-      d3.select(".info-month").text(month_hack);
+    // switch (month_hack) {
+    //   case "Nov":
+    //     selectedMonth = "November";
+    //     break;
+    //   case "Dec":
+    //     selectedMonth = "December";
+    //     break;
+    //   case "Jan":
+    //     selectedMonth = "January";
+    //     break;
     }
+    d3.select(".info-month").text(month_hack);
+  // };
 
   const updateCategory = updatedCat => {
     d3.select(".info-category").text(updatedCat);
   };
 
+
   //makemap
   const makemap = (geojson, tdata) => {
     d3.select('.info-hirar').text(function(){
-      var hirarchy = "{{dist_name}}";
+        var dist_name = "{{ dist_name }}"
+        console.log(dist_name);
+
+       
+            var hirarchy = "{{dist_name}}";
+        
       levelLocation.forEach(loc=>{
       	hirarchy += ">"+loc;
       })
@@ -259,6 +284,7 @@ const render = (
       TextValue = d => d.properties.block;
     } else if (level == 1 && direction == 1) {
       TextValue = d => d.properties.project;
+      // ActualValue = d => d.properties. 
     } else if (level == 2 && direction == 1) {
       TextValue = d => d.properties.beat_na;
     } else if (level == 2 && direction == 0) {
@@ -268,23 +294,54 @@ const render = (
     } else if (level == 0 && direction == 0) {
       TextValue = d => d.properties.block;
     } 
+    else if (level == 3 && direction == 0) {
+      TextValue = d => d.properties.village;
+    } else if (level == 3 && direction == 1) {
+      TextValue = d => d.properties.village;
+    } 
     let min = d3.min(geojson, ColorValue);
     let max = d3.max(geojson, ColorValue);
+
     let comp = (max - min) / 3;
-    let myColor = (v, low, high) => {
-        if (v < low) return "#24562B";
+    let myColor = (v, low, high) => {    
+        if (v < low) {    
+          return "#24562B";
+          }
         //matte green
-        else if (v >= low && v <= high) return "#F4BC1C";
+        else if (v >= low && v <= high)
+        {     
+        return "#F4BC1C";}
         //matte yellow
-        else if (v > high) return "#B2022F"; //matte red
+        else if (v > high && v <= 100.00) {
+          return "#B2022F"; //matte red
+          }
     };
-     	let tooltipValue = (d) =>{
+    if(level == 3)
+    {
+      tooltipValue = (d) =>{
         let ttv = `<b>${TextValue(d)}</b><br> 
-          ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
-          ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
-          ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>`;
+      ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
+      ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
+      ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>
+      ${Tooltipheader4(d)}  ${TooltipVal4(d)}<br>
+      ${Tooltipheader5(d)}  ${TooltipVal5(d)}<br>`;
+                  // Moderate Value: ${TooltipVal2(d)}<br>
+		// Efficiency Value: ${TooltipVal3(d)}<br>
      	return ttv;
      	}
+    }
+       else{
+        tooltipValue = (d) =>{
+        let ttv = `<b>${TextValue(d)}</b><br> 
+      ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
+      ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
+      ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>
+      ${Tooltipheader4(d)}  ${TooltipVal4(d)}<br>`;
+                  // Moderate Value: ${TooltipVal2(d)}<br>
+		// Efficiency Value: ${TooltipVal3(d)}<br>
+     	return ttv;
+     	}
+       }
         const onMouseOverPoly = d => {
       tooltip
         .transition()
@@ -304,11 +361,11 @@ const render = (
       .attr("d", pathGenerator)
       .attr("class", "boundary")
       .style("fill", d => {
-        if(level !== 3){
+        // if(level !== 3){
         	return myColor(ColorValue(d), low, high);
-        }else{
-         return "rgba(0,0,0,0)";
-        }
+        // }else{
+        //  return "rgba(0,0,0,0)";
+        // }
       })
       .on("mouseover", d => onMouseOverPoly(d))
       .on("mouseout", function(d) {
@@ -325,11 +382,11 @@ const render = (
       .enter()
       .append("text")
       .text(d => {
-        if (level !== 3) {
+        // if (level !== 3) {
           return `${TextValue(d)}(${ColorValue(d)})`;
-        } else {
-          return "";
-        }
+        // } else {
+        //   return "";
+        // }
       })
       .attr("x", function(d) {
         return pathGenerator.centroid(d)[0];
@@ -343,10 +400,13 @@ const render = (
     if (level === 0) {
       textLabel.attr("font-size", "12pt").attr("font-weight", "bold");
     } else if (level === 1) {
-      textLabel.attr("font-size", "7pt").attr("font-weight", "bold"); 
+      textLabel.attr("font-size", "12pt").attr("font-weight", "bold"); 
     } else if (level === 2) {
-      textLabel.attr("font-size", "5pt").attr("font-weight", "bold");
+      textLabel.attr("font-size", "9pt").attr("font-weight", "bold");
+    }  else if (level === 3) {
+      textLabel.attr("font-size", "3pt").attr("font-weight", "bold");
     } 
+    
 
     //update slider color
     const fillSlider = () => {
@@ -362,25 +422,24 @@ const render = (
       
       pathEnter
         .transition()
-        .duration(transitionDuration)
+        .duration(2000)
         .style("fill", function(d) {
-        	if(level !== 3){
+        	// if(level !== 3){
           	return myColor(ColorValue(d), low, high);
-          }else{
-          	return 'rgba(0,0,0,0)';
-          }
+          // }else{
+          // 	return 'rgba(0,0,0,0)';
+          // }
         });
       
-      if(level === 3){
-      	circleEnter
-        .transition()
-        .duration(transitionDuration)
-        .style("fill", function(d) {
-          	return myColor(ColorValue(d), low, high);
-        });
-      }
+      // if(level === 3){
+      // 	circleEnter
+      //   .transition()
+      //   .duration(transitionDuration)
+      //   .style("fill", function(d) {
+      //     	return myColor(ColorValue(d), low, high);
+      //   });
+      // }
     });
-    
     let updatedCat;
     const updateviz = selectedCat => {
       //update tooltip
@@ -478,7 +537,6 @@ const render = (
 
           break;
       }
-
       updateCategory(updatedCat);
       min = d3.min(geojson, ColorValue);
       max = d3.max(geojson, ColorValue);
@@ -487,16 +545,16 @@ const render = (
         .transition()
         .duration(transitionDuration)
         .style("fill", function(d) {
-        	if(level !== 3){
+        	// if(level !== 3){
           return myColor(ColorValue(d), low, high);
-          }else{
-          	return 'rgba(0,0,0,0)';
-          }
+          // }else{
+          // 	return 'rgba(0,0,0,0)';
+          // }
         });
 
       textLabel
         .text(d => {
-        if(level !== 3)
+        // if(level !== 3)
           return `${TextValue(d)}(${ColorValue(d)})`;
         })
         .exit()
@@ -518,6 +576,8 @@ const render = (
         
       }
       
+      
+
 
     //on category selection
 
@@ -536,9 +596,9 @@ const render = (
                 case "Newborn with low birth rate":val=7;break;
             }
             updateviz(val);
-            if(level === 3){
-      	        updatepoints(val);
-            }
+            // if(level === 3){
+      	    //     updatepoints(val);
+            // }
             updatetable(val);
         })
 
@@ -565,15 +625,17 @@ const render = (
         	.scale(scale)
         );
     };
-
     //selectmap
     const selectedSubFeature = (geojson, location) => {
+      console.log(geojson, 'selectedsubfeature');
       let selection = [];
+      console.log(level, 'level');
       let geomType;
       // if(level === 3 && direction == 0){
       // } 
       geojson.forEach(sel => {
         if (level === 1 ) {
+
           if (sel.properties.block === location) {
             selection.push(sel);
           }
@@ -660,8 +722,10 @@ const render = (
             selectedJSON = addProperty(selectedData, beat); 
           } else if (level === 3) {
             selectedData = filterCSV(awcData, 'month_n', month_hack); 
-            selectedJSON = addProperty(selectedData, beat); 
-            selectedPoints = awc;
+            console.log(awc,'awc');
+            selectedJSON = addProperty(selectedData, awc); 
+            console.log(selectedJSON,'selectedJSON');
+            //selectedPoints = awc;
           }
       let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
       let selecteddata = selectedSubData(selectedData, clickedLocation);
@@ -676,58 +740,58 @@ const render = (
 
       
       //Make geopoints for awc
-      if(level === 3){
-    //onmouseover
-    const onMouseOver = d => {
-      console.log("dval",d)
-      let PointTextValue = d => d.properties.awc;
-      tooltip
-        .transition()
-        .duration(200)
-        .style("opacity", 0.9);
-      let pointTT = `<b>${PointTextValue(d)}</b><br> 
-									Percentage Value: ${ColorValue(d)}<br>
-		Actual Value: ${TooltipVal1(d)}<br>`;
+    //   if(level === 3){
+    // //onmouseover
+    // const onMouseOver = d => {
+    //   console.log("dval",d)
+    //   let PointTextValue = d => d.properties.awc;
+    //   tooltip
+    //     .transition()
+    //     .duration(200)
+    //     .style("opacity", 0.9);
+    //   let pointTT = `<b>${PointTextValue(d)}</b><br> 
+		// 							Percentage Value: ${ColorValue(d)}<br>
+		// Actual Value: ${TooltipVal1(d)}<br>`;
 
-						// Moderate Value: ${TooltipVal2(d)}<br>
-		// Efficiency Value: ${TooltipVal3(d)}<br>
-      tooltip
-      	.html(pointTT)
-        .style("left", d3.event.pageX + "px")
-        .style("top", d3.event.pageY - 30 + "px");
+		// 				// Moderate Value: ${TooltipVal2(d)}<br>
+		// // Efficiency Value: ${TooltipVal3(d)}<br>
+    //   tooltip
+    //   	.html(pointTT)
+    //     .style("left", d3.event.pageX + "px")
+    //     .style("top", d3.event.pageY - 30 + "px");
       
-    }; 
+    // }; 
         
-        let selectedpoint = selectedSubPoint(selectedPoints,clickedLocation);
-      let circle = g.selectAll("circle").data(selectedpoint);
-      circleEnter = circle.enter()
-      	.append("circle")
-      	.attr("cx", d => mercator(d.geometry.coordinates)[0])
-      	.attr("cy", d => mercator(d.geometry.coordinates)[1])
-        .attr("r", "2px")
-        .style("fill", d => {
-        return myColor(ColorValue(d), low, high);
-      })
-        .on("mouseover", d => onMouseOver(d))
-      	.on("mouseout", function(d) {
-        tooltip
-          .transition()
-          .duration(500)
-          .style("opacity", 0);
-      }); 
-    let textLabel = g
-      .selectAll("text")
-      .data(selectedpoint)
-      .enter()
-      .append("text")
-      .text(d => d.properties.awc )
-      .attr("x", d => mercator(d.geometry.coordinates)[0]+1)
-      .attr("y", d => mercator(d.geometry.coordinates)[1])
-      // .attr("text-anchor", "middle")
-      .attr("font-family", "sans-serif")
-    	.attr("font-size","2px"); 
+    //     let selectedpoint = selectedSubPoint(selectedPoints,clickedLocation);
+    //   let circle = g.selectAll("circle").data(selectedpoint);
+    //   circleEnter = circle.enter()
+    //   	.append("circle")
+    //   	.attr("cx", d => mercator(d.geometry.coordinates)[0])
+    //   	.attr("cy", d => mercator(d.geometry.coordinates)[1])
+    //     .attr("r", "1px")
+    //     .style("fill", d => {
+    //     return myColor(ColorValue(d), low, high);
+    //   })
+    //     .on("mouseover", d => onMouseOver(d))
+    //   	.on("mouseout", function(d) {
+    //     tooltip
+    //       .transition()
+    //       .duration(500)
+    //       .style("opacity", 0);
+    //   }); 
+    // let textLabel = g
+    //   .selectAll("text")
+    //   .data(selectedpoint)
+    //   .enter()
+    //   .append("text")
+    //   .text(d => d.properties.awc )
+    //   .attr("x", d => mercator(d.geometry.coordinates)[0]+1)
+    //   .attr("y", d => mercator(d.geometry.coordinates)[1])
+    //   // .attr("text-anchor", "middle")
+    //   .attr("font-family", "sans-serif")
+    // 	.attr("font-size","1px"); 
 
-      }
+    //   }
     }// if condition ends here
     };
     pathEnter.on("click", clicked);
@@ -926,6 +990,8 @@ const render = (
     }//if condition ends here
     });
 
+
+
   
 }
 const selectGeoJSON = (val, allMonthGeoJSONData) => {
@@ -954,13 +1020,25 @@ const selectGeoJSON = (val, allMonthGeoJSONData) => {
           break;
       }
     };
-
 $(".drop-month a").click(function(){
+    // console.log('hello');
     $(this).parents(".dropdown").find('.btn').html($(this).text());
+    // $('.drop-category').parents(".dropdown").find('.btn').text('severely stunted children')
+	// $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
       var val = $(this).text();
       month_hack=val;
+      // if(val === 'November'){
+      //   month_hack = 'Nov'
+      // }else if(val === 'December'){
+      //   month_hack = 'Dec'
+      // }else if(val === 'January'){
+      //   month_hack = 'Jan'
+      // }
+     
       let monthdata = filterCSV(blockData, 'month_n', val); 
       let monthjson = addProperty(monthdata, block); 
+     // let monthjson = selectGeoJSON(month_hack,block);
+    	//let monthdata = selectCSV(month_hack,blockData);
 
     	level = 0;
 		g.selectAll("*").remove();
@@ -970,7 +1048,6 @@ $(".drop-month a").click(function(){
         levelLocation = [];
       	makemap(monthjson,monthdata);
   })
-
   //initial map
   month_hack=$('.drop-month a').first().text();
   console.log(blockData);
@@ -985,13 +1062,13 @@ $(".drop-month a").click(function(){
 async function fetchGeoJSON() {
   let geoJSONBundle = {};
 
-    var blockJSON = {{ context.blk_geodata|safe }};
+var blockJSON = {{ context.blk_geodata|safe }};
     console.log(blockJSON, 'Geodata')
     var scaleCenter = calculateScaleCenter(blockJSON);
 
     mercator.scale(scaleCenter.scale)
         .center(scaleCenter.center)
-        .translate([width/2, height/2]);
+        .translate([innerWidth/2, innerHeight/2]);
 
     var projectJSON = {{ context.prjt_geodata|safe }};
     var scaleCenter = calculateScaleCenter(projectJSON);
@@ -1013,24 +1090,24 @@ async function fetchGeoJSON() {
 
 function calculateScaleCenter(features) {
                     
-      var bbox_path = pathGenerator.bounds(features),
-      scale = 0.95 / Math.max(
-          (bbox_path[1][0] - bbox_path[0][0]) / width,
-          (bbox_path[1][1] - bbox_path[0][1]) / height
-      );
-      console.log(scale,'scale')
-      var bbox_feature = d3.geoBounds(features),
-      center = [
-          (bbox_feature[1][0] + bbox_feature[0][0]) / 2,
-          ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)]; 
-      
-      console.log(center,"center")
-
-      return {
-          'scale': scale,
-          'center': center
-      };
-  }
+                    var bbox_path = pathGenerator.bounds(features),
+                    scale = 0.95 / Math.max(
+                        (bbox_path[1][0] - bbox_path[0][0]) / innerWidth,
+                        (bbox_path[1][1] - bbox_path[0][1]) / innerHeight
+                    );
+                    console.log(scale,'scale')
+                    var bbox_feature = d3.geoBounds(features),
+                    center = [
+                        (bbox_feature[1][0] + bbox_feature[0][0]) / 2,
+                        ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)- 0.2]; 
+                    
+                    console.log(center,"center")
+              
+                    return {
+                        'scale': scale,
+                        'center': center
+                    };
+                }              
 
 const monthWiseCSV = data => {
   let month = { Nov: [], Dec: [], Jan: [] };
@@ -1039,31 +1116,46 @@ const monthWiseCSV = data => {
     if (d.beat_n) d.beat_n = d.beat_n;
     if (d.awc_with_code) d.awc_with_code = d.awc_with_code;
     d.block_n = d.block_n;
-    d.no_of_chld_cmpltd_1yr_immunzt = +d.no_of_chld_cmpltd_1yr_immunzt;
-    d.no_chld_bf_at_birth = +d.no_chld_bf_at_birth;
-    d.no_chld_excly_bf = +d.no_chld_excly_bf;
-    d.no_chld_intd_cf_past30d = +d.no_chld_intd_cf_past30d;
-    d.no_chld_appr_cf = +d.no_chld_appr_cf;
-    d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
-    d.prnt_chld_bf_at_birth = +d.prnt_chld_bf_at_birth;
-    d.prnt_chld_excly_bf = +d.prnt_chld_excly_bf;
-    d.prnt_chld_intd_cf_p30d = +d.prnt_chld_intd_cf_p30d;
-    d.prnt_intd_cf_6to24mnth_child = +d.prnt_intd_cf_6to24mnth_child;
-    d.month_n=d.month_n;
+    d.month_n = d.month_n;
+    d.wasted_child = +d.wasted_child;
+    d.stunted_child = +d.stunted_child;
+		d.uw_childd = +d.uw_child;
+    d.ht_msrmnt_effcy = +d.ht_msrmnt_effcy;
+		d.wt_msrmnt_effcy = +d.wt_msrmnt_effcy;
+    d.mdrtly_stntd = +d.mdrtly_stntd;
+    d.svrly_stntd = +d.svrly_stntd;
+    d.svr_wstg = +d.svr_wstg;
+    d.mdrtly_wstd = +d.mdrtly_wstd;
+    d.svrly_uw = +d.svrly_uw;
+    d.mdrtly_uw = +d.mdrtly_uw;
+    d.nb_lbw = +d.nb_lbw;
+    d.svr_wasting_percent = +d.svr_wasting_percent;
+    d.wasting_percent = +d.wasting_percent;
+    d.svrly_stunting_percent = +d.svrly_stunting_percent;
+    d.stunting_percent = +d.stunting_percent;
+    d.svrly_underweight_percent = +d.svrly_underweight_percent;
+    d.underweight_percent = +d.underweight_percent;
+    d.low_birth_weight_percent = +d.low_birth_weight_percent;
     
   });
 };
 
 const addProperty = (data, geojson) => {
-  console.log(geojson)
-  console.log(data)
+  console.log(geojson, "geojson");
+  console.log(data, "data");
   var x, y;
   for (let i = 0; i < data.length; i++) {
     for (let j = 0; j < geojson.length; j++) {
       if (geojson[j].properties.awc_with_c) {
         x = data[i].awc_with_code;
         y = geojson[j].properties.awc_with_c;
-      } else if (geojson[j].properties.beat_na) {
+      } 
+      else if (geojson[j].properties.village) {
+        x = data[i].awc_with_code;
+        y = geojson[j].properties.village;
+      } 
+
+      else if (geojson[j].properties.beat_na) {
         x = data[i].beat_n;
         y = geojson[j].properties.beat_na;        
       } else if (geojson[j].properties.project) {
@@ -1095,9 +1187,12 @@ const addProperty = (data, geojson) => {
         geojson[j].properties.svrly_underweight_percent = data[i].svrly_underweight_percent;
         geojson[j].properties.underweight_percent = data[i].underweight_percent;
         geojson[j].properties.low_birth_weight_percent = data[i].low_birth_weight_percent;
+        geojson[j].properties.ngo_count = data[i].ngo_count;
+        geojson[j].properties.ngo_names = data[i].ngo_names;
       }
     }
   }
+  console.log(geojson, 'after adding proeprty');
   return geojson;
 };
 async function mergeData(geoJSON) {
@@ -1112,8 +1207,20 @@ async function mergeData(geoJSON) {
   let blockCSV = data;
 monthWiseCSV(blockCSV);
 
+  // let blockMonthWiseCSV = monthWiseCSV(blockCSV);
   let blockGeoJSONAug = JSON.parse(JSON.stringify(blockGeoJSON));
+  // let blockGeoJSONSep = JSON.parse(JSON.stringify(blockGeoJSON));
+  // let blockGeoJSONOct = JSON.parse(JSON.stringify(blockGeoJSON));
   
+  //call by reference so need to return
+  // addProperty(blockMonthWiseCSV.Nov, blockGeoJSONAug);
+  // addProperty(blockMonthWiseCSV.Dec, blockGeoJSONSep);
+  // addProperty(blockMonthWiseCSV.Jan, blockGeoJSONOct);
+  // const mergedBlock = {
+  //   Nov: blockGeoJSONAug,
+  //   Dec: blockGeoJSONSep,
+  //   Jan: blockGeoJSONOct
+  // };
   //merging project data
   let projectGeoJSON = geoJSON.projectJSON;
             /////
@@ -1123,9 +1230,23 @@ monthWiseCSV(blockCSV);
         data.push(element.fields);
     });
   let projectCSV = data;
+//   await d3.csv("{% static 'data/csv/feat6/pal_project.csv'%}");
 monthWiseCSV(projectCSV);
 
+  // let projectMonthWiseCSV = monthWiseCSV(projectCSV);
   let projectGeoJSONAug = JSON.parse(JSON.stringify(projectGeoJSON));
+//   let projectGeoJSONSep = JSON.parse(JSON.stringify(projectGeoJSON));
+//   let projectGeoJSONOct = JSON.parse(JSON.stringify(projectGeoJSON));
+//   addProperty(projectMonthWiseCSV.Nov, projectGeoJSONAug);
+//   addProperty(projectMonthWiseCSV.Dec, projectGeoJSONSep);
+//   addProperty(projectMonthWiseCSV.Jan, projectGeoJSONOct);
+//   const mergedProject = {
+//     Nov: projectGeoJSONAug,
+//     Dec: projectGeoJSONSep,
+//     Jan: projectGeoJSONOct
+//   };
+  
+// console.log(mergedProject)
 
   //merging beat data
   let beatGeoJSON = geoJSON.beatJSON;
@@ -1135,9 +1256,23 @@ monthWiseCSV(projectCSV);
     data.push(element.fields);
   });
   let beatCSV = data;
+//   await d3.csv("{% static 'data/csv/feat6/pal_beat.csv'%}");
 
    monthWiseCSV(beatCSV);
   let beatGeoJSONAug = JSON.parse(JSON.stringify(beatGeoJSON));
+//   let beatGeoJSONSep = JSON.parse(JSON.stringify(beatGeoJSON));
+//   let beatGeoJSONOct = JSON.parse(JSON.stringify(beatGeoJSON));
+//   console.log(beatGeoJSONAug)
+//   addProperty(beatMonthWiseCSV.Nov, beatGeoJSONAug);
+//   addProperty(beatMonthWiseCSV.Dec, beatGeoJSONSep);
+//   addProperty(beatMonthWiseCSV.Jan, beatGeoJSONOct);
+//   const mergedBeat = {
+//     Nov: beatGeoJSONAug,
+//     Dec: beatGeoJSONSep,
+//     Jan: beatGeoJSONOct
+//   };
+
+// console.log(mergedBeat)
   //merging awc data
   let awcGeoJSON = geoJSON.awcJSON;
   data_from_django = {{ context.awc_data|safe }};
@@ -1146,10 +1281,23 @@ monthWiseCSV(projectCSV);
     data.push(element.fields);
   });
   let awcCSV = data;
+//   await d3.csv("{% static 'data/csv/feat6/pal_awc.csv'%}");
 
   monthWiseCSV(awcCSV);
   let awcGeoJSONAug = JSON.parse(JSON.stringify(awcGeoJSON));
- 
+
+  console.log(awcGeoJSONAug,'awcGeoJSONAug') ;
+  // let awcGeoJSONSep = JSON.parse(JSON.stringify(awcGeoJSON));
+  // let awcGeoJSONOct = JSON.parse(JSON.stringify(awcGeoJSON));
+  // addProperty(awcMonthWiseCSV.Nov, awcGeoJSONAug);
+  // addProperty(awcMonthWiseCSV.Dec, awcGeoJSONSep);
+  // addProperty(awcMonthWiseCSV.Jan, awcGeoJSONOct);
+
+  // const mergedAWC = {
+  //   Nov: awcGeoJSONAug,
+  //   Dec: awcGeoJSONSep,
+  //   Jan: awcGeoJSONOct
+  // };
 
   render(
     blockGeoJSONAug,
@@ -1165,7 +1313,7 @@ monthWiseCSV(projectCSV);
 fetchGeoJSON().then(mergeData);
 
 $(function(){
- console.log("in on load");
+
   //bind event
   $(".drop-month a").click(function(){
     var valMonth = $(this).text();
@@ -1205,7 +1353,7 @@ const gRange = d3
   .select("div#slider-range")
   .append("svg")
   .attr("width", 500)
-  .attr("height", 70)
+  .attr("height", 100)
   .append("g")
   .attr("transform", "translate(30,30)");
 

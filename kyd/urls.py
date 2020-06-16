@@ -44,6 +44,10 @@ urlpatterns = [
     url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/ft_lc_beat$', FtLcBeats.as_view(), name='ftlcbt'),
     url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/ft_radar1$', FtRdr1.as_view(), name='ftrdr1'),
     url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/ft_radar2$', FtRdr2.as_view(), name='ftrdr2'),
+    url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/f2_oi_blk_am$', F2OtcmIndctrBlk.as_view(), name='f2'),
+    url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/f6_oi_map_am$', F6OiMap.as_view(), name='f6'),
+    url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/f7_iycf_map_am$', F7IycfMap.as_view(), name='f7'),
+    url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/f8_pw_map_am$', F8PwMap.as_view(), name='f8'),
     
     url(r'^maha_dashboard/maha_feature1$', MahaFeatureOne_post.as_view(), name='maha-feat1'),
     url(r'^(?P<quarter>\w+)/maha_dashboard/maha_feature1$', MahaFeatureOne.as_view(), name='maha-feat1'),

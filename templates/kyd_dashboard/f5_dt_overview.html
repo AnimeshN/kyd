@@ -62,7 +62,7 @@
         <a class="dropdown-item" href="#" onclick="block()">Block</a>
         <a class="dropdown-item" href="#" onclick="project()">Project</a>
         <a class="dropdown-item" href="#" onclick="beat()">Beat</a>
-        <a class="dropdown-item" href="#" onclick="awc()">Anganwadi</a>
+        <a class="dropdown-item" href="#" onclick="awc()">Anganwadi/Village</a>
       </div>
 
     </div>
@@ -1672,7 +1672,14 @@ var tbdata = [];
                 tbd['Block'] = d.block_n;
                 tbd['Project'] = d.project_n;
                 tbd['Beat'] = d.beat_n;
-                tbd['Anganwadi']= d.awc_with_code;
+                if(d.district_n!='Amravati')
+                {
+                    tbd['Anganwadi']= d.awc_with_code;
+                }
+                else
+                {
+                    tbd['Village']= d.awc_with_code;
+                }                
                 tbd['Stunted Children'] = d.stntd_chld;
                 tbd['Stunting Percent(%)'] = d.stunting_percent;
                 tbd['Wasted Children'] = d.wstd_chld;
@@ -1811,7 +1818,13 @@ var tbdata = [];
                 tabdt['Block'] = d.block_n;
                 tabdt['Project'] = d.project_n;
                 tabdt['Beat'] = d.beat_n;
-                tabdt['Anganwadi']= d.awc_with_code;
+                if(d.district_n != 'Amravati')
+                {
+                    tabdt['Anganwadi']= d.awc_with_code;
+                }
+                else{
+                    tabdt['Village']= d.awc_with_code;
+                }                
                 tabdt['Children Breastfeed at Birth(%)'] = d.prnt_chld_bf_at_birth;
                 tabdt['Children(0-6) Exclusively Breastfed(%)'] = d.prnt_chld_excly_bf;
                 tabdt['Children (6-8months) Initiated CF(%)']= d.prnt_chld_intd_cf_p30d;
@@ -1948,7 +1961,13 @@ $( "div#table" ).find(".hello" ).remove();
                 tbdt['Block'] = d.block_n;
                 tbdt['Project'] = d.project_n;
                 tbdt['Beat'] = d.beat_n;
-                tbdt['Anganwadi']= d.awc_with_code;
+                if(d.district_n!='Amravati')
+                {
+                    tabdt['Anganwadi']= d.awc_with_code;
+                }
+                else{
+                    tabdt['Village']= d.awc_with_code;
+                }
                 tbdt['Anaemic Women(%)'] = d.prnt_anwmic_wmn;
                 tbdt['Pregnant Women had 4 ANC Visit(%)'] = d.prnt_4_anc_vst_dlvry;
                 tbdt['Pregnant Women resting during Pregnancy(%)']=d.prnt_wmn_rstg_drg_prgncy;

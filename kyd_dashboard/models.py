@@ -65,6 +65,20 @@ class DistrictBeatWiseGeojson(models.Model):
         db_table = 'district_beat_wise_geojson'
 
 
+class DistrictVillagewiseGeojson(models.Model):
+    ogc_fid = models.AutoField(primary_key=True)
+    district = models.CharField(max_length=20, blank=True, null=True)
+    project = models.CharField(max_length=25, blank=True, null=True)
+    village = models.CharField(max_length=100, blank=True, null=True)
+    wkb_geometry = models.MultiPolygonField(blank=True, null=True)
+    block = models.CharField(max_length=25, blank=True, null=True)
+    beat_na = models.CharField(max_length=100, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'district_villagewise_geojson'
+
+
 class F1(models.Model):
     month_n = models.CharField(max_length=10, blank=True, null=True)
     district_n = models.CharField(max_length=25, blank=True, null=True)
