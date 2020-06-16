@@ -18,7 +18,7 @@ from .models import (F1, F2, F3, F4, F5Awc, F5Beat, F5Blk, F5Prjt, FtLcPrjt, FtL
 class KYDDashboardView(LoginRequiredMixin, TemplateView):
     template_name = "kyd_dashboard/kyd_base.html"
         
-
+        
 class F1MsrmntEffcyBlk_post(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     redirect_field_name = 'login'
