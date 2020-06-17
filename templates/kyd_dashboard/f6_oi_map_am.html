@@ -100,7 +100,7 @@ td{
        
         <div class='col '>   
           <button type="button" class="btn back-button m-4">back</button>
-          <span class='info info-hirar'>{{dist_name}}</span>
+          <span class='info info-hirar'>Melghat</span>
           <a href="{% url 'ftlcblk' dist_name quarter %}">
           <h6 style="float: right; margin:10px">Want to see Month-wise Trend
           <i class="fa fa-chevron-right" aria-hidden="true"></i>
@@ -268,11 +268,8 @@ const render = (
   //makemap
   const makemap = (geojson, tdata) => {
     d3.select('.info-hirar').text(function(){
-        var dist_name = "{{ dist_name }}"
-        console.log(dist_name);
-
        
-            var hirarchy = "{{dist_name}}";
+            var hirarchy = "Melghat";
         
       levelLocation.forEach(loc=>{
       	hirarchy += ">"+loc;
@@ -1111,6 +1108,7 @@ function calculateScaleCenter(features) {
 
 const monthWiseCSV = data => {
   let month = { Nov: [], Dec: [], Jan: [] };
+  console.log(data,'DB')
   data.forEach(d => {
     if (d.project_n) d.project_n = d.project_n;
     if (d.beat_n) d.beat_n = d.beat_n;

@@ -38,7 +38,7 @@ div.tooltip {
 }
 
 .info-hirar{
-	font: size 1.5em;
+	font-size: 1.5em;
 
 }
 td{
@@ -100,7 +100,7 @@ td{
        
         <div class='col '>   
           <button type="button" class="btn back-button m-4">back</button>
-          <span class='info info-hirar'>{{dist_name}}</span> <br>
+          <span class='info info-hirar'>Melghat</span> <br>
     
           <p style="font-size: medium;">Click on the Polygon(Block/Project/Beat) to view the Lower Level</p>
 
@@ -257,7 +257,7 @@ const render = (
   const makemap = (geojson, tdata) => {
     d3.select('.info-hirar').text(function(){
 
-            var hirarchy = "{{dist_name}}";
+            var hirarchy = "Melghat";
 
       levelLocation.forEach(loc=>{
       	hirarchy += ">"+loc;

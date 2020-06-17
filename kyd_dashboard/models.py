@@ -328,6 +328,8 @@ class F6OiAwc(models.Model):
     low_birth_weight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     ht_msrmnt_effcy = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     wt_msrmnt_effcy = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    ngo_names = models.CharField(max_length=100, blank=True, null=True)
+    ngo_count = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -359,6 +361,7 @@ class F6OiBeat(models.Model):
     low_birth_weight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     ht_msrmnt_effcy = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     wt_msrmnt_effcy = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    ngo_count = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -388,7 +391,8 @@ class F6OiBlock(models.Model):
     low_birth_weight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     ht_msrmnt_effcy = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     wt_msrmnt_effcy = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
-
+    ngo_count = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    
     class Meta:
         managed = False
         db_table = 'f6_oi_block'
@@ -418,6 +422,7 @@ class F6OiProject(models.Model):
     low_birth_weight_percent = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     ht_msrmnt_effcy = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     wt_msrmnt_effcy = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    ngo_count = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
 
     class Meta:
         managed = False

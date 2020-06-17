@@ -139,12 +139,19 @@ height:80px;
                                 {% endfor %}                              
                             </select>
 
-                            <select name = "quarter_select" id="quarterList" class="check"> 
-                                <option value="q1">Aug-Oct</option>
-                                <option value="q2">Nov-Jan</option>
-                                <!-- <option value="q3">Feb-April</option>
-                                <option value="q4">May-July</option>                                       -->
-                            </select>
+                            {% if user.username == 'Amravati' %} 
+                                <select name = "quarter_select" id="quarterList" class="check"> 
+                                    <option value="q21">Dec-Feb</option>
+                                </select>
+                            {% else %}
+                                <select name = "quarter_select" id="quarterList" class="check"> 
+                                    <option value="q1">Aug-Oct</option>
+                                    <option value="q2">Nov-Jan</option>
+                                    <!-- <option value="q3">Feb-April</option>
+                                    <option value="q4">May-July</option>                                       -->
+                                </select>
+                            {% endif %}    
+
                             <button type="submit">Submit</button>
 
                         </form>

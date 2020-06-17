@@ -38,7 +38,7 @@ div.tooltip {
 }
 
 .info-hirar{
-	font-size:1.3em;
+	font-size: 1.5em;
 
 }
 td{
@@ -641,7 +641,7 @@ const render = (
           } else if (level === 3) {
             selectedData = filterCSV(awcData, 'month_n', month_hack); 
             selectedJSON = addProperty(selectedData, beat); 
-            selectedPoints = awc;
+            selectedPoints = addProperty(selectedData, awc);
           }     
 
       let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
