@@ -401,7 +401,7 @@ const render = (
     } else if (level === 2) {
       textLabel.attr("font-size", "9pt").attr("font-weight", "bold");
     }  else if (level === 3) {
-      textLabel.attr("font-size", "3pt").attr("font-weight", "bold");
+      textLabel.attr("font-size", "2pt").attr("font-weight", "bold");
     } 
     
 
@@ -1134,7 +1134,8 @@ const monthWiseCSV = data => {
     d.svrly_underweight_percent = +d.svrly_underweight_percent;
     d.underweight_percent = +d.underweight_percent;
     d.low_birth_weight_percent = +d.low_birth_weight_percent;
-    
+    d.month_n=d.month_n;
+
   });
 };
 
