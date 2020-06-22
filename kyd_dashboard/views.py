@@ -148,7 +148,7 @@ class F6OiMap(LoginRequiredMixin, TemplateView):
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','project','beat_na','district'))
                         
-        if district_n=='Amravati':  
+        if district_n == 'Amravati':  
         
             awc_geodata = serialize('geojson', DistrictVillagewiseGeojson.objects.all().filter(district = district_n),
                                 geometry_field = 'wkb_geometry',
@@ -168,7 +168,7 @@ class F6OiMap(LoginRequiredMixin, TemplateView):
             'bt_geodata':beat_geodata,
             'awc_geodata':awc_geodata,
         }
-        if district_n=='Amravati':  
+        if district_n == 'Amravati':  
             return render(request,'kyd_dashboard/f6_oi_map_am.html', {'context':context, 'monthList': months, 'dist_name':district_n, 'quarter': quarter_S})
         else:
             return render(request,'kyd_dashboard/f6_oi_map.html', {'context':context, 'monthList': months, 'dist_name':district_n, 'quarter': quarter_S})
@@ -202,7 +202,7 @@ class F7IycfMap(LoginRequiredMixin, TemplateView):
                                 geometry_field = 'wkb_geometry',
                                 fields = ('block','project','beat_na','district'))
         
-        if district_n=='Amravati':  
+        if district_n == 'Amravati':  
         
             awc_geodata = serialize('geojson', DistrictVillagewiseGeojson.objects.all().filter(district = district_n),
                                 geometry_field = 'wkb_geometry',

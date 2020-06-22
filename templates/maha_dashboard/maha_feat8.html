@@ -191,15 +191,10 @@ function filterCSV(csv, key, value) {
       .attr("width", width)
       .attr("height", height);
     const g = svg.append("g");
-    // var mercator = d3
-    //   .geoMercator()
-    //   .scale(1);
-
-    const mercator = d3
+    var mercator = d3
       .geoMercator()
-      .scale(4000)
-      .translate([innerWidth / 2, innerHeight / 2])
-      .center([74, 19.7]);
+      .scale(1);
+
     const pathGenerator = d3.geoPath().projection(mercator);
     //Zoom
     // svg.call(d3.zoom().on('zoom',() =>{
@@ -798,40 +793,40 @@ function filterCSV(csv, key, value) {
       let geoJSONBundle = {};
     
       let blockJSON = {{ context.dt_geodata|safe }};
-      // var scaleCenter = calculateScaleCenter(blockJSON);
+      var scaleCenter = calculateScaleCenter(blockJSON);
 
-      // mercator.scale(scaleCenter.scale)
-      //     .center(scaleCenter.center)
-      //     .translate([innerWidth/2, innerHeight/2]);
+      mercator.scale(scaleCenter.scale)
+          .center(scaleCenter.center)
+          .translate([innerWidth/2, innerHeight/2]);
           
       let projectJSON = {{ context.subdt_geodata|safe }};
-      // var scaleCenter = calculateScaleCenter(projectJSON);
+      var scaleCenter = calculateScaleCenter(projectJSON);
       geoJSONBundle.blockJSON = blockJSON.features;
       geoJSONBundle.projectJSON = projectJSON.features;
     
       return geoJSONBundle;
     }
     
-    // function calculateScaleCenter(features) {
+    function calculateScaleCenter(features) {
                     
-    //                 var bbox_path = pathGenerator.bounds(features),
-    //                 scale = 0.95 / Math.max(
-    //                     (bbox_path[1][0] - bbox_path[0][0]) / innerWidth,
-    //                     (bbox_path[1][1] - bbox_path[0][1]) / innerHeight
-    //                 );
-    //                 console.log(scale,'scale')
-    //                 var bbox_feature = d3.geoBounds(features),
-    //                 center = [
-    //                     (bbox_feature[1][0] + bbox_feature[0][0]) / 2,
-    //                     ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)]; 
+                    var bbox_path = pathGenerator.bounds(features),
+                    scale = 0.95 / Math.max(
+                        (bbox_path[1][0] - bbox_path[0][0]) / innerWidth,
+                        (bbox_path[1][1] - bbox_path[0][1]) / innerHeight
+                    );
+                    console.log(scale,'scale')
+                    var bbox_feature = d3.geoBounds(features),
+                    center = [
+                        ((bbox_feature[1][0] + bbox_feature[0][0]) / 2) - 1,
+                        ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)]; 
                     
-    //                 console.log(center,"center")
+                    console.log(center,"center")
               
-    //                 return {
-    //                     'scale': scale,
-    //                     'center': center
-    //                 };
-    //             }
+                    return {
+                        'scale': scale,
+                        'center': center
+                    };
+                }
 
     const monthWiseCSV = data => {
       let month = { Nov: [], Dec: [], Jan: [] };

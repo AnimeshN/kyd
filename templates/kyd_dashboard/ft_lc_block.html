@@ -169,24 +169,6 @@ fill: #fff;
      .x(function(d) { return xScale(d.month); })
      .y(function(d) { return yScale(d.value); });
    
- 
-   
-   
-   
-//  <!-- var yScale = d3.scaleLinear() -->
-//            <!-- .range([innerHeight,0]); -->
-       
-//  <!-- var xScale = d3.scalePoint() -->
-//            <!-- .range([0, innerWidth], 0.5) -->
-//            <!-- .padding(0.1); -->
-       
-//       <!-- // xScale.domain(data.map(xValue)) -->
- 
-//     <!-- // Define the line -->
-//    <!-- var stateline = d3.line()		 -->
-//      <!-- .x(function(d) {return xScale(d.month); }) -->
-//      <!-- .y(function(d) { return yScale(d.value); }); -->
-   
    var g = svg.append('g')
            .attr('transform', `translate(${margin.left}, ${margin.top})`); 
    
@@ -208,7 +190,6 @@ fill: #fff;
        
       var color = d3.scale.category10();
  
- 
  const render = data =>{
  console.log(data);
  
@@ -217,12 +198,6 @@ fill: #fff;
  console.log("in update graph")
      // Scale the range of the data
    
-   //x.domain(data.map(function(d) { return d.month; }));
-   //x.domain(d3.extent(data, function(d) { 
-   
-   //console.log(d.month)
-   //return d.month; }));
-    // x.domain(d3.extent(data, function(d) { return d.month; }));
     ticks = data.map(function(d) {
        return d.month
      });
