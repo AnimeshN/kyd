@@ -430,7 +430,7 @@ td{
           Tooltipheader1 = d => "Underweight Children:";
           Tooltipheader2 = d => "Moderately Underweight Children:";
           Tooltipheader3 = d => "Weight Measurement efficiency:";
-          TooltipVal1 = d => d.properties.uw_chld;
+          TooltipVal1 = d => d.properties.uw_child;
   				TooltipVal2 = d => d.properties.mdrtly_uw;
   				TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
           ColorValue = d => d.properties.underweight_percent;
@@ -692,7 +692,7 @@ td{
           break;
         case 6:
           PercentageValue = d => d.underweight_percent;
-          ActualValue = d => d.uw_chld;
+          ActualValue = d => d.uw_child;
           break;
         case 7:
           PercentageValue = d => d.low_birth_weight_percent;
@@ -908,7 +908,7 @@ function calculateScaleCenter(features) {
         d.low_birth_weight_percent = +d.low_birth_weight_percent;
         d.wasted_child = +d.wasted_child;
         d.stunted_child = +d.stunted_child;
-        d.uw_chld = +d.uw_chld;
+        d.uw_child = +d.uw_child;
         d.ht_msrmnt_effcy = +d.ht_msrmnt_effcy;
         d.wt_msrmnt_effcy = +d.wt_msrmnt_effcy;
         d.month_n=d.month_n;
@@ -930,7 +930,7 @@ function calculateScaleCenter(features) {
         geojson[j].properties.month_n = data[i].month_n;
         geojson[j].properties.wasted_child = data[i].wasted_child;
         geojson[j].properties.stunted_child = data[i].stunted_child;
-        geojson[j].properties.uw_chld = data[i].uw_chld;
+        geojson[j].properties.uw_child = data[i].uw_child;
         geojson[j].properties.ht_msrmnt_effcy = data[i].ht_msrmnt_effcy;
         geojson[j].properties.wt_msrmnt_effcy = data[i].wt_msrmnt_effcy;
         geojson[j].properties.mdrtly_stntd = data[i].mdrtly_stntd;

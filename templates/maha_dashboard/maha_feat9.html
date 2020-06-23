@@ -382,19 +382,19 @@ function filterCSV(csv, key, value) {
           updatedCat = "Tenatus Completed";
           Tooltipheader1 = d => "Tenatus Completed:";
           TooltipVal1 = d => d.properties.no_tenatus_cmpltd;
-          ColorValue = d => d.properties.prnt_tenatus_wmn;
+          ColorValue = d => d.properties.prnt_tenatus_cmpltd;
           break;
         case 3:
           updatedCat = "Women had atleast 1 ANC visit by delivery";
           Tooltipheader1 = d => "Women had atleast 1 ANC visit by delivery:";
           TooltipVal1 = d => d.properties.no_wmn_1_anc_vst_dlvry;
-          ColorValue = d => d.properties.prnt_1_anc_vst_dlvry;
+          ColorValue = d => d.properties.prnt_wmn_1_anc_vst_dlvry;
           break;
         case 4:
           updatedCat = "Women had atleast 4 ANC visit by delivery";
           Tooltipheader1 = d => "Women had atleast 4 ANC visit by delivery:";
           TooltipVal1 = d => d.properties.no_wmn_4_anc_vst_dlvry;
-          ColorValue = d => d.properties.prnt_4_anc_vst_dlvry;
+          ColorValue = d => d.properties.prnt_wmn_4_anc_vst_dlvry;
           break;
         case 5:
           updatedCat = "Women Resting During Pregnancy";
@@ -642,15 +642,15 @@ function filterCSV(csv, key, value) {
           ActualValue = d => d.no_anemic_wmn;
           break;
         case 2:
-          PercentageValue = d => d.prnt_tenatus_wmn;
+          PercentageValue = d => d.prnt_tenatus_cmpltd;
           ActualValue = d => d.no_tenatus_cmpltd;
           break;
         case 3:
-          PercentageValue = d => d.prnt_1_anc_vst_dlvry;
+          PercentageValue = d => d.prnt_wmn_1_anc_vst_dlvry;
           ActualValue = d => d.no_wmn_1_anc_vst_dlvry;
           break;
         case 4:
-          PercentageValue = d => d.prnt_4_anc_vst_dlvry;
+          PercentageValue = d => d.prnt_wmn_4_anc_vst_dlvry;
           ActualValue = d => d.no_wmn_4_anc_vst_dlvry;
           break;
         case 5:
@@ -659,7 +659,7 @@ function filterCSV(csv, key, value) {
           break;
         case 6:
           PercentageValue = d => d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-          ActualValue = d => d.no_wmn_etg_xtr_ml_drg_prgncyx;
+          ActualValue = d => d.no_wmn_etg_xtr_ml_drg_prgncy;
           break;
         case 7:
           PercentageValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf;
@@ -866,9 +866,9 @@ function filterCSV(csv, key, value) {
         d.no_wmn_etg_xtr_ml_drg_prgncy = +d.no_wmn_etg_xtr_ml_drg_prgncy;
         d.no_trmstr_3wmn_cnsld_imdtbf = +d.no_trmstr_3wmn_cnsld_imdtbf;
         d.prnt_anwmic_wmn = +d.prnt_anwmic_wmn;
-        d.prnt_tenatus_wmn = +d.prnt_tenatus_wmn;
-        d.prnt_1_anc_vst_dlvry = +d.prnt_1_anc_vst_dlvry;
-        d.prnt_4_anc_vst_dlvry = +d.prnt_4_anc_vst_dlvry;
+        d.prnt_tenatus_cmpltd = +d.prnt_tenatus_cmpltd;
+        d.prnt_wmn_1_anc_vst_dlvry = +d.prnt_wmn_1_anc_vst_dlvry;
+        d.prnt_wmn_4_anc_vst_dlvry = +d.prnt_wmn_4_anc_vst_dlvry;
         d.prnt_wmn_rstg_drg_prgncy = +d.prnt_wmn_rstg_drg_prgncy;
         d.prnt_wmn_etg_xtr_ml_drng_prgncy = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
         d.prnt_trmstr_3wmn_cnsld_imdtbf = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
@@ -898,9 +898,9 @@ function filterCSV(csv, key, value) {
         geojson[j].properties.no_wmn_etg_xtr_ml_drg_prgncy = data[i].no_wmn_etg_xtr_ml_drg_prgncy;
         geojson[j].properties.no_trmstr_3wmn_cnsld_imdtbf = data[i].no_trmstr_3wmn_cnsld_imdtbf;
         geojson[j].properties.prnt_anwmic_wmn = data[i].prnt_anwmic_wmn;
-        geojson[j].properties.prnt_tenatus_wmn = data[i].prnt_tenatus_wmn;
-        geojson[j].properties.prnt_1_anc_vst_dlvry = data[i].prnt_1_anc_vst_dlvry;
-        geojson[j].properties.prnt_4_anc_vst_dlvry = data[i].prnt_4_anc_vst_dlvry;
+        geojson[j].properties.prnt_tenatus_cmpltd = data[i].prnt_tenatus_cmpltd;
+        geojson[j].properties.prnt_wmn_1_anc_vst_dlvry = data[i].prnt_wmn_1_anc_vst_dlvry;
+        geojson[j].properties.prnt_wmn_4_anc_vst_dlvry = data[i].prnt_wmn_4_anc_vst_dlvry;
         geojson[j].properties.prnt_wmn_rstg_drg_prgncy = data[i].prnt_wmn_rstg_drg_prgncy;
         geojson[j].properties.prnt_wmn_etg_xtr_ml_drng_prgncy = data[i].prnt_wmn_etg_xtr_ml_drng_prgncy;
         geojson[j].properties.prnt_trmstr_3wmn_cnsld_imdtbf = data[i].prnt_trmstr_3wmn_cnsld_imdtbf;
