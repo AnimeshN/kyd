@@ -635,11 +635,18 @@ const render = (
         .transition()
         .duration(200)
         .style("opacity", 0.9);
-      let pointTT = `<b>${PointTextValue(d)}</b><br> 
-									Percentage Value: ${ColorValue(d)}<br>
-									Actual Value: ${TooltipVal1(d)}<br>`;
+
+        let tooltipValue = (d) =>{
+        let ttv = `<b>${PointTextValue(d)}</b><br> 
+          ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>`;
+     	return ttv;
+     	}
+
+      // let pointTT = `<b>${PointTextValue(d)}</b><br> 
+			// 						Percentage Value: ${ColorValue(d)}<br>
+			// 						Actual Value: ${TooltipVal1(d)}<br>`;
       tooltip
-      	.html(pointTT)
+      	.html(tooltipValue(d))
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY - 30 + "px");
       
@@ -662,16 +669,16 @@ const render = (
           .duration(500)
           .style("opacity", 0);
       }); 
-    let textLabel = g
-      .selectAll("text")
-      .data(selectedpoint)
-      .enter()
-      .append("text")
-      .text(d => d.properties.awc )
-      .attr("x", d => mercator(d.geometry.coordinates)[0]+1)
-      .attr("y", d => mercator(d.geometry.coordinates)[1])
-      .attr("font-family", "sans-serif")
-    	.attr("font-size","2px"); 
+    // let textLabel = g
+    //   .selectAll("text")
+    //   .data(selectedpoint)
+    //   .enter()
+    //   .append("text")
+    //   .text(d => d.properties.awc )
+    //   .attr("x", d => mercator(d.geometry.coordinates)[0]+1)
+    //   .attr("y", d => mercator(d.geometry.coordinates)[1])
+    //   .attr("font-family", "sans-serif")
+    // 	.attr("font-size","2px"); 
 
       }
     }// if condition ends here

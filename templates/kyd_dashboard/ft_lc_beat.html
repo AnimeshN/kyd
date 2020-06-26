@@ -202,19 +202,19 @@ var stateline = d3.svg.line()
   
   
   
-<!-- var yScale = d3.scaleLinear() -->
-          <!-- .range([innerHeight,0]); -->
+// <!-- var yScale = d3.scaleLinear() -->
+//           <!-- .range([innerHeight,0]); -->
       
-<!-- var xScale = d3.scalePoint() -->
-          <!-- .range([0, innerWidth], 0.5) -->
-          <!-- .padding(0.1); -->
+// <!-- var xScale = d3.scalePoint() -->
+//           <!-- .range([0, innerWidth], 0.5) -->
+//           <!-- .padding(0.1); -->
       
-     <!-- // xScale.domain(data.map(xValue)) -->
+//      <!-- // xScale.domain(data.map(xValue)) -->
 
-	 <!-- // Define the line -->
-	<!-- var stateline = d3.line()		 -->
-    <!-- .x(function(d) {return xScale(d.month); }) -->
-    <!-- .y(function(d) { return yScale(d.value); }); -->
+// 	 <!-- // Define the line -->
+// 	<!-- var stateline = d3.line()		 -->
+//     <!-- .x(function(d) {return xScale(d.month); }) -->
+//     <!-- .y(function(d) { return yScale(d.value); }); -->
 	
   var g = svg.append('g')
           .attr('transform', `translate(${margin.left}, ${margin.top})`); 
@@ -242,7 +242,7 @@ g.append("rect")
 var ticks
 const render = data =>{
     
-console.log("in update graph")
+console.log( data, "in update graph")
     // Scale the range of the data
 	ticks = data.map(function(d) {
       return d.month
@@ -256,7 +256,7 @@ console.log("in update graph")
 
 
     // Nest the entries by block
-	
+  console.log(data,'beforeNest');
     dataNest = d3.nest()
         .key(function(d) {return d.beat})
         .entries(data);
@@ -264,11 +264,13 @@ console.log("in update graph")
 	console.log("print data nest");
 	console.log(dataNest);
 
+  var result=dataNest;
 	
- 		var result = dataNest.filter(function(val,idx, arr){
-				  return $("." + val.key).attr("fill") != "#ccc" 
-				  // matching the data with selector status
-				})
+ 		// var result = dataNest.filter(function(val,idx, arr){
+    //    console.log(val, 'in filter');
+		// 		  return $("." + val.key).attr("fill") != "#ccc" 
+		// 		  // matching the data with selector status
+		// 		})
 		
 //{
 				//  return $("." + val.key).attr("fill") != "#ccc" 
@@ -478,7 +480,7 @@ console.log("in update graph")
     var selectedProject=choices[0].replace(/_/g, ' ');
 		var choiceOneVal= choices[1].replace(/_/g, ' ');
 		if(choiceOneVal == 'Severly Stunted Children')
-			section ='svrly_stunting_percent';
+			section ='svrly_stunted_percent';
 			else if (choiceOneVal == 'Stunted Children')
 			section ='stunting_percent';
 			else if(choiceOneVal == 'Severly Wasted(SAM) Children')
@@ -491,8 +493,11 @@ console.log("in update graph")
 			section = 'underweight_percent'
 			else 
 			section = 'low_birth_weight_percent'
+
+      $('.category a').parents('.dropdown').find('.dropdown-toggle').html(choiceOneVal + ' <span class="selectedCategory"></span>');
       filterdata = filterCSV(data, 'project_n', selectedProject);
       console.log(filterdata);
+      console.log(section, 'section');
 		  setData(filterdata,section);	
 		}
 		else
@@ -541,7 +546,7 @@ function setData(data, section)
     			d.active = true;
     		});
     		
-			
+			console.log(dataFilter,'dataFilter');
 		   
 		    //debugger
         render(dataFilter);
@@ -562,9 +567,11 @@ $(function(){
     $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
   });
 
+  if(choices.length <= 0)
+		{
   //trigger event
   $(".category a").first().trigger('click');
-  
+    }
 });
 
 function clearAll(){
@@ -591,10 +598,5 @@ function showAll(){
      }
    })
 };
-
- 
-
-
   </script>
 {% endblock %}
-

@@ -306,7 +306,6 @@ document.getElementById("myBestDistrict").checked = true;
 
   makeviz = opt =>{
 
- console.log(opt.length);
 
    var rdata1=[];
 
@@ -322,8 +321,6 @@ document.getElementById("myBestDistrict").checked = true;
 
             {
 
-            console.log(opt[j]);
-
             rdata1.push(chartStatData[i]);
 
             } 
@@ -331,15 +328,10 @@ document.getElementById("myBestDistrict").checked = true;
 
      }
 
-     //rdata1.push(best);
-
-     // rdata1.push(pal)
-
-     console.log(rdata1);
+     
 
      chart.data.datasets=[];	 
 
-    // document.getElementById("myChart").innerHTML = "";
 
    for(var i=0; i < rdata1.length; i++)
 
@@ -431,7 +423,6 @@ document.getElementById("myBestDistrict").checked = true;
 
  ]
 
- // console.log(listdata)
 
  return listdata;
 
@@ -461,19 +452,29 @@ document.getElementById("myBestDistrict").checked = true;
 
  //mybordercolor = ['#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080','#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080'];
 
+ mybordercolor = ['#0000FF','#00FF00','#FFFF00'];	
  let itr = 0;
-
- 
+ let i = 0;	
+ let mycolour; 
 
    data.forEach((d,itr) => {
 
-     let temp = {};
+    let temp = {};
 
-     temp.label = d.district_n,
+    if (d.district_n == "BestDistrict" || d.district_n == "Maharashtra")	
+    {	
+      mycolour = mybordercolor[i]	
+      i++;	
+    }	
+    else{	
+      mycolour = 'Gray'	
+    }
 
+    temp.label = d.district_n,
+    temp.borderColor = mycolour,	
      // temp.defaultFontSize= "12",
 
-     temp.borderColor = 'Gray',
+    //  temp.borderColor = 'Gray',
 
      temp.pointBorderColor = 'Black',
 
@@ -527,7 +528,6 @@ data_from_django.forEach(element => {
 
 });
 
-console.log(data,'Db Data');
 
 data.forEach(d => {
   d.district_n = d.district_n;
@@ -552,37 +552,13 @@ data.forEach(d => {
 
              chartStatData= dataforchart(mydata);
 
-             console.log(chartStatData);
 
                render(dataforchart(mydata));
 
-           // console.log(mydata);
 
           
 
        });
-
-       // console.log(monthwisesplit[0][13]);
-
-       // render(best)
-
-   
-
-      
-
- 
-
- 
-
- 
-
-
-
- 
-
- 
-
- 
 
  const selectData =  (val,monthwisesplit) =>{
 
@@ -634,10 +610,6 @@ data.forEach(d => {
 
  
 
-           
-
-           
-
  function GetSelected() {
 
          //Create an Array.
@@ -679,9 +651,7 @@ data.forEach(d => {
    
      monthSelect=$('.month a').first().text();
     augData = filterCSV(data, 'month_n', monthSelect);
-    console.log('augdata',augData )
     chartStatData=dataforchart(augData);
-    console.log('CSdata',chartStatData )
 
     render(dataforchart(augData));  
 

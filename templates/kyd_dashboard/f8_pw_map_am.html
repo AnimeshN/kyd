@@ -285,11 +285,21 @@ const render = (
     let max = d3.max(geojson, ColorValue);
     let comp = (max - min) / 3;
     let myColor = (v, low, high) => {
-        if (v < low) return "#B2022F";
+      if(ColorValue=='d => d.properties.prnt_anwmic_wmn')
+      {
+        if (v < low) return "#24562B"
+        //matte red
+        else if (v >= low && v <= high) return "#F4BC1C";
+        //matte yellow
+        else if (v > high) return "#B2022F"; //matte green
+
+      }
+       else{ if (v < low) return "#B2022F";
         //matte red
         else if (v >= low && v <= high) return "#F4BC1C";
         //matte yellow
         else if (v > high) return "#24562B"; //matte green
+       }
     };
     let tooltipValue = (d) =>{
         let ttv = `<b>${TextValue(d)}</b><br> 
@@ -513,6 +523,15 @@ const render = (
 
             let selCat = $(this).text();
             let val;
+            if(selCat !='Anaemic Women (%)')
+            {
+            d3.select("line.leftcolor").attr("stroke", "red");
+            d3.select("line.track-inset").attr("stroke", "green");
+            }
+            else{
+            d3.select("line.leftcolor").attr("stroke", "green");
+            d3.select("line.track-inset").attr("stroke", "red");
+            }
             switch(selCat){
                 case "Anaemic Women (%)":val=1;break;
                 case "Tenatus Completed (%)":val=2;break;
@@ -1260,7 +1279,7 @@ d3.select("g.slider")
   .attr("stroke-linecap", "round");
 
 d3.select("line.track-fill").attr("stroke", "yellow");
-d3.select("line.leftcolor").attr("stroke", "red");
-d3.select("line.track-inset").attr("stroke", "green");
+d3.select("line.leftcolor").attr("stroke", "green");
+d3.select("line.track-inset").attr("stroke", "red");
 </script>
 {% endblock %}

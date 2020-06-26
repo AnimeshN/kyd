@@ -243,20 +243,9 @@ const render = (
   //makemap
   const makemap = (geojson, tdata) => {
     d3.select('.info-hirar').text(function(){
-        var dist_name = "{{ dist_name }}"
-        console.log(dist_name);
-
-        if(dist_name == "Nandurbar")
-        {
-            var hirarchy = "Nandurbar";
-        }
-        else if(dist_name == "Latur")
-        {
-            var hirarchy = "Latur";
-        }
-        else{
-            var hirarchy = "Palghar";
-        }
+        
+            var hirarchy = "{{ dist_name }}";
+        
       levelLocation.forEach(loc=>{
       	hirarchy += ">"+loc;
       })
@@ -280,11 +269,21 @@ const render = (
     let max = d3.max(geojson, ColorValue);
     let comp = (max - min) / 3;
     let myColor = (v, low, high) => {
-        if (v < low) return "#B2022F";
+      if(ColorValue=='d => d.properties.prnt_anwmic_wmn')
+      {
+        if (v < low) return "#24562B"
+        //matte red
+        else if (v >= low && v <= high) return "#F4BC1C";
+        //matte yellow
+        else if (v > high) return "#B2022F"; //matte green
+
+      }
+       else{ if (v < low) return "#B2022F";
         //matte red
         else if (v >= low && v <= high) return "#F4BC1C";
         //matte yellow
         else if (v > high) return "#24562B"; //matte green
+       }
     };
     let tooltipValue = (d) =>{
         let ttv = `<b>${TextValue(d)}</b><br> 
@@ -506,6 +505,15 @@ const render = (
 
             let selCat = $(this).text();
             let val;
+            if(selCat !='Anaemic Women (%)')
+            {
+            d3.select("line.leftcolor").attr("stroke", "red");
+            d3.select("line.track-inset").attr("stroke", "green");
+            }
+            else{
+            d3.select("line.leftcolor").attr("stroke", "green");
+            d3.select("line.track-inset").attr("stroke", "red");
+            }
             switch(selCat){
                 case "Anaemic Women (%)":val=1;break;
                 case "Tenatus Completed (%)":val=2;break;
@@ -662,11 +670,18 @@ const render = (
         .transition()
         .duration(200)
         .style("opacity", 0.9);
-      let pointTT = `<b>${PointTextValue(d)}</b><br> 
-									Percentage Value: ${ColorValue(d)}<br>
-									Actual Value: ${TooltipVal1(d)}<br>`;
+
+        let tooltipValue = (d) =>{
+        let ttv = `<b>${PointTextValue(d)}</b><br> 
+          ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>`;
+     	return ttv;
+     	}
+
+      // let pointTT = `<b>${PointTextValue(d)}</b><br> 
+			// 						Percentage Value: ${ColorValue(d)}<br>
+			// 						Actual Value: ${TooltipVal1(d)}<br>`;
       tooltip
-      	.html(pointTT)
+        .html(tooltipValue(d))
         .style("left", d3.event.pageX + "px")
         .style("top", d3.event.pageY - 30 + "px");
       
@@ -689,16 +704,16 @@ const render = (
           .duration(500)
           .style("opacity", 0);
       }); 
-    let textLabel = g
-      .selectAll("text")
-      .data(selectedpoint)
-      .enter()
-      .append("text")
-      .text(d => d.properties.awc )
-      .attr("x", d => mercator(d.geometry.coordinates)[0]+1)
-      .attr("y", d => mercator(d.geometry.coordinates)[1])
-      .attr("font-family", "sans-serif")
-    	.attr("font-size","2px"); 
+    // let textLabel = g
+    //   .selectAll("text")
+    //   .data(selectedpoint)
+    //   .enter()
+    //   .append("text")
+    //   .text(d => d.properties.awc )
+    //   .attr("x", d => mercator(d.geometry.coordinates)[0]+1)
+    //   .attr("y", d => mercator(d.geometry.coordinates)[1])
+    //   .attr("font-family", "sans-serif")
+    // 	.attr("font-size","2px"); 
       }
     }// if condition ends here
     };
@@ -1185,7 +1200,8 @@ d3.select("g.slider")
   .attr("stroke-linecap", "round");
 
 d3.select("line.track-fill").attr("stroke", "yellow");
-d3.select("line.leftcolor").attr("stroke", "red");
-d3.select("line.track-inset").attr("stroke", "green");
+d3.select("line.leftcolor").attr("stroke", "green");
+d3.select("line.track-inset").attr("stroke", "red");
+
 </script>
 {% endblock %}

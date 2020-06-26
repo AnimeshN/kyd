@@ -168,9 +168,6 @@ height: 40%;
 
     const render = rdata =>{
 
-console.log(rdata);
-
-
 document.getElementById("myBestDistrict").checked = true;
 
 document.getElementById("myMH").checked = true;
@@ -301,10 +298,6 @@ var ctx = document.getElementById('myChart').getContext('2d');
 
   makeviz = opt =>{
 
- 
-
-console.log(opt.length);
-
   var rdata1=[];
 
    for(var i=0; i < chartStatData.length; i++) 
@@ -321,7 +314,6 @@ console.log(opt.length);
 
            {
 
-           console.log(opt[j]);
 
            rdata1.push(chartStatData[i]);
 
@@ -335,15 +327,9 @@ console.log(opt.length);
 
     }
 
-    //rdata1.push(best);
-
-    // rdata1.push(pal)
-
-    console.log(rdata1);
 
     chart.data.datasets=[];	 
 
-   // document.getElementById("myChart").innerHTML = "";
 
   for(var i=0; i < rdata1.length; i++)
 
@@ -360,9 +346,6 @@ console.log(opt.length);
     }
 
   } 	
-
-  
-
   
 
   chart.update();
@@ -436,7 +419,6 @@ console.log(opt.length);
 
  ]
 
- // console.log(listdata)
 
  return listdata;
 
@@ -450,11 +432,8 @@ console.log(opt.length);
 
  let mydata = { data: {
 
-  // labels: ["svrly_stntd","svr_wstg","wasting_percent","stunting_percent","underweight_percent"]
 
    labels: ["Anemia Free Women", "Children Immunization","Children(0-6 months) BF Practices","Children (6-24 months) CF Practices"],
-
-  
 
    datasets:[]
 
@@ -468,21 +447,31 @@ console.log(opt.length);
 
  //mybordercolor = ['#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080','#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080'];
 
+ mybordercolor = ['#0000FF','#00FF00','#FFFF00'];	
  let itr = 0;
-
- 
+ let i = 0;	
+ let mycolour;  
 
    data.forEach((d,itr) => {
 
      let temp = {};
+     if (d.district_n == "BestDistrict" || d.district_n == "Maharashtra")	
+    {	
+      mycolour = mybordercolor[i]	
+      i++;	
+    }	
+    else{	
+      mycolour = 'Gray'	
+    }
 
-     temp.label = d.district_n,
+    temp.label = d.district_n,
+    temp.borderColor = mycolour,	
 
      // temp.defaultFontSize= "12",
 
      temp.pointLabelFontColor = "Red",
 
-     temp.borderColor = 'Gray',
+    //  temp.borderColor = 'Gray',
 
      temp.pointBorderColor = 'Black',
 
@@ -537,7 +526,6 @@ data_from_django.forEach(element => {
 });
 
 
-console.log(data,'Db Data');
 
 data.forEach(d => {
   d.district_n = d.district_n;
@@ -571,8 +559,6 @@ data.forEach(d => {
            mydata = filterCSV(data, 'month_n', val);
 
              chartStatData= dataforchart(mydata);
-
-             console.log(chartStatData);
 
                render(dataforchart(mydata));
 
@@ -676,15 +662,7 @@ data.forEach(d => {
 
      };
 
-   
-
-     
-
-
-
-   // console.log(data)
 
      </script>
 
 {% endblock %}
-

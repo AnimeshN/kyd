@@ -217,18 +217,8 @@ fill: #fff;
    console.log("print data nest");
    console.log(dataNest);
  
-   
-      var result = dataNest.filter(function(val,idx, arr){
-           return $("." + val.key).attr("fill") != "#ccc" 
-           // matching the data with selector status
-         })
-     
- //{
-         //  return $("." + val.key).attr("fill") != "#ccc" 
-           // matching the data with selector status
-         //})
-         
-   console.log("print result");
+   var result=dataNest;
+      
      console.log(result);		
       var block = g.selectAll(".line")
        .data(result, function(d){return d.key});
@@ -445,7 +435,7 @@ data_from_django = {{ data|safe }};
   
   data.forEach(function(d) {
      
-    d.svr_wasting_percent = +d.svrly_wasting_percent;
+    d.svr_wasting_percent = +d.svr_wasting_percent;
     d.wasting_percent = +d.wasting_percent;
     d.svrly_stunted_percent = +d.svrly_stunted_percent;
     d.stunting_percent = +d.stunting_percent;
@@ -522,7 +512,5 @@ data_from_django = {{ data|safe }};
    $(".category a").first().trigger('click');
    
  });
- 
- 
  </script>
 {% endblock %}

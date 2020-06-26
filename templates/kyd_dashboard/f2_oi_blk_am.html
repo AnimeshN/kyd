@@ -276,7 +276,8 @@
     const g2 = bar2.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
 
     const xScale = d3.scaleLinear().domain([0,100]).range([0, innerWidth]);
-    const yScale =  d3.scaleBand().range([innerHeight, 0]).padding(0.1);
+    let bar_height=40;
+    
     
 
     function filterCSV(csv, key, value) {
@@ -294,12 +295,23 @@
 
 
     const drawLeft = data =>{
-  
+
+      const yScale =  d3.scaleBand().range([bar_height*data.length, 0]).padding(0.1);
       yScale.domain(data.map(yValue))
 
-      let getColor = d3.scaleSequential().domain([d3.min(data,xValue),d3.max(data,xValue)])
+      let getColor;
+
+      if(xValue =='d=> d.stunting_percent' || xValue =='d=> d.wasting_percent'|| xValue =='d=> d.underweight_percent'|| xValue =='d=> d.low_birth_weight_percent' || xValue =='d => d.prnt_anwmic_wmn')
+      {
+        getColor = d3.scaleSequential().domain([d3.max(data,xValue),d3.min(data,xValue)])
 
         .interpolator(d3.interpolateRdYlGn);
+      }
+      else{
+        getColor = d3.scaleSequential().domain([d3.min(data,xValue),d3.max(data,xValue)])
+
+          .interpolator(d3.interpolateRdYlGn);
+      }
 
         
 
@@ -368,7 +380,7 @@
 
       let xaxisLeft = g1.append('g').call(d3.axisBottom(xScale))
 
-                .attr('transform',`translate(0, ${innerHeight})`)
+                .attr('transform',`translate(0, ${bar_height*data.length})`)
 
                
 
@@ -401,11 +413,23 @@
 
   const drawRight = data =>{
 
+     const yScale =  d3.scaleBand().range([bar_height*data.length, 0]).padding(0.1);
+
       yScale.domain(data.map(yValue))
 
-      let getColor = d3.scaleSequential().domain([d3.min(data,xValue),d3.max(data,xValue)])
+      let getColor;
+
+      if(xValue =='d=> d.stunting_percent' || xValue =='d=> d.wasting_percent'|| xValue =='d=> d.underweight_percent'|| xValue =='d=> d.low_birth_weight_percent' || xValue =='d => d.prnt_anwmic_wmn')
+      {
+        getColor = d3.scaleSequential().domain([d3.max(data,xValue),d3.min(data,xValue)])
 
         .interpolator(d3.interpolateRdYlGn);
+      }
+      else{
+        getColor = d3.scaleSequential().domain([d3.min(data,xValue),d3.max(data,xValue)])
+
+          .interpolator(d3.interpolateRdYlGn);
+      }
 
         
 
@@ -473,7 +497,7 @@
 
       let xaxisRight = g2.append('g').call(d3.axisBottom(xScale))
 
-                .attr('transform',`translate(0, ${innerHeight})`);
+                .attr('transform',`translate(0, ${bar_height*data.length})`);
 
                
 
