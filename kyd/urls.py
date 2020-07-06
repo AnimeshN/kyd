@@ -19,7 +19,7 @@ from dashboard.views import DashboardView
 from kyd_dashboard.views import (KYDDashboardView, 
     F1MsrmntEffcyBlk, F1MsrmntEffcyBlk_post, F2OtcmIndctrBlk, F4DtProfile,
     F3PieProject, F5DtOverview, F6OiMap, F7IycfMap, F8PwMap,
-    FtLcBlock, FtLcProject, FtLcBeats, FtRdr1, FtRdr2)
+    FtLcBlock, FtLcProject, FtLcBeats, FtRdr1, FtRdr2, F10AWCInfraBlock)
 from maha_dashboard.views import (MahaFeatureOne_post, MahaFeatureOne, MahaFeatureTwo, MahaFeatureThree,
  MahaFeatureFour, MahaFeatureFive, MahaFeatureSix,MahaFeatureSeven,MahaFeatureEight,MahaFeatureNine,
 MahaFeatureStOw, MahaFeatureLCDT, MahaFeatureLCSDT)
@@ -44,6 +44,7 @@ urlpatterns = [
     url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/ft_lc_beat$', FtLcBeats.as_view(), name='ftlcbt'),
     url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/ft_radar1$', FtRdr1.as_view(), name='ftrdr1'),
     url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/ft_radar2$', FtRdr2.as_view(), name='ftrdr2'),
+    url(r'^(?P<dist_name>\w+)/(?P<quarter>\w+)/kyd_dashboard/ft_awc_infra$', F10AWCInfraBlock.as_view(), name='ftAwcInfra'),
     
     url(r'^maha_dashboard/maha_feature1$', MahaFeatureOne_post.as_view(), name='maha-feat1'),
     url(r'^(?P<quarter>\w+)/maha_dashboard/maha_feature1$', MahaFeatureOne.as_view(), name='maha-feat1'),

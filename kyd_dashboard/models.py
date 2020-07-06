@@ -768,3 +768,20 @@ class FtRadar2(models.Model):
     class Meta:
         managed = False
         db_table = 'ft_radar2'
+
+
+class F10AwcInfra(models.Model):
+    month_n = models.CharField(max_length=10, blank=True, null=True)
+    district_n = models.CharField(max_length=20, blank=True, null=True)
+    block_n = models.CharField(max_length=20, blank=True, null=True)
+    drinking_water = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    functional_toilet = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    medicine_kit = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    weighing_scale_for_infants = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    weighing_scale_for_mother_and_child = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    infantometer = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    stadiometer = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+
+    class Meta:
+        managed = False
+        db_table = 'f10_awc_infra'

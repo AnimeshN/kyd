@@ -1,0 +1,339 @@
+{% extends 'kyd_dashboard/kyd_base.html' %}
+
+{% load static %}
+
+{% block feature_css %}
+
+  <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+
+  <style>
+
+#legendContainer{
+	position:absolute;
+	top:250px;
+  right: 920px;
+	overflow: auto;
+	height:700px;
+	width:auto;
+}
+#legend{
+	width:350px;
+	height:700px;
+}
+.legend {
+    font-size: 20px;
+    font-weight: normal;
+    text-anchor: left;
+}
+  </style>
+
+{% endblock %}
+
+{% block feature %}
+
+
+<div class='heading text-dark mt-2 text-center' id="barTitle"> Measurement Efficiency </div>
+
+<div class="row text-center" style="height: 50px;">
+
+  <div class="col-12 bg-info h-100 w-100" >
+
+    <!-- select month -->
+    
+    <div class="dropdown" style="float: left; margin:5px; font-weight:bold">
+
+      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+
+        Select Month
+
+		<span class="selectedMonth"></span>
+
+      </button>
+
+      <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
+        {% for month_select in monthList %} 
+        <a class="dropdown-item" href="#">{{ month_select.month }}</a>
+        {% endfor %}   
+      </div>
+
+    </div>
+
+    <button type="button" class="btn btn-info" style="float: left; margin:5px" onclick="location.href=`{% url 'f8' dist_name quarter %}`">Previous Feature</button>
+    
+  </div>
+  
+
+  <div class="col-12 m-5">
+    <svg width="1000" height="600"></svg>
+  </div>
+
+  <div id="legendContainer" class="legendContainer">
+    <svg id="legend"></svg>
+  </div>
+
+
+</div>
+
+
+{% endblock %}
+{% block feature_js %}
+
+<script>
+  
+  const svg = d3.select('svg');
+  const width = +svg.attr('width');
+  const height = +svg.attr('height');
+
+  const yScale = [];
+
+  const xScale = [];
+
+  // let month_hack = 'Nov';   
+
+  function filterCSV(csv, key, value) {
+  var result = [];
+  csv.forEach(function(val,idx,arr){
+  
+    if(val[key] == value){
+    
+      result.push(val)
+    }
+  })
+  return result;
+}
+
+  
+
+  const render = data =>{
+
+    console.log(data.length);
+    
+      const margin = {left:150,top:0 ,right:20,bottom:30};
+      const innerWidth = width - margin.left - margin.right;
+      const innerHeight = height - margin.top - margin.bottom;
+
+      const g = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+      var y0 = d3.scaleBand().rangeRound([margin.top, innerHeight - margin.bottom]).paddingInner(0.1);
+      var y1 = d3.scaleBand().padding(0.05);;
+      var x = d3.scaleLinear().rangeRound([margin.left, innerWidth]);
+      var color = d3.scaleOrdinal().range(["#ca0020","#f4a582","#4c4c4c","#92c5de","#0571b0","#800080", "#00FFFF"]);
+      
+     var keys = d3.keys(data[0]).filter(function(key) { return (key != "district_n" &&  key != "month_n" &&  key != "block_n" ); });
+     console.log(keys, 'ageNames');
+     var dAges;
+      data.forEach(function(d) { 
+        dAges = keys.map(function(name) { return {name: name, value: +d[name]}; });
+        console.log(dAges ,"d.gages");
+      });
+      
+      y0.domain(data.map(function(d) { return d.block_n; }));
+      y1.domain(keys).range([y0.bandwidth(), 0]);
+     // y.domain([0, d3.max(data, function(d) { return d3.max(dAges, function(d) { return d.value; }); })]);
+      x.domain([0,100]);
+       
+      g.append("g")
+      .attr("class", "axis")
+      .attr("transform", `translate(0,${innerHeight- margin.bottom})`)
+      .call(d3.axisBottom(x))
+      .attr("font-size", "10x")
+      .attr("font-weight", "bold");
+
+    g.append("g")
+      .attr("class", "axis")
+      .attr("transform", `translate(${margin.left},0)`)
+      .call(d3.axisLeft(y0).ticks(null, "s"))
+      .attr("font-size", "15px")
+      .attr("font-weight", "bold");
+    // .append("text")
+    // .attr("x", innerHeight * 0.4 * -1)
+    // .attr("y", margin.left * 0.8 * -1)//y(y.ticks().pop()) + 0.5)
+    //   // .attr("x", 2)
+    //   // .attr("y", x(x.ticks().pop()) + 0.5)
+    //   .attr("dy", "0.32em")
+    //   .attr("fill", "#000")
+    //   .attr("text-anchor", "start");
+
+
+     var state = g.selectAll(".state")
+        .data(data)
+      .enter().append("g")
+        .attr("class", "g")
+        .attr("transform", function(d) { return "translate(0, " + y0(d.block_n) + ")"; });
+
+      state.selectAll("rect")
+      .data(function(d) { return keys.map(function(name) { return {name: name, value: d[name]}; }); })
+      .enter().append("rect")
+      .attr("x", d => x(0))
+      .attr("y", d => y1(d.name))
+      .attr("height", y1.bandwidth())
+      .attr("width", d => x(d.value)-x(0))
+      .attr("fill", d => color(d.name));
+
+    //  .attr("width", x1.bandwidth())
+    //  .attr("width", function(d) { return  x(d.value); })
+    //  .attr("y", function(d) { return  y1(d.name); })
+    //  .attr("height", y1.bandwidth())
+    //  .style("fill", function(d) { return color(d.name); });
+
+    //   g.append("g")
+    // .selectAll("g")
+    // .data(data)
+    // .enter().append("g")
+    //   .attr("transform", function(d) { return "translate(" + x0(d.block_n) + ",0)"; })
+    // .selectAll("rect")
+    // .data(function(d) { console.log(dAges, 'inrect'); return dAges; })
+    // .enter().append("rect")
+    //   .attr("x", function(d) { return x1(d.name); })
+    //   .attr("y", function(d) { return y(d.value); })
+    //   .attr("width", x1.bandwidth())
+    //   .attr("height", function(d) { return innerHeight - y(d.value); })
+    //   .attr("fill", function(d) { return z(d.name); });
+
+  
+  var legend = d3.select("#legend")
+			.selectAll("text")
+			.data(keys.slice());
+
+  legend.enter().append("rect")
+		  .attr("width", 20)
+		  .attr("height", 20)
+		  .attr("x", 0)
+		  .attr("y", function (d, i) { return 0 +i*30; })  // spacing
+		  .attr("fill",color);
+		    
+  legend.enter().append("text")
+      .attr("x", 25)
+      .attr("y", function(d,i){return 15 +i*30;})
+      .attr("class", "legend")
+      .text(function(d) { return  (toTitleCase(d).replace(/_/g, ' ')); }); 
+
+  // var legend = g.append("g")
+  //     .attr("font-family", "sans-serif")
+  //     .attr("font-size", 10)
+  //     .attr("text-anchor", "end")
+  //   .selectAll("g")
+  //   .data(keys.slice())
+  //   .enter().append("g")
+  //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
+
+  // legend.append("rect")
+  //     .attr("x", innerWidth - 15)
+  //     .attr("class", "legendtext")
+  //     .attr("width", 19)
+  //     .attr("height", 19)
+  //     .attr("fill", color);
+
+  // legend.append("text")
+  //     .attr("x", innerWidth - 20)
+  //     .attr("y", 9.5)
+  //     .attr("dy", "0.32em")
+  //     .text(function(d) { return  (toTitleCase(d).replace(/_/g, ' ')); });
+    
+
+  }
+
+  
+  function toTitleCase(input) {
+        return input.charAt(0).toUpperCase() + input.substr(1).toLowerCase();
+    
+};
+  
+ 
+
+
+  /////
+
+  data_from_django = {{ data|safe }};
+
+  var data = []
+
+  data_from_django.forEach(element => {
+
+    // console.log(data, 'initialdata');
+    data.push(element.fields);
+
+  });
+
+
+  data.forEach(d => {
+    d.drinking_water = +d.drinking_water;
+    d.functional_toilet = +d.functional_toilet;
+    d.medicine_kit = +d.medicine_kit;
+    d.weighing_scale_for_infants = +d.weighing_scale_for_infants;
+    d.weighing_scale_for_mother_and_child = +d.weighing_scale_for_mother_and_child;
+    d.infantometer = +d.infantometer;
+    d.stadiometer = +d.stadiometer;
+    d.month_n = d.month_n;
+    d.block_n= d.block_n;
+		
+  });
+
+
+//   d3.csv("{% static 'data/csv/f1.csv'%}").then(data=>{
+
+console.log(data, 'dataafterloop');
+
+ 
+  $(".month a").click(function(){
+
+	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+
+	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+
+      var val = $(this).text();
+      
+      filterdata = filterCSV(data, 'month_n', val);
+
+     // tableData = tables(filterdata);
+
+      svg.selectAll("*").remove();
+
+      render(filterdata);
+
+      
+
+});
+
+
+
+$(function(){
+
+
+  //bind event
+
+  $(".month a").click(function(){
+
+    var selText = $(this).text();
+
+    console.log(selText);
+
+    $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedMonth"></span>');
+
+  });
+
+   
+  //trigger event
+
+  $('.month a').first().trigger('click');
+
+});
+
+
+  monthSelect=$('.month a').first().text();
+  augData = filterCSV(data, 'month_n', monthSelect);
+  console.log(augData, 'augData');
+ 
+
+  render(augData); 
+
+  
+
+
+
+//   });
+
+
+  </script>
+
+{% endblock %}

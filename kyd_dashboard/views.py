@@ -10,7 +10,7 @@ from .models import (F1, F2, F3, F4, F5Awc, F5Beat, F5Blk, F5Prjt, FtLcPrjt, FtL
        F8PwProject, F8PwBlock, F8PwBeat, F8PwAwc,
        DistrictBlockWiseGeojson, DistrictProjectWiseGeojson,
        DistrictBeatWiseGeojson, DistrictAwcGeojson, DistrictVillagewiseGeojson,
-       QuarterSelect)
+       QuarterSelect, F10AwcInfra)
 
 
 # Create your views here.
@@ -354,3 +354,15 @@ class FtRdr2(LoginRequiredMixin, TemplateView):
         jsondata = serializers.serialize('json',data)
 
         return render(request,'kyd_dashboard/ft_radar2.html', {'data':jsondata, 'monthList': months, 'projectList':dataCheck, 'dist_name':district_n, 'quarter': quarter_S})
+
+class F10AWCInfraBlock(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+
+    def get(self, request, dist_name = None,  quarter = None):
+        district_n = request.GET.get('dist_name', dist_name)
+        quarter_S = request.GET.get('quarter',quarter)
+        months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')
+        data = F10AwcInfra.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
+        jsondata = serializers.serialize('json',data)
+        return render(request,'kyd_dashboard/ft_awc_infra.html', {'data':jsondata, 'monthList': months, 'dist_name':district_n, 'quarter': quarter_S})
