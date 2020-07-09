@@ -117,6 +117,7 @@ fill: #fff;
 
   <div class="col-12 m-5">
     <svg width="1000" height="550"></svg>
+    <div id='tooltip' style='position:absolute;background-color:lightgray;padding:5px'></div>
   </div>
                         
   </div>
@@ -199,23 +200,6 @@ var stateline = d3.svg.line()
     .x(function(d) { return xScale(d.month); })
     .y(function(d) { return yScale(d.value); });
 	
-
-  
-  
-  
-// <!-- var yScale = d3.scaleLinear() -->
-//           <!-- .range([innerHeight,0]); -->
-      
-// <!-- var xScale = d3.scalePoint() -->
-//           <!-- .range([0, innerWidth], 0.5) -->
-//           <!-- .padding(0.1); -->
-      
-//      <!-- // xScale.domain(data.map(xValue)) -->
-
-// 	 <!-- // Define the line -->
-// 	<!-- var stateline = d3.line()		 -->
-//     <!-- .x(function(d) {return xScale(d.month); }) -->
-//     <!-- .y(function(d) { return yScale(d.value); }); -->
 	
   var g = svg.append('g')
           .attr('transform', `translate(${margin.left}, ${margin.top})`); 
@@ -238,8 +222,6 @@ g.append("rect")
       
      var color = d3.scale.category20();
 
-
-//var color = d3.scale.ordinal().range(["#48A36D", "#0096ff","#ff007e", "#FFA07A",  "#FFD700", "#ADFF2F", "#00FFFF", "#8A2BE2", "#800000","#00FFFF", "#008080", "#800080", "#FF00FF" ]);
 var color = d3.scale.category20();
 var ticks
 const render = data =>{
@@ -268,15 +250,6 @@ console.log("in update graph")
 
     
 	var result=dataNest;
- 		// var result = dataNest.filter(function(val,idx, arr){
-		// 		  return $("." + val.key).attr("fill") != "#ccc" 
-		// 		  // matching the data with selector status
-		// 		})
-		
-//{
-				//  return $("." + val.key).attr("fill") != "#ccc" 
-				  // matching the data with selector status
-				//})
 				
 	console.log("print result");
 		console.log(result);		
@@ -359,99 +332,104 @@ console.log("in update graph")
       .attr("y", 6)
       .attr("dy", ".71em");
 
-	 mouseG = g.append("g")
-      .attr("class", "mouse-over-effects");
-	 
-	
-    mouseG.append("path") // this is the black vertical line to follow mouse
-      .data(result)
-	  .attr("class", "mouse-line")
-      .style("stroke", "black")
-      .style("stroke-width", "1px")
-      .style("opacity", "0");
+      var mouseG = g.append("g")
+            .attr("class", "mouse-over-effects");
 
-    
-	
-    var lines = document.getElementsByClassName('line');
-	
-    var mousePerLine = mouseG.selectAll('.mouse-per-line')
-      .data(result)
-      .enter()
-      .append("g")
-      .attr("class", "mouse-per-line");
+          
+       var tooltip = d3.select('#tooltip');
 
-
-
-	mousePerLine.append("circle")
-	.attr('class', 'topic-circle')
-      .attr("r", 7)
-      .style("stroke", function (d) {
-        return color(d.key);
-      })
-      .style("fill", "none")
-      .style("stroke-width", "1px")
-      .style("opacity", "0");
-	  
-
-    mousePerLine.append("text")
-      .attr("transform", "translate(10,3)")
-	      .attr("font-size", "20px");
-
-
-    mouseG.append('svg:rect') // append a rect to catch mouse movements on canvas
-      .attr('width', width) // can't catch mouse events on a g element
-      .attr('height', height)
-      .attr('fill', 'none')
-      .attr('pointer-events', 'all')
-      .on('mouseout', function () { // on mouse out hide line, circles and text
-        d3.select(".mouse-line")
+  mouseG.append("path") // create vertical line to follow mouse
+          .data(result)
+          .attr("class", "mouse-line")
+          .style("stroke", "black")
+          .style("stroke-width", '3px')
           .style("opacity", "0");
-        d3.selectAll(".mouse-per-line circle")
-          .style("opacity", "0");
-        d3.selectAll(".mouse-per-line text")
-          .style("opacity", "0");
-      })
-      .on('mouseover', function () { // on mouse in show line, circles and text
-        d3.select(".mouse-line")
-          .style("opacity", "1");
-        d3.selectAll(".mouse-per-line circle")
-          .style("opacity", "1");
-        d3.selectAll(".mouse-per-line text")
-          .style("opacity", "1");
-		  
-      })
-	   .on('mousemove', function () { // mouse moving over canvas
-        var tickPos = xScale.range();
-		var m = d3.mouse(this),
-		lowDiff = 1e99,
-          xI = null;
-        d3.selectAll(".mouse-per-line")
-          .attr("transform", function (d, i) {		 
-             for (var i = 0; i < tickPos.length; i++){
-        var diff = Math.abs(m[0] - tickPos[i]);
-        if (diff < lowDiff){
-          lowDiff = diff;
-          xI = i;
-        }
-      }
-	  
-	d3.select(this).select('text')
-              .text(yScale.invert(yScale(d.values[xI].value)).toFixed(2));
-	  
-	   d3.select(".mouse-line")
-              .attr("d", function () {
-                var data = "M" + xScale(d.values[xI].month) + "," + height;
-                data += " " + xScale(d.values[xI].month) + "," + 0;					
-                return data;
-              });
-
-             return "translate(" + xScale(d.values[xI].month) + "," + yScale(d.values[xI].value) + ")";     
-          });
-		   
-      });
-
-
    
+     var lines = document.getElementsByClassName('line');
+
+     var mousePerLine = mouseG.selectAll('.mouse-per-line')
+            .data(result)
+            .enter()
+            .append("g")
+            .attr("class", "mouse-per-line");
+
+          mousePerLine.append("circle")
+            .attr('class', 'topic-circle')
+            .attr("r", 7)
+            .style("stroke", function (d) {
+              return color(d.key)
+            })
+            .style("fill", "none")
+            .style("stroke-width", '3px')
+            .style("opacity", "0");
+
+
+   mouseG.append('svg:rect')
+    .attr('width', width)
+    .attr('height', height)
+    .attr('opacity', 0)
+    .attr('pointer-events', 'all')
+    .on('mouseout', function () { // on mouse out hide line, circles and text
+         d3.select(".mouse-line")
+           .style("opacity", "0");
+         d3.selectAll(".mouse-per-line circle")
+           .style("opacity", "0");
+       })
+    .on('mouseover', function () { // on mouse in show line, circles and text
+         d3.select(".mouse-line")
+           .style("opacity", "1");
+         d3.selectAll(".mouse-per-line circle")
+           .style("opacity", "1") })
+    .on('mousemove', drawTooltip)
+    .on('mouseout', removeTooltip);
+
+
+    function removeTooltip() {
+    if (tooltip) tooltip.style('display', 'none');
+    // if(mouseG)     mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
+    }
+
+      function drawTooltip() {
+      
+        var monthX
+
+        var tickPos = xScale.range();
+        // console.log(tickPos,'as')
+          var m = d3.mouse(this),
+          lowDiff = 1e99,
+                xI = null;
+              d3.selectAll(".mouse-per-line")
+                .attr("transform", function (d, i) {		 
+                    for (var i = 0; i < tickPos.length; i++){
+              var diff = Math.abs(m[0] - tickPos[i]);
+              if (diff < lowDiff){
+                lowDiff = diff;
+                xI = i;
+
+              }
+            }
+            d3.select(".mouse-line")
+                    .attr("d", function () {
+                      monthX =  d.values[xI].month
+                      var data = "M" + xScale(d.values[xI].month) + "," + height;
+                      data += " " + xScale(d.values[xI].month) + "," + 0;					
+                      return data;
+                    });
+                    return "translate(" + xScale(d.values[xI].month) + "," + yScale(d.values[xI].value) + ")";     
+
+                      
+                    });
+        
+        tooltip.html(monthX)
+          .style('display', 'block')
+          .style('left', (d3.event.pageX + 20) + "px")
+          .style('top', (d3.event.pageY - 20) + "px" )
+          .selectAll()
+          .data(result).enter()
+          .append('div')
+          .style('color', d => d.color)
+          .html(d => d.key + ': ' + yScale.invert(yScale(d.values[xI].value)).toFixed(2));
+      }   
 		
 };
 
@@ -531,8 +509,8 @@ console.log("in update graph")
 			else 
 			section = 'low_birth_weight_percent'
 			
-			mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
-			mouseG.selectAll('.mouse-per-line').selectAll('text').remove();
+			// mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
+			// mouseG.selectAll('.mouse-per-line').selectAll('text').remove();
 			setData(filterdata,section);
 			});			
 	
