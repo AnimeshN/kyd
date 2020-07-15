@@ -88,8 +88,6 @@
 
   const xScale = [];
 
-  // let month_hack = 'Nov';   
-
   function filterCSV(csv, key, value) {
   var result = [];
   csv.forEach(function(val,idx,arr){
@@ -129,7 +127,6 @@
       
       y0.domain(data.map(function(d) { return d.block_n; }));
       y1.domain(keys).range([y0.bandwidth(), 0]);
-     // y.domain([0, d3.max(data, function(d) { return d3.max(dAges, function(d) { return d.value; }); })]);
       x.domain([0,100]);
        
       g.append("g")
@@ -145,15 +142,6 @@
       .call(d3.axisLeft(y0).ticks(null, "s"))
       .attr("font-size", "15px")
       .attr("font-weight", "bold");
-    // .append("text")
-    // .attr("x", innerHeight * 0.4 * -1)
-    // .attr("y", margin.left * 0.8 * -1)//y(y.ticks().pop()) + 0.5)
-    //   // .attr("x", 2)
-    //   // .attr("y", x(x.ticks().pop()) + 0.5)
-    //   .attr("dy", "0.32em")
-    //   .attr("fill", "#000")
-    //   .attr("text-anchor", "start");
-
 
      var state = g.selectAll(".state")
         .data(data)
@@ -170,27 +158,17 @@
       .attr("width", d => x(d.value)-x(0))
       .attr("fill", d => color(d.name));
 
-    //  .attr("width", x1.bandwidth())
-    //  .attr("width", function(d) { return  x(d.value); })
-    //  .attr("y", function(d) { return  y1(d.name); })
-    //  .attr("height", y1.bandwidth())
-    //  .style("fill", function(d) { return color(d.name); });
+      //X-axis Label
+      svg.append("text")
+        .attr("text-anchor", "middle")
+        .attr("x", width - 350)
+        .attr("y", height - 6)
+        .attr("font-size", "medium")
+        .attr("font-style", "italic")
+        .attr("font-weight", "bold")
+        .text("% of AWC with available Infrastructure Facilities");
 
-    //   g.append("g")
-    // .selectAll("g")
-    // .data(data)
-    // .enter().append("g")
-    //   .attr("transform", function(d) { return "translate(" + x0(d.block_n) + ",0)"; })
-    // .selectAll("rect")
-    // .data(function(d) { console.log(dAges, 'inrect'); return dAges; })
-    // .enter().append("rect")
-    //   .attr("x", function(d) { return x1(d.name); })
-    //   .attr("y", function(d) { return y(d.value); })
-    //   .attr("width", x1.bandwidth())
-    //   .attr("height", function(d) { return innerHeight - y(d.value); })
-    //   .attr("fill", function(d) { return z(d.name); });
-
-  
+   
   var legend = d3.select("#legend")
 			.selectAll("text")
 			.data(keys.slice());
@@ -208,28 +186,6 @@
       .attr("class", "legend")
       .text(function(d) { return  (toTitleCase(d).replace(/_/g, ' ')); }); 
 
-  // var legend = g.append("g")
-  //     .attr("font-family", "sans-serif")
-  //     .attr("font-size", 10)
-  //     .attr("text-anchor", "end")
-  //   .selectAll("g")
-  //   .data(keys.slice())
-  //   .enter().append("g")
-  //     .attr("transform", function(d, i) { return "translate(0," + i * 20 + ")"; });
-
-  // legend.append("rect")
-  //     .attr("x", innerWidth - 15)
-  //     .attr("class", "legendtext")
-  //     .attr("width", 19)
-  //     .attr("height", 19)
-  //     .attr("fill", color);
-
-  // legend.append("text")
-  //     .attr("x", innerWidth - 20)
-  //     .attr("y", 9.5)
-  //     .attr("dy", "0.32em")
-  //     .text(function(d) { return  (toTitleCase(d).replace(/_/g, ' ')); });
-    
 
   }
 
@@ -239,9 +195,6 @@
     
 };
   
- 
-
-
   /////
 
   data_from_django = {{ data|safe }};
@@ -250,7 +203,6 @@
 
   data_from_django.forEach(element => {
 
-    // console.log(data, 'initialdata');
     data.push(element.fields);
 
   });
@@ -270,8 +222,6 @@
   });
 
 
-//   d3.csv("{% static 'data/csv/f1.csv'%}").then(data=>{
-
 console.log(data, 'dataafterloop');
 
  
@@ -284,8 +234,6 @@ console.log(data, 'dataafterloop');
       var val = $(this).text();
       
       filterdata = filterCSV(data, 'month_n', val);
-
-     // tableData = tables(filterdata);
 
       svg.selectAll("*").remove();
 
@@ -328,12 +276,6 @@ $(function(){
   render(augData); 
 
   
-
-
-
-//   });
-
-
   </script>
 
 {% endblock %}
