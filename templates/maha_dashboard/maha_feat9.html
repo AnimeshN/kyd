@@ -625,14 +625,32 @@ function filterCSV(csv, key, value) {
           temp["Actual Number"] = ActualValue(d);
           tbdata.push(temp);
         });
-        let percentageColor = d3
+        let percentageColor;
+        let actualColor;
+
+        if(PercentageValue=='d => d.prnt_anwmic_wmn' )
+        {
+          percentageColor = d3
+          .scaleSequential()
+          .domain([ d3.max(tdata, PercentageValue), d3.min(tdata, PercentageValue)])
+          .interpolator(d3.interpolateRdYlGn);
+
+          actualColor = d3
+          .scaleSequential()
+          .domain([ d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
+          .interpolator(d3.interpolateRdYlGn);
+        }
+        else{
+          percentageColor = d3
           .scaleSequential()
           .domain([d3.min(tdata, PercentageValue), d3.max(tdata, PercentageValue)])
           .interpolator(d3.interpolateRdYlGn);
-        let actualColor = d3
+          
+          actualColor = d3
           .scaleSequential()
           .domain([ d3.min(tdata, ActualValue), d3.max(tdata, ActualValue)])
           .interpolator(d3.interpolateRdYlGn);
+        }
     
         rowEnter = row
           .data(tbdata)
@@ -702,17 +720,32 @@ function filterCSV(csv, key, value) {
             newtbdata.push(temp);
           });
     
-          let percentageColor = d3
-            .scaleSequential()
-            .domain([
-              d3.min(tdata, PercentageValue),
-              d3.max(tdata, PercentageValue)
-            ])
-            .interpolator(d3.interpolateRdYlGn);
-          let actualColor = d3
-            .scaleSequential()
-            .domain([ d3.min(tdata, ActualValue), d3.max(tdata, ActualValue)])
-            .interpolator(d3.interpolateRdYlGn);
+          let percentageColor;
+        let actualColor;
+
+        if(PercentageValue=='d => d.prnt_anwmic_wmn' )
+        {
+          percentageColor = d3
+          .scaleSequential()
+          .domain([ d3.max(tdata, PercentageValue), d3.min(tdata, PercentageValue)])
+          .interpolator(d3.interpolateRdYlGn);
+
+          actualColor = d3
+          .scaleSequential()
+          .domain([ d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
+          .interpolator(d3.interpolateRdYlGn);
+        }
+        else{
+          percentageColor = d3
+          .scaleSequential()
+          .domain([d3.min(tdata, PercentageValue), d3.max(tdata, PercentageValue)])
+          .interpolator(d3.interpolateRdYlGn);
+          
+          actualColor = d3
+          .scaleSequential()
+          .domain([ d3.min(tdata, ActualValue), d3.max(tdata, ActualValue)])
+          .interpolator(d3.interpolateRdYlGn);
+        }
     
           rowEnter = row
             .data(newtbdata)

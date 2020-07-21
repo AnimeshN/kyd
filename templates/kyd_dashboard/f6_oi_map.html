@@ -146,12 +146,10 @@ td{
 const width = document.getElementById("mymap").offsetWidth;
 const height = document.getElementById("mymap").offsetHeight;
 
-console.log(width,height, 'wt & ht');
 const margin = {left:200,top:300 ,right:40,bottom:20};
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
     
-console.log(width,height);
 const transitionDuration = 1000;
 let level = 0; 
 let levelLocation = [];
@@ -345,7 +343,7 @@ const render = (
     } else if (level === 1) {
       textLabel.attr("font-size", "7pt").attr("font-weight", "bold"); 
     } else if (level === 2) {
-      textLabel.attr("font-size", "5pt").attr("font-weight", "bold");
+      textLabel.attr("font-size", "4pt").attr("font-weight", "bold");
     } 
 
     //update slider color
@@ -668,12 +666,8 @@ const render = (
       g.selectAll("*").remove();
       rowEnter.selectAll("*").remove();
       // tooltip.remove();
-      console.log('seljson',selectedjson);
-      console.log('selecteddata',selecteddata);
 
       makemap(selectedjson, selecteddata);
-      
-
       
       //Make geopoints for awc
       if(level === 3){
@@ -982,8 +976,6 @@ $(".drop-month a").click(function(){
 
   //initial map
   month_hack=$('.drop-month a').first().text();
-  console.log(blockData);
-  console.log(month_hack);
   let monthdata = filterCSV(blockData, 'month_n', month_hack); 
   console.log(monthdata);
   let monthjson = addProperty(monthdata, block); 
@@ -995,7 +987,6 @@ async function fetchGeoJSON() {
   let geoJSONBundle = {};
 
     var blockJSON = {{ context.blk_geodata|safe }};
-    console.log(blockJSON, 'Geodata')
     var scaleCenter = calculateScaleCenter(blockJSON);
 
     mercator.scale(scaleCenter.scale)
@@ -1015,7 +1006,6 @@ async function fetchGeoJSON() {
   geoJSONBundle.projectJSON = projectJSON.features;
   geoJSONBundle.beatJSON = beatJSON.features;
   geoJSONBundle.awcJSON = awcJSON.features;
-  console.log(geoJSONBundle.beatJSON)
 
   return geoJSONBundle;
 }
@@ -1073,7 +1063,6 @@ const monthWiseCSV = data => {
 };
 
 const addProperty = (data, geojson) => {
-  console.log(geojson)
   console.log(data)
   var x, y;
   for (let i = 0; i < data.length; i++) {
@@ -1183,7 +1172,6 @@ monthWiseCSV(projectCSV);
 fetchGeoJSON().then(mergeData);
 
 $(function(){
- console.log("in on load");
   //bind event
   $(".drop-month a").click(function(){
     var valMonth = $(this).text();

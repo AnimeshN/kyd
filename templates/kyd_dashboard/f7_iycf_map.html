@@ -151,7 +151,6 @@ td{
 const width = document.getElementById("mymap").offsetWidth;
 const height = document.getElementById("mymap").offsetHeight;
 
-console.log(width,height, 'wt & ht');
 const margin = {left:200,top:300 ,right:40,bottom:20};
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -345,7 +344,7 @@ const render = (
     } else if (level === 1) {
       textLabel.attr("font-size", "7pt").attr("font-weight", "bold");
     } else if (level === 2) {
-      textLabel.attr("font-size", "5pt").attr("font-weight", "bold");
+      textLabel.attr("font-size", "4pt").attr("font-weight", "bold");
     } 
     
 
@@ -790,13 +789,13 @@ const render = (
       let percentageColor = d3
         .scaleSequential()
         .domain([
-          d3.max(tdata, PercentageValue),
-          d3.min(tdata, PercentageValue)
+          d3.min(tdata, PercentageValue),
+          d3.max(tdata, PercentageValue)
         ])
         .interpolator(d3.interpolateRdYlGn);
       let actualColor = d3
         .scaleSequential()
-        .domain([d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
+        .domain([d3.min(tdata, ActualValue), d3.max(tdata, ActualValue)])
         .interpolator(d3.interpolateRdYlGn);
 
       rowEnter = row
