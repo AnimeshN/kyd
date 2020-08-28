@@ -4,43 +4,45 @@
 
 {% block feature_css %}
 
-  <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+<link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}">
 
-  <style>
+<style>
+  /* #legendContainer {
+    position: absolute;
+    top: 250px;
+    left: 10px;
+    overflow: auto;
+    height: 700px;
+    width: auto;
+  } */
 
-#legendContainer{
-	position:absolute;
-	top:250px;
-  left: 10px;
-	overflow: auto;
-	height:700px;
-	width:auto;
-}
-#legend{
-	width:350px;
-	height:700px;
-}
-.legend {
-    font-size: 20px;
+  #legend {
+    font-size: 1.0rem;
+    /* calc(50% + 0.5vw + 0.5vh); */
     font-weight: normal;
     text-anchor: left;
-}
-  </style>
+  }
+
+  #chart text {
+    font-size: 1.0rem
+  }
+</style>
 
 {% endblock %}
 
 {% block feature %}
 
 
-<div class='heading text-dark mt-2 text-center' id="barTitle"> AWC Infrastructure Facilities </div>
+<div class="row">
+  <div class="col-12 h-75">
+    <div class="heading text-center"> AWC Infrastructure Facilities </div>
+  </div>
+</div>
 
-<div class="row text-center" style="height: 50px;">
+<div class="row bg-info">
+  <!-- select month -->
 
-  <div class="col-12 bg-info h-100 w-100" >
-
-    <!-- select month -->
-    
-    <div class="dropdown" style="float: left; margin:5px; font-weight:bold">
+  <!-- <div class="dropdown" style="float: left; margin:5px; font-weight:bold">
 
       <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 
@@ -56,82 +58,124 @@
         {% endfor %}   
       </div>
 
-    </div>
+    </div> -->
 
-    <button type="button" class="btn btn-info" style="float: left; margin:5px" onclick="location.href=`{% url 'f8' dist_name quarter %}`">Previous Feature</button>
-    
-  </div>
-  
-
-  <div class="col-12 m-5">
-    <svg width="1000" height="600"></svg>
-  </div>
-
-  <div id="legendContainer" class="legendContainer">
-    <svg id="legend"></svg>
-  </div>
-
-
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f8' dist_name %}`">Previous
+    Feature</button>
+</div>
 </div>
 
+<div class="row text-center">
+  <div class="col-12 mb-5">
+    <input type="text" id="monthSlider" name="somename" data-provide="slider"
+      data-slider-ticks="[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]"
+      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "June", "July"]'
+      data-slider-min="0" data-slider-max="11" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
+  </div>
+</div>
+
+<div class="row m-1">
+  <div class="col-2" id="legend"></div>
+  <div class="col-10" id='chart'></div>
+</div>
 
 {% endblock %}
 {% block feature_js %}
 
 <script>
-  
-  const svg = d3.select('svg');
-  const width = +svg.attr('width');
-  const height = +svg.attr('height');
+
+  var width = 1000,
+    height = 600;
+
+  var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 1000)
+    .attr('height', 600).call(responsivefy);
+
+  var legend = d3.select('#legend').append('svg').attr('id', 'svg2').attr('width', 350)
+    .attr('height', 700).call(responsivefy);
 
   const yScale = [];
 
   const xScale = [];
 
-  function filterCSV(csv, key, value) {
-  var result = [];
-  csv.forEach(function(val,idx,arr){
-  
-    if(val[key] == value){
-    
-      result.push(val)
+  function responsivefy(svg) {
+
+    // Container is the DOM element, svg is appended. 
+    // Then we measure the container and find its 
+    // aspect ratio.
+
+    const container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style('width'), 10),
+      height = parseInt(svg.style('height'), 10),
+      aspect = width / height;
+
+    console.log("width&height", width, height)
+    // Add viewBox attribute to set the value to initial size 
+    // add preserveAspectRatio attribute to specify how to scale  
+    // and call resize so that svg resizes on page load 
+    svg.attr('viewBox', `0 0 ${width} ${height}`).
+      attr('preserveAspectRatio', 'xMinYMin').
+      call(resize);
+
+    d3.select(window).on('resize.', resize);
+
+    function resize() {
+      const targetWidth = $(window).width();
+      const targetheight = $(window).height();
+      //var targetHeight = $(window).height();
+      console.log("tw&h", targetWidth, targetheight);
+      d3.select('#svg1').attr('width', targetWidth);
+      d3.select('#svg1').attr('height', targetheight);
+      d3.select('#svg2').attr('width', targetWidth);
+      d3.select('#svg2').attr('height', targetheight);
+      // d3.select('#svg2').attr('width', targetWidth);
+      // d3.select('#svg2').attr('height', targetheight);
     }
-  })
-  return result;
-}
+  }
 
-  
+  function filterCSV(csv, key, value) {
+    var result = [];
+    csv.forEach(function (val, idx, arr) {
 
-  const render = data =>{
+      if (val[key] == value) {
+
+        result.push(val)
+      }
+    })
+    return result;
+  }
+
+
+
+  const render = data => {
 
     console.log(data.length);
-    
-      const margin = {left:150,top:0 ,right:20,bottom:30};
-      const innerWidth = width - margin.left - margin.right;
-      const innerHeight = height - margin.top - margin.bottom;
 
-      const g = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
+    const margin = { left: 130, top: 0, right: 20, bottom: 30 };
+    const innerWidth = width - margin.left - margin.right;
+    const innerHeight = height - margin.top - margin.bottom;
 
-      var y0 = d3.scaleBand().rangeRound([margin.top, innerHeight - margin.bottom]).paddingInner(0.1);
-      var y1 = d3.scaleBand().padding(0.05);;
-      var x = d3.scaleLinear().rangeRound([margin.left, innerWidth]);
-      var color = d3.scaleOrdinal().range(["#ca0020","#f4a582","#4c4c4c","#92c5de","#0571b0","#800080", "#00FFFF"]);
-      
-     var keys = d3.keys(data[0]).filter(function(key) { return (key != "district_n" &&  key != "month_n" &&  key != "block_n" ); });
-     console.log(keys, 'ageNames');
-     var dAges;
-      data.forEach(function(d) { 
-        dAges = keys.map(function(name) { return {name: name, value: +d[name]}; });
-        console.log(dAges ,"d.gages");
-      });
-      
-      y0.domain(data.map(function(d) { return d.block_n; }));
-      y1.domain(keys).range([y0.bandwidth(), 0]);
-      x.domain([0,100]);
-       
-      g.append("g")
+    const g = svg.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
+
+    var y0 = d3.scaleBand().rangeRound([margin.top, innerHeight - margin.bottom]).paddingInner(0.1);
+    var y1 = d3.scaleBand().padding(0.05);;
+    var x = d3.scaleLinear().rangeRound([margin.left, innerWidth]);
+    var color = d3.scaleOrdinal().range(["#ca0020", "#f4a582", "#4c4c4c", "#92c5de", "#0571b0", "#800080", "#00FFFF"]);
+
+    var keys = d3.keys(data[0]).filter(function (key) { return (key != "district_n" && key != "month_n" && key != "block_n"); });
+    // console.log(keys, 'ageNames');
+    var dAges;
+    data.forEach(function (d) {
+      dAges = keys.map(function (name) { return { name: name, value: +d[name] }; });
+      // console.log(dAges, "d.gages");
+    });
+
+    y0.domain(data.map(function (d) { return d.block_n; }));
+    y1.domain(keys).range([y0.bandwidth(), 0]);
+    x.domain([0, 100]);
+
+    g.append("g")
       .attr("class", "axis")
-      .attr("transform", `translate(0,${innerHeight- margin.bottom})`)
+      .attr("transform", `translate(0,${innerHeight - margin.bottom})`)
       .call(d3.axisBottom(x))
       .attr("font-size", "10x")
       .attr("font-weight", "bold");
@@ -143,61 +187,67 @@
       .attr("font-size", "15px")
       .attr("font-weight", "bold");
 
-     var state = g.selectAll(".state")
-        .data(data)
+    var state = g.selectAll(".state")
+      .data(data)
       .enter().append("g")
-        .attr("class", "g")
-        .attr("transform", function(d) { return "translate(0, " + y0(d.block_n) + ")"; });
+      .attr("class", "g")
+      .attr("transform", function (d) { return "translate(0, " + y0(d.block_n) + ")"; });
 
-      state.selectAll("rect")
-      .data(function(d) { return keys.map(function(name) { return {name: name, value: d[name]}; }); })
+    state.selectAll("rect")
+      .data(function (d) { return keys.map(function (name) { return { name: name, value: d[name] }; }); })
       .enter().append("rect")
       .attr("x", d => x(0))
       .attr("y", d => y1(d.name))
       .attr("height", y1.bandwidth())
-      .attr("width", d => x(d.value)-x(0))
-      .attr("fill", d => color(d.name));
+      .attr("width", d => x(d.value) - x(0))
+      .attr("fill", d => color(d.name))
+      .attr("class", function (d) {
+        return "rect bordered " + "color-" + d.color.substring(1);
+      });
 
-      //X-axis Label
-      svg.append("text")
-        .attr("text-anchor", "middle")
-        .attr("x", width - 350)
-        .attr("y", height - 6)
-        .attr("font-size", "medium")
-        .attr("font-style", "italic")
-        .attr("font-weight", "bold")
-        .text("% of AWC with available Infrastructure Facilities");
+    //X-axis Label
+    svg.append("text")
+      .attr("text-anchor", "middle")
+      .attr("x", width - 350)
+      .attr("y", height - 6)
+      .attr("font-size", "medium")
+      .attr("font-style", "italic")
+      .attr("font-weight", "bold")
+      .text("% of AWC with available Infrastructure Facilities");
 
-   
-  var legend = d3.select("#legend")
-			.selectAll("text")
-			.data(keys.slice());
 
-  legend.enter().append("rect")
-		  .attr("width", 20)
-		  .attr("height", 20)
-		  .attr("x", 0)
-		  .attr("y", function (d, i) { return 0 +i*30; })  // spacing
-		  .attr("fill",color);
-		    
-  legend.enter().append("text")
+    var legend = d3.select("#svg2")
+      .selectAll("text")
+      .data(keys.slice());
+
+    legend.enter().append("rect")
+      .attr("width", 20)
+      .attr("height", 20)
+      .attr("x", 0)
+      .attr("y", function (d, i) { return 0 + i * 30; })  // spacing
+      .attr("fill", color)
+      .attr("class", function (d, i) {
+        console.log("d.name", d);
+        return "legendcheckbox " + d.name
+      })
+
+    legend.enter().append("text")
       .attr("x", 25)
-      .attr("y", function(d,i){return 15 +i*30;})
+      .attr("y", function (d, i) { return 15 + i * 30; })
       .attr("class", "legend")
-      .text(function(d) { return  (toTitleCase(d).replace(/_/g, ' ')); }); 
-
+      .text(function (d) { return (toTitleCase(d).replace(/_/g, ' ')); });
 
   }
 
-  
+
   function toTitleCase(input) {
-        return input.charAt(0).toUpperCase() + input.substr(1).toLowerCase();
-    
-};
-  
+    return input.charAt(0).toUpperCase() + input.substr(1).toLowerCase();
+
+  };
+
   /////
 
-  data_from_django = {{ data|safe }};
+  data_from_django = {{ data | safe }};
 
   var data = []
 
@@ -217,65 +267,75 @@
     d.infantometer = +d.infantometer;
     d.stadiometer = +d.stadiometer;
     d.month_n = d.month_n;
-    d.block_n= d.block_n;
-		
-  });
-
-
-console.log(data, 'dataafterloop');
-
- 
-  $(".month a").click(function(){
-
-	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-
-	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-
-      var val = $(this).text();
-      
-      filterdata = filterCSV(data, 'month_n', val);
-
-      svg.selectAll("*").remove();
-
-      render(filterdata);
-
-      
-
-});
-
-
-
-$(function(){
-
-
-  //bind event
-
-  $(".month a").click(function(){
-
-    var selText = $(this).text();
-
-    console.log(selText);
-
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedMonth"></span>');
+    d.block_n = d.block_n;
 
   });
 
-   
-  //trigger event
 
-  $('.month a').first().trigger('click');
+  console.log(data, 'dataafterloop');
 
-});
+  var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
+
+  $('#monthSlider').slider().on('slideStop', function (ev) {
+    var val = tickLabels[ev.value];
+    filterdata = filterCSV(data, 'month_n', val);
+    svg.selectAll("*").remove();
+    render(filterdata);
+  });
 
 
-  monthSelect=$('.month a').first().text();
+
+  $(".month a").click(function () {
+
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+
+    var val = $(this).text();
+
+    filterdata = filterCSV(data, 'month_n', val);
+
+    svg.selectAll("*").remove();
+
+    render(filterdata);
+
+
+
+  });
+
+
+
+  $(function () {
+
+
+    //bind event
+
+    $(".month a").click(function () {
+
+      var selText = $(this).text();
+
+      console.log(selText);
+
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedMonth"></span>');
+
+    });
+
+
+    //trigger event
+
+    $('.month a').first().trigger('click');
+
+  });
+
+
+  monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
   augData = filterCSV(data, 'month_n', monthSelect);
   console.log(augData, 'augData');
- 
 
-  render(augData); 
 
-  
-  </script>
+  render(augData);
+
+
+</script>
 
 {% endblock %}

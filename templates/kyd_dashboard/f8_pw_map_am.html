@@ -5,15 +5,12 @@
 <link rel="stylesheet" type="text/css" href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'><link>
 
 <style>
-body {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: 0;
-  overflow: hidden;
-}
+  #table{
+    width: 70%;
+    height: 75%;
+    font-size: calc(30% + 0.5vw + 0.5vh);
+    font-weight:bold;
+  }
 div.tooltip { 
   position: absolute;     
   text-align: center;     
@@ -38,12 +35,16 @@ div.tooltip {
 }
 
 .info-hirar{
-	font-size:1.5em;
+    font-size: calc(50% + 0.5vw + 0.5vh);
+  }
+  p{
+    font-size: calc(35% + 0.5vw + 0.5vh);
+    font-weight: bold;
+  }
 
-}
-td{
- font-weight:bold;
-}
+  #slider-range text{
+    font-size:calc(50% + 0.5vw + 0.5vh);
+  }
 .scrollable{
     overflow-y: scroll; 
     max-height: 700px;
@@ -52,23 +53,14 @@ td{
 </style>
 {% endblock %}
 {% block feature %}
-<div class=" full-height">
-    <div class='heading text-dark mt-2 text-center' >Pregnant Woman Related Indicators</div>
+<div class="row">
+  <div class="col-12 h-75">
+    <div class="heading text-center">Pregnant Woman Related Indicators</div>
+  </div>
+</div>
 
-    <div class="row ">
-          <div class="row bg-info w-100 m-0">
-        <div class="dropdown" style="float: left; margin:10px">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Select Month
-          		<span class="selectedMonth"></span>
-            </button>
-            <div class="dropdown-menu drop-month" aria-labelledby="dropdownMenuButton">
-              {% for month_select in monthList %} 
-              <a class="dropdown-item" href="#">{{ month_select.month }}</a>
-               {% endfor %} 
-            </div>
-          </div>
-          <div class="dropdown" style="float: left; margin:10px"> 
+    <div class="row bg-info mb-1">
+          <div class="dropdown m-1"> 
             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
               Select Category
               <span class="selectedCategory"></span>
@@ -83,48 +75,33 @@ td{
                 <a class="dropdown-item" href="#">Trimester 3 women counselled on immediate breastfeeding (%)</a>
             </div>
           </div>
-          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'f7' dist_name quarter %}`">Previous Feature</button>
-          <div id="slider-range" style="float: left;"></div>
-
-
-
-
+          <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f7' dist_name %}`">Previous Feature</button>
+          <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'ftAwcInfra' dist_name %}`">Next Feature</button>
+          
+          <div id="slider-range"></div>
     </div>
-    </div>
-    
-  <div class="row h-100 scrollable">
-    <div class="col">
-      <div class='row'> 
-  
-       
-        <div class='col'>   
-          <button type="button" class="btn back-button m-4">back</button>
 
-            <span class='info info-hirar'>Melghat</span>
-          <br>
-          <p style="font-size: medium;">Click on the Polygon(Block/Project/Beat) to view the Lower Level</p>
-
-				</div>
-      </div>
-      <div class='row' style="height:900px" >
-      	<div class='col-8' id = "mymap">
-            <div class="text-center">
-                <p id="value-range"></p>
-            </div>
-
-                    <svg></svg>
-				</div>
-        <div class='col-4'>            
-          <div class='data-table scrollable'></div>
-				</div>
+    <div class="row text-center">
+      <div class="col-12 ">
+        <input type="text" id="monthSlider" name="somename" data-provide="slider"
+          data-slider-ticks="[0, 1, 2, 3]"
+          data-slider-ticks-labels='["Nov", "Dec", "Jan", "Feb"]'
+          data-slider-min="0" data-slider-max="4" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
       </div>
     </div>
 
- 
+    <div class="row"> 
+      <div class="col-12">
+        <button type="button" class="btn btn-dark back-button m-2">back</button>
+        <span class='info info-hirar'>Melghat</span>
+        <p>Click on the Polygon(Block/Project/Beat) to view the Lower Level</p>
+      </div>
+    </div>
 
-</div>
-  
-  
+      <div class="row">
+        <div class="col-8" id = "mymap"></div>
+        <div class="col-4" id="table"></div>
+      </div>
 
 {% endblock %}
 
@@ -144,14 +121,52 @@ td{
   return result;
 }    
 
-const width = document.getElementById("mymap").offsetWidth;
-const height = document.getElementById("mymap").offsetHeight;
+const svg = d3
+  .select("#mymap")
+  .append('svg')
+  .attr('width', 1300)
+  .attr('height', 800)
+  .call(responsivefy);
+
+  function responsivefy(svg) {
+
+// Container is the DOM element, svg is appended. 
+// Then we measure the container and find its 
+// aspect ratio. 
+const container = d3.select(svg.node().parentNode),
+  width = parseInt(svg.style('width'), 10),
+  height = parseInt(svg.style('height'), 10),
+  aspect = width / height;
+  
+console.log("width&height", width, height)
+// Add viewBox attribute to set the value to initial size 
+// add preserveAspectRatio attribute to specify how to scale  
+// and call resize so that svg resizes on page load 
+svg.attr('viewBox', `0 0 ${width} ${height}`).
+  attr('preserveAspectRatio', 'xMinYMin').
+  call(resize);
+
+d3.select(window).on('resize.' , resize);
+
+function resize() {
+  //const targetWidth = parseInt(container.style('width'));
+  const targetWidth = $(window).width();
+  const targetheight = $(window).height();
+  //var targetHeight = $(window).height();
+  console.log("tw&h",targetWidth,targetheight );
+  width1=targetWidth;
+  svg.attr('width', targetWidth);
+  svg.attr('height', targetheight);
+}
+}
+
+// const width = document.getElementById("mymap").offsetWidth;
+// const height = document.getElementById("mymap").offsetHeight;
 
 const margin = {left:200,top:300 ,right:40,bottom:20};
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
+    const innerWidth = 1300 - margin.left - margin.right;
+    const innerHeight = 800 - margin.top - margin.bottom;
     
-console.log(width,height);
 const transitionDuration = 1000;
 let level = 0; 
 let levelLocation = [];
@@ -160,7 +175,7 @@ let direction = 1;
 let circleEnter,rowEnter;
 let zoomBox = {'translate':[],'scale':[]};
 let table = d3
-  .select(".data-table")
+  .select("div#table")
   .append("table")
   .attr("class", "table update-table");
 let headerName = ["Location", "Percentage", "Actual Number"];
@@ -171,7 +186,9 @@ let headers = table
   .data(headerName)
   .enter()
   .append("th")
-  .text(d => d);
+  .text(d => d)
+  .style("text-align", "center");
+
 let row = table.append("tbody").selectAll("tr");
 //Zoom
 let zzoom = d3.zoom()
@@ -189,10 +206,6 @@ let tooltip = d3
   .attr("class", "tooltip")
   .style("opacity", 0);
 
-const svg = d3
-  .select("svg")
-  .attr("width", width)
-  .attr("height", height);
 const g = svg.append("g");
 
 var mercator = d3
@@ -361,15 +374,15 @@ const render = (
       .attr("text-anchor", "middle")
       .attr("font-family", "sans-serif");
 
-    if (level === 0) {
-      textLabel.attr("font-size", "12pt").attr("font-weight", "bold");
+      if (level === 0) {
+      textLabel.attr("font-size", "1.2em").attr("font-weight", "bold");
     } else if (level === 1) {
-      textLabel.attr("font-size", "12pt").attr("font-weight", "bold"); 
+      textLabel.attr("font-size", "1em").attr("font-weight", "bold"); 
     } else if (level === 2) {
-      textLabel.attr("font-size", "9pt").attr("font-weight", "bold");
+      textLabel.attr("font-size", "0.7em").attr("font-weight", "bold");
     }  else if (level === 3) {
-      textLabel.attr("font-size", "3pt").attr("font-weight", "bold");
-    } 
+      textLabel.attr("font-size", "0.2em").attr("font-weight", "bold");
+    }   
     
 
     //update slider color
@@ -764,15 +777,31 @@ const render = (
       temp["Actual Number"] = ActualValue(d);
       tbdata.push(temp);
     });
-    let percentageColor = d3
+    let percentageColor;
+    let actualColor;
+
+    if(PercentageValue=='d => d.prnt_anwmic_wmn' )
+    {
+      percentageColor = d3
       .scaleSequential()
-      .domain([ d3.min(tdata, PercentageValue), d3.max(tdata, PercentageValue)])
-      .interpolator(d3.interpolateRdYlGn);
-    let actualColor = d3
-      .scaleSequential()
-      .domain([ d3.min(tdata, ActualValue), d3.max(tdata, ActualValue)])
+      .domain([ d3.max(tdata, PercentageValue), d3.min(tdata, PercentageValue)])
       .interpolator(d3.interpolateRdYlGn);
 
+      actualColor = d3
+      .scaleSequential()
+      .domain([ d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
+      .interpolator(d3.interpolateRdYlGn);
+    }
+    else{
+      percentageColor = d3
+        .scaleSequential()
+        .domain([ d3.min(tdata, PercentageValue), d3.max(tdata, PercentageValue)])
+        .interpolator(d3.interpolateRdYlGn);
+      actualColor = d3
+        .scaleSequential()
+        .domain([ d3.min(tdata, ActualValue), d3.max(tdata, ActualValue)])
+        .interpolator(d3.interpolateRdYlGn);
+    }
     rowEnter = row
       .data(tbdata)
       .enter()
@@ -841,18 +870,32 @@ const render = (
         newtbdata.push(temp);
       });
 
-      let percentageColor = d3
+    let percentageColor;
+    let actualColor;
+
+    if(PercentageValue=='d => d.prnt_anwmic_wmn' )
+    {
+      percentageColor = d3
+      .scaleSequential()
+      .domain([ d3.max(tdata, PercentageValue), d3.min(tdata, PercentageValue)])
+      .interpolator(d3.interpolateRdYlGn);
+
+      actualColor = d3
+      .scaleSequential()
+      .domain([ d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
+      .interpolator(d3.interpolateRdYlGn);
+    }
+    else{
+      percentageColor = d3
         .scaleSequential()
-        .domain([
-          d3.max(tdata, PercentageValue),
-          d3.min(tdata, PercentageValue)
-        ])
+        .domain([d3.max(tdata, PercentageValue), d3.min(tdata, PercentageValue)])
         .interpolator(d3.interpolateRdYlGn);
-      let actualColor = d3
+
+      actualColor = d3
         .scaleSequential()
         .domain([d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
         .interpolator(d3.interpolateRdYlGn);
-
+    }
       rowEnter = row
         .data(newtbdata)
         .enter()
@@ -952,6 +995,24 @@ const selectGeoJSON = (val, allMonthGeoJSONData) => {
           break;
       }
     };
+
+    var tickLabels = ["Nov", "Dec", "Jan", "Feb"]
+
+$('#monthSlider').slider().on('slideStop', function (ev) {
+  var val = tickLabels[ev.value];
+  month_hack=val;
+  let monthdata = filterCSV(blockData, 'month_n', val); 
+  let monthjson = addProperty(monthdata, block); 
+
+  level = 0;
+	g.selectAll("*").remove();
+    rowEnter.selectAll("*").remove();
+    svg.transition().duration(transitionDuration).call( zzoom.transform, d3.zoomIdentity );
+    updateMonth();
+    levelLocation = [];
+    makemap(monthjson,monthdata);
+});
+
 $(".drop-month a").click(function(){
     console.log('hello');
     $(this).parents(".dropdown").find('.btn').html($(this).text());
@@ -980,7 +1041,7 @@ $(".drop-month a").click(function(){
       	makemap(monthjson,monthdata);
   })
   //initial map
-  month_hack=$('.drop-month a').first().text();
+  month_hack = tickLabels[$('#monthSlider').slider('getValue')];
   let monthdata = filterCSV(blockData, 'month_n', month_hack); 
   let monthjson = addProperty(monthdata, block); 
   makemap(monthjson, monthdata);};
@@ -1248,28 +1309,29 @@ const sliderRange = d3
   .max(0.999)
   .width(300)
   .tickFormat(d3.format(".1%"))
-  .ticks(5)
+  .ticks(1)
   .default([0.25, 0.5])
   .fill("yellow")
   .handle(
     d3
       .symbol()
       .type(d3.symbolCircle)
-      .size(550)()
+      .size(400)()
   );
 
 const gRange = d3
   .select("div#slider-range")
   .append("svg")
-  .attr("width", 500)
-  .attr("height", 100)
+  .attr("width", 410)
+  .attr("height", 75)
   .append("g")
   .attr("transform", "translate(30,30)");
 
 gRange.call(sliderRange);
 
 let leftX1 = +d3.select("line.track-inset").attr("x1");
-let leftX2 = +d3.select("line.track-fill").attr("x1") - 15;
+let leftX2 = +d3.select("line.track-fill").attr("x1") - 12;
+
 d3.select("g.slider")
   .append("line")
   .attr("class", "leftcolor")

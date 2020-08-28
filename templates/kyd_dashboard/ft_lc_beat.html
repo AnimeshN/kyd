@@ -2,575 +2,600 @@
 {% load static %}
 {% block feature_css %}
 
-  <!-- <link rel="stylesheet" href="{% static 'kyd_dashboard/css/feature1.css' %}" > -->
+<link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}">
+
 <style>
-    /* body { font: 12px Arial;} */
-    path {
+  path {
     stroke: #ccc;
     stroke-width: 3;
     fill: none;
-    
-}
 
-.axis path,
-.axis line {
+  }
+
+  .axis path,
+  .axis line {
     fill: none;
     stroke: grey;
     stroke-width: 1;
     shape-rendering: crispEdges;
-}
-#legendContainer{
-	position:absolute;
-	top:250px;
-	left:50px;
-	overflow: auto;
-	height:500px;
-	width:auto;
-}
-#legend{
-	width:auto;
-	height:500px;
-}
-.legend {
+  }
+
+  #legendContainer {
+    position: absolute;
+    top: 250px;
+    left: 50px;
+    overflow: auto;
+    height: 500px;
+    width: auto;
+  }
+
+  /* #legend {
+    width: auto;
+    height: 500px;
+  } */
+
+  .legend {
     font-size: 20px;
     font-weight: normal;
     text-anchor: left;
-}
-.legendcheckbox{
-	cursor: pointer;
-	
-}
-#showAll{
-	position:absolute;
-	top:600px;
-	left:880px;
-}
-#clearAll{
-	position:absolute;
-	top:600px;
-	left:950px;
-}
-input{
-	border-radius:5px;
-	padding:5px 10px;
-	background:#999;
-	border:0;
-	color:#fff;
-}
-#inds{
-	position:absolute;
-	top:10px;
-	left:10px;
-}
+  }
 
-.overlay {
+  .legendcheckbox {
+    cursor: pointer;
+
+  }
+
+  #showAll {
+    position: absolute;
+    top: 600px;
+    left: 880px;
+  }
+
+  #clearAll {
+    position: absolute;
+    top: 600px;
+    left: 950px;
+  }
+
+  input {
+    border-radius: 5px;
+    padding: 5px 10px;
+    background: #999;
+    border: 0;
+    color: #fff;
+  }
+
+  /* #inds {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+  }
+
+  .overlay {
     fill: none;
     pointer-events: all;
   }
-  
-.focus circle {
-        fill: steelblue;
-    }
 
-    .focus text {
-        font-size: 14px;
-    }
+  .focus circle {
+    fill: steelblue;
+  }
 
-    .tooltip {
-        fill: white;
-        stroke: #000;
-    }
+  .focus text {
+    font-size: 14px;
+  }
 
-    .tooltip-month, .tooltip-value {
-        font-weight: bold;
-    }
-	
-.plot{
-fill: #fff;
-}
+  .tooltip {
+    fill: white;
+    stroke: #000;
+  }
 
+  .tooltip-month,
+  .tooltip-value {
+    font-weight: bold;
+  } */
+
+  .plot {
+    fill: #fff;
+  }
 </style>
-  {% endblock %}
+{% endblock %}
 {% block feature %}
-<div class='heading text-dark mt-2 text-center'> Outcome Indicators Beat-Wise</div>
 
-<div class="row text-center" style="height: 100px;">
-  <div class="col-12 bg-info h-75 w-100" >   
-    <!-- select category -->
-    <div class="dropdown" style="float: left; margin:20px; font-weight:bold"> 
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Select Category
-		<span class="selectedCategory"></span>
-      </button>
-      <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
-        <a class="dropdown-item" href="#">Severly Stunted Children</a>
-        <a class="dropdown-item" href="#">Stunted Children</a>
-        <a class="dropdown-item" href="#">Severly Wasted(SAM) Children</a>
-		<a class="dropdown-item" href="#">Wasted Children</a>
-		<a class="dropdown-item" href="#">Severly Underweight(SUW) Children</a>
-		<a class="dropdown-item" href="#">Underweight Children</a>
-		<a class="dropdown-item" href="#">Newborns with low birth weight</a>		
-      </div>
-    </div>
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'ftlcprjt' dist_name quarter %}`">Previous Feature</button>   
-  <!--  <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`#`">Next Feature</button>   -->
+<div class="row">
+  <div class="col-12 h-75">
+    <div class="heading text-center"> Outcome Indicators Beat-Wise </div>
   </div>
-
-  <div class="col-12 m-5">
-    <svg width="1000" height="550"></svg>
-    <div id='tooltip' style='position:absolute;background-color:lightgray;padding:5px'></div>
-  </div>
-                        
-  </div>
-
-   
-<div id="legendContainer" class="legendContainer">
-	<svg id="legend"></svg>
 </div>
 
+<div class="row bg-info mb-2">
+  <div class="dropdown m-1">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      Select Category
+      <span class="selectedCategory"></span>
+    </button>
+    <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#">Severly Stunted Children</a>
+      <a class="dropdown-item" href="#">Stunted Children</a>
+      <a class="dropdown-item" href="#">Severly Wasted(SAM) Children</a>
+      <a class="dropdown-item" href="#">Wasted Children</a>
+      <a class="dropdown-item" href="#">Severly Underweight(SUW) Children</a>
+      <a class="dropdown-item" href="#">Underweight Children</a>
+      <a class="dropdown-item" href="#">Newborns with low birth weight</a>
+    </div>
+  </div>
+  <button type="button" class="btn btn-outline-dark m-1"
+    onclick="location.href=`{% url 'ftlcprjt' dist_name %}`">Previous Feature</button>
+</div>
 
+<div class="row m-1">
+  <div class="col-2" id="legend">
+  </div>
+
+  <div class="col-10" id="chart">
+    <div id='tooltip' style='position:absolute;background-color:lightgray;padding:2px'></div>
+  </div>
+</div>
 
 {% endblock %}
-
-
 {% block feature_js %}
+
 <script src="https://d3js.org/d3.v3.min.js"></script>
 
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 
 <script>
+  var width = 700,
+    height = 550;
 
-function parseURLParameters()
-{
-var query = (window.location.search || '?').substr(1);
-  var  map =[];
-   query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
-       map.push(value);
-        });
-     return map;
-}
+  var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 700)
+    .attr('height', 550).call(responsivefy);
 
-function filterCSV(csv, key, value) {
-  var result = [];
-  csv.forEach(function(val,idx,arr){
-  
-    if(val[key] == value){
-    
-      result.push(val)
+  var legend = d3.select('#legend').append('svg').attr('id', 'svg2').attr('width', 350)
+    .attr('height', 700).call(responsivefy);
+
+  function responsivefy(svg) {
+
+    // Container is the DOM element, svg is appended. 
+    // Then we measure the container and find its 
+    // aspect ratio.
+
+    const container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style('width'), 10),
+      height = parseInt(svg.style('height'), 10),
+      aspect = width / height;
+
+    console.log("width&height", width, height)
+    // Add viewBox attribute to set the value to initial size 
+    // add preserveAspectRatio attribute to specify how to scale  
+    // and call resize so that svg resizes on page load 
+    svg.attr('viewBox', `0 0 ${width} ${height}`).
+      attr('preserveAspectRatio', 'xMinYMin').
+      call(resize);
+
+    d3.select(window).on('resize.', resize);
+
+    function resize() {
+      const targetWidth = $(window).width();
+      const targetheight = $(window).height();
+      console.log("tw&h", targetWidth, targetheight);
+      d3.select('#svg1').attr('width', targetWidth);
+      d3.select('#svg1').attr('height', targetheight);
+      d3.select('#svg2').attr('width', targetWidth);
+      d3.select('#svg2').attr('height', targetheight);
     }
-  })
-  return result;
-}
+  }
+
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
+
+  function filterCSV(csv, key, value) {
+    var result = [];
+    csv.forEach(function (val, idx, arr) {
+
+      if (val[key] == value) {
+
+        result.push(val)
+      }
+    })
+    return result;
+  }
+
+  var ticks;
+  var selectedCategory = 'Severly Stunted Children';
+
+  var mouseG
+
+  var margin = { top: 10, right: 20, bottom: 30, left: 50 },
+    innerWidth = 700 - margin.left - margin.right,
+    innerHeight = 550 - margin.top - margin.bottom;
 
 
+  // Set the ranges
+  var xScale = d3.scale.ordinal().rangePoints([0, innerWidth], 0.5);
+  var yScale = d3.scale.linear().range([innerHeight, 0]);
 
-
-
-
-var svg = d3.select('svg');
- var width = +svg.attr('width');
- var height = +svg.attr('height');
- var ticks;
-  var selectedCategory ='Severly Stunted Children';
-
-var mouseG
-
-var margin = {top: 50, right: 20, bottom: 30, left: 160},
-       innerWidth = width - margin.left - margin.right,
-       innerHeight = height - margin.top - margin.bottom;
-	  
-  
-// Set the ranges
-//var x = d3.time.scale().range([0, width]);
-var xScale = d3.scale.ordinal().rangePoints([0, innerWidth], 0.5);
-//var x = d3.time.scale().domain([d3.time.format("Aug").parseMonth, d3.time.format("Dec").parseMonth]).range([0, width]);
-var yScale = d3.scale.linear().range([innerHeight, 0]);
-
-// Define the axes
-var xAxis = d3.svg.axis().scale(xScale)
+  // Define the axes
+  var xAxis = d3.svg.axis().scale(xScale)
     .orient("bottom")
 
-var yAxis = d3.svg.axis().scale(yScale)
+  var yAxis = d3.svg.axis().scale(yScale)
     .orient("left");
 
-// Define the line
-var stateline = d3.svg.line()
-		.interpolate("linear")
-    .x(function(d) { return xScale(d.month); })
-    .y(function(d) { return yScale(d.value); });
-	
-	
+  // Define the line
+  var stateline = d3.svg.line()
+    .interpolate("linear")
+    .x(function (d) { return xScale(d.month); })
+    .y(function (d) { return yScale(d.value); });
+
+
   var g = svg.append('g')
-          .attr('transform', `translate(${margin.left}, ${margin.top})`); 
-  
+    .attr('transform', `translate(${margin.left}, ${margin.top})`);
+
   //make a rectangle so there is something to click on
-g.append("rect")
+  g.append("rect")
     .attr("width", innerWidth)
     .attr("height", innerHeight)
     .attr("class", "plot");
 
- //make a clip path for the graph  
- var clip = g.append("clipPath")
+  //make a clip path for the graph  
+  var clip = g.append("clipPath")
     .attr("id", "clip")
     .append("svg:rect")
     .attr("x", 0)
     .attr("y", 0)
     .attr("width", innerWidth)
-    .attr("height", innerHeight);  
-
-      
-     var color = d3.scale.category20();
+    .attr("height", innerHeight);
 
 
-     var color = d3.scale.category20();
-var ticks
-const render = data =>{
-    
-console.log( data, "in update graph")
+  var color = d3.scale.category20();
+
+
+  var color = d3.scale.category20();
+  var ticks
+  const render = data => {
+
+    console.log(data, "in update graph")
     // Scale the range of the data
-	ticks = data.map(function(d) {
+    ticks = data.map(function (d) {
       return d.month
     });
     xScale.domain(ticks);
 
-   
-   console.log("inside ydomain");
-    yScale.domain([d3.min(data, function(d) { return d.value; }), d3.max(data, function(d) { return d.value; })]);
-	
+
+    console.log("inside ydomain");
+    yScale.domain([d3.min(data, function (d) { return d.value; }), d3.max(data, function (d) { return d.value; })]);
+
 
 
     // Nest the entries by block
-  console.log(data,'beforeNest');
+    console.log(data, 'beforeNest');
     dataNest = d3.nest()
-        .key(function(d) {return d.beat})
-        .entries(data);
-	
-	console.log("print data nest");
-	console.log(dataNest);
+      .key(function (d) { return d.beat })
+      .entries(data);
 
-  var result=dataNest;
-				
-	console.log("print result");
-		console.log(result);		
- 		var block = g.selectAll(".line")
-      .data(result, function(d){return d.key});
+    console.log("print data nest");
+    console.log(dataNest);
 
-		block.enter().append("path")
-			.attr("class", "line")
-			
-			
-			
+    var result = dataNest;
 
-		block.transition()
-			.style("stroke", function(d,i) { return d.color = color(d.key); })
-			.attr("id", function(d){ return 'tag'+d.key.replace(/\s+/g, '');}) // assign ID
-			.attr("d", function(d){
-				return stateline(d.values)
-			});
-			
-		
-		block.exit().remove();
+    console.log("print result");
+    console.log(result);
+    var block = g.selectAll(".line")
+      .data(result, function (d) { return d.key });
 
+    block.enter().append("path")
+      .attr("class", "line")
 
-		var legend = d3.select("#legend")
-			.selectAll("text")
-			.data(dataNest, function(d){return d.key});
+    block.transition()
+      .style("stroke", function (d, i) { return d.color = color(d.key); })
+      .attr("id", function (d) { return 'tag' + d.key.replace(/\s+/g, ''); }) // assign ID
+      .attr("d", function (d) {
+        return stateline(d.values)
+      });
 
-		//checkboxes
-		legend.enter().append("rect")
-		  .attr("width", 20)
-		  .attr("height", 20)
-		  .attr("x", 0)
-		  .attr("y", function (d, i) { return 0 +i*30; })  // spacing
-		  .attr("fill",function(d) { 
-		    return color(d.key);
-		    
-		  })
-		 
-			
-		        
+    block.exit().remove();
+
+    var legend = d3.select("#svg2")
+      .selectAll("text")
+      .data(dataNest, function (d) { return d.key });
+
+    //checkboxes
+    legend.enter().append("rect")
+      .attr("width", 20)
+      .attr("height", 20)
+      .attr("x", 0)
+      .attr("y", function (d, i) { return 0 + i * 30; })  // spacing
+      .attr("fill", function (d) {
+        return color(d.key);
+
+      })
+
     // Add the Legend text
     legend.enter().append("text")
       .attr("x", 25)
-      .attr("y", function(d,i){return 15 +i*30;})
+      .attr("y", function (d, i) { return 15 + i * 30; })
       .attr("class", "legend");
 
-		legend.transition()
-      .style("fill", "#777" )
-      .text(function(d){return d.key;});
+    legend.transition()
+      .style("fill", "#777")
+      .text(function (d) { return d.key; });
 
-		legend.exit().remove();
+    legend.exit().remove();
 
-		svg.selectAll(".axis").remove();
-		
-		 // Add the X Axis
+    svg.selectAll(".axis").remove();
+
+    // Add the X Axis
     g.append("g")
-        .attr("class", "x axis")
-        .attr("transform", "translate(0," + innerHeight + ")")
-        .call(xAxis)
-		.attr("font-size", "20px")
-		 .attr("font-weight", "bold");
-		
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + innerHeight + ")")
+      .call(xAxis)
+      .attr("font-size", "20px")
+      .attr("font-weight", "bold");
+
     // Add the Y Axis
     g.append("g")
-        .attr("class", "y axis")
-        .call(yAxis)
-		.attr("font-size", "20px")
-		.attr("font-weight", "bold")
-		 .append("text")
+      .attr("class", "y axis")
+      .call(yAxis)
+      .attr("font-size", "20px")
+      .attr("font-weight", "bold")
+      .append("text")
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", ".71em");
 
-      var mouseG = g.append("g")
-            .attr("class", "mouse-over-effects");
+    var mouseG = g.append("g")
+      .attr("class", "mouse-over-effects");
 
-          
-       var tooltip = d3.select('#tooltip');
 
-  mouseG.append("path") // create vertical line to follow mouse
-          .data(result)
-          .attr("class", "mouse-line")
-          .style("stroke", "black")
-          .style("stroke-width", '3px')
+    var tooltip = d3.select('#tooltip');
+
+    mouseG.append("path") // create vertical line to follow mouse
+      .data(result)
+      .attr("class", "mouse-line")
+      .style("stroke", "black")
+      .style("stroke-width", '3px')
+      .style("opacity", "0");
+
+    var lines = document.getElementsByClassName('line');
+
+    var mousePerLine = mouseG.selectAll('.mouse-per-line')
+      .data(result)
+      .enter()
+      .append("g")
+      .attr("class", "mouse-per-line");
+
+    mousePerLine.append("circle")
+      .attr('class', 'topic-circle')
+      .attr("r", 2)
+      .style("stroke", function (d) {
+        return color(d.key)
+      })
+      .style("fill", "none")
+      .style("stroke-width", '3px')
+      .style("opacity", "0");
+
+
+    mouseG.append('svg:rect')
+      .attr('width', width)
+      .attr('height', height)
+      .attr('opacity', 0)
+      .attr('pointer-events', 'all')
+      .on('mouseout', function () { // on mouse out hide line, circles and text
+        d3.select(".mouse-line")
           .style("opacity", "0");
-   
-     var lines = document.getElementsByClassName('line');
-
-     var mousePerLine = mouseG.selectAll('.mouse-per-line')
-            .data(result)
-            .enter()
-            .append("g")
-            .attr("class", "mouse-per-line");
-
-          mousePerLine.append("circle")
-            .attr('class', 'topic-circle')
-            .attr("r", 2)
-            .style("stroke", function (d) {
-              return color(d.key)
-            })
-            .style("fill", "none")
-            .style("stroke-width", '3px')
-            .style("opacity", "0");
-
-
-   mouseG.append('svg:rect')
-    .attr('width', width)
-    .attr('height', height)
-    .attr('opacity', 0)
-    .attr('pointer-events', 'all')
-    .on('mouseout', function () { // on mouse out hide line, circles and text
-         d3.select(".mouse-line")
-           .style("opacity", "0");
-         d3.selectAll(".mouse-per-line circle")
-           .style("opacity", "0");
-       })
-    .on('mouseover', function () { // on mouse in show line, circles and text
-         d3.select(".mouse-line")
-           .style("opacity", "1");
-         d3.selectAll(".mouse-per-line circle")
-           .style("opacity", "1") })
-    .on('mousemove', drawTooltip)
-    .on('mouseout', removeTooltip);
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "0");
+      })
+      .on('mouseover', function () { // on mouse in show line, circles and text
+        d3.select(".mouse-line")
+          .style("opacity", "1");
+        d3.selectAll(".mouse-per-line circle")
+          .style("opacity", "1")
+      })
+      .on('mousemove', drawTooltip)
+      .on('mouseout', removeTooltip);
 
 
     function removeTooltip() {
-    if (tooltip) tooltip.style('display', 'none');
-    // if(mouseG)     mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
+      if (tooltip) tooltip.style('display', 'none');
+      // if(mouseG)     mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
     }
 
-      function drawTooltip() {
-      
-        var monthX
+    function drawTooltip() {
 
-        var tickPos = xScale.range();
-        // console.log(tickPos,'as')
-          var m = d3.mouse(this),
-          lowDiff = 1e99,
-                xI = null;
-              d3.selectAll(".mouse-per-line")
-                .attr("transform", function (d, i) {		 
-                    for (var i = 0; i < tickPos.length; i++){
-              var diff = Math.abs(m[0] - tickPos[i]);
-              if (diff < lowDiff){
-                lowDiff = diff;
-                xI = i;
+      var monthX
 
-              }
+      var tickPos = xScale.range();
+      // console.log(tickPos,'as')
+      var m = d3.mouse(this),
+        lowDiff = 1e99,
+        xI = null;
+      d3.selectAll(".mouse-per-line")
+        .attr("transform", function (d, i) {
+          for (var i = 0; i < tickPos.length; i++) {
+            var diff = Math.abs(m[0] - tickPos[i]);
+            if (diff < lowDiff) {
+              lowDiff = diff;
+              xI = i;
+
             }
-            d3.select(".mouse-line")
-                    .attr("d", function () {
-                      monthX =  d.values[xI].month
-                      var data = "M" + xScale(d.values[xI].month) + "," + height;
-                      data += " " + xScale(d.values[xI].month) + "," + 0;					
-                      return data;
-                    });
-                    return "translate(" + xScale(d.values[xI].month) + "," + yScale(d.values[xI].value) + ")";     
-
-                      
-                    });
-        
-        tooltip.html(monthX)
-          .style('display', 'block')
-          .style('left', (d3.event.pageX + 10) + "px")
-          .style('top', (d3.event.pageY - 10) + "px" )
-          .selectAll()
-          .data(result).enter()
-          .append('div')
-          .style('color', d => d.color)
-          .html(d => d.key + ': ' + yScale.invert(yScale(d.values[xI].value)).toFixed(2));
-      }
-};
+          }
+          d3.select(".mouse-line")
+            .attr("d", function () {
+              monthX = d.values[xI].month
+              var data = "M" + xScale(d.values[xI].month) + "," + height;
+              data += " " + xScale(d.values[xI].month) + "," + 0;
+              return data;
+            });
+          return "translate(" + xScale(d.values[xI].month) + "," + yScale(d.values[xI].value) + ")";
 
 
-			  
+        });
 
-// Get the data
-// d3.csv("{% static 'data/csv/linechart/lc_beat_data.csv'%}", function(error, csv) {
-
-    ////
-    data_from_django = {{ data|safe }};
-    var data = []
-    data_from_django.forEach(element => {
-        data.push(element.fields);
-    });
- 
- data.forEach(function(d) {
-		
-		d.svrly_wasting_percent = +d.svrly_wasting_percent;
-		d.wasting_percent = +d.wasting_percent;
-    d.svrly_stunted_percent = +d.svrly_stunted_percent;
-		d.stunting_percent = +d.stunting_percent;
-		d.svrly_underweight_percent = +d.svrly_underweight_percent;
-		d.underweight_percent = +d.underweight_percent;
-		d.low_birth_weight_percent = +d.low_birth_weight_percent;
-		
-  });
-			
-		var section;
-		section='svrly_stunting_percent';
-		var choices = parseURLParameters(window.location.href);	
-		var filterdata;
-		if(choices.length > 0)
-		{
-		selectedCategory=choices[1];
-    var selectedProject=choices[0].replace(/_/g, ' ');
-		var choiceOneVal= choices[1].replace(/_/g, ' ');
-		if(choiceOneVal == 'Severly Stunted Children')
-			section ='svrly_stunted_percent';
-			else if (choiceOneVal == 'Stunted Children')
-			section ='stunting_percent';
-			else if(choiceOneVal == 'Severly Wasted(SAM) Children')
-			section ='svrly_wasting_percent';
-			else if(choiceOneVal == 'Wasted Children')
-			section = 'wasting_percent';
-			else if(choiceOneVal == 'Severly Underweight(SUW) Children')
-			section = 'svrly_underweight_percent';
-			else if (choiceOneVal == 'Underweight Children')
-			section = 'underweight_percent'
-			else 
-			section = 'low_birth_weight_percent'
-
-      $('.category a').parents('.dropdown').find('.dropdown-toggle').html(choiceOneVal + ' <span class="selectedCategory"></span>');
-      filterdata = filterCSV(data, 'project_n', selectedProject);
-      console.log(filterdata);
-      console.log(section, 'section');
-		  setData(filterdata,section);	
-		}
-		else
-		{
-    filterdata=data;
-		setData(data,section);
-		}
-	
-	
-	$(".category a").click(function(){
-			var val = $(this).text();
-			selectedCategory=val;
-			if(val == 'Severly Stunted Children')
-			section ='svrly_stunted_percent';
-			else if (val == 'Stunted Children')
-			section ='stunting_percent';
-			else if(val == 'Severly Wasted(SAM) Children')
-			section ='svrly_wasting_percent';
-			else if(val == 'Wasted Children')
-			section = 'wasting_percent';
-			else if(val == 'Severly Underweight(SUW) Children')
-			section = 'svrly_underweight_percent';
-			else if (val == 'Underweight Children')
-			section = 'underweight_percent'
-			else 
-			section = 'low_birth_weight_percent'
-			
-			// mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
-			// mouseG.selectAll('.mouse-per-line').selectAll('text').remove();
-			setData(filterdata,section);
-			});			
-					
-    
-// });
-
-function setData(data, section)
-{
-			
-			var dataFilter = data.map(function(d){return {month: d.month_n, beat: d.beat_n, value: d[section]} })
-
-	      //debugger
-	      
-		    dataFilter.forEach(function(d) {
-    			
-    			d.value =+d.value;
-    			d.active = true;
-    		});
-    		
-			console.log(dataFilter,'dataFilter');
-		   
-		    //debugger
-        render(dataFilter);
-
-
-			
-				jQuery('h1.page-header').html(section);
-}
-
-$(function(){
-  //bind event
- 
-   $(".category a").click(function(){
-    var valCategory = $(this).text();
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
-  });
-
-  if(choices.length <= 0)
-		{
-  //trigger event
-  $(".category a").first().trigger('click');
+      tooltip.html(monthX)
+        .style('display', 'block')
+        .style('left', (d3.event.pageX + 10) + "px")
+        .style('top', (d3.event.pageY - 10) + "px")
+        .selectAll()
+        .data(result).enter()
+        .append('div')
+        .style('color', d => d.color)
+        .html(d => d.key + ': ' + yScale.invert(yScale(d.values[xI].value)).toFixed(2));
     }
-});
+  };
 
-function clearAll(){
-  d3.selectAll(".line")
-	.transition().duration(100)
-			.attr("d", function(d){
+
+
+
+  // Get the data
+  // d3.csv("{% static 'data/csv/linechart/lc_beat_data.csv'%}", function(error, csv) {
+
+  ////
+  data_from_django = {{ data | safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
+  });
+
+  data.forEach(function (d) {
+
+    d.svrly_wasting_percent = +d.svrly_wasting_percent;
+    d.wasting_percent = +d.wasting_percent;
+    d.svrly_stunted_percent = +d.svrly_stunted_percent;
+    d.stunting_percent = +d.stunting_percent;
+    d.svrly_underweight_percent = +d.svrly_underweight_percent;
+    d.underweight_percent = +d.underweight_percent;
+    d.low_birth_weight_percent = +d.low_birth_weight_percent;
+
+  });
+
+  var section;
+  section = 'svrly_stunting_percent';
+  var choices = parseURLParameters(window.location.href);
+  var filterdata;
+  if (choices.length > 0) {
+    selectedCategory = choices[1];
+    var selectedProject = choices[0].replace(/_/g, ' ');
+    var choiceOneVal = choices[1].replace(/_/g, ' ');
+    if (choiceOneVal == 'Severly Stunted Children')
+      section = 'svrly_stunted_percent';
+    else if (choiceOneVal == 'Stunted Children')
+      section = 'stunting_percent';
+    else if (choiceOneVal == 'Severly Wasted(SAM) Children')
+      section = 'svrly_wasting_percent';
+    else if (choiceOneVal == 'Wasted Children')
+      section = 'wasting_percent';
+    else if (choiceOneVal == 'Severly Underweight(SUW) Children')
+      section = 'svrly_underweight_percent';
+    else if (choiceOneVal == 'Underweight Children')
+      section = 'underweight_percent'
+    else
+      section = 'low_birth_weight_percent'
+
+    $('.category a').parents('.dropdown').find('.dropdown-toggle').html(choiceOneVal + ' <span class="selectedCategory"></span>');
+    filterdata = filterCSV(data, 'project_n', selectedProject);
+    console.log(filterdata);
+    console.log(section, 'section');
+    setData(filterdata, section);
+  }
+  else {
+    filterdata = data;
+    setData(data, section);
+  }
+
+
+  $(".category a").click(function () {
+    var val = $(this).text();
+    selectedCategory = val;
+    if (val == 'Severly Stunted Children')
+      section = 'svrly_stunted_percent';
+    else if (val == 'Stunted Children')
+      section = 'stunting_percent';
+    else if (val == 'Severly Wasted(SAM) Children')
+      section = 'svrly_wasting_percent';
+    else if (val == 'Wasted Children')
+      section = 'wasting_percent';
+    else if (val == 'Severly Underweight(SUW) Children')
+      section = 'svrly_underweight_percent';
+    else if (val == 'Underweight Children')
+      section = 'underweight_percent'
+    else
+      section = 'low_birth_weight_percent'
+
+    // mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
+    // mouseG.selectAll('.mouse-per-line').selectAll('text').remove();
+    setData(filterdata, section);
+  });
+
+
+  // });
+
+  function setData(data, section) {
+
+    var dataFilter = data.map(function (d) { return { month: d.month_n, beat: d.beat_n, value: d[section] } })
+
+    //debugger
+
+    dataFilter.forEach(function (d) {
+
+      d.value = +d.value;
+      d.active = true;
+    });
+
+    console.log(dataFilter, 'dataFilter');
+
+    //debugger
+    render(dataFilter);
+
+
+
+    jQuery('h1.page-header').html(section);
+  }
+
+  $(function () {
+    //bind event
+
+    $(".category a").click(function () {
+      var valCategory = $(this).text();
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+    });
+
+    if (choices.length <= 0) {
+      //trigger event
+      $(".category a").first().trigger('click');
+    }
+  });
+
+  function clearAll() {
+    d3.selectAll(".line")
+      .transition().duration(100)
+      .attr("d", function (d) {
         return null;
       });
-  d3.select("#legend").selectAll("rect")
-  .transition().duration(100)
+    d3.select("#legend").selectAll("rect")
+      .transition().duration(100)
       .attr("fill", "#ccc");
-};
+  };
 
-function showAll(){
-  d3.selectAll(".line")
-	.transition().duration(100)
-			.attr("d", function(d){
+  function showAll() {
+    d3.selectAll(".line")
+      .transition().duration(100)
+      .attr("d", function (d) {
         return stateline(d.values);
       });
-  d3.select("#legend").selectAll("rect")
-  .attr("fill",function(d) {
-    if (d.active == true){
-       return color(d.key);
-     }
-   })
-};
-  </script>
+    d3.select("#legend").selectAll("rect")
+      .attr("fill", function (d) {
+        if (d.active == true) {
+          return color(d.key);
+        }
+      })
+  };
+</script>
 {% endblock %}

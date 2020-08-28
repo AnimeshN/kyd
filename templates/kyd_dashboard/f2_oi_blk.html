@@ -1,347 +1,332 @@
-{% extends 'dashboard/dash_base.html' %}
+{% extends 'kyd_dashboard/kyd_base.html' %}
 
 {% load static %}
 
 {% block feature_css %}
 
-  <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+<link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}">
 
-  <style>
+<style>
+  .full-height {
+    height: 100%;
+  }
 
-    .full-height {
-
-  height: 100%;
-
-}
-
-
-
-.header {
-
+  .header {
     height: 50px;
+  }
 
-}
+  #b2 {
+    display: block;
+  }
 
-
-
-#b2{
-
-  display: block;
-
-}
-
-
-
-
-
-  </style>
+  text {
+    font-size: 1.1rem
+  }
+</style>
 
 {% endblock %}
 
 {% block feature %}
 
-<div class="container-fluid full-height">
-
-
-<div class='heading text-dark mt-2 text-center'>Outcome Indicators</div>
-
-
-
-    <div class="row header ">
-
-        <div class="col bg-info">
-
-            <div class="dropdown" style="float: left; margin:20px;">
-
-                <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-                  Select Month
-
-                  <span class="selectedMonth"></span>
-
-                </button>
-
-                <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-                  {% for month_select in monthList %} 
-                  <a class="dropdown-item" href="#">{{ month_select.month }}</a>
-                  {% endfor %}   
-
-                </div>
-
-              </div>
-
-              <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'f1' dist_name  quarter %}`">Previous Feature</button>
-
-              <button type="button" class="btn btn-info" style="float: left; margin:20px 20px 0px 10px" onclick="location.href=`{% url 'f3' dist_name  quarter %}`">Next Feature</button>
-
-              <button class='btn toggle' style="float: left; margin:20px">Compare</button>
-
-
-
-        </div>
-
-
-
-    </div>
-
-    
-
-    <div class="row header ">
-
-    <div id = 'sw' class="spinner-wrapper">
-
-      <div class="spinner"></div>
-
-    </div>
-
-
-
-    <div class="col bg-info">
-
-      <div class="row header ">
-
-          <div class="dropdown" style="float: left; margin:20px"> 
-
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-              Select Category
-
-              <span class="selectedCategory"></span>
-
-            </button>
-
-            <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
-
-              <a class="dropdown-item" href="#">% Stunting</a>
-
-              <a class="dropdown-item" href="#">% Wasting</a>
-
-              <a class="dropdown-item" href="#">% Underweight</a>
-
-              <a class="dropdown-item" href="#">% Low Birth Weight</a>
-
-              <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
-
-              <a class="dropdown-item" href="#">% Children breastfed at birth</a>
-
-              <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
-
-              <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
-
-              <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
-
-              <a class="dropdown-item" href="#">% Anemic pregnant women</a>
-
-              <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
-
-              <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
-
-              <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
-
-              <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
-
-              <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
-
-              <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
-
-            </div>
-
-      
-
-          </div>
-
-        </div>
-
-      </div> 
-
-        
-
-      <div class="col bg-info" id="cat2">
-
-        <div class="row header ">
-  
-
-          <div class="dropdown" style="float: right; margin:20px"> 
-
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-              Select Category
-
-              <span class="selectedCategory"></span>
-
-            </button>
-
-            <div class="dropdown-menu category2" aria-labelledby="dropdownMenuButton">
-
-              <a class="dropdown-item" href="#">% Stunting</a>
-
-              <a class="dropdown-item" href="#">% Wasting</a>
-
-              <a class="dropdown-item" href="#">% Underweight</a>
-
-              <a class="dropdown-item" href="#">% Low Birth Weight</a>
-
-              <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
-
-              <a class="dropdown-item" href="#">% Children breastfed at birth</a>
-
-              <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
-
-              <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
-
-              <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
-
-              <a class="dropdown-item" href="#">% Anemic pregnant women</a>
-
-              <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
-
-              <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
-
-              <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
-
-              <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
-
-              <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
-
-              <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
-
-              </div>
-
-      
-
-          </div>
-    </div>
-    </div>
-      
-
-      </div>
-      <div class="row h-100">
-      <div class="col">
-
-        <div class='row h-100'>
-  
-          <div id = 'b1' class='bar1'></div>
-          <div id = 'b2'class='bar2'></div>
-          </div>
-        </div>
-      </div>
-
-    </div>
-
-
-
-</div>
+<div class="row">
+  <div class="col-12 h-75">
+    <div class="heading text-center">Outcome Indicators</div>
+  </div>
 </div>
 
 
+<div class="row header h-75">
+  <div class="col bg-info">
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f1' dist_name %}`">Previous
+      Feature</button>
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f3' dist_name  %}`">Next
+      Feature</button>
+    <button class='btn btn-outline-dark toggle m-1'>Compare</button>
+  </div>
+</div>
+
+
+
+<div class="row bg-info mt-2">
+  <div class="col-xs-8 col-sm-8 col-md-6 bg-info">
+
+    <div class="dropdown m-1">
+
+      <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+
+        Select Category
+
+        <span class="selectedCategory"></span>
+
+      </button>
+
+      <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+
+        <a class="dropdown-item" href="#">% Stunting</a>
+
+        <a class="dropdown-item" href="#">% Wasting</a>
+
+        <a class="dropdown-item" href="#">% Underweight</a>
+
+        <a class="dropdown-item" href="#">% Low Birth Weight</a>
+
+        <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
+
+        <a class="dropdown-item" href="#">% Children breastfed at birth</a>
+
+        <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
+
+        <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
+
+        <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
+
+        <a class="dropdown-item" href="#">% Anemic pregnant women</a>
+
+        <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
+
+        <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
+
+        <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
+
+        <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
+
+        <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
+
+        <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate
+          breastfeeding</a>
+
+      </div>
+
+
+
+    </div>
+
+  </div>
+
+
+
+  <div class="col-xs-4 col-sm-4 col-md-6 bg-info">
+    <!-- 
+    <div class="row header "> -->
+    <div class="dropdown m-1" id="cat2">
+
+      <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+
+        Select Category
+
+        <span class="selectedCategory"></span>
+
+      </button>
+
+      <div class="dropdown-menu category2" aria-labelledby="dropdownMenuButton">
+
+        <a class="dropdown-item" href="#">% Stunting</a>
+
+        <a class="dropdown-item" href="#">% Wasting</a>
+
+        <a class="dropdown-item" href="#">% Underweight</a>
+
+        <a class="dropdown-item" href="#">% Low Birth Weight</a>
+
+        <a class="dropdown-item" href="#">% Children completed 1 year immunization</a>
+
+        <a class="dropdown-item" href="#">% Children breastfed at birth</a>
+
+        <a class="dropdown-item" href="#">% Children exclusively breastfed</a>
+
+        <a class="dropdown-item" href="#">% Children initiated complementary feeding(in the past 30 days)</a>
+
+        <a class="dropdown-item" href="#">% Children (6-24 months) initiated appropriate complementary feeding</a>
+
+        <a class="dropdown-item" href="#">% Anemic pregnant women</a>
+
+        <a class="dropdown-item" href="#">% Pregnant women Tenatus Completed</a>
+
+        <a class="dropdown-item" href="#">% Pregnant women had at least 1 ANC visit by delivery</a>
+
+        <a class="dropdown-item" href="#">% Pregnant woment had at least 4 ANC visit by delivery</a>
+
+        <a class="dropdown-item" href="#">% Pregnant women resting during pregnancy</a>
+
+        <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
+
+        <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate
+          breastfeeding</a>
+
+      </div>
+
+
+
+    </div>
+    <!-- </div> -->
+  </div>
+
+
+</div>
+
+<div class="row text-center">
+  <div class="col-12 ">
+    <input type="text" id="monthSlider" name="somename" data-provide="slider"
+      data-slider-ticks="[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]"
+      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "June", "July"]'
+      data-slider-min="0" data-slider-max="11" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
+  </div>
+</div>
+
+<div id='sw' class="spinner-wrapper">
+
+  <div class="spinner"></div>
+
+</div>
+
+<div class="row">
+  <div class="col-6" id='b1'>
+  </div>
+  <div class="col-6" id='b2'>
+  </div>
+</div>
 
 {% endblock %}
 
-
-
-
-
 {% block feature_js %}
-
-
 
 <script>
 
+  const width = 500;
+  const height = 800;
+  //const width2 = document.getElementById("b2").offsetWidth;
 
 
-    // const width = document.getElementById("b1").offsetWidth/1.2;
+  const tansitionDuration = 500;
 
-    // const height = document.getElementById("b1").offsetHeight/2;
-    const width= 500;
-    const height= 800;
+  const bar1 = d3.select('#b1').append("svg").attr('id', 'svg1').attr('width', 500).attr('height', 800).call(responsivefy);
 
-    const tansitionDuration = 500;
+  const bar2 = d3.select('#b2').append("svg").attr('id', 'svg2').attr('width', 500).attr('height', 800).call(responsivefy);
 
-    let bar1 = d3.select('.bar1').append("svg").attr('width',width).attr('height',height);
 
-    let bar2 = d3.select('.bar2').append("svg").attr('width',width).attr('height',height);
+  function responsivefy(svg) {
 
-    let xValue  = d => d.stunting_percent;
+    // Container is the DOM element, svg is appended. 
+    // Then we measure the container and find its 
+    // aspect ratio.
 
-    let yValue = d => d.block_n;
+    const container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style('width'), 10),
+      height = parseInt(svg.style('height'), 10),
+      aspect = width / height;
 
-    const margin = {left:150,top:50 ,right:0,bottom:30};
+    console.log("width&height", width, height)
+    // Add viewBox attribute to set the value to initial size 
+    // add preserveAspectRatio attribute to specify how to scale  
+    // and call resize so that svg resizes on page load 
+    svg.attr('viewBox', `0 0 ${width} ${height}`).
+      attr('preserveAspectRatio', 'xMinYMin').
+      call(resize);
 
-    const innerWidth = width - margin.left - margin.right;
+    d3.select(window).on('resize.', resize);
 
-    const innerHeight = height - margin.top - margin.bottom;
-
-    const g1 = bar1.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
-
-    const g2 = bar2.append('g').attr('transform', `translate(${margin.left}, ${margin.top})`);
-
-    const xScale = d3.scaleLinear().domain([0,100]).range([0, innerWidth]);
-    
-    let bar_height=40;
-
-    
-
-    function filterCSV(csv, key, value) {
-      var result = [];
-      csv.forEach(function(val,idx,arr){
-      
-        if(val[key] == value){
-        
-          result.push(val)
-        }
-      })
-      return result;
+    function resize() {
+      const targetWidth = $(window).width();
+      const targetheight = $(window).height();
+      //var targetHeight = $(window).height();
+      console.log("tw&h", targetWidth, targetheight);
+      d3.select('#svg1').attr('width', targetWidth);
+      d3.select('#svg1').attr('height', targetheight);
+      d3.select('#svg2').attr('width', targetWidth);
+      d3.select('#svg2').attr('height', targetheight);
     }
+  }
 
 
 
-    const drawLeft = data =>{
+  let sortBy = 'stunting_percent';
 
-      const yScale =  d3.scaleBand().range([bar_height*data.length, 0]).padding(0.1);
-      yScale.domain(data.map(yValue))
-      let getColor;
+  let xValue = d => d.stunting_percent;
 
-      if(xValue =='d=> d.stunting_percent' || xValue =='d=> d.wasting_percent'|| xValue =='d=> d.underweight_percent'|| xValue =='d=> d.low_birth_weight_percent' || xValue =='d => d.prnt_anwmic_wmn')
-      {
-        getColor = d3.scaleSequential().domain([d3.max(data,xValue),d3.min(data,xValue)])
+  let yValue = d => d.block_n;
+
+  const marginLeft = { left: 150, top: 50, right: 0, bottom: 30 };
+
+  const innerWidthLeft = width - marginLeft.left - marginLeft.right;
+
+  const innerHeightLeft = height - marginLeft.top - marginLeft.bottom;
+
+  const marginRight = { left: 220, top: 50, right: 0, bottom: 30 };
+
+  const innerWidthRight = width - marginRight.left - marginRight.right;
+
+  const innerHeightRight = height - marginRight.top - marginRight.bottom;
+
+
+  const g1 = bar1.append('g').attr('transform', `translate(${marginLeft.left}, ${marginLeft.top})`);
+
+  const g2 = bar2.append('g').attr('transform', `translate(${marginRight.left}, ${marginRight.top})`);
+
+  const xScaleLeft = d3.scaleLinear().domain([0, 100]).range([0, innerWidthLeft]);
+  const xScaleRight = d3.scaleLinear().domain([0, 100]).range([0, innerWidthRight]);
+
+  let bar_height = 40;
+
+  function filterCSV(csv, key, value) {
+    var result = [];
+    csv.forEach(function (val, idx, arr) {
+
+      if (val[key] == value) {
+
+        result.push(val)
+      }
+    })
+    return result;
+  }
+
+
+  const drawLeft = data => {
+
+    const yScale = d3.scaleBand().range([bar_height * data.length, 0]).padding(0.1);
+    yScale.domain(data.map(yValue))
+
+    let getColor;
+
+    if (xValue == 'd=> d.stunting_percent' || xValue == 'd=> d.wasting_percent' || xValue == 'd=> d.underweight_percent' || xValue == 'd=> d.low_birth_weight_percent' || xValue == 'd => d.prnt_anwmic_wmn') {
+      getColor = d3.scaleSequential().domain([d3.max(data, xValue), d3.min(data, xValue)])
 
         .interpolator(d3.interpolateRdYlGn);
-      }
-      else{
-        getColor = d3.scaleSequential().domain([d3.min(data,xValue),d3.max(data,xValue)])
+    }
+    else {
+      getColor = d3.scaleSequential().domain([d3.min(data, xValue), d3.max(data, xValue)])
 
-          .interpolator(d3.interpolateRdYlGn);
-      }
+        .interpolator(d3.interpolateRdYlGn);
+    }
 
-        
+    let chart = g1.selectAll("rect").data(data)
 
-      let chart = g1.selectAll("rect").data(data)
+    let chartText = g1.selectAll('text').data(data)
 
-      let chartText = g1.selectAll('text').data(data)
+    chart.exit().remove();
 
-      chart.exit().remove();
+    chartText.exit().remove();
 
-      chartText.exit().remove();
+    chart.enter().append('rect')
 
-      chart.enter().append('rect')
+      //.attr('x', d => xScale(d.block_n))
+      .attr('width', d => xScaleLeft(xValue(d)))
 
-            //.attr('x', d => xScale(d.block_n))
-            .attr('width',  d => xScale(xValue(d)))
+      .attr("y", d => yScale(d.block_n))
 
-            .attr("y", d => yScale(d.block_n))
+      .attr("height", yScale.bandwidth())
 
-            .attr("height", yScale.bandwidth())
-            
-            .attr("fill", d => getColor(xValue(d)));
+      .attr("fill", d => getColor(xValue(d)));
 
 
-      chartText.enter().append('text')
+    chartText.enter().append('text')
 
       .text(d => xValue(d).toFixed(2))
 
-      .attr('x', d => xScale(xValue(d)))
+      .attr('x', d => xScaleLeft(xValue(d)))
 
-      .attr('y', d=> yScale(d.block_n)+ yScale.bandwidth()/2)
+      .attr('y', d => yScale(d.block_n) + yScale.bandwidth() / 2)
 
       .attr("font-family", "sans-serif")
 
@@ -354,50 +339,50 @@
 
 
 
-      chart.transition().duration(tansitionDuration)
+    chart.transition().duration(tansitionDuration)
 
-        //.attr('x',d => x(xValue(d)))
+      //.attr('x',d => x(xValue(d)))
 
-        .attr('width',  d => xScale(xValue(d)))
+      .attr('width', d => xScaleLeft(xValue(d)))
 
-        .attr("y", d => yScale(d.block_n))
+      .attr("y", d => yScale(d.block_n))
 
-        .attr("height", yScale.bandwidth())
-        .attr("fill", d => getColor(xValue(d)))
+      .attr("height", yScale.bandwidth())
+      .attr("fill", d => getColor(xValue(d)))
 
-      chartText.transition().duration(tansitionDuration)
+    chartText.transition().duration(tansitionDuration)
 
       .text(d => xValue(d).toFixed(2))
 
-      .attr('x', d => xScale(xValue(d)))
+      .attr('x', d => xScaleLeft(xValue(d)))
 
-      .attr('y', d=> yScale(d.block_n)+ yScale.bandwidth()/2);
-
-
-            
+      .attr('y', d => yScale(d.block_n) + yScale.bandwidth() / 2);
 
 
 
-      let xaxisLeft = g1.append('g').call(d3.axisBottom(xScale))
-
-                .attr('transform',`translate(0, ${bar_height*data.length})`)
-
-               
-
-        xaxisLeft.selectAll("text").attr("font-size", "12px")
-            .attr("font-weight", "bold")
-            .style("text-anchor", "end");
-            
 
 
 
-        let yaxisLeft = g1.append('g')
+    let xaxisLeft = g1.append('g').call(d3.axisBottom(xScaleLeft))
 
-            .call(d3.axisLeft(yScale))
+      .attr('transform', `translate(0, ${bar_height * data.length})`)
 
-            .attr("font-size", "12px")
 
-            .attr("font-weight", "bold");
+
+    xaxisLeft.selectAll("text").attr("font-size", "12px")
+      .attr("font-weight", "bold")
+      .style("text-anchor", "middle");
+
+
+
+
+    let yaxisLeft = g1.append('g')
+
+      .call(d3.axisLeft(yScale))
+
+      .attr("font-size", "12px")
+
+      .attr("font-weight", "bold");
 
   }
 
@@ -411,55 +396,52 @@
 
 
 
-  const drawRight = data =>{
-    const yScale =  d3.scaleBand().range([bar_height*data.length, 0]).padding(0.1);
+  const drawRight = data => {
+    const yScale = d3.scaleBand().range([bar_height * data.length, 0]).padding(0.1);
 
-      yScale.domain(data.map(yValue))
+    yScale.domain(data.map(yValue))
 
+    let getColor;
 
-
-   let getColor;
-
-      if(xValue =='d=> d.stunting_percent' || xValue =='d=> d.wasting_percent'|| xValue =='d=> d.underweight_percent'|| xValue =='d=> d.low_birth_weight_percent' || xValue =='d => d.prnt_anwmic_wmn')
-      {
-        getColor = d3.scaleSequential().domain([d3.max(data,xValue),d3.min(data,xValue)])
+    if (xValue == 'd=> d.stunting_percent' || xValue == 'd=> d.wasting_percent' || xValue == 'd=> d.underweight_percent' || xValue == 'd=> d.low_birth_weight_percent' || xValue == 'd => d.prnt_anwmic_wmn') {
+      getColor = d3.scaleSequential().domain([d3.max(data, xValue), d3.min(data, xValue)])
 
         .interpolator(d3.interpolateRdYlGn);
-      }
-      else{
-        getColor = d3.scaleSequential().domain([d3.min(data,xValue),d3.max(data,xValue)])
+    }
+    else {
+      getColor = d3.scaleSequential().domain([d3.min(data, xValue), d3.max(data, xValue)])
 
-          .interpolator(d3.interpolateRdYlGn);
-      }
+        .interpolator(d3.interpolateRdYlGn);
+    }
 
-        
 
-      let chart = g2.selectAll("rect").data(data)
 
-      let chartText = g2.selectAll('text').data(data)
+    let chart = g2.selectAll("rect").data(data)
 
-      chart.exit().remove();
+    let chartText = g2.selectAll('text').data(data)
 
-      chartText.exit().remove();
+    chart.exit().remove();
 
-      chart.enter().append('rect')
+    chartText.exit().remove();
 
-        //.attr('x',d => x(xValue(d)))
-        .attr('width',  d => xScale(xValue(d)))
+    chart.enter().append('rect')
 
-        .attr("y", d => yScale(d.block_n))
+      //.attr('x',d => x(xValue(d)))
+      .attr('width', d => xScaleRight(xValue(d)))
 
-        .attr("height", yScale.bandwidth())
+      .attr("y", d => yScale(d.block_n))
 
-        .attr("fill", d => getColor(xValue(d)));
+      .attr("height", yScale.bandwidth())
 
-      chartText.enter().append('text')
+      .attr("fill", d => getColor(xValue(d)));
+
+    chartText.enter().append('text')
 
       .text(d => xValue(d).toFixed(2))
 
-      .attr('x', d => xScale(xValue(d)))
+      .attr('x', d => xScaleRight(xValue(d)))
 
-      .attr('y', d=> yScale(d.block_n)+ yScale.bandwidth()/2)
+      .attr('y', d => yScale(d.block_n) + yScale.bandwidth() / 2)
 
       .attr("font-family", "sans-serif")
 
@@ -472,50 +454,50 @@
 
 
 
-      chart.transition().duration(tansitionDuration)
+    chart.transition().duration(tansitionDuration)
 
-            //.attr('x',d => x(xValue(d)))
+      //.attr('x',d => x(xValue(d)))
 
-        .attr('width',  d => xScale(xValue(d)))
+      .attr('width', d => xScaleRight(xValue(d)))
 
-        .attr("y", d => yScale(d.block_n))
+      .attr("y", d => yScale(d.block_n))
 
-        //.attr("height", y.bandwidth())
-        .attr("fill", d => getColor(xValue(d)));
+      //.attr("height", y.bandwidth())
+      .attr("fill", d => getColor(xValue(d)));
 
-      chartText.transition().duration(tansitionDuration)
+    chartText.transition().duration(tansitionDuration)
 
       .text(d => xValue(d).toFixed(2))
 
-      .attr('x', d => xScale(xValue(d)))
+      .attr('x', d => xScaleRight(xValue(d)))
 
-      .attr('y', d=> yScale(d.block_n)+ yScale.bandwidth()/2);
-
-
-            
+      .attr('y', d => yScale(d.block_n) + yScale.bandwidth() / 2);
 
 
 
-      let xaxisRight = g2.append('g').call(d3.axisBottom(xScale))
-
-                .attr('transform',`translate(0, ${bar_height*data.length})`);
-
-               
-
-      xaxisRight.selectAll("text").attr("font-size", "12px")
-            .attr("font-weight", "bold")
-            .style("text-anchor", "end");
-            
 
 
 
-        let yaxisRight = g2.append('g')
+    let xaxisRight = g2.append('g').call(d3.axisBottom(xScaleRight))
 
-            .call(d3.axisLeft(yScale))
+      .attr('transform', `translate(0, ${bar_height * data.length})`);
 
-            .attr("font-size", "12px")
 
-            .attr("font-weight", "bold");
+
+    xaxisRight.selectAll("text").attr("font-size", "12px")
+      .attr("font-weight", "bold")
+      .style("text-anchor", "middle");
+
+
+
+
+    let yaxisRight = g2.append('g')
+
+      .call(d3.axisLeft(yScale))
+
+      .attr("font-size", "12px")
+
+      .attr("font-weight", "bold");
 
   }
 
@@ -523,81 +505,81 @@
 
   const monthwise = (data) => {
 
-    let listdata = {"Nov":[],"Dec":[],"Jan":[]}
+    let listdata = { "Nov": [], "Dec": [], "Jan": [] }
 
-    data.forEach(d =>{
+    data.forEach(d => {
 
       var temp = {};
 
-        temp['block_n'] = d.block_n;
+      temp['block_n'] = d.block_n;
 
-        temp['stunting_percent'] = +d.stunting_percent;
+      temp['stunting_percent'] = +d.stunting_percent;
 
-        temp['wasting_percent'] = +d.wasting_percent;
+      temp['wasting_percent'] = +d.wasting_percent;
 
-        temp['underweight_percent'] = +d.underweight_percent;
+      temp['underweight_percent'] = +d.underweight_percent;
 
-        temp['low_birth_weight_percent'] = +d.low_birth_weight_percent;
+      temp['low_birth_weight_percent'] = +d.low_birth_weight_percent;
 
-        temp['prnt_child_1yr_cmpltd_immunzt'] = +d.prnt_child_1yr_cmpltd_immunzt;
+      temp['prnt_child_1yr_cmpltd_immunzt'] = +d.prnt_child_1yr_cmpltd_immunzt;
 
-        temp['prnt_chld_bf_at_birth'] = +d.prnt_chld_bf_at_birth;
+      temp['prnt_chld_bf_at_birth'] = +d.prnt_chld_bf_at_birth;
 
-        temp['prnt_chld_excly_bf'] = +d.prnt_chld_excly_bf;
+      temp['prnt_chld_excly_bf'] = +d.prnt_chld_excly_bf;
 
-        temp['prnt_chld_intd_cf_past30d'] = +d.prnt_chld_intd_cf_past30d;
+      temp['prnt_chld_intd_cf_past30d'] = +d.prnt_chld_intd_cf_past30d;
 
-        temp['prnt_chld_6to24mnths_intd_cf'] = +d.prnt_chld_6to24mnths_intd_cf;
+      temp['prnt_chld_6to24mnths_intd_cf'] = +d.prnt_chld_6to24mnths_intd_cf;
 
-        temp['prnt_anwmic_wmn'] = +d.prnt_anwmic_wmn;
+      temp['prnt_anwmic_wmn'] = +d.prnt_anwmic_wmn;
 
-        temp['prnt_tenatus_cmpltd'] = +d.prnt_tenatus_cmpltd;
+      temp['prnt_tenatus_cmpltd'] = +d.prnt_tenatus_cmpltd;
 
-        temp['prnt_wmn_1_anc_vst_dlvry'] = +d.prnt_wmn_1_anc_vst_dlvry;
+      temp['prnt_wmn_1_anc_vst_dlvry'] = +d.prnt_wmn_1_anc_vst_dlvry;
 
-        temp['prnt_wmn_4_anc_vst_dlvry'] = +d.prnt_wmn_4_anc_vst_dlvry;
+      temp['prnt_wmn_4_anc_vst_dlvry'] = +d.prnt_wmn_4_anc_vst_dlvry;
 
-        temp['prnt_wmn_rstg_drg_prgncy'] = +d.prnt_wmn_rstg_drg_prgncy;
+      temp['prnt_wmn_rstg_drg_prgncy'] = +d.prnt_wmn_rstg_drg_prgncy;
 
-        temp['prnt_wmn_etg_xtr_ml_drng_prgncy'] = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+      temp['prnt_wmn_etg_xtr_ml_drng_prgncy'] = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
 
-        temp['prnt_trmstr_3wmn_cnsld_imdtbf'] = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
+      temp['prnt_trmstr_3wmn_cnsld_imdtbf'] = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
 
-        listdata[d.month_n].push(temp);
+      listdata[d.month_n].push(temp);
 
     })
 
-  return listdata;
+    return listdata;
 
   }
 
-  
 
-  const selectData =  (val,monthwiseData,sortBy) =>{
 
-  if(val === "November"){
+  const selectData = (val, monthwiseData, sortBy) => {
 
-        monthwiseData.Nov = sortData(monthwiseData.Nov,sortBy);
+    if (val === "November") {
 
-        return monthwiseData.Nov;
+      monthwiseData.Nov = sortData(monthwiseData.Nov, sortBy);
 
-    }else if (val === "December"){
+      return monthwiseData.Nov;
 
-        monthwiseData.Dec = sortData(monthwiseData.Dec,sortBy);
+    } else if (val === "December") {
 
-        return monthwiseData.Dec;
+      monthwiseData.Dec = sortData(monthwiseData.Dec, sortBy);
 
-    }else if (val === 'January'){
+      return monthwiseData.Dec;
 
-        monthwiseData.Jan = sortData(monthwiseData.Jan,sortBy);
+    } else if (val === 'January') {
 
-        return monthwiseData.Jan       
+      monthwiseData.Jan = sortData(monthwiseData.Jan, sortBy);
 
-      }
+      return monthwiseData.Jan
+
+    }
 
   }
 
-  const sortData = (data,parameter) =>{
+  const sortData = (data, parameter) => {
 
     let sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
 
@@ -605,184 +587,184 @@
 
   }
 
-  
 
-//   d3.csv("{% static 'data/csv/f2.csv'%}").then(data=>{
-data_from_django = {{ data|safe }};
 
-var data = []
+  //   d3.csv("{% static 'data/csv/f2.csv'%}").then(data=>{
+  data_from_django = {{ data | safe }};
 
-data_from_django.forEach(element => {
+  var data = []
 
-  data.push(element.fields);
+  data_from_django.forEach(element => {
 
-});
+    data.push(element.fields);
 
-data.forEach(d => {
-  d.block_n = d.block_n;
-  d.stunting_percent= +d.stunting_percent;
-  d.wasting_percent = +d.wasting_percent;
-  d.underweight_percent = +d.underweight_percent;
-  d.low_birth_weight_percent = +d.low_birth_weight_percent;
-  d.prnt_child_1yr_cmpltd_immunzt = +d.prnt_child_1yr_cmpltd_immunzt;
-  d.prnt_chld_bf_at_birth = +d.prnt_chld_bf_at_birth;
-  d.prnt_chld_excly_bf = +d.prnt_chld_excly_bf;
-  d.prnt_chld_intd_cf_past30d = +d.prnt_chld_intd_cf_past30d;
-  d.prnt_chld_6to24mnths_intd_cf = +d.prnt_chld_6to24mnths_intd_cf;
-  d.prnt_anwmic_wmn = +d.prnt_anwmic_wmn;
-  d.prnt_tenatus_cmpltd = +d.prnt_tenatus_cmpltd;
-  d.prnt_wmn_1_anc_vst_dlvry = +d.prnt_wmn_1_anc_vst_dlvry;
-  d.prnt_wmn_4_anc_vst_dlvry = +d.prnt_wmn_4_anc_vst_dlvry;
-  d.prnt_wmn_rstg_drg_prgncy = +d.prnt_wmn_rstg_drg_prgncy;
-  d.prnt_wmn_etg_xtr_ml_drng_prgncy= +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-  d.prnt_trmstr_3wmn_cnsld_imdtbf = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
-  d.month_n = d.month_n;
-		
   });
 
- 
-    monthSelect=$('.month a').first().text();
-    augData = filterCSV(data, 'month_n', monthSelect);
-    augSortedData = sortData(augData,'stunting_percent');
-    drawLeft(augSortedData);
-    drawRight(augSortedData);
+  data.forEach(d => {
+    d.block_n = d.block_n;
+    d.stunting_percent = +d.stunting_percent;
+    d.wasting_percent = +d.wasting_percent;
+    d.underweight_percent = +d.underweight_percent;
+    d.low_birth_weight_percent = +d.low_birth_weight_percent;
+    d.prnt_child_1yr_cmpltd_immunzt = +d.prnt_child_1yr_cmpltd_immunzt;
+    d.prnt_chld_bf_at_birth = +d.prnt_chld_bf_at_birth;
+    d.prnt_chld_excly_bf = +d.prnt_chld_excly_bf;
+    d.prnt_chld_intd_cf_past30d = +d.prnt_chld_intd_cf_past30d;
+    d.prnt_chld_6to24mnths_intd_cf = +d.prnt_chld_6to24mnths_intd_cf;
+    d.prnt_anwmic_wmn = +d.prnt_anwmic_wmn;
+    d.prnt_tenatus_cmpltd = +d.prnt_tenatus_cmpltd;
+    d.prnt_wmn_1_anc_vst_dlvry = +d.prnt_wmn_1_anc_vst_dlvry;
+    d.prnt_wmn_4_anc_vst_dlvry = +d.prnt_wmn_4_anc_vst_dlvry;
+    d.prnt_wmn_rstg_drg_prgncy = +d.prnt_wmn_rstg_drg_prgncy;
+    d.prnt_wmn_etg_xtr_ml_drng_prgncy = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+    d.prnt_trmstr_3wmn_cnsld_imdtbf = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
+    d.month_n = d.month_n;
 
+  });
 
-    let sortBy = 'stunting_percent';
 
-    $(".month a").click(function(){
+  var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
 
-        $(this).parents(".dropdown").find('.btn').html($(this).text());
-        valMonth = $(this).text();
-        filterdata = filterCSV(data, 'month_n', valMonth);
-        monthData =  sortData(filterdata,sortBy);
-        drawLeft(monthData);
-        drawRight(monthData);   
+  $('#monthSlider').slider().on('slideStop', function (ev) {
+    var val = tickLabels[ev.value];
+    filterdata = filterCSV(data, 'month_n', val);
+    monthData = sortData(filterdata, sortBy);
+    drawLeft(monthData);
+    drawRight(monthData);
+  });
 
-    });
 
+  monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
+  augData = filterCSV(data, 'month_n', monthSelect);
+  augSortedData = sortData(augData, sortBy);
+  drawLeft(augSortedData);
+  drawRight(augSortedData);
 
+  $(".month a").click(function () {
 
-    $(".category a").click(function(){
+    $(this).parents(".dropdown").find('.btn').html($(this).text());
+    valMonth = $(this).text();
+    filterdata = filterCSV(data, 'month_n', valMonth);
+    monthData = sortData(filterdata, sortBy);
+    drawLeft(monthData);
+    drawRight(monthData);
 
-        $(this).parents(".dropdown").find('.btn').html($(this).text());
+  });
 
-        let valCategory = $(this).text();
 
-        switch(valCategory){
 
-            case "% Stunting": xValue = d=> d.stunting_percent; sortBy = 'stunting_percent'; break;
+  $(".category a").click(function () {
 
-            case "% Wasting": xValue = d=> d.wasting_percent; sortBy = 'wasting_percent'; break;
+    $(this).parents(".dropdown").find('.btn').html($(this).text());
 
-            case "% Underweight": xValue = d=> d.underweight_percent; sortBy = 'underweight_percent';  break;
+    let valCategory = $(this).text();
 
-            case "% Low Birth Weight": xValue = d=> d.low_birth_weight_percent; sortBy = 'low_birth_weight_percent'; break;
+    switch (valCategory) {
 
-            case "% Children completed 1 year immunization": xValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortBy = 'prnt_child_1yr_cmpltd_immunzt'; break;
+      case "% Stunting": xValue = d => d.stunting_percent; sortBy = 'stunting_percent'; break;
 
-            case "% Children breastfed at birth": xValue = d => d.prnt_chld_bf_at_birth; sortBy = 'prnt_chld_bf_at_birth'; break;
+      case "% Wasting": xValue = d => d.wasting_percent; sortBy = 'wasting_percent'; break;
 
-            case "% Children exclusively breastfed": xValue = d => d.prnt_chld_excly_bf; sortBy = 'prnt_chld_excly_bf'; break;
+      case "% Underweight": xValue = d => d.underweight_percent; sortBy = 'underweight_percent'; break;
 
-            case "% Children initiated complementary feeding(in the past 30 days)": xValue = d => d.prnt_chld_intd_cf_past30d; sortBy = 'prnt_chld_intd_cf_past30d'; break;
+      case "% Low Birth Weight": xValue = d => d.low_birth_weight_percent; sortBy = 'low_birth_weight_percent'; break;
 
-            case "% Children (6-24 months) initiated appropriate complementary feeding": xValue = d => d.prnt_chld_6to24mnths_intd_cf; sortBy = 'prnt_chld_6to24mnths_intd_cf'; break;
+      case "% Children completed 1 year immunization": xValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortBy = 'prnt_child_1yr_cmpltd_immunzt'; break;
 
-            case "% Anemic pregnant women": xValue = d => d.prnt_anwmic_wmn ; sortBy = 'prnt_anwmic_wmn'; break;
+      case "% Children breastfed at birth": xValue = d => d.prnt_chld_bf_at_birth; sortBy = 'prnt_chld_bf_at_birth'; break;
 
-            case "% Pregnant women Tenatus Completed": xValue = d => d.prnt_tenatus_cmpltd; sortBy = 'prnt_tenatus_cmpltd'; break;
+      case "% Children exclusively breastfed": xValue = d => d.prnt_chld_excly_bf; sortBy = 'prnt_chld_excly_bf'; break;
 
-            case "% Pregnant women had at least 1 ANC visit by delivery": xValue = d => d.prnt_wmn_1_anc_vst_dlvry ; sortBy = 'prnt_wmn_1_anc_vst_dlvry'; break;
+      case "% Children initiated complementary feeding(in the past 30 days)": xValue = d => d.prnt_chld_intd_cf_past30d; sortBy = 'prnt_chld_intd_cf_past30d'; break;
 
-            case "% Pregnant woment had at least 4 ANC visit by delivery": xValue = d => d.prnt_wmn_4_anc_vst_dlvry ; sortBy = 'prnt_wmn_4_anc_vst_dlvry'; break;
+      case "% Children (6-24 months) initiated appropriate complementary feeding": xValue = d => d.prnt_chld_6to24mnths_intd_cf; sortBy = 'prnt_chld_6to24mnths_intd_cf'; break;
 
-            case "% Pregnant women resting during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+      case "% Anemic pregnant women": xValue = d => d.prnt_anwmic_wmn; sortBy = 'prnt_anwmic_wmn'; break;
 
-            case "% Pregnant women eating extra meal during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+      case "% Pregnant women Tenatus Completed": xValue = d => d.prnt_tenatus_cmpltd; sortBy = 'prnt_tenatus_cmpltd'; break;
 
-            case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": xValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf ; sortBy = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
+      case "% Pregnant women had at least 1 ANC visit by delivery": xValue = d => d.prnt_wmn_1_anc_vst_dlvry; sortBy = 'prnt_wmn_1_anc_vst_dlvry'; break;
 
-        }
+      case "% Pregnant woment had at least 4 ANC visit by delivery": xValue = d => d.prnt_wmn_4_anc_vst_dlvry; sortBy = 'prnt_wmn_4_anc_vst_dlvry'; break;
 
-        console.log('mon',valMonth);
-        filterdata = filterCSV(data, 'month_n', valMonth);
-        monthData = sortData(filterdata,sortBy);
-        drawLeft(monthData);
+      case "% Pregnant women resting during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
 
+      case "% Pregnant women eating extra meal during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
 
+      case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": xValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf; sortBy = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
 
-    });
+    }
 
+    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    console.log('mon', valMonth);
+    filterdata = filterCSV(data, 'month_n', valMonth);
+    monthData = sortData(filterdata, sortBy);
+    drawLeft(monthData);
 
 
-    $(".category2 a").click(function(){
 
-        $(this).parents(".dropdown").find('.btn').html($(this).text());
+  });
 
-        let valCategory = $(this).text();
 
-        switch(valCategory){
 
-          case "% Stunting": xValue = d=> d.stunting_percent; sortBy = 'stunting_percent'; break;
+  $(".category2 a").click(function () {
 
-            case "% Wasting": xValue = d=> d.wasting_percent; sortBy = 'wasting_percent'; break;
+    $(this).parents(".dropdown").find('.btn').html($(this).text());
 
-            case "% Underweight": xValue = d=> d.underweight_percent; sortBy = 'underweight_percent';  break;
+    let valCategory = $(this).text();
 
-            case "% Low Birth Weight": xValue = d=> d.low_birth_weight_percent; sortBy = 'low_birth_weight_percent'; break;
+    switch (valCategory) {
 
-            case "% Children completed 1 year immunization": xValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortBy = 'prnt_child_1yr_cmpltd_immunzt'; break;
+      case "% Stunting": xValue = d => d.stunting_percent; sortBy = 'stunting_percent'; break;
 
-            case "% Children breastfed at birth": xValue = d => d.prnt_chld_bf_at_birth; sortBy = 'prnt_chld_bf_at_birth'; break;
+      case "% Wasting": xValue = d => d.wasting_percent; sortBy = 'wasting_percent'; break;
 
-            case "% Children exclusively breastfed": xValue = d => d.prnt_chld_excly_bf; sortBy = 'prnt_chld_excly_bf'; break;
+      case "% Underweight": xValue = d => d.underweight_percent; sortBy = 'underweight_percent'; break;
 
-            case "% Children initiated complementary feeding(in the past 30 days)": xValue = d => d.prnt_chld_intd_cf_past30d; sortBy = 'prnt_chld_intd_cf_past30d'; break;
+      case "% Low Birth Weight": xValue = d => d.low_birth_weight_percent; sortBy = 'low_birth_weight_percent'; break;
 
-            case "% Children (6-24 months) initiated appropriate complementary feeding": xValue = d => d.prnt_chld_6to24mnths_intd_cf; sortBy = 'prnt_chld_6to24mnths_intd_cf'; break;
+      case "% Children completed 1 year immunization": xValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortBy = 'prnt_child_1yr_cmpltd_immunzt'; break;
 
-            case "% Anemic pregnant women": xValue = d => d.prnt_anwmic_wmn ; sortBy = 'prnt_anwmic_wmn'; break;
+      case "% Children breastfed at birth": xValue = d => d.prnt_chld_bf_at_birth; sortBy = 'prnt_chld_bf_at_birth'; break;
 
-            case "% Pregnant women Tenatus Completed": xValue = d => d.prnt_tenatus_cmpltd; sortBy = 'prnt_tenatus_cmpltd'; break;
+      case "% Children exclusively breastfed": xValue = d => d.prnt_chld_excly_bf; sortBy = 'prnt_chld_excly_bf'; break;
 
-            case "% Pregnant women had at least 1 ANC visit by delivery": xValue = d => d.prnt_wmn_1_anc_vst_dlvry ; sortBy = 'prnt_wmn_1_anc_vst_dlvry'; break;
+      case "% Children initiated complementary feeding(in the past 30 days)": xValue = d => d.prnt_chld_intd_cf_past30d; sortBy = 'prnt_chld_intd_cf_past30d'; break;
 
-            case "% Pregnant woment had at least 4 ANC visit by delivery": xValue = d => d.prnt_wmn_4_anc_vst_dlvry ; sortBy = 'prnt_wmn_4_anc_vst_dlvry'; break;
+      case "% Children (6-24 months) initiated appropriate complementary feeding": xValue = d => d.prnt_chld_6to24mnths_intd_cf; sortBy = 'prnt_chld_6to24mnths_intd_cf'; break;
 
-            case "% Pregnant women resting during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+      case "% Anemic pregnant women": xValue = d => d.prnt_anwmic_wmn; sortBy = 'prnt_anwmic_wmn'; break;
 
-            case "% Pregnant women eating extra meal during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy ; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+      case "% Pregnant women Tenatus Completed": xValue = d => d.prnt_tenatus_cmpltd; sortBy = 'prnt_tenatus_cmpltd'; break;
 
-            case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": xValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf ; sortBy = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
+      case "% Pregnant women had at least 1 ANC visit by delivery": xValue = d => d.prnt_wmn_1_anc_vst_dlvry; sortBy = 'prnt_wmn_1_anc_vst_dlvry'; break;
 
-        }
+      case "% Pregnant woment had at least 4 ANC visit by delivery": xValue = d => d.prnt_wmn_4_anc_vst_dlvry; sortBy = 'prnt_wmn_4_anc_vst_dlvry'; break;
 
-        console.log('mon',valMonth);
-        filterdata = filterCSV(data, 'month_n', valMonth);
-        monthData = sortData(filterdata,sortBy);
-        drawRight(monthData);
+      case "% Pregnant women resting during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
 
-    });
+      case "% Pregnant women eating extra meal during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
 
+      case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": xValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf; sortBy = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
 
+    }
 
+    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    console.log('mon', valMonth);
+    filterdata = filterCSV(data, 'month_n', valMonth);
+    monthData = sortData(filterdata, sortBy);
+    drawRight(monthData);
 
+  });
 
-//   })
-
-
-
-
-
-  $(".toggle").click(function(){
+  $(".toggle").click(function () {
 
     $(this).text($(this).text() == 'Compare' ? 'Hide' : 'Compare');
 
     let x = document.getElementById("b2");
     let y = document.getElementById("cat2");
 
-    if (x.style.display === "none" &&  y.style.display === "none" ) {
+    if (x.style.display === "none" && y.style.display === "none") {
 
       x.style.display = "block";
 
@@ -797,61 +779,61 @@ data.forEach(d => {
 
     }
 
-    $(".category2 a").click(function(){
+    $(".category2 a").click(function () {
 
-    var valCategory = $(this).text();
+      var valCategory = $(this).text();
 
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory2"></span>');
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory2"></span>');
+
+    });
+
+
+
+    //trigger event
+
+    $(".category2 a").first().trigger('click');
+
+
 
   });
 
 
 
-  //trigger event
+  $(window).on('load', function () {
 
-  $(".category2 a").first().trigger('click');
-
-
-
-  });
-
-
-
-  $(window).on('load',function(){
-
-	document.getElementById("b2").style.display = 'none';
-  document.getElementById("cat2").style.display = 'none';
+    document.getElementById("b2").style.display = 'none';
+    document.getElementById("cat2").style.display = 'none';
 
     document.getElementById('sw').style.display = 'none';
 
-    $(".month a").click(function(){
+    $(".month a").click(function () {
 
-    var valMonth = $(this).text();
+      var valMonth = $(this).text();
 
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
 
-  }); 
-
-  
-
-   $(".category a").click(function(){
-
-    var valCategory = $(this).text();
-
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
-
-  });
+    });
 
 
 
-  //trigger event
+    $(".category a").click(function () {
 
-  $('.month a').first().trigger('click');
+      var valCategory = $(this).text();
 
-  $(".category a").first().trigger('click');
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+
+    });
+
+
+
+    //trigger event
+
+    $('.month a').first().trigger('click');
+
+    $(".category a").first().trigger('click');
 
   })
 
-  </script>
+</script>
 
 {% endblock %}

@@ -223,7 +223,7 @@ class MahaFeatureLCDT(LoginRequiredMixin, TemplateView):
     def get(self,request, quarter = None):
         quarter_S = request.GET.get('quarter',quarter)   
         months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')    
-        data = MhftLcDt.objects.all().filter(Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month']))
+        data = MhftLcDt.objects.all().filter(Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])).order_by('month_n')
         jsondata = serializers.serialize('json',data)
 
         return render(request,'maha_dashboard/maha_feat_lcdt.html', {'data':jsondata, 'monthList': months, 'quarter': quarter_S})
@@ -236,7 +236,7 @@ class MahaFeatureLCSDT(LoginRequiredMixin, TemplateView):
     def get(self,request, quarter = None):
         quarter_S = request.GET.get('quarter',quarter)   
         months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')    
-        data = MhftLcSubDt.objects.all().filter(Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month']))
+        data = MhftLcSubDt.objects.all().filter(Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])).order_by('month_n')
         jsondata = serializers.serialize('json',data)
 
         return render(request,'maha_dashboard/maha_feat_lcsdt.html', {'data':jsondata, 'monthList': months, 'quarter': quarter_S})

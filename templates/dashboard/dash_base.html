@@ -1,36 +1,39 @@
 {% extends 'base.html' %}
 {% load static%}
 {% block extra_css %}
-<link rel="stylesheet" type="text/css" href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'><link>
-  {% block feature_css %}
-  {% endblock %}
-  
+<link rel="stylesheet" type="text/css"
+  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+<link>
+{% block feature_css %}
+{% endblock %}
+
 {% endblock %}
 {% block content%}
 <div class="container-fluid" style="height: 100%;margin-top: 10px;">
   {% block feature %}
   {% endblock %}
 </div>
-  
-
-    {% if messages %}
-    {% for message in messages %}
-    <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});</script>
-    {% endfor %}
-    {% block extra_js %}
-    
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js"></script>
-    <script src="https://d3js.org/d3-color.v1.min.js"></script>
-    <script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
-    <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
-    <script src="https://unpkg.com/d3-simple-slider"></script>
-    <script src="{% static 'kyd_dashboard/js/Chart.min.js' %}"></script>
-    <script src="{% static 'kyd_dashboard/js/d3-scale-radial.js' %}"></script>
 
 
-    {% block feature_js %}
-    {% endblock %}
-    {% endblock %}
+{% if messages %}
+{% for message in messages %}
+<script>M.toast({ html: "{{message}}", classes: 'blue rounded', displayLength: 2000 });</script>
+{% endfor %}
+{% block extra_js %}
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js"></script>
+<script src="https://d3js.org/d3-color.v1.min.js"></script>
+<script src="https://d3js.org/d3-interpolate.v1.min.js"></script>
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+<script src="https://unpkg.com/d3-simple-slider"></script>
+<script src="{% static 'kyd_dashboard/js/Chart.min.js' %}"></script>
+<script src="{% static 'kyd_dashboard/js/d3-scale-radial.js' %}"></script>
+<!-- <script src="https://cdn.jsdelivr.net/npm/chartjs-plugin-datalabels@0.7.0"></script> -->
+
+
+{% block feature_js %}
+{% endblock %}
+{% endblock %}
 
 {% endif %}
 {% endblock%}

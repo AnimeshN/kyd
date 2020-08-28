@@ -3,218 +3,161 @@
 {% load static %}
 
 {% block content%}
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-
 
 <style>
+    .pdf {
+        font-size: calc(5% + 1vw + 1vh);
+        font-weight: bold;
+        font-style: italic;
+        float: right;
+    }
 
-    img{
+    img {
+        width: 100px;
+        height: 80px;
+    }
 
+    p {
+        text-align: center;
+        font-size: calc(30% + 1vw + 1vh);
+        font-weight: bolder;
+    }
 
+    .main-content {
+        font-size: calc(50% + 0.5vw + 0.5vh);
+        text-align: center;
+    }
 
-width: 80px;
+    u {
+        font-weight: bold;
+        font-style: italic;
+        color: rgb(73, 77, 82);
+    }
 
-
-
-height:80px;
-
-
-
-}
-
+    .custom-select,
+    .btn {
+        font-size: calc(50% + 0.5vw + 0.5vh);
+    }
 </style>
 
-          
 
-        <div class="container">
+<div class="row align-items-end">
+    <div class="col">
+        <u><a class="pdf" href="{% static 'Know_your_district_dashboard_manual.pdf' %}" target="_blank"
+                style="color: rgb(38, 112, 112);">Dashboard Manual</a></u>
+    </div>
+</div>
+<div class="container-fluid">
+    <div class="row" style="margin-top:10px">
+        <div class="col-3">
+            <img src="{% static 'dashboard/img/iitb_logo.jpg'%}" class="mx-auto d-block" />
+        </div>
 
-	<div class="row" style="font-size:20px; font-weight:bold; top: 60px; position:absolute; right:10px;"><u><i>
+        <div class="col-3">
+            <img src="{% static 'dashboard/img/WCD.jpg'%}" class="mx-auto d-block" />
+        </div>
 
-                <a href="{% static 'Know_your_district_dashboard_manual.pdf' %}" target="_blank" style="color: rgb(38, 112, 112);">Dashboard Manual</a></i></u>
+        <div class="col-3">
+            <img src="{% static 'dashboard/img/unicef_india.jpg'%}" class="mx-auto d-block" />
+        </div>
 
-            </div>
+        <div class="col-3">
+            <img src="{% static 'dashboard/img/ctara.jpg'%}" class="mx-auto d-block" />
+        </div>
+    </div>
 
-            <div class="row">
+    <div class="row" style="margin-top:30px">
+        <div class="col-sm-12">
+            <p>Dashboard covers the 18 Nutrition indicators categorized in 3 parts</p>
+        </div>
+    </div>
 
-                <div class="col">
+    <div class="row" style="margin-top:10px">
+        <div class="col text-center main-content">
+            <u>Outcome indicators:</u>
+            It includes the nutrition status (Stunting/Wasting/Underweight/Low Birth Weight) of the children.
+            <br /><br />
 
-                <a class="navbar-brand" href="/"><img src="{% static 'dashboard/img/iitb_logo.jpg'%}" class=""></img></a>
+            <u>Child Related(IYCF) Indicators:</u>
+            It includes the Brestfeeding and Complementary feeding practices followed for 0-6 months and 6-24 months
+            children.
+            <br /><br />
 
+            <u>Pregnant Women Related Indicators:</u>
+            It includes ANC visits, number of Anaemic women.
+
+        </div>
+    </div>
+
+    {% if messages %}
+
+    {% for message in messages %}
+
+    <script>
+        M.toast({ html: "{{message}}", classes: 'blue rounded', displayLength: 2000 });
+    </script>
+
+    {% endfor %}
+
+    {% endif %}
+
+
+    {% if user.is_authenticated %}
+    <div class="row" style="margin-top:30px">
+        <div class="col-4 offset-4">
+            <form id="myform" name="myForm" method="POST" enctype="multipart/form-data">
+
+                {% csrf_token %}
+                <select class="custom-select" name="dist_select" id="distList">
+                    <option selected disabled>Select Region</option>
+                    {% for dist_select in dd_dt_data %}
+                    <option value="{{ dist_select.district_n }}">{{ dist_select.district_n }}
+                    </option>
+                    {% endfor %}
+                </select><br></br>
+
+                <!-- {% if user.username == 'Amravati' %} 
+                        <select class="custom-select" name = "quarter_select" id="quarterList"> 
+                            <option value="q21">Dec-Feb</option>
+                        </select><br>
+                    {% else %}
+                        <select class="custom-select" name = "quarter_select" id="quarterList"> 
+                            <option selected disabled>Select Month Quarter</option>
+                            <option value="q1">Aug-Oct</option>
+                            <option value="q2">Nov-Jan</option>
+                            
+                        </select>
+                    {% endif %}     -->
+                <!-- <br><br> -->
+                <div class="d-flex justify-content-center">
+                    <button class="btn btn-dark" type="submit">Submit</button>
                 </div>
+            </form>
+        </div>
+    </div>
 
-                <div class="col">
+    <br>
+    <p>"This is Beta Version"</p>
 
-         	    <a class="navbar-brand" href="#"><img src="{% static 'dashboard/img/WCD.jpg'%}" class="" style="width: 100px;"></img></a>
+    {% endif %}
+</div>
 
-                </div>
-
-                <div class="col">
-
-       		    <a class="navbar-brand" href="#"><img src="{% static 'dashboard/img/unicef_india.jpg'%}" class=""></img></a>
-
-                </div>
-
-                <div class="col">
-
-       		    <a class="navbar-brand" href="#"><img src="{% static 'dashboard/img/ctara.jpg'%}" class=""></img></a>
-
-                </div>
-
-              </div>
-
-
-
-
-
-
-
-            <div class=" mt-5" style="height:100%;">
-
-                
-
-               
-
-                <p class="text-center">
-
-                   <u> Dashboard covers the 18 Nutrition indicators categorized in 3 parts</u>
-
-                    <br><br>
-
-                   
-
-                </p>
-
-                <ul class="text-center">
-
-                    <li><a href="#"><u>Outcome indicators:</u></a>
-
-                                        It includes the nutrition status (Stunting/Wasting/Underweight/Low Birth Weight) of the children.
-
-                    </li> <br>                    
-
-                    <li><a href="#"><u>Child Related(IYCF) Indicators:</u></a>
-
-                                        It includes the Brestfeeding and Complementary feeding practices followed for 0-6 months and 6-24 months children.
-
-                    </li><br>
-
-                    <li><a href="#"><u>Pregnant Women Related Indicators:</u></a>
-
-                                        It includes ANC visits, number of Anaemic women.
-
-                    </li>
-
-                </ul>
-
-            </div>
-
-        </div>  
-
-        {% if messages %}
-
-            {% for message in messages %}
-
-            <script>M.toast({html: "{{message}}", classes: 'blue rounded', displayLength:2000});            </script>
-
-            {% endfor %}
-
-        {% endif %}
-
-        {% if user.is_authenticated %}
-
-            <div class="dash-button container text-center">
-
-                <div class="">
-                    <div class="input-field col-4" style="margin-left: 350px;">
-                        <form id="myform"  name="myForm" method="POST" enctype="multipart/form-data">
-                        
-                                {% csrf_token %}
-                        
-                            <b><i>Select a Region:</i> </b>
-                            <select name = "dist_select" id="distList" class="check"> 
-                                <option value="" disabled selected>Select Region</option>
-                                {% for dist_select in dd_dt_data %} 
-                                    <option value = "{{ dist_select.district_n }}">{{ dist_select.district_n }}
-                                    </option>
-                                {% endfor %}                              
-                            </select>
-
-                            {% if user.username == 'Amravati' %} 
-                                <select name = "quarter_select" id="quarterList" class="check"> 
-                                    <option value="q21">Dec-Feb</option>
-                                </select>
-                            {% else %}
-                                <select name = "quarter_select" id="quarterList" class="check"> 
-                                    <option value="q1">Aug-Oct</option>
-                                    <option value="q2">Nov-Jan</option>
-                                    <!-- <option value="q3">Feb-April</option>
-                                    <option value="q4">May-July</option>                                       -->
-                                </select>
-                            {% endif %}    
-
-                            <button type="submit">Submit</button>
-
-                        </form>
-                    </div>  
-                </div>
-
-            </div>
-
-		<br><br>     
-
-            <p class="text-center">"This is Beta Version"</p>
-
-        {% endif %}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js"></script>
-               
-<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
-
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
-
 <script>
-  
-    $(document).ready(function(){
-      $('select').formSelect();
-    });
 
-   
+    $(document).ready(function () {
 
-// function validateForm() {
-//     var pass = document.forms["myForm"]["password"].value;
-//     var dSelect = document.forms["myForm"]["dist_select"].value;
-//     if((dSelect=="Nandurbar" && pass=="knowyourNandurbar") || (dSelect=="Palghar" && pass=="knowyourPalghar") || (dSelect=="Latur" && pass=="knowyourLatur"))
-//     {
-//         return true;
-//     }
-//     else
-//     {
-//         alert("Password is incorrect or empty");
-//         return false;
-//     }
-
-// }
-
-$(document).ready(function(){
-
-    $("#distList").change(function(){
-        var dSelect = document.forms["myForm"]["dist_select"].value;
-        console.log(dSelect);
-        if(dSelect == "Maharashtra")
-        {
-            $("#myform").attr("action", "{% url 'maha-feat1' %}");
-        }
-        else 
-        {
-            $("#myform").attr("action", "{% url 'f1' %}");
-        }
+        $("#distList").change(function () {
+            var dSelect = document.forms["myForm"]["dist_select"].value;
+            console.log(dSelect);
+            if (dSelect == "Maharashtra") {
+                $("#myform").attr("action", "{% url 'maha-feat1' %}");
+            }
+            else {
+                $("#myform").attr("action", "{% url 'f1' %}");
+            }
+        })
     })
-})
 </script>
 
-
-   {% endblock %}
-
-   
+{% endblock %}
