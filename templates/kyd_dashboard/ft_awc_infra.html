@@ -68,9 +68,9 @@
 <div class="row text-center">
   <div class="col-12 mb-5">
     <input type="text" id="monthSlider" name="somename" data-provide="slider"
-      data-slider-ticks="[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]"
-      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "June", "July"]'
-      data-slider-min="0" data-slider-max="11" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
+      data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]'
+      data-slider-min="0" data-slider-max="5" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
   </div>
 </div>
 
@@ -200,10 +200,7 @@
       .attr("y", d => y1(d.name))
       .attr("height", y1.bandwidth())
       .attr("width", d => x(d.value) - x(0))
-      .attr("fill", d => color(d.name))
-      .attr("class", function (d) {
-        return "rect bordered " + "color-" + d.color.substring(1);
-      });
+      .attr("fill", d => color(d.name));
 
     //X-axis Label
     svg.append("text")

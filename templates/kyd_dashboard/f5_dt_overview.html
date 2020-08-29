@@ -117,7 +117,7 @@
     </div>
     <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f4' dist_name %}`">Previous
         Feature</button>
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f4' dist_name %}`">Next
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f6' dist_name %}`">Next
         Feature</button>
 </div>
 
@@ -132,10 +132,9 @@
 <div class="row text-center">
     <div class="col-12 mb-3">
         <input type="text" id="monthSlider" name="somename" data-provide="slider"
-            data-slider-ticks="[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]"
-            data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "June", "July"]'
-            data-slider-min="0" data-slider-max="11" data-slider-step="1" data-slider-value="0"
-            data-slider-tooltip="hide">
+            data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+            data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]'
+            data-slider-min="0" data-slider-max="5" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
     </div>
 </div>
 
@@ -270,8 +269,8 @@
         render(tbleData);
     });
 
-    // selectMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    // console.log(selectMonth, "Current Month")
+    selectMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    console.log(selectMonth, "Current Month")
 
     $(".month a").click(function () {
         $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
@@ -773,7 +772,6 @@ render(tbleData);
     render(tbleData);
      });
     
-    // selectMonth = tickLabels[$('#monthSlider').slider('getValue')];
     // console.log(selectMonth, "Current Month")
 
     monthSelect= tickLabels[$('#monthSlider').slider('getValue')];
@@ -792,6 +790,7 @@ render(tbleData);
         }
 
     }
+    selectMonth = tickLabels[$('#monthSlider').slider('getValue')];
 
     const buttons = d3.selectAll('input');
     buttons.on('change', function (d) {

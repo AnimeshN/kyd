@@ -3,23 +3,33 @@
 {% block feature_css %}
 <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}">
 <style>
-  p {
-    font-size: calc(50% + 0.5vw + 0.5vh);
+p {
+    font-size: calc(40% + 0.5vw + 0.5vh);
     font-weight: bold;
   }
 
   .form-check-label {
+    margin-top: 7px;
     font-size: calc(50% + 0.5vw + 0.5vh);
+    padding-left: 15px;
   }
 
-  #wrapper {
-    float: right;
-    width: 300px;
+  .form-check-input {
+    margin-top: 0px;
+    width: calc(10% + 0.5vw + 0.7vh);
+    height: calc(5% + 0.5vw + 0.5vh);
   }
 
-  #myChart {
-    width: 60%;
-    height: 40%;
+  .upt-b {
+    font-size: calc(35% + 0.5vw + 0.5vh);
+  }
+
+  .chart-container {
+    position: relative;
+    margin: auto;
+    width: 75vw;
+    height: 75vh;
+    font-size: calc(100% + 0.5vw + 0.5vh);
   }
 </style>
 
@@ -37,7 +47,7 @@
   </div>
 </div>
 
-<div class="row text-center" style="background-color: #b2dbf7;">
+<div class="row text-center bg-info">
   <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'ftrdr1' dist_name %}`">Previous
     Feature</button>
   <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f4' dist_name %}`">Next
@@ -45,32 +55,32 @@
 
 </div>
 
-<div class="row text-center m-1">
+<div class="row text-center mt-1">
   <div class="col-12 mb-5">
     <input type="text" id="monthSlider" name="somename" data-provide="slider"
-      data-slider-ticks="[0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]"
-      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan", "Feb", "Mar", "Apr", "May", "June", "July"]'
-      data-slider-min="0" data-slider-max="11" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
+      data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]'
+      data-slider-min="0" data-slider-max="5" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
   </div>
 </div>
 
-<div class="row h-100 w-100">
-  <div class="col-9">
+<div class="row justify-content-center">
+  <div class="col-10 chart-container mt-0">
     <canvas id="myChart"></canvas>
   </div>
 
-  <div class="col-3">
-    <p>Select Project</p>
+  <div class="col-2 text-left">
+    <p class="text-left">Select Project</p>
     <form id="projectList">
       <div class="form-check">
         {% for project in projectList %}
-        <input type="checkbox" class="form-check-input" id="my{{project.project_n}}" value="{{ project.project_n }}" />
-        <label class="form-check-label">{{ project.project_n }}</label><br>
+        <input type="checkbox" class="form-check-input" id="my{{project.project_n}}"
+          value="{{ project.project_n }}" /><label class="form-check-label">{{ project.project_n }}</label><br>
         {% endfor %}
-
-        <input type="checkbox" class="form-check-input" id="myMH" value="Maharashtra" />
-        <label class="form-check-label">Maharashtra</label><br>
-        <button type="button" class="btn btn-primary" onclick="GetSelected()">Update Chart</button>
+        <input type="checkbox" class="form-check-input" id="myMH" value="Maharashtra" /><label
+          class="form-check-label">Maharashtra</label><br>
+        <button type="button" class="btn btn-primary btn-sm  mt-1 float-left" onclick="GetSelected()">Update
+          Chart</button>
       </div>
     </form>
   </div>
