@@ -3,7 +3,7 @@
 {% block feature_css %}
 <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}">
 <style>
-p {
+  p {
     font-size: calc(40% + 0.5vw + 0.5vh);
     font-weight: bold;
   }
@@ -57,10 +57,9 @@ p {
 
 <div class="row text-center mt-1">
   <div class="col-12 mb-5">
-    <input type="text" id="monthSlider" name="somename" data-provide="slider"
-      data-slider-ticks="[0, 1, 2, 3, 4, 5]"
-      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]'
-      data-slider-min="0" data-slider-max="5" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
+    <input type="text" id="monthSlider" name="somename" data-provide="slider" data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]' data-slider-min="0" data-slider-max="5"
+      data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
   </div>
 </div>
 
@@ -105,7 +104,6 @@ p {
     })
     return result;
   }
-
   const render = rdata => {
     document.getElementById("myBestProject").checked = true;
     document.getElementById("myDistrict").checked = true;
@@ -118,9 +116,7 @@ p {
         rdata2.push(rdata[i]);
       }
     }
-
     var ctx = document.getElementById('myChart').getContext('2d');
-
     var chart = new Chart(ctx, {
       // The type of chart we want to create
       type: 'radar',
@@ -129,11 +125,10 @@ p {
         labels: ["Anemia Free Women", "Children Immunization", "Children(0-6 months) BF Practices", "Children (6-24 months) CF Practices"],
         datasets: [rdata2[0], rdata2[1], rdata2[2]],
       },
-
       // Configuration options go here
       options: {
-        // defaultFontSize: 120,
-        maintainAspectRatio: true,
+        //defaultFontSize: 120,
+        //maintainAspectRation: false,
         tooltips: {
           mode: 'index',
           callbacks: {
@@ -142,43 +137,96 @@ p {
             }
           }
         },
-
         hover: {
           mode: 'index',
         },
-
         scale: {
           angleLines: {
             display: true
           },
-
           ticks: {
-            reverse: true,
             suggestedMin: 0,
             suggestedMax: 1,
             stepSize: 0.2
           },
-
           pointLabels: {
             fontColor: "blue",
-            fontSize: 15
+            fontSize: 20
           }
         }
       }
     });
 
+    // const render = rdata => {
+    //   document.getElementById("myBestProject").checked = true;
+    //   document.getElementById("myDistrict").checked = true;
+    //   document.getElementById("myMH").checked = true;
+
+    //   var rdata2 = [];
+
+    //   for (var i = 0; i < rdata.length; i++) {
+    //     if (rdata[i].label == "BestProject" || rdata[i].label == "District" || rdata[i].label == "Maharashtra") {
+    //       rdata2.push(rdata[i]);
+    //     }
+    //   }
+
+    //   var ctx = document.getElementById('myChart').getContext('2d');
+
+    //   var chart = new Chart(ctx, {
+    //     // The type of chart we want to create
+    //     type: 'radar',
+    //     // The data for our dataset
+    //     data: {
+    //       labels: ["Anemia Free Women", "Children Immunization", "Children(0-6 months) BF Practices", "Children (6-24 months) CF Practices"],
+    //       datasets: [rdata2[0], rdata2[1], rdata2[2]],
+    //     },
+
+    //     // Configuration options go here
+    //     options: {
+    //       // defaultFontSize: 120,
+    //       maintainAspectRatio: true,
+    //       tooltips: {
+    //         mode: 'index',
+    //         callbacks: {
+    //           label: function (tooltipItem, data) {
+    //             return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
+    //           }
+    //         }
+    //       },
+
+    //       hover: {
+    //         mode: 'index',
+    //       },
+
+    //       scale: {
+    //         angleLines: {
+    //           display: true
+    //         },
+
+    //         ticks: {
+    //           reverse: true,
+    //           suggestedMin: 0,
+    //           suggestedMax: 1,
+    //           stepSize: 0.2
+    //         },
+
+    //         pointLabels: {
+    //           fontColor: "blue",
+    //           fontSize: 15
+    //         }
+    //       }
+    //     }
+    //   });
+
     makeviz = opt => {
-      console.log(opt.length);
       var rdata1 = [];
       for (var i = 0; i < chartStatData.length; i++) {
         for (var j = 0; j < opt.length; j++) {
           if (opt[j] == chartStatData[i].label) {
-            console.log(opt[j]);
             rdata1.push(chartStatData[i]);
           }
         }
       }
-      console.log(rdata1);
       chart.data.datasets = [];
       for (var i = 0; i < rdata1.length; i++) {
         chart.data.datasets[i] = rdata1[i];
@@ -245,16 +293,16 @@ p {
 
       temp.label = d.project_n,
         temp.borderColor = mycolour,
-        temp.defaultFontSize = "9",
+        temp.pointLabelFontColor = "Red",
         temp.pointBorderColor = 'Black',
         temp.pointBackgroundColor = 'Black',
         temp.pointHoverBorderColor = "rgba(179,181,198,1)",
         temp.backgroundColor = "transparent",
         temp.pointRadius = 5,
         temp.pointHoverRadius = 10,
-        temp.pointHoverBackgroundColor = 'red'
-      temp.pointHitRadius = 1
-      temp.data = [d.norm_anemic_free_wmn, d.norm_child_immunization, d.norm_chld_bf, d.norm_chld_cf]
+        temp.pointHoverBackgroundColor = 'red',
+        temp.pointHitRadius = 1,
+        temp.data = [d.norm_anemic_free_wmn, d.norm_child_immunization, d.norm_chld_bf, d.norm_chld_cf]
       mydataset.push(temp);
     })
     mydata.data.datasets = mydataset;
@@ -296,9 +344,9 @@ p {
 
   $('#monthSlider').slider().on('slideStop', function (ev) {
     var val = tickLabels[ev.value];
-    // mydata = filterCSV(data, 'month_n', val);
-    // chartStatData = dataforchart(mydata);
-    // render(dataforchart(mydata));
+    mydata = filterCSV(data, 'month_n', val);
+    chartStatData = dataforchart(mydata);
+    render(dataforchart(mydata));
   });
 
   monthSelect = tickLabels[$('#monthSlider').slider('getValue')]

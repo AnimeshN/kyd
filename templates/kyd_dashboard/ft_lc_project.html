@@ -28,11 +28,19 @@
     width: auto;
   }
 
-  /* 
-  #legend {
+  div#tooltip {
+    position: absolute;
+    text-align: center;
     width: auto;
-    height: 500px;
-  } */
+    height: auto;
+    padding: 5px 0;
+    z-index: 1;
+    font-family: sans-serif;
+    font-size: calc(50% + 0.5vw + 0.5vh);
+    background: lightgrey;
+    border-radius: 10px;
+    pointer-events: none;
+  }
 
   .legend {
     font-size: 20px;
@@ -64,35 +72,6 @@
     border: 0;
     color: #fff;
   }
-
-  /* #inds {
-    position: absolute;
-    top: 10px;
-    left: 10px;
-  }
-
-  .overlay {
-    fill: none;
-    pointer-events: all;
-  }
-
-  .focus circle {
-    fill: steelblue;
-  }
-
-  .focus text {
-    font-size: 14px;
-  }
-
-  .tooltip {
-    fill: white;
-    stroke: #000;
-  }
-
-  .tooltip-month,
-  .tooltip-value {
-    font-weight: bold;
-  } */
 
   .plot {
     fill: #fff;
@@ -144,7 +123,7 @@
   </div>
 
   <div class="col-10" id="chart">
-    <div id='tooltip' style='position:absolute;background-color:lightgray;padding:2px'></div>
+    <div id='tooltip'></div>
   </div>
 </div>
 
