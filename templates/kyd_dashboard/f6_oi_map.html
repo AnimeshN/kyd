@@ -70,7 +70,7 @@
 </div>
 
 <div class="row text-center bg-info mb-3">
-  <div class="dropdown m-1">
+  <div class="dropdown">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false">
       Select Category
@@ -1033,7 +1033,7 @@
   async function fetchGeoJSON() {
     let geoJSONBundle = {};
 
-  var blockJSON = {{ context.blk_geodata| safe }};
+    var blockJSON = {{ context.blk_geodata| safe }};
   var scaleCenter = calculateScaleCenter(blockJSON);
 
   mercator.scale(scaleCenter.scale)

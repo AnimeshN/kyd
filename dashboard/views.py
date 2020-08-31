@@ -15,7 +15,7 @@ class DashboardView(TemplateView):
     def get(self,request):
         username = request.user.username
 
-        if (username == 'admin' or username == 'admin1'):
+        if (username == 'admin' or username == 'Maharashtra'):
             dt_name = DistrictPwd.objects.all()
         else:
             dt_name = DistrictPwd.objects.filter(Q(district_n=username) | Q(district_n='Maharashtra'))

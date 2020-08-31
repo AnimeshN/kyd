@@ -52,7 +52,6 @@ class ConsoChildNdj(models.Model):
 
 class DistrictPwd(models.Model):
     district_n = models.TextField()
-    pwd = models.TextField()
 
     class Meta:
         managed = False

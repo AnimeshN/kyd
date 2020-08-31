@@ -119,17 +119,22 @@
                 <!-- {% if user.username == 'Amravati' %} 
                         <select class="custom-select" name = "quarter_select" id="quarterList"> 
                             <option value="q21">Dec-Feb</option>
-                        </select><br>
-                    {% else %}
-                        <select class="custom-select" name = "quarter_select" id="quarterList"> 
+                        </select><br>-->
+                <!-- {% else %} -->
+
+                <div class="quarter_menu">
+                    <div class="Maharashtra">
+                        <select class="custom-select" name="quarter_select" id="quarterList">
                             <option selected disabled>Select Month Quarter</option>
                             <option value="q1">Aug-Oct</option>
                             <option value="q2">Nov-Jan</option>
-                            
                         </select>
-                    {% endif %}     -->
+                    </div>
+                </div>
+                {% endif %}
+
                 <!-- <br><br> -->
-                <div class="d-flex justify-content-center">
+                <div class="d-flex justify-content-center mt-1">
                     <button class="btn btn-dark" type="submit">Submit</button>
                 </div>
             </form>
@@ -144,6 +149,17 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js"></script>
 <script>
+
+    $(document).ready(function () {
+        $('#distList').bind('change', function () {
+            var elements = $('div.quarter_menu').children().hide(); // hide all the elements
+            var value = $(this).val();
+
+            if (value.length) { // if somethings' selected
+                elements.filter('.' + value).show(); // show the ones we want
+            }
+        }).trigger('change');
+    });
 
     $(document).ready(function () {
 
