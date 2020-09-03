@@ -18,7 +18,7 @@ class MahaFeatureOne(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     redirect_field_name = 'login'
 
-    def get(self, request):
+    def post(self, request):
         # quarter_S = request.GET.get('quarter',quarter)   
         # months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')    
         data = Mhf1.objects.all()
