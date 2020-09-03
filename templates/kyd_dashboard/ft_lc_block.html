@@ -112,7 +112,6 @@
     Feature</button>
   <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'ftlcprjt' dist_name %}`">Next
     Feature</button>
-
 </div>
 
 <div class="row m-1">
@@ -145,11 +144,13 @@
   var width = 700,
     height = 550;
   var ticks;
+
   var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 700)
     .attr('height', 550).call(responsivefy);
 
   var legend = d3.select('#legend').append('svg').attr('id', 'svg2').attr('width', 350)
     .attr('height', 700).call(responsivefy);
+
   var selectedCategory = 'Severly Stunted Children';
 
   function responsivefy(svg) {

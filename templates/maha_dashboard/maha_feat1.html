@@ -1,127 +1,100 @@
-{% extends 'dashboard/dash_base.html' %}
+{% extends 'kyd_dashboard/kyd_base.html' %}
 
 {% load static %}
 
 {% block feature_css %}
 
-  <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
+<link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}">
 
-  <style>
+<style>
+  #table {
+    width: 90%;
+    height: 75%;
+    font-size: calc(50% + 0.5vw + 0.5vh);
+  }
 
-    #table{
+  th {
+    border: 2px solid black;
+    font-weight: bolder;
+    text-align: center;
+    background-color: rgb(165, 199, 243);
+  }
 
-        width: 90%;
+  td {
+    border: 2px solid black;
+    text-align: center;
+  }
 
-        height: 75%;
+  .scroll-down {
+    float: right;
+    font-weight: bold;
+    font-size: calc(50% + 0.5vw + 0.5vh);
+  }
 
-        font-size: large;
+  #chart {
+    margin-top: 10px;
+  }
 
-    }
+  .barText {
+    font-size: calc(25% + 1vw + 1vh);
+  }
 
-    th{
-
-        border:2px solid black;
-
-        font-weight: bolder;
-
-        text-align: center;
-
-    }   
-
-    td{
-
-      border:2px solid black;
-
-      text-align: center;
-
-    }
-
-  </style>
+  text {
+    font-size: 1.5rem
+  }
+</style>
 
 {% endblock %}
 
 {% block feature %}
 
-
-<div class='heading text-dark mt-2 text-center' id="barTitle"> Measurement Efficiency </div>
-
-<div class="row text-center" style="height: 100px;">
-
-  <div class="col-12 bg-info h-75 w-100" >
-
-    <!-- select month -->
-    
-
-    <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
-
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-        Select Month
-
-		<span class="selectedMonth"></span>
-
-      </button>
-
-      <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-        {% for month_select in monthList %} 
-        <a class="dropdown-item" href="#">{{ month_select.month }}</a>
-        {% endfor %}   
-      </div>
-
+<div class="row">
+  <div class="col-12 h-75">
+    <div class="heading text-center" id="barTitle"> Measurement Efficiency </div>
+  </div>
+</div>
+<div class="row bg-info mb-2">
+  <div class="dropdown m-1">
+    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      <!-- Category Dropdown -->
+      <span class="selectedCategory"></span>
+    </button>
+    <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#">Height%</a>
+      <a class="dropdown-item" href="#">Weight%</a>
+      <a class="dropdown-item" href="#">Height+Weight%</a>
     </div>
+  </div>
 
-    <!-- select category -->
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat2' %}`">Next
+    Feature</button>
 
-    <div class="dropdown" style="float: left; margin:20px; font-weight:bold"> 
+</div>
 
-      <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-
-        Select Category
-
-		<span class="selectedCategory"></span>
-
-      </button>
-
-      <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
-
-        <a class="dropdown-item" href="#">Height%</a>
-
-        <a class="dropdown-item" href="#">Weight%</a>
-
-        <a class="dropdown-item" href="#">Height+Weight %</a>
-
-      </div>
-
+<div class="row">
+  <div class="col">
+    <div class="scroll-down">
+      Please Scroll Down to see Actual Numbers
     </div>
-
-
-
-    <button type="button" class="btn btn-info" style="float: left; margin:20px" onclick="location.href=`{% url 'maha-feat2' quarter %}`">Next Feature</button>
-
-
-
-   
-
-    
-
   </div>
+</div>
 
-
-  <div class="row" style="font-size:15px; font-weight:bold; top: 200px; position:absolute; right:10px;">Please Scroll Down to see Actual Numbers</div>
-  
-
-  <div class="col-12 m-5">
-
-    <svg width="1350" height="400"></svg>
-
+<div class="row text-center">
+  <div class="col-12 mb-5">
+    <input type="text" id="monthSlider" name="somename" data-provide="slider" data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]' data-slider-min="0" data-slider-max="5"
+      data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
   </div>
+</div>
 
-  <div id="table" class="row h-50 bg-light justify-content-center ">
+<div class="row">
+  <div class="col-12" id="chart"></div>
+</div>
 
-                        
-
+<div class="row">
+  <div class="col-12 text-center mt-3" id="table">
   </div>
-
 </div>
 
 
@@ -130,343 +103,215 @@
 
 <script>
 
-  const svg = d3.select('svg');
-
-  const width = +svg.attr('width');
-
-  const height = +svg.attr('height');
-
   const yScale = [];
 
   const xScale = [];
 
-  let month_hack = 'Nov';   
+  var width1;
 
   function filterCSV(csv, key, value) {
-  var result = [];
-  csv.forEach(function(val,idx,arr){
-  
-    if(val[key] == value){
-    
-      result.push(val)
+    var result = [];
+    csv.forEach(function (val, idx, arr) {
+
+      if (val[key] == value) {
+
+        result.push(val)
+      }
+    })
+    return result;
+  }
+
+  const svg = d3.select('#chart').
+    append('svg').
+    attr('width', 2350).
+    attr('height', 450).
+    call(responsivefy) // Call responsivefy to make the chart responsive
+
+  function responsivefy(svg) {
+
+    // Container is the DOM element, svg is appended. 
+    // Then we measure the container and find its 
+    // aspect ratio. 
+    const container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style('width'), 10),
+      height = parseInt(svg.style('height'), 10),
+      aspect = width / height;
+
+    console.log("width&height", width, height)
+    // Add viewBox attribute to set the value to initial size 
+    // add preserveAspectRatio attribute to specify how to scale  
+    // and call resize so that svg resizes on page load 
+    svg.attr('viewBox', `0 0 ${width} ${height}`).
+      attr('preserveAspectRatio', 'xMinYMin').
+      call(resize);
+
+    d3.select(window).on('resize.', resize);
+
+    function resize() {
+      //const targetWidth = parseInt(container.style('width'));
+      const targetWidth = $(window).width();
+      //var targetHeight = $(window).height();
+      console.log("tw&h", targetWidth);
+      width1 = targetWidth;
+      svg.attr('width', targetWidth);
+      svg.attr('height', Math.round(targetWidth / aspect));
     }
-  })
-  return result;
-}
+  }
 
-  
 
-  const render = data =>{
+  let bar_width = 40;
 
-      let yValue  = d => d.ht_percent;
+  const render = data => {
 
-      const xValue = d => d.district_n;
+    let yValue = d => d.ht_percent;
+    const xValue = d => d.district_n;
+    const margin = { left: 100, top: 20, right: 100, bottom: 90 };
+    const innerWidth = 1250 - margin.left - margin.right;
+    const innerHeight = 350 - margin.top - margin.bottom;
 
-      const margin = {left:40,top:10 ,right:150,bottom:90};
+    const yScale = d3.scaleLinear()
+      .domain([100, 0])
+      .range([0, innerHeight]);
 
-      const innerWidth = width - margin.left - margin.right;
 
-      const innerHeight = height - margin.top - margin.bottom;
+    // const xScale = d3.scaleBand()
+    //   .range([0, innerWidth])
+    //   .padding(0.1);
 
-  
+    const xScale = d3.scaleBand()
+      .range([0, 1.5 * bar_width * data.length])
+      .padding(0.3);
 
-      const yScale = d3.scaleLinear()
+    xScale.domain(data.map(xValue))
 
-          .domain([100,0])
+    const g = svg.append('g').attr("preserveAspectRatio", "xMinYMin meet")
+      .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
-          .range([0,innerHeight]);
-
-      
-
-      const xScale = d3.scaleBand()
-
-          .range([0,innerWidth])
-
-          .padding(0.1);
-
-      
-
-      xScale.domain(data.map(xValue))
-
-  
-
-      
-
-      const g = svg.append('g').attr("preserveAspectRatio", "xMinYMin meet")
-
-          .attr('transform', `translate(${margin.left}, ${margin.top})`);
-
-  
-
-      var myColor = d3.scaleSequential().domain([d3.min(data,yValue),d3.max(data,yValue)])
-
+    var myColor = d3.scaleSequential().domain([d3.min(data, yValue), d3.max(data, yValue)])
       .interpolator(d3.interpolateRdYlGn);
 
+    var bars = g.selectAll("rect").data(data)
+      .enter().append('rect')
+      .attr('x', d => xScale(d.district_n) + 1)
+      .attr('y', d => yScale(yValue(d)))
+      .attr('height', d => innerHeight - yScale(yValue(d)))
+      .attr('width', xScale.bandwidth() + 10)
+      .attr("fill", d => myColor(yValue(d)));
+
+
+    //update new values
+    var mytext = g.selectAll("text").data(data)
+      .enter().append("text")
+      .text(d => yValue(d))
+      .attr('x', d => xScale(d.district_n) + 5)
+      .attr('y', d => yScale(yValue(d)) - 5)
+      .attr('class', 'barText')
+      .attr("font-family", "sans-serif")
+      .attr("fill", "blue")
+
+    var yaxis = g.append('g')
+      .call(d3.axisLeft(yScale))
+      .attr("font-weight", "bold");
+
+    var xaxis = g.append('g').call(d3.axisBottom(xScale))
+      .attr('transform', `translate(0, ${innerHeight})`)
+      .attr("font-weight", "bold");
+
+    makeviz = opt => {
+
+      let tansitionDuration = 1000;
+
+      if (opt == 'Height%') {
+        yValue = d => d.ht_percent;
+        data = sortData(data, 'ht_percent');
+      } else if (opt == 'Weight%') {
+        yValue = d => d.wt_percent;
+        data = sortData(data, 'wt_percent');
+      } else {
+        data = sortData(data, 'ht_wt_percent');
+        yValue = d => d.ht_wt_percent;
+      }
+
+      const xScale0 = xScale.domain(data.map(xValue)).copy();
+
+      const yScale = d3.scaleLinear()
+        .domain([100, 0])
+        .range([0, innerHeight]);
+
+      bars.transition().duration(tansitionDuration)
+        .attr('y', d => yScale(yValue(d)))
+        .attr('x', d => xScale0(d.district_n))
+        .attr('height', d => innerHeight - yScale(yValue(d)))
+        .attr("fill", d => myColor(yValue(d)))
+
+      // Remove old ones
+      bars.exit().remove();
+
+      //text update
+      mytext.transition().duration(tansitionDuration)
+        .text(d => yValue(d))
+        .attr('y', d => yScale(yValue(d)) - 5)
+        .attr('x', d => xScale(d.district_n) + 2)
+        .attr("font-family", "sans-serif")
+        .attr("font-weight", "bold")
+
+      mytext.exit().remove();
+
+      // y axis update
+      yaxis.transition().duration(tansitionDuration)
+        .call(d3.axisLeft(yScale));
+
+      // x axis update
+      xaxis.transition().duration(tansitionDuration)
+        .call(d3.axisBottom(xScale));
+
+      xaxis.selectAll("text")
+        .attr("font-weight", "bold")
+        .style("text-anchor", "end")
+        .attr("dx", "-.8em")
+        .attr("dy", ".15em")
+        .attr("transform", "rotate(-50)");
+    }
+
+    const dropdownChange = () => {
+      var sel = document.getElementById('opt');
+      val = document.getElementById("opt").value
+    }
+
+    makeviz("Height%");
+
+    $(".category a").click(function () {
+      $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
+      $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+      var valCategory = $(this).text();
+      var displayVal = valCategory.substring(0, valCategory.length - 1);
+
+      if (displayVal == "Height+Weight")
+        displayVal = displayVal.replace("Height+Weight", "Height and Weight");
+      document.getElementById('barTitle').innerHTML = displayVal + " Measurement Efficiency";
+
+      makeviz(valCategory);
 
-          var bars =   g.selectAll("rect").data(data)
+    });
 
-          .enter().append('rect')
-
-              .attr('x', d => xScale(d.district_n))
-
-              .attr('y', d => yScale(yValue(d)))
-
-              .attr('height',d => innerHeight - yScale(yValue(d)))
-
-              .attr('width', 30)
-
-              .attr("font-size", "14px")
-
-              .attr("fill", d => myColor(yValue(d)))
-
-
-          //update new values
-
-        var mytext = g.selectAll("text").data(data)
-
-             .enter().append("text")
-
-            .text(d => yValue(d))
-
-              .attr('x', d => xScale(d.district_n))
-
-              .attr('y', d => yScale(yValue(d))-5)
-
-             .attr("font-family", "sans-serif")
-
-             .attr("font-size", "10px")
-
-             .attr("fill", "blue")
-             .attr("font-weight", "bolder")
-
-			
-
-			
-
-			 
-
-  
-
-      var yaxis = g.append('g')
-
-          .call(d3.axisLeft(yScale))
-
-		  .attr("font-size", "15px")
-
-		  .attr("font-weight", "bold");
-
-      
-
-      var xaxis = g.append('g').call(d3.axisBottom(xScale))
-
-          .attr('transform',`translate(0, ${innerHeight})`)
-
-		   .attr("font-size", "10px")
-
-		   .attr("font-weight", "bold");
-
-    
-
-          makeviz = opt =>{
-
-            let tansitionDuration = 1000;
-
-            if(opt == 'Height%'){
-
-              yValue  = d => d.ht_percent;
-
-              data = sortData(data,'ht_percent');
-
-              // console.log('height');
-
-            }else if (opt == 'Weight%' ){
-
-              yValue  = d => d.wt_percent; 
-
-              data = sortData(data,'wt_percent');
-
-              console.log('weight');
-
-            }else{
-
-              data = sortData(data,'ht_wt_percent');
-
-              yValue  = d => d.ht_wt_percent;
-
-            }
-
-        const xScale0 = xScale.domain(data.map(xValue)).copy();
-
-  
-
-        const yScale = d3.scaleLinear()
-
-          .domain([100,0])
-
-          .range([0,innerHeight]);
-
-              
-
-          bars.transition().duration(tansitionDuration)
-
-              .attr('y', d => yScale(yValue(d)))
-
-              .attr('x', d => xScale0(d.district_n))
-
-              .attr('height',d => innerHeight - yScale(yValue(d)))
-
-              .attr("fill", d => myColor(yValue(d)))
-
-			  
-
-			
-
-  
-
-  
-
-          // Remove old ones
-
-          bars.exit().remove();
-
-            
-
-            
-
-            //text update
-
-            mytext.transition().duration(tansitionDuration)
-
-            .text(d => yValue(d))
-
-              .attr('y', d => yScale(yValue(d))-5)
-
-              .attr('x', d => xScale0(d.district_n))
-
-			        .attr("font-family", "sans-serif")
-
-              .attr("font-size", "10px")
-              .attr("fill", "blue")
-              .attr("font-weight", "bolder")
-            
-
-			 
-
-           mytext.exit().remove();
-
-            
-
-            // y axis update
-
-            
-
-            yaxis.transition().duration(tansitionDuration)
-
-          .call(d3.axisLeft(yScale));
-
-            
-
-            // x axis update
-
-            xaxis.transition().duration(tansitionDuration)
-
-          .call(d3.axisBottom(xScale));
-
-            
-          xaxis.selectAll("text").attr("font-size", "12px")
-            .attr("font-weight", "bold")
-            .style("text-anchor", "end")
-            .attr("dx", "-.8em")
-            .attr("dy", ".15em")
-            .attr("transform", "rotate(-90)" );
-
-            
-
-          }   
-
-  
-
-  const dropdownChange = () =>{
-
-    var sel = document.getElementById('opt');
-
-    val = document.getElementById("opt").value
-
-	console.log(sel);
-
-  }
-
-  makeviz("Height%");
-
-  $(".category a").click(function(){
-
-  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
-
- $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-
-	var valCategory = $(this).text();	
-
-	var displayVal = valCategory.substring(0, valCategory.length-1);
-
-	console.log(displayVal);
-
-	if(displayVal== "Height+Weight ")
-
-	displayVal = displayVal.replace("Height+Weight", "Height and Weight");
-
-	document.getElementById('barTitle').innerHTML=displayVal+" Measurement Efficiency";
-
-  makeviz(valCategory);
-
-
-
-
-
-});
-
-
-
-
-
-
-
-   
-
-  $(".drop-month a").click(function(){
-
+    $(".drop-month a").click(function () {
       var val = $(this).text();
-
-	  $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
-
-	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-
-  })
-
+      $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
+      $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    })
   }
 
-  
-
-  
-  const sortData = (data,parameter) =>{
-
-  sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
-
-  return sortedData;
-
+  const sortData = (data, parameter) => {
+    sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
+    return sortedData;
   }
-
 
   /////
 
-  data_from_django = {{ data|safe }};
-
+  data_from_django = {{ data | safe }};
   var data = []
-
-  
   data_from_django.forEach(element => {
-
     data.push(element.fields);
-
   });
 
   data.forEach(d => {
@@ -480,167 +325,96 @@
     d.wt_percent = +d.wt_percent;
     d.ht_wt_percent = +d.ht_wt_percent;
     d.month_n = d.month_n;
-		
-  });
-
-
-//   d3.csv("{% static 'data/csv/f1.csv'%}").then(data=>{
-
-// console.log(data)
-
- 
-  $(".month a").click(function(){
-
-	$(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-
-	$(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-
-      var val = $(this).text();
-      
-      filterdata = filterCSV(data, 'month_n', val);
-      mydata = sortData(filterdata,'ht_percent');
-
-      tableData = tables(filterdata);
-
-      svg.selectAll("*").remove();
-
-      render(mydata,tableData);
-
-      
-
-});
-
-
-
-$(function(){
-
-
-  //bind event
-
-  $(".month a").click(function(){
-
-    var selText = $(this).text();
-
-    console.log(selText);
-
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedMonth"></span>');
 
   });
 
-   $(".category a").click(function(){
+  var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
 
-    var selText = $(this).text();
-
-    console.log(selText);
-
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedCategory"></span>');
-
+  $('#monthSlider').slider().on('slideStop', function (ev) {
+    var val = tickLabels[ev.value];
+    filterdata = filterCSV(data, 'month_n', val);
+    mydata = sortData(filterdata, 'ht_percent');
+    tableData = tables(filterdata);
+    svg.selectAll("*").remove();
+    render(mydata, tableData);
   });
 
+  $(".month a").click(function () {
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    var val = $(this).text();
+    filterdata = filterCSV(data, 'month_n', val);
+    mydata = sortData(filterdata, 'ht_percent');
+    tableData = tables(filterdata);
+    svg.selectAll("*").remove();
+    render(mydata, tableData);
+  });
 
+  $(function () {
+    //bind event
+    $(".month a").click(function () {
+      var selText = $(this).text();
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedMonth"></span>');
+    });
 
-  //trigger event
+    $(".category a").click(function () {
+      var selText = $(this).text();
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedCategory"></span>');
+    });
 
-  $('.month a').first().trigger('click');
+    //trigger event
+    $('.month a').first().trigger('click');
+    $(".category a").first().trigger('click');
+  });
 
-  $(".category a").first().trigger('click');
-
-});
-
-
-  monthSelect=$('.month a').first().text();
+  // monthSelect=$('.month a').first().text();
+  monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
   augData = filterCSV(data, 'month_n', monthSelect);
-  sortedData = sortData(augData,'ht_percent');
+  sortedData = sortData(augData, 'ht_percent');
+  render(sortedData);
+  tables(augData);
 
-  render(sortedData); 
+  function tables(data) {
+    $(".hello").remove();
+    var tbdata = [];
+    data.forEach(d => {
+      var tbd = {}
+      tbd["District"] = d.district_n;
+      tbd["Number of Children 0-6 years old enrolled for services"] = d.no_enrolled;
+      tbd["Total No. of Children Eligible to be Weighed"] = d.tot_elgb_wghd;
+      tbd["Total No. of Children Eligible for measuring Height"] = d.tot_elgb_hght;
+      tbd["Total No. of Children Weighed"] = d.no_wt;
+      tbd["Total No. of Children whose Height has been measured"] = d.no_ht;
+      tbd["Total No. of Children whose Height and Weight has been measured"] = d.no_wt_ht;
+      tbdata.push(tbd);
+    });
 
-  tables(augData); 
+    var table = d3.select('div#table').append('table').attr('class', 'hello');
+    var titles = d3.keys(tbdata[0]);
+    var headers = table.append('thead').append('tr')
+      .selectAll('th')
+      .data(titles).enter()
+      .append('th')
+      .text(function (d) {
+        return d;
+      });
 
+    var rows = table.append('tbody').selectAll('tr')
+      .data(tbdata).enter()
+      .append('tr');
 
+    rows.selectAll('td')
+      .data(function (d) {
+        return titles.map(function (k) {
+          return { 'value': d[k], 'name': k };
+        });
+      }).enter()
+      .append('td')
+      .text(function (d) {
+        return d.value;
+      });
+  }
 
-//   });
-
-
-        function tables(data){
-
-            $( ".hello" ).remove();
-
-            var tbdata = [];
-
-            data.forEach(d=>{
-
-                var tbd = {}
-
-                tbd["District"] = d.district_n;
-
-                tbd["Number of Children 0-6 years old enrolled for services"] = d.no_enrolled;
-
-                tbd["Total No. of Children Eligible to be Weighed"] = d.tot_elgb_wghd;
-
-                tbd["Total No. of Children Eligible for measuring Height"] = d.tot_elgb_hght;
-
-                tbd["Total No. of Children Weighed"] = d.no_wt;
-
-                tbd["Total No. of Children whose Height has been measured"] = d.no_ht;
-
-                tbd["Total No. of Children whose Height and Weight has been measured"] = d.no_wt_ht;
-
-                tbdata.push(tbd);
-
-            });
-
-
-          var table = d3.select('div#table').append('table').attr('class','hello');
-
-           
-
-		  var titles = d3.keys(tbdata[0]);
-
-		  var headers = table.append('thead').append('tr')
-
-		                   .selectAll('th')
-
-		                   .data(titles).enter()
-
-		                   .append('th')
-
-		                   .text(function (d) {
-
-			                    return d;
-
-		                    });
-
-
-		  var rows = table.append('tbody').selectAll('tr')
-
-		               .data(tbdata).enter()
-
-                       .append('tr');
-  
-
-          rows.selectAll('td')
-
-          .data(function (d) {
-
-            return titles.map(function (k) {
-
-              return { 'value': d[k], 'name': k};
-
-            });
-
-		      }).enter()
-
-            .append('td')
-
-		    .text(function (d) {
-
-		    	return d.value;
-
-            });
-
-        }
-
-  </script>
+</script>
 
 {% endblock %}
-

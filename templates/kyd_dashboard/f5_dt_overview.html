@@ -6,20 +6,13 @@
     table {
         width: 90%;
         height: 75%;
-        /* border-collapse: collapse; */
         font-size: calc(40% + 0.5vw + 0.5vh);
-        /* margin-top: 100px; */
-        /* margin-left: 20px; */
     }
 
     th,
     tr {
         background: #a2d3fa;
-        /* font-size: calc(50% + 0.5vw + 0.5vh); */
         font-weight: bold;
-        /* cursor: s-resize;
-        background-repeat: no-repeat;
-        background-position: 3% center; */
     }
 
     td,
@@ -27,7 +20,6 @@
         padding: 6px;
         border: 1px solid #ccc;
         text-align: center;
-        /* width: 6%; */
     }
 
     th.des:after {
@@ -43,12 +35,12 @@
         font-weight: bold;
         font-size: calc(50% + 0.5vw + 0.5vh);
     }
-    
+
     .custom-control-label {
         font-size: calc(50% + 0.5vw + 0.5vh);
-    /* padding-left: 5px; */
-    }       
-  
+        /* padding-left: 5px; */
+    }
+
     .custom-control-input {
         width: 0.75em;
         height: 0.75em;
@@ -131,16 +123,15 @@
 
 <div class="row text-center">
     <div class="col-12 mb-3">
-        <input type="text" id="monthSlider" name="somename" data-provide="slider"
-            data-slider-ticks="[0, 1, 2, 3, 4, 5]"
-            data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]'
-            data-slider-min="0" data-slider-max="5" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
+        <input type="text" id="monthSlider" name="somename" data-provide="slider" data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+            data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]' data-slider-min="0"
+            data-slider-max="5" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
     </div>
 </div>
 
 <div class="row m-1">
-<!-- <div class="col-12"> -->
-    <form class="col-12" name="indicatorRadio" action="#"> 
+    <!-- <div class="col-12"> -->
+    <form class="col-12" name="indicatorRadio" action="#">
         <div class="custom-control custom-radio custom-control-inline">
             <input type="radio" id="customRadioInline1" name="states" value="set1" class="custom-control-input">
             <label class="custom-control-label" for="customRadioInline1">Outcome Indicators</label>
@@ -181,7 +172,7 @@
             </label> -->
 
     </form>
-<!-- </div> -->
+    <!-- </div> -->
 </div>
 <div class="row h-100 justify-content-center mt-4">
     <div class="col-12" id="table"></div>
@@ -192,10 +183,6 @@
 
 {% block feature_js %}
 <script>
-    // var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
-
-    // var selectMonth = tickLabels[$('#monthSlider').slider('getValue')]
-    // console.log(selectMonth, "Current Month")
 
     function filterCSV(csv, key, value) {
         var result = [];
@@ -276,9 +263,9 @@
         $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
         $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
         var val = selectMonth
-        console.log(val,"val")
+        console.log(val, "val")
         // selectMonth=val;
-        filterdata = filterCSV(data, 'month_n', val); 
+        filterdata = filterCSV(data, 'month_n', val);
         tableData = tables(d3.select('input[name="states"]:checked').node().value, filterdata);
 
         render(tableData);
@@ -286,12 +273,12 @@
 
     });
 
-     monthSelect= tickLabels[$('#monthSlider').slider('getValue')];
-augData = filterCSV(data, 'month_n', monthSelect);
-let tbleData= tables(d3.select('input[name="states"]:checked').node().value, augData);
-render(tbleData);
+    monthSelect = tickLabels[$('#monthSlider').slider('getValue')];
+    augData = filterCSV(data, 'month_n', monthSelect);
+    let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
+    render(tbleData);
 
-    
+
     // })
     const tbData = (val, monthwiseData) => {
         console.log(d3.select('input[name="states"]:checked').node().value);
@@ -766,18 +753,18 @@ render(tbleData);
     var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
     $('#monthSlider').slider().on('slideStop', function (ev) {
         var val = tickLabels[ev.value];
-    // monthSelect = $('.month a').first().text();
-    augData = filterCSV(data, 'month_n', val);
-    let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
-    render(tbleData);
-     });
-    
+        // monthSelect = $('.month a').first().text();
+        augData = filterCSV(data, 'month_n', val);
+        let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
+        render(tbleData);
+    });
+
     // console.log(selectMonth, "Current Month")
 
-    monthSelect= tickLabels[$('#monthSlider').slider('getValue')];
-augData = filterCSV(data, 'month_n', monthSelect);
-let tbleData= tables(d3.select('input[name="states"]:checked').node().value, augData);
-render(tbleData);
+    monthSelect = tickLabels[$('#monthSlider').slider('getValue')];
+    augData = filterCSV(data, 'month_n', monthSelect);
+    let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
+    render(tbleData);
 
     const tbData = (val, monthwiseData) => {
 
@@ -1247,19 +1234,19 @@ render(tbleData);
     var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
     $('#monthSlider').slider().on('slideStop', function (ev) {
         var val = tickLabels[ev.value];
-    // monthSelect = $('.month a').first().text();
-    augData = filterCSV(data, 'month_n', val);
-    let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
-    render(tbleData);
-     });
+        // monthSelect = $('.month a').first().text();
+        augData = filterCSV(data, 'month_n', val);
+        let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
+        render(tbleData);
+    });
 
     selectMonth = tickLabels[$('#monthSlider').slider('getValue')];
     console.log(selectMonth, "Current Month")
 
-    monthSelect= tickLabels[$('#monthSlider').slider('getValue')];
-augData = filterCSV(data, 'month_n', monthSelect);
-let tbleData= tables(d3.select('input[name="states"]:checked').node().value, augData);
-render(tbleData);
+    monthSelect = tickLabels[$('#monthSlider').slider('getValue')];
+    augData = filterCSV(data, 'month_n', monthSelect);
+    let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
+    render(tbleData);
 
     const tbData = (val, monthwiseData) => {
 
@@ -1674,13 +1661,8 @@ render(tbleData);
 
     function awc() {
         const render = data => {
-
-
         }
 
-
-
-        //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_awc.csv'%}").then(data => {
         /////
         data_from_django = {{ context.awc_data | safe }};
     var data = []
@@ -1734,19 +1716,19 @@ render(tbleData);
     var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
     $('#monthSlider').slider().on('slideStop', function (ev) {
         var val = tickLabels[ev.value];
-    // monthSelect = $('.month a').first().text();
-    augData = filterCSV(data, 'month_n', val);
-    let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
-    render(tbleData);
-     });
+        // monthSelect = $('.month a').first().text();
+        augData = filterCSV(data, 'month_n', val);
+        let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
+        render(tbleData);
+    });
 
     selectMonth = tickLabels[$('#monthSlider').slider('getValue')];
     console.log(selectMonth, "Current Month")
 
-    monthSelect= tickLabels[$('#monthSlider').slider('getValue')];
-augData = filterCSV(data, 'month_n', monthSelect);
-let tbleData= tables(d3.select('input[name="states"]:checked').node().value, augData);
-render(tbleData);
+    monthSelect = tickLabels[$('#monthSlider').slider('getValue')];
+    augData = filterCSV(data, 'month_n', monthSelect);
+    let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
+    render(tbleData);
 
     const tbData = (val, monthwiseData) => {
 

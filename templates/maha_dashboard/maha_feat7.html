@@ -2,660 +2,773 @@
 {% load static %}
 
 {% block feature_css %}
-<link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}" >
-<link rel="stylesheet" type="text/css" href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'><link>
+<link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}">
+<link rel="stylesheet" type="text/css"
+  href='https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css'>
+<link>
 
 <style>
-body {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  margin: 0;
-  overflow: hidden;
-}
-div.tooltip { 
-  position: absolute;     
-  text-align: center;     
-  width: 300px;          
-  height: 100px;          
-  padding: 2px;       
-  font: 15px sans-serif;  
-  font-weight: bold;    
-  background: #fff; 
-  border: 0px;
-  border-radius: 50px;
-  pointer-events: none;     
-}
+  /* body {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    margin: 0;
+    overflow: hidden;
+  } */
+  #table {
+    width: 70%;
+    height: 75%;
+    font-size: calc(30% + 0.5vw + 0.5vh);
+    font-weight: bold;
+  }
 
-.boundary {
-  stroke: #ccebed;
-  stroke-width: 1px; 
-}
+  div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    font-family: sans-serif;
+    font-size: calc(40% + 0.5vw + 0.5vh);
+    font-weight: bold;
+    background: #fff;
+    border-radius: 10px;
+    pointer-events: none;
+  }
 
-.slider-lebel{
-	background-color: green;
-}
 
-.info-hirar{
-	font-size:1.5em;
+  .boundary {
+    stroke: #ccebed;
+    stroke-width: 1px;
+  }
 
-}
-td{
- font-weight:bold;
-}
-.scrollable{
-    overflow-y: scroll; 
+  .slider-lebel {
+    background-color: green;
+  }
+
+  .info-hirar {
+    font-size: calc(50% + 0.5vw + 0.5vh);
+  }
+
+  .scrollable {
+    overflow-y: scroll;
     max-height: 700px;
-}
+  }
 
+  p {
+    font-size: calc(35% + 0.5vw + 0.5vh);
+    font-weight: bold;
+  }
+
+  #slider-range text {
+    font-size: calc(50% + 0.5vw + 0.5vh);
+  }
+
+  .lc_link {
+    float: right;
+    font-size: calc(50% + 0.5vw + 0.5vh);
+  }
 </style>
 {% endblock %}
 {% block feature %}
-<div class=" full-height">
-    <div class='heading text-dark mt-2 text-center' >Outcome Indicators</div>
 
-    <div class="row ">
-          <div class="row bg-info w-100 m-0">
-        <div class="dropdown" style="float: left; margin:10px">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Select Month
-          		<span class="selectedMonth"></span>
-            </button>
-            <div class="dropdown-menu drop-month" aria-labelledby="dropdownMenuButton">
-              {% for month_select in monthList %} 
-                <a class="dropdown-item" href="#">{{ month_select.month }}</a>
-              {% endfor %} 
-            </div>
-          </div>
-          <div class="dropdown" style="float: left; margin:10px"> 
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-              Select Category
-              <span class="selectedCategory"></span>
-            </button>
-            <div class="dropdown-menu drop-category" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">Severly Stunted Children</a>
-              <a class="dropdown-item" href="#">Stunted Children</a>
-              <a class="dropdown-item" href="#">Severely Wasted Children</a>
-              <a class="dropdown-item" href="#">Wasted Children</a>
-              <a class="dropdown-item" href="#">Severely Underweight Children</a>
-              <a class="dropdown-item" href="#">Underweight Children</a>
-              <a class="dropdown-item" href="#">Newborn with low birth rate</a>
-            </div>
-          </div>
-          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'maha-feat6so' quarter %}`">Previous Feature</button>
-          <div id="slider-range" style="float: left;"></div>
-
-          <button type="button" class="btn btn-info" style="float: left; margin:10px" onclick="location.href=`{% url 'maha-feat8' quarter %}`">Next Feature</button>
-
-
-
-    </div>
-    </div>
-    
-  <div class="row h-100 scrollable">
-    <div class="col">
-      <div class='row'> 
-  
-       
-        <div class='col '>   
-          <a href="{% url 'maha-feat_lcdt' quarter %}" style="float: right; margin:10px; font-size: medium;">
-            Want to see Month-wise Trend
-            <i class="fa fa-chevron-right" aria-hidden="true"></i>
-          </a>
-          <button type="button" class="btn back-button m-4">back</button>
-
-          <span class='info info-hirar'>Maharastra</span><br>
-          <p style="font-size: medium;">Click on the Polygon(District) to view the Lower Level</p>
-				</div>
-      </div>
-      <div class='row' style="height:900px" >
-      	<div class='col-8' id = "mymap">
-            <div class="text-center">
-                <p id="value-range"></p>
-            </div>
-
-                    <svg></svg>
-				</div>
-        <div class='col-4'>            
-          <div class='data-table scrollable'></div>
-				</div>
-      </div>
-    </div>
-
- 
-
+<div class="row">
+  <div class="col-12 h-75">
+    <div class="heading text-center">Outcome Indicators</div>
+  </div>
 </div>
+
+<div class="row text-center bg-info mb-3">
+  <div class="dropdown">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      Select Category
+      <span class="selectedCategory"></span>
+    </button>
+    <div class="dropdown-menu drop-category" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#">Severly Stunted Children</a>
+      <a class="dropdown-item" href="#">Stunted Children</a>
+      <a class="dropdown-item" href="#">Severely Wasted Children</a>
+      <a class="dropdown-item" href="#">Wasted Children</a>
+      <a class="dropdown-item" href="#">Severely Underweight Children</a>
+      <a class="dropdown-item" href="#">Underweight Children</a>
+      <a class="dropdown-item" href="#">Newborn with low birth rate</a>
+    </div>
+  </div>
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat6so' %}`">Previous
+    Feature</button>
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat8' %}`">Next
+    Feature</button>
+  <div id="slider-range"></div>
+</div>
+
+<div class="row text-center">
+  <div class="col-12 mb-3">
+    <input type="text" id="monthSlider" name="somename" data-provide="slider" data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]' data-slider-min="0" data-slider-max="5"
+      data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-12">
+    <button type="button" class="btn btn-dark back-button m-2">back</button>
+    <span class='info info-hirar'>Maharashtra</span>
+    <p>Click on the Polygon(District/Block) to view the Lower Level
+      <a href="{% url 'maha-feat_lcdt' %}" class="lc_link">
+        Want to see Month-wise Trend
+        <i class="fa fa-chevron-right" aria-hidden="true"></i>
+      </a>
+    </p>
+  </div>
+</div>
+
+<div class="row">
+  <div class="col-8" id="mymap"></div>
+  <div class="col-4" id="table"></div>
+</div>
+
 {% endblock %}
 {% block feature_js %}
 <script>
-    function filterCSV(csv, key, value) {
-      var result = [];
-      csv.forEach(function(val,idx,arr){
-      
-        if(val[key] == value){
-        
-          result.push(val)
-        }
-      })
-      return result;
+  function filterCSV(csv, key, value) {
+    var result = [];
+    csv.forEach(function (val, idx, arr) {
+
+      if (val[key] == value) {
+
+        result.push(val)
+      }
+    })
+    return result;
+  }
+  const svg = d3
+    .select("#mymap")
+    .append('svg')
+    .attr('width', 1300)
+    .attr('height', 800)
+    .call(responsivefy);
+
+  function responsivefy(svg) {
+
+    // Container is the DOM element, svg is appended. 
+    // Then we measure the container and find its 
+    // aspect ratio. 
+    const container = d3.select(svg.node().parentNode),
+      width = parseInt(svg.style('width'), 10),
+      height = parseInt(svg.style('height'), 10),
+      aspect = width / height;
+
+    console.log("width&height", width, height)
+    // Add viewBox attribute to set the value to initial size 
+    // add preserveAspectRatio attribute to specify how to scale  
+    // and call resize so that svg resizes on page load 
+    svg.attr('viewBox', `0 0 ${width} ${height}`).
+      attr('preserveAspectRatio', 'xMinYMin').
+      call(resize);
+
+    d3.select(window).on('resize.', resize);
+
+    function resize() {
+      //const targetWidth = parseInt(container.style('width'));
+      const targetWidth = $(window).width();
+      const targetheight = $(window).height();
+      //var targetHeight = $(window).height();
+      console.log("tw&h", targetWidth, targetheight);
+      width1 = targetWidth;
+      svg.attr('width', targetWidth);
+      svg.attr('height', targetheight);
     }
+  }
 
-    const width = document.getElementById("mymap").offsetWidth;
-    const height = document.getElementById("mymap").offsetHeight;
-    
-    const margin = {left:200,top:300 ,right:40,bottom:20};
-    const innerWidth = width - margin.left - margin.right;
-    const innerHeight = height - margin.top - margin.bottom;
-        
-    console.log(width,height);
-    const transitionDuration = 1000;
-    let level = 0; 
-    let levelLocation = [];
-    let month_hack = "nov";
-    let direction = 1;
-    let circleEnter,rowEnter;
-    let zoomBox = {'translate':[],'scale':[]};
-    let table = d3
-      .select(".data-table")
-      .append("table")
-      .attr("class", "table update-table");
-    let headerName = ["Location", "Percentage", "Actual Number"];
-    let headers = table
-      .append("thead")
-      .append("tr")
-      .selectAll("th")
-      .data(headerName)
-      .enter()
-      .append("th")
-      .text(d => d);
-    let row = table.append("tbody").selectAll("tr");
-    //Zoom
-    let zzoom = d3.zoom()
-      .scaleExtent([1, 8])
-      .on("zoom", zoomed);
-    
-    function zoomed() {
-      // g.style("stroke-width", 1.5 / d3.event.transform.k + "px");
-      g.attr("transform", d3.event.transform); // updated for d3 v4
-    }
-    
-    let tooltip = d3
-      .select("body")
-      .append("div")
-      .attr("class", "tooltip")
-      .style("opacity", 0);
-      
-    
-    const svg = d3
-      .select("svg")
-      .attr("width", width)
-      .attr("height", height);
-    const g = svg.append("g");
+  const margin = { left: 200, top: 300, right: 40, bottom: 20 };
+  const innerWidth = 1300 - margin.left - margin.right;
+  const innerHeight = 800 - margin.top - margin.bottom;
 
-    var mercator = d3
-      .geoMercator()
-      .scale(1);
+  const transitionDuration = 1000;
+  let level = 0;
+  let levelLocation = [];
+  let month_hack = "nov";
+  let direction = 1;
+  let circleEnter, rowEnter;
+  let zoomBox = { 'translate': [], 'scale': [] };
+  let table = d3
+    .select("div#table")
+    .append("table")
+    .attr("class", "table update-table");
+  let headerName = ["Location", "Percentage", "Actual Number"];
+  let headers = table
+    .append("thead")
+    .append("tr")
+    .selectAll("th")
+    .data(headerName)
+    .enter()
+    .append("th")
+    .text(d => d)
+    .style("text-align", "center");
+  let row = table.append("tbody").selectAll("tr");
+  //Zoom
+  let zzoom = d3.zoom()
+    .scaleExtent([1, 8])
+    .on("zoom", zoomed);
 
-    const pathGenerator = d3.geoPath().projection(mercator);
-    //Zoom
-    // svg.call(d3.zoom().on('zoom',() =>{
-    // 	g.attr('transform',event.transform)
-    // }))
-    
-    const render = (
-      block,
-      project,
-     
-      blockData,
-      projectData
-      
-    ) => {
-      //initail value of tooltip
-      let TextValue = null;
-      let Tooltipheader1 = d => "Severely Stunted Children:";
-      let Tooltipheader2 = d => "";
-      let Tooltipheader3 = d => "Height measurement efficiency:";
-      let TooltipVal1 = d => d.properties.svrly_stntd;
-      let TooltipVal2 = d => "";
-      let TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-      let ColorValue = d => d.properties.svrly_stunting_percent;
-      let TPercentValue = d => d.svrly_stunting_percent;
-      let TActualValue = d => d.svrly_stntd;
-      let low = 25.00;
-      let high= 50.00;
+  function zoomed() {
+    // g.style("stroke-width", 1.5 / d3.event.transform.k + "px");
+    g.attr("transform", d3.event.transform); // updated for d3 v4
+  }
 
-      const fillCellColor = (d, percentageColor, actualColor) => {
-        if (d.name == "Percentage") return percentageColor(d.value);
-        else if (d.name == "Actual Number") return actualColor(d.value);
-      };
-    
-      //info-div
-      const updateMonth = month_hack => {
-        d3.select(".info-month").text(month_hack);
-      };
-      
-      const updateCategory = updatedCat => {
-        d3.select(".info-category").text(updatedCat);
-      };
-    
-    
-      //makemap
-      const makemap = (geojson, tdata) => {
-        d3.select('.info-hirar').text(function(){
-          let hirarchy = "Maharastra";
-          levelLocation.forEach(loc=>{
-            hirarchy += ">"+loc;
-          })
-          return hirarchy;
+  let tooltip = d3
+    .select("body")
+    .append("div")
+    .attr("class", "tooltip")
+    .style("opacity", 0);
+
+  const g = svg.append("g");
+
+  var mercator = d3
+    .geoMercator()
+    .scale(1);
+
+  const pathGenerator = d3.geoPath().projection(mercator);
+  //Zoom
+  // svg.call(d3.zoom().on('zoom',() =>{
+  // 	g.attr('transform',event.transform)
+  // }))
+
+  const render = (
+    block,
+    project,
+
+    blockData,
+    projectData
+
+  ) => {
+    //initail value of tooltip
+    let TextValue = null;
+    let Tooltipheader1 = d => "Severely Stunted Children:";
+    let Tooltipheader2 = d => "";
+    let Tooltipheader3 = d => "Height measurement efficiency:";
+    let TooltipVal1 = d => d.properties.svrly_stntd;
+    let TooltipVal2 = d => "";
+    let TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+    let ColorValue = d => d.properties.svrly_stunting_percent;
+    let TPercentValue = d => d.svrly_stunting_percent;
+    let TActualValue = d => d.svrly_stntd;
+    let low = 25.00;
+    let high = 50.00;
+
+    const fillCellColor = (d, percentageColor, actualColor) => {
+      if (d.name == "Percentage") return percentageColor(d.value);
+      else if (d.name == "Actual Number") return actualColor(d.value);
+    };
+
+    //info-div
+    const updateMonth = month_hack => {
+      d3.select(".info-month").text(month_hack);
+    };
+
+    const updateCategory = updatedCat => {
+      d3.select(".info-category").text(updatedCat);
+    };
+
+
+    //makemap
+    const makemap = (geojson, tdata) => {
+      d3.select('.info-hirar').text(function () {
+        let hirarchy = "Maharastra";
+        levelLocation.forEach(loc => {
+          hirarchy += ">" + loc;
         })
-        updateMonth();
-        if (level == 0 && direction == 1) {
-          TextValue = d => d.properties.district;
-        } else if (level == 1 && direction == 1) {
-          TextValue = d => d.properties.block;
-        } 
-       else if (level == 1 && direction == 0) {
-          TextValue = d => d.properties.block;
-        } else if (level == 0 && direction == 0) {
-          TextValue = d => d.properties.district;
-        } 
-        let min = d3.min(geojson, ColorValue);
-        let max = d3.max(geojson, ColorValue);
-        let comp = (max - min) / 3;
-        let myColor = (v, low, high) => {
-            if (v < low) return "#24562B";
-            //matte green
-            else if (v >= low && v <= high) return "#FFE338";
-            //matte yellow
-            else if (v > high) return "#B2022F"; //matte red
-        };
-          let tooltipValue = (d) =>{
-          let ttv = `<b>${TextValue(d)}</b><br> 
+        return hirarchy;
+      })
+      updateMonth();
+      if (level == 0 && direction == 1) {
+        TextValue = d => d.properties.district;
+      } else if (level == 1 && direction == 1) {
+        TextValue = d => d.properties.block;
+      }
+      else if (level == 1 && direction == 0) {
+        TextValue = d => d.properties.block;
+      } else if (level == 0 && direction == 0) {
+        TextValue = d => d.properties.district;
+      }
+      let min = d3.min(geojson, ColorValue);
+      let max = d3.max(geojson, ColorValue);
+      let comp = (max - min) / 3;
+      let myColor = (v, low, high) => {
+        if (v < low) return "#24562B";
+        //matte green
+        else if (v >= low && v <= high) return "#FFE338";
+        //matte yellow
+        else if (v > high) return "#B2022F"; //matte red
+      };
+      let tooltipValue = (d) => {
+        let ttv = `<b>${TextValue(d)}</b><br> 
                       ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
                       ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
                       ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>
                      `;
-           return ttv;
-           }
-            const onMouseOverPoly = d => {
+        return ttv;
+      }
+      const onMouseOverPoly = d => {
+        tooltip
+          .transition()
+          .duration(200)
+          .style("opacity", 0.9);
+        tooltip
+          .html(tooltipValue(d))
+          .style("left", d3.event.pageX + "px")
+          .style("top", d3.event.pageY - 30 + "px");
+
+      };
+
+      let path = g.selectAll("path").data(geojson);
+      let pathEnter = path
+        .enter()
+        .append("path")
+        .attr("d", pathGenerator)
+        .attr("class", "boundary")
+        .style("fill", d => {
+          if (level !== 3) {
+            return myColor(ColorValue(d), low, high);
+          } else {
+            return "rgba(0,0,0,0)";
+          }
+        })
+        .on("mouseover", d => onMouseOverPoly(d))
+        .on("mouseout", function (d) {
           tooltip
             .transition()
-            .duration(200)
-            .style("opacity", 0.9);
-          tooltip
-            .html(tooltipValue(d))
-            .style("left", d3.event.pageX + "px")
-            .style("top", d3.event.pageY - 30 + "px");
-          
-        };
-    
-        let path = g.selectAll("path").data(geojson);
-        let pathEnter = path
-          .enter()
-          .append("path")
-          .attr("d", pathGenerator)
-          .attr("class", "boundary")
-          .style("fill", d => {
-            if(level !== 3){
-              return myColor(ColorValue(d), low, high);
-            }else{
-             return "rgba(0,0,0,0)";
-            }
-          })
-          .on("mouseover", d => onMouseOverPoly(d))
-          .on("mouseout", function(d) {
-            tooltip
-              .transition()
-              .duration(500)
-              .style("opacity", 0);
-          });
-    
-        //text over polygon
-        let textLabel = g
-          .selectAll("text")
-          .data(geojson)
-          .enter()
-          .append("text")
-          .text(d => {
-            if (level !== 3) {
-              return `${TextValue(d)}(${ColorValue(d)})`;
-            } else {
-              return "";
-            }
-          })
-          .attr("x", function(d) {
-            return pathGenerator.centroid(d)[0];
-          })
-          .attr("y", function(d) {
-            return pathGenerator.centroid(d)[1];
-          })
-          .attr("text-anchor", "middle")
-          .attr("font-family", "sans-serif");
-    
-        if (level === 0) {
-          textLabel.attr("font-size", "10pt").attr("font-weight", "bold"); 
-        } else if (level === 1) {
-          textLabel.attr("font-size", "3pt").attr("font-weight", "bold"); 
-        }
-        
-    
-        //update slider color
-        const fillSlider = () => {
-          leftX2 = +d3.select("line.track-fill").attr("x1") - 15;
-          d3.select("line.leftcolor").attr("x2", leftX2);
-        };
-        //when slider move
-        sliderRange.on("onchange", val => {
-          fillSlider();
-          d3.select("p#value-range").text(val.map(d3.format(".1%")).join("-"));
-          low = (val[0] * 100).toFixed(2);
-          high = (val[1] * 100).toFixed(2);
-          
-          pathEnter
-            .transition()
-            .duration(transitionDuration)
-            .style("fill", function(d) {
-              if(level !== 3){
-                return myColor(ColorValue(d), low, high);
-              }else{
-                return 'rgba(0,0,0,0)';
-              }
-            });
-          
-          // if(level === 3){
-          //   circleEnter
-          //   .transition()
-          //   .duration(transitionDuration)
-          //   .style("fill", function(d) {
-          //       return myColor(ColorValue(d), low, high);
-          //   });
-          // }
+            .duration(500)
+            .style("opacity", 0);
         });
 
-        let updatedCat;
-        const updateviz = selectedCat => {
-          //update tooltip
-          switch (selectedCat) {
-            
-        case 1:
-          updatedCat = "Severely Stunted Children";
-          Tooltipheader1 = d => "Severely Stunted Children:";
-          Tooltipheader2 = d => "";
-          Tooltipheader3 = d => "Height Measurement efficiency:";
-          TooltipVal1 = d => d.properties.svrly_stntd;
-  				TooltipVal2 = d => "";
-  				TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-  				ColorValue = d => d.properties.svrly_stunting_percent;
-          break;
-        case 2:
-          updatedCat = "Stunted Children";
-          Tooltipheader1 = d => "Stunted Children:";
-          Tooltipheader2 = d => "Moderately Stunted Children:";
-          Tooltipheader3 = d =>"Height Measurement efficiency:";
-          TooltipVal1 = d => d.properties.stunted_child;
-  				TooltipVal2 = d => d.properties.mdrtly_stntd;
-  				TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-          ColorValue = d => d.properties.stunting_percent;
-          break;
-        case 3:
-          updatedCat = "Severely Wasted Children";
-          Tooltipheader1 = d => "Severely Wasted Children:";
-          Tooltipheader2 = d => "";
-          Tooltipheader3 = d => "Height Measurement efficiency:";
-          TooltipVal1 = d => d.properties.svr_wstg;
-  				TooltipVal2 = d => "";
-  				TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-          ColorValue = d => d.properties.svr_wasting_percent;
-          break;
-        case 4:
-          updatedCat = "Wasted Children";
-          Tooltipheader1 = d => "Wasted Children:";
-          Tooltipheader2 = d => "Moderately Wasted Children:";
-          Tooltipheader3 = d => "Height Measurement efficiency:";
-          TooltipVal1 = d => d.properties.wasted_child;
-  				TooltipVal2 = d => d.properties.mdrtly_wstd;
-  				TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-          ColorValue = d => d.properties.wasting_percent;
-          break;
-        case 5:
-          updatedCat = "Severely Underweight Children";
-          Tooltipheader1 = d => "Severely Underweight Children:";
-          Tooltipheader2 = d => "";
-          Tooltipheader3 = d => "Weight Measurement efficiency:";
-          TooltipVal1 = d => d.properties.svrly_uw;
-  				TooltipVal2 = d => "";
-  				TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
-          ColorValue = d => d.properties.svrly_underweight_percent;
-          break;
-        case 6:
-          updatedCat = "Underweight Children";
-          Tooltipheader1 = d => "Underweight Children:";
-          Tooltipheader2 = d => "Moderately Underweight Children:";
-          Tooltipheader3 = d => "Weight Measurement efficiency:";
-          TooltipVal1 = d => d.properties.uw_child;
-  				TooltipVal2 = d => d.properties.mdrtly_uw;
-  				TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
-          ColorValue = d => d.properties.underweight_percent;
-          break;
-        case 7:
-          updatedCat = "New born with low birth rate";
-          Tooltipheader1 = d => "New born with low birth rate:";
-          Tooltipheader2 = d => "";
-          Tooltipheader3 = d => "";
-          TooltipVal1 = d => d.properties.nb_lbw;
-  				TooltipVal2 = d => "";
-  				TooltipVal3 = d => "";
-          ColorValue = d => d.properties.low_birth_weight_percent;
-          break;
+      //text over polygon
+      let textLabel = g
+        .selectAll("text")
+        .data(geojson)
+        .enter()
+        .append("text")
+        .text(d => {
+          if (level !== 3) {
+            return `${TextValue(d)}(${ColorValue(d)})`;
+          } else {
+            return "";
           }
-          updateCategory(updatedCat);
-          min = d3.min(geojson, ColorValue);
-          max = d3.max(geojson, ColorValue);
-          comp = (max - min) / 3;
-          pathEnter
-            .transition()
-            .duration(transitionDuration)
-            .style("fill", function(d) {
-              if(level !== 3){
+        })
+        .attr("x", function (d) {
+          return pathGenerator.centroid(d)[0];
+        })
+        .attr("y", function (d) {
+          return pathGenerator.centroid(d)[1];
+        })
+        .attr("text-anchor", "middle")
+        .attr("font-family", "sans-serif");
+
+      if (level === 0) {
+        textLabel.attr("font-size", "1em").attr("font-weight", "bold");
+      } else if (level === 1) {
+        textLabel.attr("font-size", "0.25em").attr("font-weight", "bold");
+      }
+
+
+      //update slider color
+      const fillSlider = () => {
+        leftX2 = +d3.select("line.track-fill").attr("x1") - 15;
+        d3.select("line.leftcolor").attr("x2", leftX2);
+      };
+      //when slider move
+      sliderRange.on("onchange", val => {
+        fillSlider();
+        d3.select("p#value-range").text(val.map(d3.format(".1%")).join("-"));
+        low = (val[0] * 100).toFixed(2);
+        high = (val[1] * 100).toFixed(2);
+
+        pathEnter
+          .transition()
+          .duration(transitionDuration)
+          .style("fill", function (d) {
+            if (level !== 3) {
               return myColor(ColorValue(d), low, high);
-              }else{
-                return 'rgba(0,0,0,0)';
-              }
-            });
-    
-          textLabel
-            .text(d => {
-            if(level !== 3)
+            } else {
+              return 'rgba(0,0,0,0)';
+            }
+          });
+
+        // if(level === 3){
+        //   circleEnter
+        //   .transition()
+        //   .duration(transitionDuration)
+        //   .style("fill", function(d) {
+        //       return myColor(ColorValue(d), low, high);
+        //   });
+        // }
+      });
+
+      let updatedCat;
+      const updateviz = selectedCat => {
+        //update tooltip
+        switch (selectedCat) {
+
+          case 1:
+            updatedCat = "Severely Stunted Children";
+            Tooltipheader1 = d => "Severely Stunted Children:";
+            Tooltipheader2 = d => "";
+            Tooltipheader3 = d => "Height Measurement efficiency:";
+            TooltipVal1 = d => d.properties.svrly_stntd;
+            TooltipVal2 = d => "";
+            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+            ColorValue = d => d.properties.svrly_stunting_percent;
+            break;
+          case 2:
+            updatedCat = "Stunted Children";
+            Tooltipheader1 = d => "Stunted Children:";
+            Tooltipheader2 = d => "Moderately Stunted Children:";
+            Tooltipheader3 = d => "Height Measurement efficiency:";
+            TooltipVal1 = d => d.properties.stunted_child;
+            TooltipVal2 = d => d.properties.mdrtly_stntd;
+            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+            ColorValue = d => d.properties.stunting_percent;
+            break;
+          case 3:
+            updatedCat = "Severely Wasted Children";
+            Tooltipheader1 = d => "Severely Wasted Children:";
+            Tooltipheader2 = d => "";
+            Tooltipheader3 = d => "Height Measurement efficiency:";
+            TooltipVal1 = d => d.properties.svr_wstg;
+            TooltipVal2 = d => "";
+            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+            ColorValue = d => d.properties.svr_wasting_percent;
+            break;
+          case 4:
+            updatedCat = "Wasted Children";
+            Tooltipheader1 = d => "Wasted Children:";
+            Tooltipheader2 = d => "Moderately Wasted Children:";
+            Tooltipheader3 = d => "Height Measurement efficiency:";
+            TooltipVal1 = d => d.properties.wasted_child;
+            TooltipVal2 = d => d.properties.mdrtly_wstd;
+            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+            ColorValue = d => d.properties.wasting_percent;
+            break;
+          case 5:
+            updatedCat = "Severely Underweight Children";
+            Tooltipheader1 = d => "Severely Underweight Children:";
+            Tooltipheader2 = d => "";
+            Tooltipheader3 = d => "Weight Measurement efficiency:";
+            TooltipVal1 = d => d.properties.svrly_uw;
+            TooltipVal2 = d => "";
+            TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
+            ColorValue = d => d.properties.svrly_underweight_percent;
+            break;
+          case 6:
+            updatedCat = "Underweight Children";
+            Tooltipheader1 = d => "Underweight Children:";
+            Tooltipheader2 = d => "Moderately Underweight Children:";
+            Tooltipheader3 = d => "Weight Measurement efficiency:";
+            TooltipVal1 = d => d.properties.uw_child;
+            TooltipVal2 = d => d.properties.mdrtly_uw;
+            TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
+            ColorValue = d => d.properties.underweight_percent;
+            break;
+          case 7:
+            updatedCat = "New born with low birth rate";
+            Tooltipheader1 = d => "New born with low birth rate:";
+            Tooltipheader2 = d => "";
+            Tooltipheader3 = d => "";
+            TooltipVal1 = d => d.properties.nb_lbw;
+            TooltipVal2 = d => "";
+            TooltipVal3 = d => "";
+            ColorValue = d => d.properties.low_birth_weight_percent;
+            break;
+        }
+        updateCategory(updatedCat);
+        min = d3.min(geojson, ColorValue);
+        max = d3.max(geojson, ColorValue);
+        comp = (max - min) / 3;
+        pathEnter
+          .transition()
+          .duration(transitionDuration)
+          .style("fill", function (d) {
+            if (level !== 3) {
+              return myColor(ColorValue(d), low, high);
+            } else {
+              return 'rgba(0,0,0,0)';
+            }
+          });
+
+        textLabel
+          .text(d => {
+            if (level !== 3)
               return `${TextValue(d)}(${ColorValue(d)})`;
-            })
-            .exit()
-            .remove();
-        };
-    
-        
-          let updatepoints = () =>{
-            min = d3.min(geojson, ColorValue);
-            max = d3.max(geojson, ColorValue);
-            comp = (max - min) / 3;
-          circleEnter
-            .transition()
-            .duration(transitionDuration)
-            .style("fill", d => {
-           return myColor(ColorValue(d), low, high);
-          }); 
-            
-            
-          }
-          
-    
-        //on category selection
-    
-        $('.drop-category a').click(function(){
+          })
+          .exit()
+          .remove();
+      };
+
+
+      let updatepoints = () => {
+        min = d3.min(geojson, ColorValue);
+        max = d3.max(geojson, ColorValue);
+        comp = (max - min) / 3;
+        circleEnter
+          .transition()
+          .duration(transitionDuration)
+          .style("fill", d => {
+            return myColor(ColorValue(d), low, high);
+          });
+
+
+      }
+
+
+      //on category selection
+
+      $('.drop-category a').click(function () {
         $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-    
-                let selCat = $(this).text();
-                let val;
-                switch(selCat){
-                    case "Severly Stunted Children":val=1;break;
-                    case "Stunted Children":val=2;break;
-                    case "Severely Wasted Children":val=3;break;
-                    case "Wasted Children":val=4;break;
-                    case "Severely Underweight Children":val=5;break;
-                    case "Underweight Children":val=6;break;
-                    case "Newborn with low birth rate":val=7;break;
-                }
-                updateviz(val);
-                if(level === 3){
-                    updatepoints(val);
-                }
-                updatetable(val);
-            })
-    
-    
-        const zoomToBoundingBox = d => {
-          let bounds = pathGenerator.bounds(d),
-            dx = bounds[1][0] - bounds[0][0],
-            dy = bounds[1][1] - bounds[0][1],
-            x = (bounds[0][0] + bounds[1][0]) / 2,
-            y = (bounds[0][1] + bounds[1][1]) / 2,
-            scale = Math.max(
-              1,
-              Math.min(8, 0.9 / Math.max(dx / innerWidth, dy / innerHeight))
-            ),
-            translate = [innerWidth / 2 - scale * x, innerHeight / 2 - scale * y];
-            zoomBox['translate'].push(translate);
-            zoomBox['scale'].push(scale);
-          svg
-            .transition()
-            .duration(transitionDuration)
-            .call(
-              zzoom.transform,
-              d3.zoomIdentity.translate(translate[0], translate[1])
+
+        let selCat = $(this).text();
+        let val;
+        switch (selCat) {
+          case "Severly Stunted Children": val = 1; break;
+          case "Stunted Children": val = 2; break;
+          case "Severely Wasted Children": val = 3; break;
+          case "Wasted Children": val = 4; break;
+          case "Severely Underweight Children": val = 5; break;
+          case "Underweight Children": val = 6; break;
+          case "Newborn with low birth rate": val = 7; break;
+        }
+        updateviz(val);
+        if (level === 3) {
+          updatepoints(val);
+        }
+        updatetable(val);
+      })
+
+
+      const zoomToBoundingBox = d => {
+        let bounds = pathGenerator.bounds(d),
+          dx = bounds[1][0] - bounds[0][0],
+          dy = bounds[1][1] - bounds[0][1],
+          x = (bounds[0][0] + bounds[1][0]) / 2,
+          y = (bounds[0][1] + bounds[1][1]) / 2,
+          scale = Math.max(
+            1,
+            Math.min(8, 0.9 / Math.max(dx / innerWidth, dy / innerHeight))
+          ),
+          translate = [innerWidth / 2 - scale * x, innerHeight / 2 - scale * y];
+        zoomBox['translate'].push(translate);
+        zoomBox['scale'].push(scale);
+        svg
+          .transition()
+          .duration(transitionDuration)
+          .call(
+            zzoom.transform,
+            d3.zoomIdentity.translate(translate[0], translate[1])
               .scale(scale)
-            );
-        };
-        //selectmap
-        const selectedSubFeature = (geojson, location) => {
-          let selection = [];
-          let geomType;
-          // if(level === 3 && direction == 0){
-          // } 
-          geojson.forEach(sel => {
-            if (level === 1 ) {
-              if (sel.properties.district === location) {
-                selection.push(sel);
-              }
-            } else if (level === 2 ) {
-              if (sel.properties.block === location) {
-                selection.push(sel);
-              }
-            } 
-           
-          });
-          return selection;
-        };
-    
-   
-    
-        const selectedSubData = (csv, location) => { 
-          let selection = [];
-          csv.forEach(sel => {
-            if (level === 1 && direction === 1) {
-              if (sel.district_n == location) {
-                selection.push(sel);
-              }
-            } else if (level === 2 && direction === 1) {
-              if (sel.sub_district == location) {
-                selection.push(sel);
-              }
-            } 
-           
-           
-            else if (level === 1 && direction === 0) {
-              if (sel.district_n == location) {
-                selection.push(sel);
-              }
-            }else if (level === 0 && direction === 0) {
-              if (sel.district_n == location) {
-                selection.push(sel);
-              }
-            }  
-          });
-          return selection;
-        };
-        // clicked
-        const clicked = d => {
-          if (level < 1){ 
+          );
+      };
+      //selectmap
+      const selectedSubFeature = (geojson, location) => {
+        let selection = [];
+        let geomType;
+        // if(level === 3 && direction == 0){
+        // } 
+        geojson.forEach(sel => {
+          if (level === 1) {
+            if (sel.properties.district === location) {
+              selection.push(sel);
+            }
+          } else if (level === 2) {
+            if (sel.properties.block === location) {
+              selection.push(sel);
+            }
+          }
+
+        });
+        return selection;
+      };
+
+
+
+      const selectedSubData = (csv, location) => {
+        let selection = [];
+        csv.forEach(sel => {
+          if (level === 1 && direction === 1) {
+            if (sel.district_n == location) {
+              selection.push(sel);
+            }
+          } else if (level === 2 && direction === 1) {
+            if (sel.sub_district == location) {
+              selection.push(sel);
+            }
+          }
+
+
+          else if (level === 1 && direction === 0) {
+            if (sel.district_n == location) {
+              selection.push(sel);
+            }
+          } else if (level === 0 && direction === 0) {
+            if (sel.district_n == location) {
+              selection.push(sel);
+            }
+          }
+        });
+        return selection;
+      };
+      // clicked
+      const clicked = d => {
+        if (level < 1) {
           level++;
           direction = 1;
           zoomToBoundingBox(d);
           let clickedLocation;
           if (level === 1) {
             clickedLocation = d.properties.district;
-          } 
-        
-    
+          }
+
+
           levelLocation.push(clickedLocation);
-    
+
           let selectedJSON, selectedData;
           let selectedPoints;
           if (level === 1) {
-            selectedData = filterCSV(projectData, 'month_n', month_hack); 
-            selectedJSON = addProperty(selectedData, project); 
+            selectedData = filterCSV(projectData, 'month_n', month_hack);
+            selectedJSON = addProperty(selectedData, project);
           }
           let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
           let selecteddata = selectedSubData(selectedData, clickedLocation);
           g.selectAll("*").remove();
           rowEnter.selectAll("*").remove();
           makemap(selectedjson, selecteddata);
-          
-    
-          
-                 }// if condition ends here
-        };
-        pathEnter.on("click", clicked);
-      
-        //makeTable
-        
-        let tbdata = [];
-        let LocationValue = d => d.block;
-        let PercentageValue = TPercentValue;
-        let ActualValue = TActualValue; 
+
+
+
+        }// if condition ends here
+      };
+      pathEnter.on("click", clicked);
+
+      //makeTable
+
+      let tbdata = [];
+      let LocationValue = d => d.block;
+      let PercentageValue = TPercentValue;
+      let ActualValue = TActualValue;
+      tdata.forEach(d => {
+        let temp = {};
+        if (level === 0 && direction == 1) {
+          LocationValue = d => d.district_n;
+        } else if (level === 1 && direction == 1) {
+          LocationValue = d => d.sub_district;
+        }
+
+        else if (level === 1 && direction == 0) {
+          LocationValue = d => d.sub_district;
+        } else if (level === 0 && direction == 0) {
+          LocationValue = d => d.district_n;
+        }
+
+        temp["Location"] = LocationValue(d);
+        temp["Percentage"] = PercentageValue(d);
+        temp["Actual Number"] = ActualValue(d);
+        tbdata.push(temp);
+      });
+      let percentageColor = d3
+        .scaleSequential()
+        .domain([d3.max(tdata, PercentageValue), d3.min(tdata, PercentageValue)])
+        .interpolator(d3.interpolateRdYlGn);
+      let actualColor = d3
+        .scaleSequential()
+        .domain([d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
+        .interpolator(d3.interpolateRdYlGn);
+
+      rowEnter = row
+        .data(tbdata)
+        .enter()
+        .append("tr");
+
+      let td = rowEnter
+        .selectAll("td")
+        .data(d => {
+          return headerName.map(k => {
+            return { value: d[k], name: k };
+          });
+        })
+        .enter()
+        .append("td")
+        .text(d => d.value)
+        .attr("align", "center")
+        .style("background-color", d =>
+          fillCellColor(d, percentageColor, actualColor)
+        );
+
+      const updatetable = selCat => {
+        rowEnter.selectAll("*").remove();
+        switch (selCat) {
+          case 1:
+            PercentageValue = d => d.svrly_stunting_percent;
+            ActualValue = d => d.svrly_stntd;
+            break;
+          case 2:
+            PercentageValue = d => d.stunting_percent;
+            ActualValue = d => d.stunted_child;
+            break;
+          case 3:
+            PercentageValue = d => d.svr_wasting_percent;
+            ActualValue = d => d.svr_wstg;
+            break;
+          case 4:
+            PercentageValue = d => d.wasting_percent;
+            ActualValue = d => d.svr_wstg;
+            break;
+          case 5:
+            PercentageValue = d => d.svrly_underweight_percent;
+            ActualValue = d => d.svrly_uw;
+            break;
+          case 6:
+            PercentageValue = d => d.underweight_percent;
+            ActualValue = d => d.uw_child;
+            break;
+          case 7:
+            PercentageValue = d => d.low_birth_weight_percent;
+            ActualValue = d => d.nb_lbw;
+            break;
+        }
+        let newtbdata = [];
+        if (level === 0) {
+          LocationValue = d => d.district_n;
+        } else if (level === 1) {
+          LocationValue = d => d.sub_district
+            ;
+        }
+
         tdata.forEach(d => {
           let temp = {};
-          if (level === 0 && direction == 1) {
-            LocationValue = d => d.district_n;
-          } else if (level === 1 && direction == 1) {
-            LocationValue = d => d.sub_district;
-          } 
-       
-          else if (level === 1 && direction == 0) {
-            LocationValue = d => d.sub_district;
-          } else if (level === 0 && direction == 0) {
-            LocationValue = d => d.district_n;
-          }
-    
           temp["Location"] = LocationValue(d);
           temp["Percentage"] = PercentageValue(d);
           temp["Actual Number"] = ActualValue(d);
-          tbdata.push(temp);
+          newtbdata.push(temp);
         });
+
         let percentageColor = d3
           .scaleSequential()
-          .domain([d3.max(tdata, PercentageValue), d3.min(tdata, PercentageValue)])
+          .domain([
+            d3.max(tdata, PercentageValue),
+            d3.min(tdata, PercentageValue)
+          ])
           .interpolator(d3.interpolateRdYlGn);
         let actualColor = d3
           .scaleSequential()
           .domain([d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
           .interpolator(d3.interpolateRdYlGn);
-    
+
         rowEnter = row
-          .data(tbdata)
+          .data(newtbdata)
           .enter()
           .append("tr");
-          
+
         let td = rowEnter
           .selectAll("td")
           .data(d => {
@@ -670,92 +783,13 @@ td{
           .style("background-color", d =>
             fillCellColor(d, percentageColor, actualColor)
           );
-    
-        const updatetable = selCat => {
-          rowEnter.selectAll("*").remove();
-          switch (selCat) {
-            case 1:
-          PercentageValue = d => d.svrly_stunting_percent;
-          ActualValue = d => d.svrly_stntd;
-          break;
-        case 2:
-          PercentageValue = d => d.stunting_percent;
-          ActualValue = d => d.stunted_child;
-          break;
-        case 3:
-          PercentageValue = d => d.svr_wasting_percent;
-          ActualValue = d => d.svr_wstg;
-          break;
-        case 4:
-          PercentageValue = d => d.wasting_percent;
-          ActualValue = d => d.svr_wstg;
-          break;
-        case 5:
-          PercentageValue = d => d.svrly_underweight_percent;
-          ActualValue = d => d.svrly_uw;
-          break;
-        case 6:
-          PercentageValue = d => d.underweight_percent;
-          ActualValue = d => d.uw_child;
-          break;
-        case 7:
-          PercentageValue = d => d.low_birth_weight_percent;
-          ActualValue = d => d.nb_lbw;
-          break;
-          }
-          let newtbdata = [];
-          if (level === 0) {
-            LocationValue = d => d.district_n;
-          } else if (level === 1) {
-            LocationValue = d => d.sub_district
-            ;
-          } 
-         
-          tdata.forEach(d => {
-            let temp = {};
-            temp["Location"] = LocationValue(d);
-            temp["Percentage"] = PercentageValue(d);
-            temp["Actual Number"] = ActualValue(d);
-            newtbdata.push(temp);
-          });
-    
-          let percentageColor = d3
-            .scaleSequential()
-            .domain([
-              d3.max(tdata, PercentageValue),
-              d3.min(tdata, PercentageValue)
-            ])
-            .interpolator(d3.interpolateRdYlGn);
-          let actualColor = d3
-            .scaleSequential()
-            .domain([d3.max(tdata, ActualValue), d3.min(tdata, ActualValue)])
-            .interpolator(d3.interpolateRdYlGn);
-    
-          rowEnter = row
-            .data(newtbdata)
-            .enter()
-            .append("tr");
-    
-          let td = rowEnter
-            .selectAll("td")
-            .data(d => {
-              return headerName.map(k => {
-                return { value: d[k], name: k };
-              });
-            })
-            .enter()
-            .append("td")
-            .text(d => d.value)
-            .attr("align", "center")
-            .style("background-color", d =>
-              fillCellColor(d, percentageColor, actualColor)
-            );
-        };
-    
-        d3.select(".back-button").on("click", function() {
-          if (level > 0){ level--;
-          zoomBox['translate'].pop();zoomBox['scale'].pop();
-          
+      };
+
+      d3.select(".back-button").on("click", function () {
+        if (level > 0) {
+          level--;
+          zoomBox['translate'].pop(); zoomBox['scale'].pop();
+
           direction = 0;
           let loc = levelLocation.pop();
           rowEnter.selectAll("*").remove();
@@ -764,295 +798,312 @@ td{
           // calculation for zoom
           let transLength = zoomBox.translate.length;
           let scaleLength = zoomBox.scale.length;
-          let transX,transY,scaleV;
-          if(level !== 0){
+          let transX, transY, scaleV;
+          if (level !== 0) {
             transX = zoomBox.translate[transLength - 1][0];
             transY = zoomBox.translate[transLength - 1][1];
-            scaleV = zoomBox.scale[scaleLength-1];
+            scaleV = zoomBox.scale[scaleLength - 1];
           }
-          if(level === 0)
+          if (level === 0)
             svgTrans.call(zzoom.transform, d3.zoomIdentity);
           else
-           svgTrans.call(zzoom.transform,d3.zoomIdentity.translate(transX,transY).scale(scaleV))
-          
+            svgTrans.call(zzoom.transform, d3.zoomIdentity.translate(transX, transY).scale(scaleV))
+
           updateCategory("Severely Stunted Children");
           let LocationMonth, LocationDataMonth;
-        if (level === 0) {
-          LocationDataMonth = filterCSV(blockData, 'month_n', month_hack); 
-          LocationMonth = addProperty(LocationDataMonth, block);
-          makemap(LocationMonth, LocationDataMonth);
-        }
-        else if (level === 1) {  
-          LocationDataMonth = filterCSV(projectData, 'month_n', month_hack); 
-          LocationMonth = addProperty(LocationDataMonth, project);
+          if (level === 0) {
+            LocationDataMonth = filterCSV(blockData, 'month_n', month_hack);
+            LocationMonth = addProperty(LocationDataMonth, block);
+            makemap(LocationMonth, LocationDataMonth);
+          }
+          else if (level === 1) {
+            LocationDataMonth = filterCSV(projectData, 'month_n', month_hack);
+            LocationMonth = addProperty(LocationDataMonth, project);
 
-            let previousBlock = levelLocation[levelLocation.length -1]; 
-    
-            let selectedjson = selectedSubFeature(LocationMonth, previousBlock); 
+            let previousBlock = levelLocation[levelLocation.length - 1];
+
+            let selectedjson = selectedSubFeature(LocationMonth, previousBlock);
             let selectedcsv = selectedSubData(LocationDataMonth, previousBlock);
-             
+
             makemap(selectedjson, selectedcsv);
           }
         }//if condition ends here
-        });
-      
+      });
+
     }
     const selectGeoJSON = (val, allMonthGeoJSONData) => {
-          switch (val) {
-            case "nov":
-              return allMonthGeoJSONData.Nov;
-              break;
-            case "dec":
-              return allMonthGeoJSONData.Dec;
-              break;
-            case "jan":
-              return allMonthGeoJSONData.Jan;
-              break;
-          }
-        };
-        const selectCSV = (val, allMonthCSVData) => {
-          switch (val) {
-            case "nov":
-              return allMonthCSVData.Nov;
-              break;
-            case "dec":
-              return allMonthCSVData.Dec;
-              break;
-            case "jan":
-              return allMonthCSVData.Jan;
-              break;
-          }
-        };
-
-    $(".drop-month a").click(function(){
-        console.log('hello');
-    $(this).parents(".dropdown").find('.btn').html($(this).text());
-        var val = $(this).text();
-        month_hack=val;
-          let monthdata = filterCSV(blockData, 'month_n', val); 
-          let monthjson = addProperty(monthdata, block); 
-          level = 0;
-        g.selectAll("*").remove();
-          rowEnter.selectAll("*").remove();
-            svg.transition().duration(transitionDuration).call( zzoom.transform, d3.zoomIdentity );
-            updateMonth();
-            levelLocation = [];
-            makemap(monthjson,monthdata);
-      })
-      //initial map
-      month_hack=$('.drop-month a').first().text();
-      console.log(blockData);
-      console.log(month_hack);
-      let monthdata = filterCSV(blockData, 'month_n', month_hack); 
-      console.log(monthdata);
-      let monthjson = addProperty(monthdata, block); 
-      console.log(monthjson);
-      makemap(monthjson, monthdata);
-};
-    
-    async function fetchGeoJSON() {
-      let geoJSONBundle = {};
-    
-      let blockJSON = {{ context.dt_geodata|safe }};
-      var scaleCenter = calculateScaleCenter(blockJSON);
-
-      mercator.scale(scaleCenter.scale)
-          .center(scaleCenter.center)
-          .translate([innerWidth/2, innerHeight/2]);
-          
-      let projectJSON = {{ context.subdt_geodata|safe }};
-      var scaleCenter = calculateScaleCenter(projectJSON);
-    
-      geoJSONBundle.blockJSON = blockJSON.features;
-      geoJSONBundle.projectJSON = projectJSON.features;
-    
-      return geoJSONBundle;
-    }
-    
-function calculateScaleCenter(features) {
-                    
-                    var bbox_path = pathGenerator.bounds(features),
-                    scale = 0.95 / Math.max(
-                        (bbox_path[1][0] - bbox_path[0][0]) / innerWidth,
-                        (bbox_path[1][1] - bbox_path[0][1]) / innerHeight
-                    );
-                    console.log(scale,'scale')
-                    var bbox_feature = d3.geoBounds(features),
-                    center = [
-                        ((bbox_feature[1][0] + bbox_feature[0][0]) / 2) - 1,
-                        ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)]; 
-                    
-                    console.log(center,"center")
-              
-                    return {
-                        'scale': scale,
-                        'center': center
-                    };
-                }
-
-    const monthWiseCSV = data => {
-      let month = { Nov: [], Dec: [], Jan: [] };
-      data.forEach(d => {
-        let temp = {};
-        if (d.sub_district) d.sub_district = d.sub_district;
-        d.district_n = d.district_n;
-        d.mdrtly_stntd = +d.mdrtly_stntd;
-        d.svrly_stntd = +d.svrly_stntd;
-        d.svr_wstg = +d.svr_wstg;
-        d.mdrtly_wstd = +d.mdrtly_wstd;
-        d.svrly_uw = +d.svrly_uw;
-        d.mdrtly_uw = +d.mdrtly_uw;
-        d.nb_lbw = +d.nb_lbw;
-        d.svr_wasting_percent = +d.svr_wasting_percent;
-        d.wasting_percent = +d.wasting_percent;
-        d.svrly_stunting_percent = +d.svrly_stunting_percent;
-        d.stunting_percent = +d.stunting_percent;
-        d.svrly_underweight_percent = +d.svrly_underweight_percent;
-        d.underweight_percent = +d.underweight_percent;
-        d.low_birth_weight_percent = +d.low_birth_weight_percent;
-        d.wasted_child = +d.wasted_child;
-        d.stunted_child = +d.stunted_child;
-        d.uw_child = +d.uw_child;
-        d.ht_msrmnt_effcy = +d.ht_msrmnt_effcy;
-        d.wt_msrmnt_effcy = +d.wt_msrmnt_effcy;
-        d.month_n=d.month_n;
-      });
+      switch (val) {
+        case "nov":
+          return allMonthGeoJSONData.Nov;
+          break;
+        case "dec":
+          return allMonthGeoJSONData.Dec;
+          break;
+        case "jan":
+          return allMonthGeoJSONData.Jan;
+          break;
+      }
     };
-    const addProperty = (data, geojson) => {
-      let x, y;
-      for (let i = 0; i < data.length; i++) {
-        for (let j = 0; j < geojson.length; j++) {
-          if(geojson[j].properties.block) {
-            x = data[i].sub_district;
-            y = geojson[j].properties.block;
-          } else {
-            x = data[i].district_n;
-            y = geojson[j].properties.district;
-          }
-    
-          if (x === y) {
-        geojson[j].properties.month_n = data[i].month_n;
-        geojson[j].properties.wasted_child = data[i].wasted_child;
-        geojson[j].properties.stunted_child = data[i].stunted_child;
-        geojson[j].properties.uw_child = data[i].uw_child;
-        geojson[j].properties.ht_msrmnt_effcy = data[i].ht_msrmnt_effcy;
-        geojson[j].properties.wt_msrmnt_effcy = data[i].wt_msrmnt_effcy;
-        geojson[j].properties.mdrtly_stntd = data[i].mdrtly_stntd;
-        geojson[j].properties.svrly_stntd = data[i].svrly_stntd;
-        geojson[j].properties.svr_wstg = data[i].svr_wstg;
-        geojson[j].properties.mdrtly_wstd = data[i].mdrtly_wstd;
-        geojson[j].properties.svrly_uw = data[i].svrly_uw;
-        geojson[j].properties.mdrtly_uw = data[i].mdrtly_uw;
-        geojson[j].properties.nb_lbw = data[i].nb_lbw;
-        geojson[j].properties.svr_wasting_percent = data[i].svr_wasting_percent;
-        geojson[j].properties.wasting_percent = data[i].wasting_percent;
-        geojson[j].properties.svrly_stunting_percent = data[i].svrly_stunting_percent;
-        geojson[j].properties.stunting_percent = data[i].stunting_percent;
-        geojson[j].properties.svrly_underweight_percent = data[i].svrly_underweight_percent;
-        geojson[j].properties.underweight_percent = data[i].underweight_percent;
-        geojson[j].properties.low_birth_weight_percent = data[i].low_birth_weight_percent;
+    const selectCSV = (val, allMonthCSVData) => {
+      switch (val) {
+        case "nov":
+          return allMonthCSVData.Nov;
+          break;
+        case "dec":
+          return allMonthCSVData.Dec;
+          break;
+        case "jan":
+          return allMonthCSVData.Jan;
+          break;
+      }
+    };
 
-          }
+    var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
+
+    $('#monthSlider').slider().on('slideStop', function (ev) {
+      var val = tickLabels[ev.value];
+      month_hack = val;
+      let monthdata = filterCSV(blockData, 'month_n', val);
+      let monthjson = addProperty(monthdata, block);
+
+      level = 0;
+      g.selectAll("*").remove();
+      rowEnter.selectAll("*").remove();
+      svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
+      updateMonth();
+      levelLocation = [];
+      makemap(monthjson, monthdata);
+    });
+
+    $(".drop-month a").click(function () {
+      console.log('hello');
+      $(this).parents(".dropdown").find('.btn').html($(this).text());
+      var val = $(this).text();
+      month_hack = val;
+      let monthdata = filterCSV(blockData, 'month_n', val);
+      let monthjson = addProperty(monthdata, block);
+      level = 0;
+      g.selectAll("*").remove();
+      rowEnter.selectAll("*").remove();
+      svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
+      updateMonth();
+      levelLocation = [];
+      makemap(monthjson, monthdata);
+    })
+    //initial map
+    month_hack = tickLabels[$('#monthSlider').slider('getValue')];
+    console.log(blockData);
+    console.log(month_hack);
+    let monthdata = filterCSV(blockData, 'month_n', month_hack);
+    console.log(monthdata);
+    let monthjson = addProperty(monthdata, block);
+    console.log(monthjson);
+    makemap(monthjson, monthdata);
+  };
+
+  async function fetchGeoJSON() {
+    let geoJSONBundle = {};
+
+    let blockJSON = {{ context.dt_geodata| safe }};
+  var scaleCenter = calculateScaleCenter(blockJSON);
+
+  mercator.scale(scaleCenter.scale)
+    .center(scaleCenter.center)
+    .translate([innerWidth / 2, innerHeight / 2]);
+
+  let projectJSON = {{ context.subdt_geodata| safe }};
+  var scaleCenter = calculateScaleCenter(projectJSON);
+
+  geoJSONBundle.blockJSON = blockJSON.features;
+  geoJSONBundle.projectJSON = projectJSON.features;
+
+  return geoJSONBundle;
+    }
+
+  function calculateScaleCenter(features) {
+
+    var bbox_path = pathGenerator.bounds(features),
+      scale = 0.95 / Math.max(
+        (bbox_path[1][0] - bbox_path[0][0]) / innerWidth,
+        (bbox_path[1][1] - bbox_path[0][1]) / innerHeight
+      );
+    console.log(scale, 'scale')
+    var bbox_feature = d3.geoBounds(features),
+      center = [
+        ((bbox_feature[1][0] + bbox_feature[0][0]) / 2) - 1,
+        ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)];
+
+    console.log(center, "center")
+
+    return {
+      'scale': scale,
+      'center': center
+    };
+  }
+
+  const monthWiseCSV = data => {
+    let month = { Nov: [], Dec: [], Jan: [] };
+    data.forEach(d => {
+      let temp = {};
+      if (d.sub_district) d.sub_district = d.sub_district;
+      d.district_n = d.district_n;
+      d.mdrtly_stntd = +d.mdrtly_stntd;
+      d.svrly_stntd = +d.svrly_stntd;
+      d.svr_wstg = +d.svr_wstg;
+      d.mdrtly_wstd = +d.mdrtly_wstd;
+      d.svrly_uw = +d.svrly_uw;
+      d.mdrtly_uw = +d.mdrtly_uw;
+      d.nb_lbw = +d.nb_lbw;
+      d.svr_wasting_percent = +d.svr_wasting_percent;
+      d.wasting_percent = +d.wasting_percent;
+      d.svrly_stunting_percent = +d.svrly_stunting_percent;
+      d.stunting_percent = +d.stunting_percent;
+      d.svrly_underweight_percent = +d.svrly_underweight_percent;
+      d.underweight_percent = +d.underweight_percent;
+      d.low_birth_weight_percent = +d.low_birth_weight_percent;
+      d.wasted_child = +d.wasted_child;
+      d.stunted_child = +d.stunted_child;
+      d.uw_child = +d.uw_child;
+      d.ht_msrmnt_effcy = +d.ht_msrmnt_effcy;
+      d.wt_msrmnt_effcy = +d.wt_msrmnt_effcy;
+      d.month_n = d.month_n;
+    });
+  };
+  const addProperty = (data, geojson) => {
+    let x, y;
+    for (let i = 0; i < data.length; i++) {
+      for (let j = 0; j < geojson.length; j++) {
+        if (geojson[j].properties.block) {
+          x = data[i].sub_district;
+          y = geojson[j].properties.block;
+        } else {
+          x = data[i].district_n;
+          y = geojson[j].properties.district;
+        }
+
+        if (x === y) {
+          geojson[j].properties.month_n = data[i].month_n;
+          geojson[j].properties.wasted_child = data[i].wasted_child;
+          geojson[j].properties.stunted_child = data[i].stunted_child;
+          geojson[j].properties.uw_child = data[i].uw_child;
+          geojson[j].properties.ht_msrmnt_effcy = data[i].ht_msrmnt_effcy;
+          geojson[j].properties.wt_msrmnt_effcy = data[i].wt_msrmnt_effcy;
+          geojson[j].properties.mdrtly_stntd = data[i].mdrtly_stntd;
+          geojson[j].properties.svrly_stntd = data[i].svrly_stntd;
+          geojson[j].properties.svr_wstg = data[i].svr_wstg;
+          geojson[j].properties.mdrtly_wstd = data[i].mdrtly_wstd;
+          geojson[j].properties.svrly_uw = data[i].svrly_uw;
+          geojson[j].properties.mdrtly_uw = data[i].mdrtly_uw;
+          geojson[j].properties.nb_lbw = data[i].nb_lbw;
+          geojson[j].properties.svr_wasting_percent = data[i].svr_wasting_percent;
+          geojson[j].properties.wasting_percent = data[i].wasting_percent;
+          geojson[j].properties.svrly_stunting_percent = data[i].svrly_stunting_percent;
+          geojson[j].properties.stunting_percent = data[i].stunting_percent;
+          geojson[j].properties.svrly_underweight_percent = data[i].svrly_underweight_percent;
+          geojson[j].properties.underweight_percent = data[i].underweight_percent;
+          geojson[j].properties.low_birth_weight_percent = data[i].low_birth_weight_percent;
+
         }
       }
-      return geojson;
-    };
-    async function mergeData(geoJSON) {
-      //merging block data
-      let blockGeoJSON = geoJSON.blockJSON;
-      data_from_django = {{ context.dt_data|safe }};
-      var data = []
-      data_from_django.forEach(element => {
-      data.push(element.fields);
-      });
-      let blockCSV = data;
-    
-       monthWiseCSV(blockCSV);
-    
-      let blockGeoJSONNov = JSON.parse(JSON.stringify(blockGeoJSON));
-      
-      //merging project data
-      let projectGeoJSON = geoJSON.projectJSON;
-      data_from_django = {{ context.subdt_data|safe }};
-      var data = []
-      data_from_django.forEach(element => {
-      data.push(element.fields);
-      });
-      let projectCSV = data;
-    
-      monthWiseCSV(projectCSV);
-      let projectGeoJSONNov = JSON.parse(JSON.stringify(projectGeoJSON));
-      
-    
-      render(
-        blockGeoJSONNov,
-        projectGeoJSONNov,
-        blockCSV,
-        projectCSV
-        
-      );
     }
-    fetchGeoJSON().then(mergeData);
+    return geojson;
+  };
+  async function mergeData(geoJSON) {
+    //merging block data
+    let blockGeoJSON = geoJSON.blockJSON;
+    data_from_django = {{ context.dt_data | safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
+  });
+  let blockCSV = data;
 
-$(function(){
- console.log("in on load");
-  //bind event
-  $(".drop-month a").click(function(){
-    var valMonth = $(this).text();
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+  monthWiseCSV(blockCSV);
+
+  let blockGeoJSONNov = JSON.parse(JSON.stringify(blockGeoJSON));
+
+  //merging project data
+  let projectGeoJSON = geoJSON.projectJSON;
+  data_from_django = {{ context.subdt_data | safe }};
+  var data = []
+  data_from_django.forEach(element => {
+    data.push(element.fields);
   });
-  
-  
-  
-   $(".drop-category a").click(function(){
-    var valCategory = $(this).text();
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+  let projectCSV = data;
+
+  monthWiseCSV(projectCSV);
+  let projectGeoJSONNov = JSON.parse(JSON.stringify(projectGeoJSON));
+
+
+  render(
+    blockGeoJSONNov,
+    projectGeoJSONNov,
+    blockCSV,
+    projectCSV
+
+  );
+    }
+  fetchGeoJSON().then(mergeData);
+
+  $(function () {
+    console.log("in on load");
+    //bind event
+    $(".drop-month a").click(function () {
+      var valMonth = $(this).text();
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+    });
+
+
+
+    $(".drop-category a").click(function () {
+      var valCategory = $(this).text();
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+    });
+    //trigger event
+    $('.drop-month a').first().trigger('click');
+    $(".drop-category a").first().trigger('click');
+
   });
-  //trigger event
-  $('.drop-month a').first().trigger('click');
-  $(".drop-category a").first().trigger('click');
-  
-});
-    
-    const sliderRange = d3
-      .sliderBottom()
-      .min(0)
-      .max(0.999)
-      .width(300)
-      .tickFormat(d3.format(".1%"))
-      .ticks(5)
-      .default([0.25, 0.5])
-      .fill("yellow")
-      .handle(
-        d3
-          .symbol()
-          .type(d3.symbolCircle)
-          .size(550)()
-      );
-    
-    const gRange = d3
-      .select("div#slider-range")
-      .append("svg")
-      .attr("width", 500)
-      .attr("height", 70)
-      .append("g")
-      .attr("transform", "translate(30,30)");
-    
-    gRange.call(sliderRange);
-    
-    let leftX1 = +d3.select("line.track-inset").attr("x1");
-    let leftX2 = +d3.select("line.track-fill").attr("x1") - 15;
-    d3.select("g.slider")
-      .append("line")
-      .attr("class", "leftcolor")
-      .attr("x1", leftX1)
-      .attr("x2", leftX2)
-      .attr("stroke-width", 4)
-      .attr("stroke-linecap", "round");
-    
-    d3.select("line.track-fill").attr("stroke", "yellow");
-    d3.select("line.leftcolor").attr("stroke", "green");
-    d3.select("line.track-inset").attr("stroke", "red");
-    
+
+  const sliderRange = d3
+    .sliderBottom()
+    .min(0)
+    .max(0.999)
+    .width(300)
+    .tickFormat(d3.format(".1%"))
+    .ticks(1)
+    .default([0.25, 0.5])
+    .fill("yellow")
+    .handle(
+      d3
+        .symbol()
+        .type(d3.symbolCircle)
+        .size(400)()
+    );
+
+  const gRange = d3
+    .select("div#slider-range")
+    .append("svg")
+    .attr("width", 410)
+    .attr("height", 75)
+    .append("g")
+    .attr("transform", "translate(30,30)");
+
+  gRange.call(sliderRange);
+
+  let leftX1 = +d3.select("line.track-inset").attr("x1");
+  let leftX2 = +d3.select("line.track-fill").attr("x1") - 12;
+  d3.select("g.slider")
+    .append("line")
+    .attr("class", "leftcolor")
+    .attr("x1", leftX1)
+    .attr("x2", leftX2)
+    .attr("stroke-width", 4)
+    .attr("stroke-linecap", "round");
+
+  d3.select("line.track-fill").attr("stroke", "yellow");
+  d3.select("line.leftcolor").attr("stroke", "green");
+  d3.select("line.track-inset").attr("stroke", "red");
+
 </script>
 {% endblock %}

@@ -27,7 +27,7 @@ class F1MsrmntEffcyBlk_post(LoginRequiredMixin, TemplateView):
         dt_name = request.POST['dist_select']   
         # quarter_S = request.POST['quarter_select']   
         # months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')  
-       # data = F1.objects.all().filter(Q(district_n=dt_name) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
+        # data = F1.objects.all().filter(Q(district_n=dt_name) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
         data = F1.objects.all().filter(Q(district_n=dt_name))
         jsondata = serializers.serialize('json',data)
 
@@ -40,7 +40,7 @@ class F1MsrmntEffcyBlk(LoginRequiredMixin, TemplateView):
 
     def get(self, request, dist_name=None):
         district_n = request.GET.get('dist_name', dist_name) 
-        # data = F1.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
+        #data = F1.objects.all().filter(Q(district_n=district_n) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
         data = F1.objects.all().filter(Q(district_n=district_n))
         jsondata = serializers.serialize('json',data)  
         
