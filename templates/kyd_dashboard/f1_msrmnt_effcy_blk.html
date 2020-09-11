@@ -38,6 +38,23 @@
   text {
     font-size: 1.2rem
   }
+
+  div.tooltip {
+    position: absolute;
+    text-align: center;
+    width: auto;
+    height: auto;
+    color: rgb(5, 14, 145);
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: calc(30% + 0.5vw + 0.5vh);
+    font-weight: bold;
+    z-index: 10;
+    background: rgb(233, 235, 241);
+    padding: 10px;
+    border: 3px solid black;
+    border-radius: 10px;
+    /* box-shadow: 0 0px 10px black; */
+  }
 </style>
 
 {% endblock %}
@@ -89,10 +106,9 @@
 
 <div class="row text-center">
   <div class="col-12 mb-5">
-    <input type="text" id="monthSlider" name="somename" data-provide="slider"
-      data-slider-ticks="[0, 1, 2, 3, 4, 5]"
-      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]'
-      data-slider-min="0" data-slider-max="5" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
+    <input type="text" id="monthSlider" name="somename" data-provide="slider" data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]' data-slider-min="0" data-slider-max="5"
+      data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
   </div>
 </div>
 
@@ -171,16 +187,6 @@
 
   const render = data => {
 
-    console.log(data.length);
-
-    // if (data.length > 8) {
-    //   width = width-500;
-    // } else if (data.length < 3) {
-    //   width = width-1500;
-    // } else {
-    //   width = width-900;
-    // }
-
     console.log("in render", width1);
 
     let yValue = d => d.ht_percent;
@@ -193,16 +199,20 @@
       .domain([100, 0])
       .range([0, innerHeight]);
 
-
-    // const xScale = d3.scaleBand()
-    //   .range([0, innerWidth])
-    //   .padding(0.1);
-
     const xScale = d3.scaleBand()
       .range([0, 1.5 * bar_width * data.length])
       .padding(0.3);
 
     xScale.domain(data.map(xValue))
+
+    let xAxisGenerator = d3.axisBottom(xScale);
+
+    xAxisGenerator.ticks(1)
+
+    let tooltip = d3.select("body")
+      .append("div")
+      .attr("class", "tooltip")
+      .style("opacity", 0);
 
     const g = svg.append('g').attr("preserveAspectRatio", "xMinYMin meet")
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
@@ -216,12 +226,28 @@
       .attr('y', d => yScale(yValue(d)))
       .attr('height', d => innerHeight - yScale(yValue(d)))
       .attr('width', xScale.bandwidth())
-      .attr("fill", d => myColor(yValue(d)));
+      .attr("fill", d => myColor(yValue(d)))
+      .on("mouseover", d => {
+        tooltip
+          .transition()
+          .duration(200)
+          .style("opacity", 0.9);
+        tooltip
+          .html(d.block_n + " : " + (yValue(d)))
+          .style("left", d3.event.pageX + "px")
+          .style("top", d3.event.pageY - 30 + "px");
+      })
+      .on("mouseout", function (d) {
+        tooltip
+          .transition()
+          .duration(500)
+          .style("opacity", 0);
+      });
 
-
-    //update new values
+    // update new values
     var mytext = g.selectAll("text").data(data)
       .enter().append("text")
+      .filter(function (d, i) { return i === 0 || i === (data.length - 1) })
       .text(d => yValue(d))
       .attr('x', d => xScale(d.block_n) + 5)
       .attr('y', d => yScale(yValue(d)) - 5)
@@ -232,7 +258,7 @@
       .call(d3.axisLeft(yScale))
       .attr("font-weight", "bold");
 
-    var xaxis = g.append('g').call(d3.axisBottom(xScale))
+    var xaxis = g.append('g').call(xAxisGenerator)
       .attr('transform', `translate(0, ${innerHeight})`)
       .attr("font-weight", "bold");
 
@@ -257,6 +283,8 @@
         .domain([100, 0])
         .range([0, innerHeight]);
 
+      xAxisGenerator.ticks(1)
+
       bars.transition().duration(tansitionDuration)
         .attr('y', d => yScale(yValue(d)))
         .attr('x', d => xScale0(d.block_n))
@@ -266,15 +294,16 @@
       // Remove old ones
       bars.exit().remove();
 
-      //text update
+      // text update
       mytext.transition().duration(tansitionDuration)
         .text(d => yValue(d))
         .attr('y', d => yScale(yValue(d)) - 5)
-        .attr('x', d => xScale(d.block_n) + 5)
+        .attr('x', d => xScale(d.block_n))
         .attr("font-family", "sans-serif")
         .attr("font-weight", "bold")
 
       mytext.exit().remove();
+
 
       // y axis update
       yaxis.transition().duration(tansitionDuration)
@@ -282,7 +311,8 @@
 
       // x axis update
       xaxis.transition().duration(tansitionDuration)
-        .call(d3.axisBottom(xScale));
+        .call(xAxisGenerator);
+
 
       xaxis.selectAll("text")
         .attr("font-weight", "bold")

@@ -48,7 +48,7 @@
 
         Select Month
 
-		<span class="selectedMonth"></span>
+    <span class="selectedMonth"></span>
 
       </button>
 
@@ -67,10 +67,9 @@
 
 <div class="row text-center">
   <div class="col-12 mb-5">
-    <input type="text" id="monthSlider" name="somename" data-provide="slider"
-      data-slider-ticks="[0, 1, 2, 3, 4, 5]"
-      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]'
-      data-slider-min="0" data-slider-max="5" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
+    <input type="text" id="monthSlider" name="somename" data-provide="slider" data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]' data-slider-min="0" data-slider-max="5"
+      data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
   </div>
 </div>
 
@@ -108,7 +107,6 @@
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
 
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -122,7 +120,6 @@
       const targetWidth = $(window).width();
       const targetheight = $(window).height();
       //var targetHeight = $(window).height();
-      console.log("tw&h", targetWidth, targetheight);
       d3.select('#svg1').attr('width', targetWidth);
       d3.select('#svg1').attr('height', targetheight);
       d3.select('#svg2').attr('width', targetWidth);
@@ -148,8 +145,6 @@
 
   const render = data => {
 
-    console.log(data.length);
-
     const margin = { left: 130, top: 0, right: 20, bottom: 30 };
     const innerWidth = width - margin.left - margin.right;
     const innerHeight = height - margin.top - margin.bottom;
@@ -159,14 +154,14 @@
     var y0 = d3.scaleBand().rangeRound([margin.top, innerHeight - margin.bottom]).paddingInner(0.1);
     var y1 = d3.scaleBand().padding(0.05);;
     var x = d3.scaleLinear().rangeRound([margin.left, innerWidth]);
-    var color = d3.scaleOrdinal().range(["#ca0020", "#f4a582", "#4c4c4c", "#92c5de", "#0571b0", "#800080", "#00FFFF"]);
+    // var color = d3.scaleOrdinal(d3.schemeCategory10);
+
+    var color = d3.scaleOrdinal().range(["#0571b0", "#f4a582", "#ca0020", "#92c5de", "#800080", "#00FFFF", "#008000"]);
 
     var keys = d3.keys(data[0]).filter(function (key) { return (key != "district_n" && key != "month_n" && key != "block_n"); });
-    // console.log(keys, 'ageNames');
     var dAges;
     data.forEach(function (d) {
       dAges = keys.map(function (name) { return { name: name, value: +d[name] }; });
-      // console.log(dAges, "d.gages");
     });
 
     y0.domain(data.map(function (d) { return d.block_n; }));
@@ -200,7 +195,11 @@
       .attr("y", d => y1(d.name))
       .attr("height", y1.bandwidth())
       .attr("width", d => x(d.value) - x(0))
-      .attr("fill", d => color(d.name));
+      .attr("fill", d => color(d.name))
+      .attr("class", function (d) {
+        console.log("Color", color(d.name).substring(1))
+        return "bordered " + "color-" + color(d.name).substring(1);
+      });
 
     //X-axis Label
     svg.append("text")
@@ -224,8 +223,18 @@
       .attr("y", function (d, i) { return 0 + i * 30; })  // spacing
       .attr("fill", color)
       .attr("class", function (d, i) {
-        console.log("d.name", d);
         return "legendcheckbox " + d.name
+      })
+      .on("mouseover", function (d, i) {
+        svg.selectAll("rect").style("opacity", 0.4);
+        svg.selectAll("rect.color-" + color(d).substring(1))
+        .style("stroke", "black")
+        .style("opacity", 0.9);
+        
+      })
+      .on("mouseout", function (d, i) {
+        svg.selectAll("rect").style("opacity", 0.9);
+        svg.selectAll("rect.color-" + color(d).substring(1)).style("stroke", "none");
       })
 
     legend.enter().append("text")
@@ -268,9 +277,6 @@
 
   });
 
-
-  console.log(data, 'dataafterloop');
-
   var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
 
   $('#monthSlider').slider().on('slideStop', function (ev) {
@@ -311,8 +317,6 @@
 
       var selText = $(this).text();
 
-      console.log(selText);
-
       $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedMonth"></span>');
 
     });
@@ -327,8 +331,6 @@
 
   monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
   augData = filterCSV(data, 'month_n', monthSelect);
-  console.log(augData, 'augData');
-
 
   render(augData);
 
