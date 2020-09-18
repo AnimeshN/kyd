@@ -144,6 +144,7 @@
   var width = 700,
     height = 550;
   var ticks;
+  var mouseG;
 
   var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 700)
     .attr('height', 550).call(responsivefy);
@@ -330,7 +331,7 @@
       .attr("dy", ".71em");
 
 
-    var mouseG = g.append("g")
+    mouseG = g.append("g")
       .attr("class", "mouse-over-effects");
 
 
@@ -419,15 +420,16 @@
 
         });
 
-      tooltip.html(monthX)
+        console.log((d3.event.pageY) + "px");
+      tooltip.html('<b style="color:#FF0000">'+monthX+'</b>')
         .style('display', 'block')
-        .style('left', (d3.event.pageX) + "px")
-        .style('top', (d3.event.pageY) + "px")
+        .style('left', d3.event.pageX + "px")
+        .style('top', 40 + "px")
         .selectAll()
         .data(result).enter()
         .append('div')
-        .style('color', d => d.color)
-        .html(d => d.key + ': ' + yScale.invert(yScale(d.values[xI].value)).toFixed(2));
+        .style('color','black')
+        .html(d => d.key + ': ' + '<b>'+ yScale.invert(yScale(d.values[xI].value)).toFixed(2) +'</b>');
     }
 
 
@@ -499,6 +501,7 @@
 
     //  mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
     //  mouseG.selectAll('.mouse-per-line').selectAll('text').remove();	
+    d3.selectAll(".mouse-per-line circle").remove();
 
     var dataFilter = data.map(function (d) { return { month: d.month_n, block: d.block_n, value: d[section] } })
 

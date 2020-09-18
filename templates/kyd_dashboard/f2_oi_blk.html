@@ -64,7 +64,7 @@
 
 
 
-<div class="row bg-info mt-2">
+<div class="row bg-info">
   <div class="col-xs-8 col-sm-8 col-md-6 bg-info">
 
     <div class="dropdown m-1">
@@ -342,7 +342,7 @@
           .duration(200)
           .style("opacity", 0.9);
         tooltip
-          .html(d.block_n + " : " + (xValue(d)))
+          .html(d.block_n + " : " + (xValue(d).toFixed(2)))
           .style("left", d3.event.pageX + "px")
           .style("top", d3.event.pageY - 30 + "px");
       })
@@ -476,7 +476,7 @@
           .duration(200)
           .style("opacity", 0.9);
         tooltip
-          .html(d.block_n + " : " + (xValue(d)))
+          .html(d.block_n + " : " + (xValue(d).toFixed(2)))
           .style("left", d3.event.pageX + "px")
           .style("top", d3.event.pageY - 30 + "px");
       })

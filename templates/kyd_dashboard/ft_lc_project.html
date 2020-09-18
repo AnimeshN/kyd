@@ -107,6 +107,18 @@
       <a class="dropdown-item" href="#">Newborns with low birth weight</a>
     </div>
   </div>
+  
+  <div class="dropdown m-1 ml-10" style="float: left;">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Select Block
+      <span class="selectedBlock"></span>
+    </button>
+    <div class="dropdown-menu blocks" aria-labelledby="dropdownMenuButton">
+      {% for block_select in blockList %} 
+      <a class="dropdown-item" href="#">{{ block_select.block_n }}</a>
+      {% endfor %}   
+    </div>
+  </div>
   <button type="button" class="btn btn-outline-dark m-1"
     onclick="location.href=`{% url 'ftlcblk' dist_name %}`">Previous Feature</button>
   <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'ftlcbt' dist_name %}`">Next
@@ -204,7 +216,7 @@
   var ticks;
   var selectedCategory = 'Severly Stunted Children';
 
-  var mouseG
+  var mouseG;
 
   var margin = { top: 10, right: 20, bottom: 30, left: 50 },
     innerWidth = 700 - margin.left - margin.right,
@@ -247,8 +259,6 @@
     .attr("width", innerWidth)
     .attr("height", innerHeight);
 
-
-  var color = d3.scale.category20();
 
   var color = d3.scale.category20();
   var ticks
@@ -341,7 +351,7 @@
       .attr("y", 6)
       .attr("dy", ".71em");
 
-    var mouseG = g.append("g")
+    mouseG = g.append("g")
       .attr("class", "mouse-over-effects");
 
 
@@ -361,6 +371,7 @@
       .enter()
       .append("g")
       .attr("class", "mouse-per-line");
+   
 
     mousePerLine.append("circle")
       .attr('class', 'topic-circle')
@@ -396,7 +407,7 @@
 
     function removeTooltip() {
       if (tooltip) tooltip.style('display', 'none');
-      // if(mouseG)     mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
+  
     }
 
     function drawTooltip() {
@@ -430,15 +441,15 @@
 
         });
 
-      tooltip.html(monthX)
+      tooltip.html('<b style="color:#FF0000">'+monthX+'</b>')
         .style('display', 'block')
-        .style('left', (d3.event.pageX + 20) + "px")
-        .style('top', (d3.event.pageY - 20) + "px")
+        .style('left', d3.event.pageX+ "px")
+        .style('top', 40 + "px")
         .selectAll()
         .data(result).enter()
         .append('div')
-        .style('color', d => d.color)
-        .html(d => d.key + ': ' + yScale.invert(yScale(d.values[xI].value)).toFixed(2));
+        .style('color','black')
+        .html(d => d.key + ': ' + '<b>'+ yScale.invert(yScale(d.values[xI].value)).toFixed(2) +'</b>');
     }
 
   };
@@ -514,9 +525,19 @@
 
     // mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
     // mouseG.selectAll('.mouse-per-line').selectAll('text').remove();
+    d3.selectAll(".mouse-per-line circle").remove();
     setData(filterdata, section);
   });
 
+  $(".blocks a").click(function () {
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedBlock"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    var val = $(this).text();
+    filterdata = filterCSV(data, 'block_n', val);
+    legend.selectAll("*").remove();
+    d3.selectAll(".mouse-per-line circle").remove();
+    setData(filterdata, section);
+  });
 
   function setData(data, section) {
 

@@ -311,8 +311,9 @@ class FtLcProject(LoginRequiredMixin, TemplateView):
         # months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')
         data = FtLcPrjt.objects.all().filter(Q(district_n=district_n)).order_by('month_n')
         jsondata = serializers.serialize('json',data)
+        block_list = FtLcPrjt.objects.all().filter(Q(district_n=district_n)).values('block_n').distinct().order_by('block_n')
 
-        return render(request,'kyd_dashboard/ft_lc_project.html', {'data':jsondata, 'dist_name':district_n})
+        return render(request,'kyd_dashboard/ft_lc_project.html', {'data':jsondata, 'dist_name':district_n, 'blockList': block_list})
 
 
 class FtLcBeats(LoginRequiredMixin, TemplateView):
@@ -325,8 +326,9 @@ class FtLcBeats(LoginRequiredMixin, TemplateView):
         # months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')
         data = FtLcBeat.objects.all().filter(Q(district_n=district_n)).order_by('month_n')
         jsondata = serializers.serialize('json',data)
+        project_list = FtLcPrjt.objects.all().filter(Q(district_n=district_n)).values('project_n').distinct().order_by('project_n')
 
-        return render(request,'kyd_dashboard/ft_lc_beat.html', {'data':jsondata, 'dist_name':district_n})
+        return render(request,'kyd_dashboard/ft_lc_beat.html', {'data':jsondata, 'dist_name':district_n, 'projectList':project_list})
 
 
 class FtRdr1(LoginRequiredMixin, TemplateView):

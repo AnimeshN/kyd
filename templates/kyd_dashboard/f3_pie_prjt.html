@@ -206,7 +206,6 @@
       div.transition().duration(100).style("opacity", 1);
       div.html("<b>" + "<span id='paraText'>" + 10 + "</span>" + "</b><br>" + arcInitial(d.data) + "%");
 
-
     }
 
 
@@ -231,15 +230,11 @@
     var arcEnter = arcData.enter().append("g")
       .attr("class", "arc");
 
-
-
-
     arcEnter.append("path")
       .attr("fill", function (d) {
         return color(arcInitial(d.data));
       })
       .attr("d", path);
-
 
     arcEnter.on("mouseover", function (d) {
       d3.select("#tooltip")
@@ -294,10 +289,6 @@
 
       var arcEnter = arcData.enter().append("g")
         .attr("class", "arc");
-
-
-
-
 
       arcEnter.on("mouseover", function (d) {
         d3.select("#tooltip")

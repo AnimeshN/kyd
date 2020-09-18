@@ -104,6 +104,17 @@
       <a class="dropdown-item" href="#">Newborns with low birth weight</a>
     </div>
   </div>
+  <div class="dropdown m-1 ml-10" style="float: left;">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+      Select Project
+      <span class="selectedProject"></span>
+    </button>
+    <div class="dropdown-menu projects" aria-labelledby="dropdownMenuButton">
+      {% for project_select in projectList %} 
+      <a class="dropdown-item" href="#">{{ project_select.project_n }}</a>
+      {% endfor %}   
+    </div>
+  </div>
   <button type="button" class="btn btn-outline-dark m-1"
     onclick="location.href=`{% url 'ftlcprjt' dist_name %}`">Previous Feature</button>
 </div>
@@ -144,8 +155,6 @@
       width = parseInt(svg.style('width'), 10),
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
-
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -158,7 +167,6 @@
     function resize() {
       const targetWidth = $(window).width();
       const targetheight = $(window).height();
-      console.log("tw&h", targetWidth, targetheight);
       d3.select('#svg1').attr('width', targetWidth);
       d3.select('#svg1').attr('height', targetheight);
       d3.select('#svg2').attr('width', targetWidth);
@@ -235,38 +243,23 @@
 
 
   var color = d3.scale.category20();
-
-
-  var color = d3.scale.category20();
   var ticks
   const render = data => {
-
-    console.log(data, "in update graph")
     // Scale the range of the data
     ticks = data.map(function (d) {
       return d.month
     });
     xScale.domain(ticks);
-
-
-    console.log("inside ydomain");
     yScale.domain([d3.min(data, function (d) { return d.value; }), d3.max(data, function (d) { return d.value; })]);
 
 
 
     // Nest the entries by block
-    console.log(data, 'beforeNest');
     dataNest = d3.nest()
       .key(function (d) { return d.beat })
       .entries(data);
 
-    console.log("print data nest");
-    console.log(dataNest);
-
     var result = dataNest;
-
-    console.log("print result");
-    console.log(result);
     var block = g.selectAll(".line")
       .data(result, function (d) { return d.key });
 
@@ -330,7 +323,7 @@
       .attr("y", 6)
       .attr("dy", ".71em");
 
-    var mouseG = g.append("g")
+     mouseG = g.append("g")
       .attr("class", "mouse-over-effects");
 
 
@@ -393,7 +386,6 @@
       var monthX
 
       var tickPos = xScale.range();
-      // console.log(tickPos,'as')
       var m = d3.mouse(this),
         lowDiff = 1e99,
         xI = null;
@@ -419,15 +411,15 @@
 
         });
 
-      tooltip.html(monthX)
+      tooltip.html('<b style="color:#FF0000">'+monthX+'</b>')
         .style('display', 'block')
-        .style('left', (d3.event.pageX + 10) + "px")
-        .style('top', (d3.event.pageY - 10) + "px")
+        .style('left', d3.event.pageX + "px")
+        .style('top', 40 + "px")
         .selectAll()
         .data(result).enter()
         .append('div')
-        .style('color', d => d.color)
-        .html(d => d.key + ': ' + yScale.invert(yScale(d.values[xI].value)).toFixed(2));
+        .style('color', 'black')
+        .html(d => d.key + ': ' + '<b>'+ yScale.invert(yScale(d.values[xI].value)).toFixed(2) +'</b>');
     }
   };
 
@@ -481,8 +473,6 @@
 
     $('.category a').parents('.dropdown').find('.dropdown-toggle').html(choiceOneVal + ' <span class="selectedCategory"></span>');
     filterdata = filterCSV(data, 'project_n', selectedProject);
-    console.log(filterdata);
-    console.log(section, 'section');
     setData(filterdata, section);
   }
   else {
@@ -511,6 +501,17 @@
 
     // mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
     // mouseG.selectAll('.mouse-per-line').selectAll('text').remove();
+    d3.selectAll(".mouse-per-line circle").remove();
+    setData(filterdata, section);
+  });
+
+  $(".projects a").click(function () {
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedProject"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    var val = $(this).text();
+    filterdata = filterCSV(data, 'project_n', val);
+    legend.selectAll("*").remove();
+    d3.selectAll(".mouse-per-line circle").remove();
     setData(filterdata, section);
   });
 
@@ -528,8 +529,6 @@
       d.value = +d.value;
       d.active = true;
     });
-
-    console.log(dataFilter, 'dataFilter');
 
     //debugger
     render(dataFilter);
