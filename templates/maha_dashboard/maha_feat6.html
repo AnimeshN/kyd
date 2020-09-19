@@ -282,13 +282,13 @@
     data.forEach(d => {
       var tbd = {}
       tbd['State'] = d.state_n;
-      tbd['Stunted Childern'] = d.stntd_chld;
+      tbd['Stunted Childern'] = numberWithCommas(d.stntd_chld);
       tbd['Stunting Percent(%)'] = d.stunting_percent;
-      tbd['Wasted Childern'] = d.wstd_chld;
+      tbd['Wasted Childern'] = numberWithCommas(d.wstd_chld);
       tbd['Wasting Percent(%)'] = d.wasting_percent;
-      tbd['Underweight Childern'] = d.uw_chld;
+      tbd['Underweight Childern'] = numberWithCommas(d.uw_chld);
       tbd['Underweight Percent(%)'] = d.underweight_percent;
-      tbd['No. of Newborn with Low Birth Weight'] = d.nb_lbw;
+      tbd['No. of Newborn with Low Birth Weight'] = numberWithCommas(d.nb_lbw);
       tbd['Low Birth Weight Percent(%)'] = d.low_birth_weight_percent;
 
 
@@ -380,5 +380,8 @@
 
   }
 
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
 </script>
 {% endblock %}

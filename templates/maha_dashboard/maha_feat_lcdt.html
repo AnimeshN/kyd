@@ -427,15 +427,15 @@
 
         });
 
-      tooltip.html(monthX)
+      tooltip.html('<b style="color:#FF0000">'+monthX+'</b>')
         .style('display', 'block')
-        .style('left', (d3.event.pageX + 20) + "px")
-        .style('top', (d3.event.pageY - 20) + "px")
+        .style('left', d3.event.pageX + "px")
+        .style('top', 40 + "px")
         .selectAll()
         .data(result).enter()
         .append('div')
-        .style('color', d => d.color)
-        .html(d => d.key + ': ' + yScale.invert(yScale(d.values[xI].value)).toFixed(2));
+        .style('color', 'black')
+        .html(d => d.key + ': ' + '<b>' + yScale.invert(yScale(d.values[xI].value)).toFixed(2) +'</b>');
     }
 
   };

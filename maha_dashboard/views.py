@@ -224,5 +224,6 @@ class MahaFeatureLCSDT(LoginRequiredMixin, TemplateView):
         months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')    
         data = MhftLcSubDt.objects.all().order_by('month_n')
         jsondata = serializers.serialize('json',data)
+        block_list = MhftLcSubDt.objects.all().values('district_n').distinct().order_by('district_n')
 
-        return render(request,'maha_dashboard/maha_feat_lcsdt.html', {'data':jsondata})
+        return render(request,'maha_dashboard/maha_feat_lcsdt.html', {'data':jsondata, 'blockList': block_list})
