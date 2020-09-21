@@ -57,10 +57,9 @@
 
 <div class="row text-center mt-1">
   <div class="col-12 mb-5">
-    <input type="text" id="monthSlider" name="somename" data-provide="slider"
-      data-slider-ticks="[0, 1, 2, 3, 4, 5]"
-      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]'
-      data-slider-min="0" data-slider-max="5" data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
+    <input type="text" id="monthSlider" name="somename" data-provide="slider" data-slider-ticks="[0, 1, 2, 3, 4, 5]"
+      data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]' data-slider-min="0" data-slider-max="5"
+      data-slider-step="1" data-slider-value="0" data-slider-tooltip="hide">
   </div>
 </div>
 
@@ -106,44 +105,21 @@
     return result;
   }
 
+  var chart;
   const render = rdata => {
-    document.getElementById("myBestProject").checked = true;
-    document.getElementById("myDistrict").checked = true;
-    document.getElementById("myMH").checked = true;
-
-    var rdata2 = [];
-
-    for (var i = 0; i < rdata.length; i++) {
-      if (rdata[i].label == "BestProject" || rdata[i].label == "District" || rdata[i].label == "Maharashtra") {
-        rdata2.push(rdata[i]);
-      }
-    }
+    console.log(rdata, "in render");
 
     var ctx = document.getElementById('myChart').getContext('2d');
 
-    var chart = new Chart(ctx, {
+    chart = new Chart(ctx, {
       // The type of chart we want to create
       type: 'radar',
       // The data for our dataset
       data: {
-        // plugins: {
-        //   datalabels: {
-        //     font: function (context) {
-        //       var width = context.chart.width;
-        //       var height = context.chart.height;
-        //       var size = Math.round(10 % + 0.5 * width + 0.5 * height);
-        //       return {
-        //         weight: 'bold',
-        //         size: size
-        //       };
-        //     },
-        //     formatter: Math.round
-        //   }
-        // },
         labels: ["Stunting (%)", "Underweight (%)", "Wasting (%)", "Low BirthWeight (%)", "Severly Stunting (%)", "Severly Wasted (%)"],
         // pointLabelFontSize: 10,
         // scaleFontSize: 160,
-        datasets: [rdata2[0], rdata2[1], rdata2[2]],
+        datasets: rdata,
       },
 
       // Configuration options go here
@@ -151,6 +127,11 @@
         // defaultFontSize: 120,
         responsive: true,
         maintainAspectRatio: false,
+        // tooltips: {
+        // callbacks: {
+        //     "title": (tooltipItem, data) => data.labels[tooltipItem[0].index]
+        // }
+        // },
         tooltips: {
           mode: 'index',
           callbacks: {
@@ -183,28 +164,6 @@
         }
       }
     });
-
-    makeviz = opt => {
-      console.log(opt.length);
-      var rdata1 = [];
-      for (var i = 0; i < chartStatData.length; i++) {
-        for (var j = 0; j < opt.length; j++) {
-          if (opt[j] == chartStatData[i].label) {
-            console.log(opt[j]);
-            rdata1.push(chartStatData[i]);
-          }
-        }
-      }
-      console.log(rdata1);
-      chart.data.datasets = [];
-      for (var i = 0; i < rdata1.length; i++) {
-        chart.data.datasets[i] = rdata1[i];
-        if (rdata1[i].label != "BestProject" && rdata1[i].label != "District" && rdata1[i].label != "Maharashtra") {
-          chart.data.datasets[i].borderColor = "red";
-        }
-      }
-      chart.update();
-    }
   }
 
   const monthwise = (data) => {
@@ -250,16 +209,13 @@
     mybordercolor = ['#0000FF', '#00FF00', '#FFFF00'];
     let itr = 0;
     let i = 0;
-    let mycolour;
+    let mycolour = 'red';
 
     data.forEach((d, itr) => {
       let temp = {};
       if (d.project_n == 'BestProject' || d.project_n == 'Maharashtra' || d.project_n == 'District') {
         mycolour = mybordercolor[i]
         i++;
-      }
-      else {
-        mycolour = 'Gray'
       }
 
       temp.label = d.project_n,
@@ -296,73 +252,71 @@
     d.month_n = d.month_n;
   });
 
-  $(".month a").click(function () {
-    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-
-    var val = $(this).text();
-    mydata = filterCSV(data, 'month_n', val);
-    chartStatData = dataforchart(mydata);
-    console.log(chartStatData);
-    render(dataforchart(mydata));
-  });
-
-  const selectData = (val, monthwisesplit) => {
-    if (val == "November") {
-      return monthwisesplit[0];
-    } else if (val == "December") {
-      return monthwisesplit[1];
-    } else if (val == "January") {
-      return monthwisesplit[2]
-    }
-  }
-
-  $(function () {
-    //bind event
-    $(".month a").click(function () {
-      var valMonth = $(this).text();
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
-    });
-
-    //trigger event
-    $('.month a').first().trigger('click');
-    $(".category a").first().trigger('click');
-
-  });
 
   function GetSelected() {
-    //Create an Array.
-    var selected = new Array();
+    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    console.log('mon', valMonth);
+    mydata = filterCSV(data, 'month_n', valMonth);
+    chartStatData = dataforchart(mydata);
+    chart.destroy();
+    getSelectedDistricts(chartStatData)
+  };
 
+  var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
+
+  $('#monthSlider').slider().on('slideStop', function (ev) {
+    $('input[type=checkbox]').prop('checked', false);
+    document.getElementById("myBestProject").checked = true;
+    document.getElementById("myDistrict").checked = true;
+    document.getElementById("myMH").checked = true;
+    var val = tickLabels[ev.value];
+    mydata = filterCSV(data, 'month_n', val);
+    chartStatData = dataforchart(mydata);
+    chart.destroy();
+    getSelectedDistricts(chartStatData)
+  });
+
+  // monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
+  // augData = filterCSV(data, 'month_n', monthSelect);
+  // chartStatData = dataforchart(augData);
+  // render(dataforchart(augData));
+
+  $(function () {
+    document.getElementById("myBestProject").checked = true;
+    document.getElementById("myDistrict").checked = true;
+    document.getElementById("myMH").checked = true;
+    monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
+    augData = filterCSV(data, 'month_n', monthSelect);
+    chartStatData = dataforchart(augData);
+    getSelectedDistricts(chartStatData);
+
+  });
+
+  function getSelectedDistricts(chartStatData) {
+    var selected = new Array();
     //Reference the Table.
     var projectList = document.getElementById("projectList");
-
     //Reference all the CheckBoxes in Table.
     var chks = projectList.getElementsByTagName("INPUT");
-
     // Loop and push the checked CheckBox value in Array.
     for (var i = 0; i < chks.length; i++) {
       if (chks[i].checked) {
         selected.push(chks[i].value);
       }
     }
-    //Display the selected CheckBox values.		
-    makeviz(selected);
-  };
+    var rdata1 = [];
+    for (var i = 0; i < chartStatData.length; i++) {
+      for (var j = 0; j < selected.length; j++) {
+        if (selected[j] == chartStatData[i].label) {
+          console.log(selected[j]);
+          rdata1.push(chartStatData[i]);
+        }
+      }
+    }
 
-  var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
+    render(rdata1);
+  }
 
-  $('#monthSlider').slider().on('slideStop', function (ev) {
-    var val = tickLabels[ev.value];
-    mydata = filterCSV(data, 'month_n', val);
-    chartStatData = dataforchart(mydata);
-    render(dataforchart(mydata));
-  });
-
-  monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  augData = filterCSV(data, 'month_n', monthSelect);
-  chartStatData = dataforchart(augData);
-  render(dataforchart(augData));
 
 </script>
 

@@ -397,7 +397,8 @@
       .attr("transform", "rotate(-90)")
       .attr("y", 6)
       .attr("dy", ".71em");
-    var mouseG = g.append("g")
+
+    mouseG = g.append("g")
       .attr("class", "mouse-over-effects");
 
 
@@ -589,10 +590,9 @@
       section = 'underweight_percent'
     else
       section = 'low_birth_weight_percent'
-    if (mouseG != undefined) {
-      // mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
-      // mouseG.selectAll('.mouse-per-line').selectAll('text').remove();
-    }
+
+      d3.selectAll(".mouse-per-line circle").remove();
+
     setData(filterdata, section);
   });
 

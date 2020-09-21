@@ -1,10 +1,7 @@
 {% extends 'dashboard/dash_base.html' %}
-
 {% load static %}
-
 {% block feature_css %}
 <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}">
-
 <style>
   p {
     font-size: calc(40% + 0.5vw + 0.5vh);
@@ -13,14 +10,14 @@
 
   .form-check-label {
     margin-top: 7px;
-    font-size: calc(50% + 0.5vw + 0.5vh);
+    font-size: calc(40% + 0.5vw + 0.5vh);
     padding-left: 15px;
   }
 
   .form-check-input {
     margin-top: 0px;
-    width: calc(6% + 0.5vw + 0.7vh);
-    height: calc(5% + 0.5vw + 0.5vh);
+    width: calc(5% + 0.5vw + 0.7vh);
+    height: calc(3% + 0.5vw + 0.5vh);
   }
 
   .upt-b {
@@ -110,200 +107,113 @@
     return result;
   }
 
+  var chart
   const render = rdata => {
-
-    document.getElementById("myBestDistrict").checked = true;
-
-    document.getElementById("myMH").checked = true;
-
-
-
-    var rdata2 = [];
-
-
-
-    for (var i = 0; i < rdata.length; i++) {
-
-      if (rdata[i].label == "BestDistrict" || rdata[i].label == "Maharashtra") {
-
-
-
-        rdata2.push(rdata[i]);
-
-      }
-
-    }
-
-
 
     var ctx = document.getElementById('myChart').getContext('2d');
 
-
-
-    var chart = new Chart(ctx, {
-
+    chart = new Chart(ctx, {
       // The type of chart we want to create
-
       type: 'radar',
-
-
-
       // The data for our dataset
-
       data: {
 
-
-
         labels: ["Anemia Free Women", "Children Immunization", "Children(0-6 months) BF Practices", "Children (6-24 months) CF Practices"],
-
-        datasets: [rdata2[0], rdata2[1]],
-
-
-
+        datasets: rdata,
       },
 
-
-
       // Configuration options go here
-
       options: {
-
         //defaultFontSize: 120,
-
         //maintainAspectRation: false,
-
         tooltips: {
-
           mode: 'index',
-
           callbacks: {
-
             label: function (tooltipItem, data) {
-
               return data.datasets[tooltipItem.datasetIndex].label + ' : ' + data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index];
-
             }
-
           }
-
         },
 
         hover: {
-
           mode: 'index',
-
         },
 
-
-
         scale: {
-
           angleLines: {
-
             display: true
-
           },
 
           ticks: {
-
             suggestedMin: 0,
-
             suggestedMax: 1,
-
             stepSize: 0.2
-
           },
 
           pointLabels: {
-
             fontColor: "blue",
-
             fontSize: 20
-
           }
-
         }
-
-
-
-
-
       }
-
-
-
     });
 
 
 
-    makeviz = opt => {
+    // makeviz = opt => {
 
-      var rdata1 = [];
+    //   var rdata1 = [];
 
-      for (var i = 0; i < chartStatData.length; i++) {
+    //   for (var i = 0; i < chartStatData.length; i++) {
 
-        for (var j = 0; j < opt.length; j++) {
-
-
-
-          if (opt[j] == chartStatData[i].label) {
-
-
-            rdata1.push(chartStatData[i]);
+    //     for (var j = 0; j < opt.length; j++) {
 
 
 
-          }
+    //       if (opt[j] == chartStatData[i].label) {
+
+
+    //         rdata1.push(chartStatData[i]);
 
 
 
-        }
-
-      }
-
-
-      chart.data.datasets = [];
-
-
-      for (var i = 0; i < rdata1.length; i++) {
-
-        chart.data.datasets[i] = rdata1[i];
-
-        if (rdata1[i].label != "BestDistrict" && rdata1[i].label != "Maharashtra") {
-
-          chart.data.datasets[i].borderColor = "red";
-
-        }
-
-      }
-
-
-      chart.update();
+    //       }
 
 
 
-    }
+    //     }
+
+    //   }
 
 
+    //   chart.data.datasets = [];
+
+
+    //   for (var i = 0; i < rdata1.length; i++) {
+
+    //     chart.data.datasets[i] = rdata1[i];
+
+    //     if (rdata1[i].label != "BestDistrict" && rdata1[i].label != "Maharashtra") {
+
+    //       chart.data.datasets[i].borderColor = "red";
+
+    //     }
+
+    //   }
+
+
+    //   chart.update();
+
+
+
+    // }
 
   }
 
-
   const monthwise = (data) => {
-
-
-
     var aproperty = [];
-
-
-
     var sproperty = [];
-
-
-
     var oproperty = [];
-
-
 
     data.forEach(d => {
 
@@ -319,60 +229,29 @@
 
       temp['norm_chld_cf'] = +d.norm_chld_cf;
 
-
-
       if (d.month_n == "Nov") {
-
-
-
         aproperty.push(temp);
       }
-
       else if (d.month_n == "Dec") {
-
         sproperty.push(temp);
-
       } else if (d.month_n == "Jan") {
-
-
-
         oproperty.push(temp)
-
       }
-
-
-
     })
 
     var listdata = [
-
       aproperty, sproperty, oproperty
-
     ]
-
-
     return listdata;
-
   }
 
-
-
   dataforchart = (data) => {
-
-
-
     let mydata = {
       data: {
-
-
         labels: ["Anemia Free Women", "Children Immunization", "Children(0-6 months) BF Practices", "Children (6-24 months) CF Practices"],
-
         datasets: []
-
       }
     }
-
-
 
     let mydataset = [];
 
@@ -383,7 +262,7 @@
     mybordercolor = ['#0000FF', '#00FF00', '#FFFF00'];
     let itr = 0;
     let i = 0;
-    let mycolour;
+    let mycolour = 'red';
 
     data.forEach((d, itr) => {
 
@@ -391,9 +270,6 @@
       if (d.district_n == "BestDistrict" || d.district_n == "Maharashtra") {
         mycolour = mybordercolor[i]
         i++;
-      }
-      else {
-        mycolour = 'Gray'
       }
 
       temp.label = d.district_n,
@@ -430,16 +306,8 @@
         // temp.data = [d.svrly_stntd,d.svr_wstg,d.wasting_percent,d.stunting_percent,d.underweight_percent];
 
         temp.data = [d.norm_anemic_free_wmn, d.norm_child_immunization, d.norm_chld_bf, d.norm_chld_cf]
-
-
-
       mydataset.push(temp);
-
-
-
     })
-
-
 
     mydata.data.datasets = mydataset;
 
@@ -458,7 +326,6 @@
   });
 
 
-
   data.forEach(d => {
     d.district_n = d.district_n;
     d.norm_anemic_free_wmn = +d.norm_anemic_free_wmn;
@@ -468,139 +335,64 @@
     d.month_n = d.month_n
   });
 
-  $(".month a").click(function () {
-
-    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-
-    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-
-    var projectList = document.getElementById("projectList");
-
-    var chks = projectList.getElementsByTagName("INPUT");
-
-    for (var i = 0; i < chks.length; i++) {
-
-      chks[i].checked = false;
-
-    }
-
-    var val = $(this).text();
-
-    mydata = filterCSV(data, 'month_n', val);
-
-    chartStatData = dataforchart(mydata);
-
-    render(dataforchart(mydata));
-
-  });
-
   var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
 
   $('#monthSlider').slider().on('slideStop', function (ev) {
+    $('input[type=checkbox]').prop('checked', false);
+    document.getElementById("myBestDistrict").checked = true;
+    document.getElementById("myMH").checked = true;
     var val = tickLabels[ev.value];
     mydata = filterCSV(data, 'month_n', val);
     chartStatData = dataforchart(mydata);
-    render(dataforchart(mydata));
+    chart.destroy();
+    getSelectedDistricts(chartStatData)
   });
-
-  monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  augData = filterCSV(data, 'month_n', monthSelect);
-  chartStatData = dataforchart(augData);
-  render(dataforchart(augData));
-
-
-  const selectData = (val, monthwisesplit) => {
-
-    if (val == "November") {
-
-      return monthwisesplit[0];
-
-    } else if (val == "December") {
-
-      return monthwisesplit[1];
-
-
-
-    } else if (val == "January") {
-
-      return monthwisesplit[2]
-
-
-
-    }
-
-  }
-
-
 
   $(function () {
-
-    //bind event
-
-    $(".month a").click(function () {
-
-      var valMonth = $(this).text();
-
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
-
-    });
-
-
-
-    //trigger event
-
-    $('.month a').first().trigger('click');
-
-    $(".category a").first().trigger('click');
-
-
+    document.getElementById("myBestDistrict").checked = true;
+    document.getElementById("myMH").checked = true;
+    monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
+    augData = filterCSV(data, 'month_n', monthSelect);
+    chartStatData = dataforchart(augData);
+    getSelectedDistricts(chartStatData);
 
   });
 
-
-
-
-
-
-
   function GetSelected() {
-
-    //Create an Array.
-
-    var selected = new Array();
-
-
-
-    //Reference the Table.
-
-    var projectList = document.getElementById("projectList");
-
-
-
-    //Reference all the CheckBoxes in Table.
-
-    var chks = projectList.getElementsByTagName("INPUT");
-
-
-
-    // Loop and push the checked CheckBox value in Array.
-
-    for (var i = 0; i < chks.length; i++) {
-
-      if (chks[i].checked) {
-
-        selected.push(chks[i].value);
-
-      }
-
-    }
-
-    //Display the selected CheckBox values.		
-
-    makeviz(selected);
-
+    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    mydata = filterCSV(data, 'month_n', valMonth);
+    chartStatData = dataforchart(mydata);
+    chart.destroy();
+    getSelectedDistricts(chartStatData)
   };
 
+  function getSelectedDistricts(chartStatData) {
+    //Create an Array.
+    var selected = new Array();
+
+    //Reference the Table.
+    var projectList = document.getElementById("projectList");
+
+    //Reference all the CheckBoxes in Table.
+    var chks = projectList.getElementsByTagName("INPUT");
+
+    // Loop and push the checked CheckBox value in Array.
+    for (var i = 0; i < chks.length; i++) {
+      if (chks[i].checked) {
+        selected.push(chks[i].value);
+      }
+    }
+
+    var rdata2 = [];
+    for (var i = 0; i < chartStatData.length; i++) {
+      for (var j = 0; j < selected.length; j++) {
+        if (selected[j] == chartStatData[i].label) {
+          rdata2.push(chartStatData[i]);
+        }
+      }
+    }
+    render(rdata2);
+  }
 
 </script>
 
