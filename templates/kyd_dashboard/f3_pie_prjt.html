@@ -34,6 +34,14 @@
     opacity: 0;
   }
 
+  #zero_percent {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: calc(50% + 0.5vw + 0.5vh);
+    font-weight: bold;
+    font-style: italic;
+    float: right;
+  }
+
   #tooltip p {
     margin: 0;
     font-family: sans-serif;
@@ -61,9 +69,9 @@
     </div>
   </div>
 
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f2' dist_name %}`">Previous
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f2' dist_name fy %}`">Previous
     Feature</button>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'ftrdr1' dist_name %}`">Next
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'ftrdr1' dist_name fy %}`">Next
     Feature</button>
 
 </div>
@@ -76,16 +84,15 @@
   </div>
 </div>
 
+<div id="zero_percent">Project Labels with 0% are are not visible please hover to see details</div>
 
 <div class="col-12" id="chart">
 </div>
 
-
-
-
 <div id="tooltip" class="hidden">
-  <p><strong><span id="paraText"></span></strong><span id="value" style="font-weight: bold" ;> 100</span>%</p>
-  <p><strong>Enrolled children contribution: </strong><span id="enrlval" style="font-weight: bold" ;>10</span>%</p>
+  <p><span id="projectN" style="font-weight: bold"></span></p>
+  <p><strong><span id="paraText"></span></strong><span id="value" style="font-weight: bold"> 100</span>%</p>
+  <p><strong>Enrolled children contribution: </strong><span id="enrlval" style="font-weight: bold">10</span>%</p>
 </div>
 
 
@@ -98,11 +105,10 @@
 <script>
   // const swidth= document.getElementById('chart').clientWidth;
   // const sheight=swidth/3 ;
-  // console.log("w&h",swidth, sheight);
   const svg = d3.select('#chart').
     append('svg').
     attr('width', 1100).
-    attr('height', 750).
+    attr('height', 1000).
     call(responsivefy) // Call responsivefy to make the chart responsive 
 
   var radius;
@@ -144,7 +150,6 @@
     d3.select(window).on('resize.', resize);
 
     function resize() {
-      console.log("in resize");
       // const targetWidth = parseInt(container.style('width'));
       //const targetWidth = $(window).width();
       //const targetHeight = $(window).height()-50;
@@ -154,14 +159,11 @@
       svg.attr('width', targetWidth);
       svg.attr('height', targetHeight);
       // radius = Math.min(targetWidth, targetHeight) / 3;
-      // console.log("radius", radius);
-      // console.log("radius1", radius1);
     }
   }
 
   // var width = +svg.attr('width');
   // var height = +svg.attr('height');
-  // console.log("in getting radiustargetw&h", width, height)
   var radius = Math.min(1100, 750) / 3;
 
 
@@ -174,7 +176,7 @@
 
     const margin = { left: 750, top: 400, right: 170, bottom: 20 };
     const innerWidth = 1100 - margin.left - margin.right;
-    const innerHeight = 750 - margin.top - margin.bottom;
+    const innerHeight = 1000 - margin.top - margin.bottom;
 
     const g = svg.append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
@@ -237,6 +239,7 @@
       .attr("d", path);
 
     arcEnter.on("mouseover", function (d) {
+      d3.select("#tooltip #projectN").text("Project Name:" + d.data.project_n)
       d3.select("#tooltip")
         .transition().duration(200)
         .style("left", d3.event.pageX + "px")
@@ -257,10 +260,7 @@
 
     makeviz = opt => {
       g.selectAll(".arc").remove();
-      // arc.selectAll("*").remove();
       $(".hello").remove();
-      // console.log(d)
-
 
       let tansitionDuration = 1000;
       if (opt == 'Wasting(%)') {
@@ -274,7 +274,6 @@
         arcInitial = d => d.low_birth_weight_percent;
       }
 
-      console.log(arcInitial);
       var pie = d3.pie()
         .value(function (d) {
           return arcInitial(d);
@@ -291,6 +290,7 @@
         .attr("class", "arc");
 
       arcEnter.on("mouseover", function (d) {
+        d3.select("#tooltip #projectN").text("Project Name: " + d.data.project_n);
         d3.select("#tooltip")
           .transition().duration(200)
           .style("left", d3.event.pageX + "px")
@@ -363,7 +363,7 @@
           var posC = label.centroid(d); // Label position = almost the same as posB
           var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
           posC[0] = radius * 1.1 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
-          if (arcInitial(d.data) > 0) {
+          if (arcInitial(d.data) > 1) {
             return [posA, posB, posC]
 
           }
@@ -372,7 +372,7 @@
       // Add the polylines between chart and labels:
       arcEnter
         .append('text')
-        .text(function (d) { if (arcInitial(d.data) > 0) { console.log(d.data.project_n); return d.data.project_n } })
+        .text(function (d) { if (arcInitial(d.data) > 1) { return d.data.project_n } })
         .attr('transform', function (d) {
           var pos = label.centroid(d);
           var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
@@ -406,11 +406,7 @@
 
   $(function () {
     //bind event
-    $(".month a").click(function () {
-      var valMonth = $(this).text();
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
-      document.getElementById('bartitleMonth').innerHTML = valMonth;
-    });
+    
     $(".category a").click(function () {
       var valCategory = $(this).text();
       var displayVal = valCategory.substring(0, valCategory.length - 3);
@@ -422,8 +418,6 @@
     });
 
     //trigger event
-    $('.month a').first().trigger('click');
-    console.log("month trigger");
     $(".category a").first().trigger('click');
 
   });

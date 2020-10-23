@@ -75,8 +75,8 @@
               <a class="dropdown-item" href="#">Children (6-24 months) Initiated Appropriate Complementary Feeding (%)</a>
             </div>
           </div>
-          <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f6' dist_name %}`">Previous Feature</button>
-          <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f8' dist_name %}`">Next Feature</button>
+          <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f6' dist_name fy %}`">Previous Feature</button>
+          <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f8' dist_name fy %}`">Next Feature</button>
           
           <div id="slider-range"></div>
     </div>
@@ -138,7 +138,6 @@ const container = d3.select(svg.node().parentNode),
   height = parseInt(svg.style('height'), 10),
   aspect = width / height;
   
-console.log("width&height", width, height)
 // Add viewBox attribute to set the value to initial size 
 // add preserveAspectRatio attribute to specify how to scale  
 // and call resize so that svg resizes on page load 
@@ -153,7 +152,6 @@ function resize() {
   const targetWidth = $(window).width();
   const targetheight = $(window).height();
   //var targetHeight = $(window).height();
-  console.log("tw&h",targetWidth,targetheight );
   width1=targetWidth;
   svg.attr('width', targetWidth);
   svg.attr('height', targetheight);
@@ -957,7 +955,6 @@ async function fetchGeoJSON() {
   let geoJSONBundle = {};
 
   var blockJSON = {{ context.blk_geodata|safe }};
-    console.log("Block GeoData", blockJSON)
     var scaleCenter = calculateScaleCenter(blockJSON);
 
     mercator.scale(scaleCenter.scale)
@@ -989,14 +986,11 @@ function calculateScaleCenter(features) {
                         (bbox_path[1][0] - bbox_path[0][0]) / innerWidth,
                         (bbox_path[1][1] - bbox_path[0][1]) / innerHeight
                     );
-                    console.log(scale,'scale')
                     var bbox_feature = d3.geoBounds(features),
                     center = [
                         (bbox_feature[1][0] + bbox_feature[0][0]) / 2,
                         ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)]; 
                     
-                    console.log(center,"center")
-              
                     return {
                         'scale': scale,
                         'center': center
@@ -1109,7 +1103,6 @@ async function mergeData(geoJSON) {
     data.push(element.fields);
   });
   let awcCSV = data;
-  console.log(awcCSV)
 
   monthWiseCSV(awcCSV);
   let awcGeoJSONAug = JSON.parse(JSON.stringify(awcGeoJSON));
@@ -1129,7 +1122,6 @@ async function mergeData(geoJSON) {
 fetchGeoJSON().then(mergeData);
 
 $(function(){
- console.log("in on load");
   //bind event
   $(".drop-month a").click(function(){
     var valMonth = $(this).text();

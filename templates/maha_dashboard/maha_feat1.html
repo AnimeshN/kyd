@@ -80,7 +80,19 @@
     </div>
   </div>
 
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat2' %}`">Next
+  <div class="dropdown m-1">
+    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      <span class="selectedPtype"></span>
+    </button>
+    <div class="dropdown-menu ptype" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#">Urban</a>
+      <a class="dropdown-item" href="#">Rural</a>
+      <a class="dropdown-item" href="#">Tribal</a>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat2' fy %}`">Next
     Feature</button>
 
 </div>
@@ -130,11 +142,11 @@
     return result;
   }
 
-  const svg = d3.select('#chart').
-    append('svg').
-    attr('width', 2350).
-    attr('height', 450).
-    call(responsivefy) // Call responsivefy to make the chart responsive
+  const svg = d3.select('#chart')
+    .append('svg')
+    .attr('width', 2350)
+    .attr('height', 450)
+    .call(responsivefy) // Call responsivefy to make the chart responsive
 
   function responsivefy(svg) {
 
@@ -146,7 +158,6 @@
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
 
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -157,20 +168,16 @@
     d3.select(window).on('resize.', resize);
 
     function resize() {
-      //const targetWidth = parseInt(container.style('width'));
       const targetWidth = $(window).width();
-      //var targetHeight = $(window).height();
-      console.log("tw&h", targetWidth);
       width1 = targetWidth;
       svg.attr('width', targetWidth);
       svg.attr('height', Math.round(targetWidth / aspect));
     }
   }
 
-
   let bar_width = 40;
-
   let sortBy = 'ht_percent';
+  let prjType = 'Urban';
   let yValue = d => d.ht_percent;
   const xValue = d => d.district_n;
   const margin = { left: 100, top: 20, right: 100, bottom: 90 };
@@ -181,14 +188,8 @@
     .range([0, innerHeight]);
   let tansitionDuration = 1000;
 
-
   const render = data => {
-
-    console.log("in render", width1);
-
-    const xScale = d3.scaleBand()
-      .range([0, 1.5 * bar_width * data.length])
-      .padding(0.3);
+    const xScale = d3.scaleBand().range([0, 1.5 * bar_width * data.length]).padding(0.3);
 
     xScale.domain(data.map(xValue))
 
@@ -213,7 +214,6 @@
 
     chartText.exit().remove();
 
-
     chart.enter().append('rect')
       .attr('x', d => xScale(d.district_n) + 1)
       .attr('y', d => yScale(yValue(d)))
@@ -226,7 +226,7 @@
           .duration(200)
           .style("opacity", 0.9);
         tooltip
-          .html(d.district_n + " : " + (yValue(d)))
+          .html(d.district_n + " : " + (yValue(d).toFixed(2)))
           .style("left", d3.event.pageX + "px")
           .style("top", d3.event.pageY - 30 + "px");
       })
@@ -240,7 +240,7 @@
     // update new values
     chartText.enter().append("text")
       .filter(function (d, i) { return i === 0 || i === (data.length - 1) })
-      .text(d => yValue(d))
+      .text(d => yValue(d).toFixed(2))
       .attr('x', d => xScale(d.district_n))
       .attr('y', d => yScale(yValue(d)) - 5)
       .attr("font-family", "sans-serif")
@@ -252,7 +252,6 @@
       .attr('x', d => xScale(d.district_n))
       .attr('height', d => innerHeight - yScale(yValue(d)))
       .attr("fill", d => myColor(yValue(d)))
-
 
     // text update
     chartText.transition().duration(tansitionDuration)
@@ -277,7 +276,6 @@
       .attr("dx", "-.8em")
       .attr("dy", ".15em")
       .attr("transform", "rotate(-50)");
-
   }
 
   const sortData = (data, parameter) => {
@@ -307,11 +305,25 @@
 
     var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
     filterdata = filterCSV(data, 'month_n', valMonth);
-    mydata = sortData(filterdata, sortBy);
-    tableData = tables(filterdata);
+    pt_data = filterCSV(filterdata, 'project_type', prjType)
+    mydata = sortData(pt_data, sortBy);
+    tableData = tables(pt_data);
     svg.selectAll("*").remove();
     render(mydata);
 
+  });
+
+  $(".ptype a").click(function () {
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    prjType = $(this).text();
+    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    filterdata = filterCSV(data, 'month_n', valMonth);
+    pt_data = filterCSV(filterdata, 'project_type', prjType);
+    mydata = sortData(pt_data, sortBy);
+    tableData = tables(pt_data);
+    svg.selectAll("*").remove();
+    render(mydata);
   });
 
   /////
@@ -332,6 +344,7 @@
     d.ht_percent = +d.ht_percent;
     d.wt_percent = +d.wt_percent;
     d.ht_wt_percent = +d.ht_wt_percent;
+    d.project_type = d.project_type;
     d.month_n = d.month_n;
 
   });
@@ -341,15 +354,16 @@
   $('#monthSlider').slider().on('slideStop', function (ev) {
     var val = tickLabels[ev.value];
     filterdata = filterCSV(data, 'month_n', val);
-    mydata = sortData(filterdata, sortBy);
-    tableData = tables(filterdata);
+    pt_data = filterCSV(filterdata, 'project_type', prjType);
+    mydata = sortData(pt_data, sortBy);
+    tableData = tables(pt_data);
     svg.selectAll("*").remove();
     render(mydata);
   });
 
-
   $(function () {
 
+    $('.ptype a').parents('.dropdown').find('.dropdown-toggle').html('Urban' + ' <span class="selectedPtype"></span>');
 
     $(".category a").click(function () {
       var selText = $(this).text();
@@ -360,13 +374,12 @@
     $(".category a").first().trigger('click');
   });
 
-  // monthSelect=$('.month a').first().text();
-  monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  augData = filterCSV(data, 'month_n', monthSelect);
-  sortedData = sortData(augData, sortBy);
-  console.log(sortedData, "sortedData");
-  render(sortedData);
-  tables(augData);
+  // monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
+  // augData = filterCSV(data, 'month_n', monthSelect);
+  // augData1 = filterCSV(augData, 'project_type', prjType);
+  // sortedData = sortData(augData1, sortBy);
+  // render(sortedData);
+  // tables(augData1);
 
   function tables(data) {
     $(".hello").remove();

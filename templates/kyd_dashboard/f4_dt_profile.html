@@ -41,8 +41,8 @@
 <div class="row bg-info">
   <div class="col-xs-12">
     <button type="button" class="btn btn-outline-dark m-1"
-      onclick="location.href=`{% url 'ftrdr2' dist_name %}`">Previous Feature</button>
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f5' dist_name %}`">Next
+      onclick="location.href=`{% url 'ftrdr2' dist_name fy %}`">Previous Feature</button>
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f5' dist_name fy %}`">Next
       Feature</button>
   </div>
 </div>
@@ -162,12 +162,9 @@
       } else if (d.month_n == "Jan") {
         oproperty.push(temp);
       }
-      //  console.log( data)
     })
 
     var listdata = [aproperty, sproperty, oproperty]
-    console.log(listdata)
-
     return listdata;
   }
 
@@ -209,17 +206,14 @@
     d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
   });
 
-  console.log(data);
   //   d3.csv("{% static 'data/csv/f4.csv'%}").then(data=>{
   monthwiseData = monthwise(data);
 
   d3.select("#monthdropdown")
     .on("change", () => {
       let val = document.getElementById("monthdropdown").value
-      console.log(val);
       let tableData = tbData(val, monthwiseData);
       svg.selectAll("*").remove();
-      console.log(tableData);
       render(tableData);
     });
 
@@ -230,17 +224,15 @@
     var val = tickLabels[ev.value];
     filterdata = filterCSV(data, 'month_n', val);
     tableData = tables(filterdata);
-    console.log(tableData);
     render(tableData);
   });
 
-  $(".month a").click(function () {
-    var val = $(this).text();
-    filterdata = filterCSV(data, 'month_n', val);
-    tableData = tables(filterdata);
-    console.log(tableData);
-    render(tableData);
-  })
+  // $(".month a").click(function () {
+  //   var val = $(this).text();
+  //   filterdata = filterCSV(data, 'month_n', val);
+  //   tableData = tables(filterdata);
+  //   render(tableData);
+  // })
   monthSelect = tickLabels[$('#monthSlider').slider('getValue')];
   augData = filterCSV(data, 'month_n', monthSelect);
   tables(augData);
@@ -249,18 +241,12 @@
   // });
   $(function () {
     //bind event
-    $(".month a").click(function () {
-      var valMonth = $(this).text();
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
-    });
-    $('.month a').first().trigger('click');
     $(".category a").first().trigger('click');
 
   });
 
 
   const tbData = (val, monthwiseData) => {
-    console.log(monthwiseData);
     if (val == "November") {
       return [tables(monthwiseData[0])];
     } else if (val == "December") {

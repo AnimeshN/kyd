@@ -1,7 +1,7 @@
 from django.db import models
 
 # Create your models here.
-class ConsoChildNdj(models.Model):
+class ConsoChildAll(models.Model):
     year = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     month_n = models.CharField(max_length=10, blank=True, null=True)
     state_n = models.CharField(max_length=25, blank=True, null=True)
@@ -11,7 +11,6 @@ class ConsoChildNdj(models.Model):
     supervisor = models.CharField(max_length=100, blank=True, null=True)
     beat_n = models.CharField(max_length=50, blank=True, null=True)
     awc_with_code = models.CharField(max_length=100, blank=True, null=True)
-    aww_ph_no = models.CharField(max_length=50, blank=True, null=True)
     total_no_chld_wgd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     total_no_chld_elgb_wgd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     total_no_chld_ht_was_msrd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
@@ -44,10 +43,13 @@ class ConsoChildNdj(models.Model):
     no_chld_cf_wid_adq_dt_qnty = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     total_no_chld_cf_wid_appr_hndwhg_bfr_fdg = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     no_chld_6t24mnths_enrld_cas = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    ngo_count = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    ngo_names = models.CharField(max_length=100, blank=True, null=True)
+    financial_year = models.CharField(max_length=25, blank=True, null=True)
 
     class Meta:
         managed = False
-        db_table = 'conso_child_ndj'
+        db_table = 'conso_child_all'
 
 
 class DistrictPwd(models.Model):

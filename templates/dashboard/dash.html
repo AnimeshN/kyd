@@ -122,29 +122,27 @@
                         </select><br>-->
                 <!-- {% else %} -->
 
-                <!-- <div class="quarter_menu">
-                    <div class="Maharashtra">
-                        <select class="custom-select" name="quarter_select" id="quarterList">
-                            <option selected disabled>Select Month Quarter</option>
-                            <option value="q1">Aug-Oct</option>
-                            <option value="q2">Nov-Jan</option>
-                        </select>
-                    </div>
-                </div> -->
-                {% endif %}
-
-                <!-- <br><br> -->
-                <div class="d-flex justify-content-center mt-1">
-                    <button class="btn btn-dark" type="submit">Submit</button>
-                </div>
-            </form>
+                <select class="custom-select" name="fy_select" id="fyList">
+                    <option selected disabled>Select FY</option>
+                    <option value="2019-20">2019-20</option>
+                    <!-- <option value="2020-21">2020-21</option> -->
+                </select>
         </div>
     </div>
-
-    <br>
-    <p>"This is Beta Version"</p>
-
     {% endif %}
+
+    <!-- <br><br> -->
+    <div class="d-flex justify-content-center mt-1">
+        <button class="btn btn-dark" type="submit">Submit</button>
+    </div>
+    </form>
+</div>
+</div>
+
+<br>
+<p>"This is Beta Version"</p>
+
+{% endif %}
 </div>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js"></script>
@@ -163,9 +161,10 @@
 
     $(document).ready(function () {
 
-        $("#distList").change(function () {
+        $("#myform").submit(function () {
             var dSelect = document.forms["myForm"]["dist_select"].value;
-            console.log(dSelect);
+            var fySelect = document.forms["myForm"]["fy_select"].value;
+            console.log(fySelect);
             if (dSelect == "Maharashtra") {
                 $("#myform").attr("action", "{% url 'maha-feat1' %}");
             }

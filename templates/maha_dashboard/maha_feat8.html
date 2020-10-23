@@ -66,7 +66,7 @@
 </div>
 
 <div class="row bg-info mb-3">
-  <div class="dropdown mt-3">
+  <div class="dropdown m-1 mt-3">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false">
       Select Category
@@ -80,9 +80,20 @@
       <a class="dropdown-item" href="#">Children (6-24 months) initiated appropriate Complementary Feeding</a>
     </div>
   </div>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat7' %}`">Previous
+  <div class="dropdown m-1 mt-3">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      <span class="selectedPtype"></span>
+    </button>
+    <div class="dropdown-menu ptype" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#">Urban</a>
+      <a class="dropdown-item" href="#">Rural</a>
+      <a class="dropdown-item" href="#">Tribal</a>
+    </div>
+  </div>
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat7' fy %}`">Previous
     Feature</button>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat9' %}`">Next
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat9' fy %}`">Next
     Feature</button>
 
   <div id="slider-range"></div>
@@ -142,7 +153,6 @@
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
 
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -157,7 +167,6 @@
       const targetWidth = $(window).width();
       const targetheight = $(window).height();
       //var targetHeight = $(window).height();
-      console.log("tw&h", targetWidth, targetheight);
       width1 = targetWidth;
       svg.attr('width', targetWidth);
       svg.attr('height', targetheight);
@@ -168,6 +177,7 @@
   const innerWidth = 1300 - margin.left - margin.right;
   const innerHeight = 800 - margin.top - margin.bottom;
 
+  let prjType = 'Urban';
   const transitionDuration = 1000;
   let level = 0;
   let levelLocation = [];
@@ -454,8 +464,6 @@
           .style("fill", d => {
             return myColor(ColorValue(d), low, high)
           });
-
-
       }
 
 
@@ -571,10 +579,12 @@
 
           if (level === 1) {
             selectedData = filterCSV(projectData, 'month_n', month_hack);
-            selectedJSON = addProperty(selectedData, project);
+            LocationDataPrjType= filterCSV(selectedData, 'project_type', prjType);
+            removeProperties(project);
+            selectedJSON = addProperty(LocationDataPrjType, project);
           }
           let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
-          let selecteddata = selectedSubData(selectedData, clickedLocation);
+          let selecteddata = selectedSubData(LocationDataPrjType, clickedLocation);
           g.selectAll("*").remove();
           rowEnter.selectAll("*").remove();
           makemap(selectedjson, selecteddata);
@@ -739,17 +749,21 @@
 
           if (level === 0) {
             LocationDataMonth = filterCSV(blockData, 'month_n', month_hack);
-            LocationMonth = addProperty(LocationDataMonth, block);
-            makemap(LocationMonth, LocationDataMonth);
+            LocationDataPrjType = filterCSV(LocationDataMonth, 'project_type', prjType);
+            removeProperties(block);
+            LocationMonth = addProperty(LocationDataPrjType, block);
+            makemap(LocationMonth, LocationDataPrjType);
           }
           else if (level === 1) {
             LocationDataMonth = filterCSV(projectData, 'month_n', month_hack);
-            LocationMonth = addProperty(LocationDataMonth, project);
+            LocationDataPrjType = filterCSV(LocationDataMonth, 'project_type', prjType);
+            removeProperties(project);
+            LocationMonth = addProperty(LocationDataPrjType, project);
 
             let previousBlock = levelLocation[levelLocation.length - 1];
 
             let selectedjson = selectedSubFeature(LocationMonth, previousBlock);
-            let selectedcsv = selectedSubData(LocationDataMonth, previousBlock);
+            let selectedcsv = selectedSubData(LocationDataPrjType, previousBlock);
 
             makemap(selectedjson, selectedcsv);
           }
@@ -787,6 +801,23 @@
       }
     };
 
+    $(".ptype a").click(function () {
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    prjType = $(this).text();
+    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    let monthdata = filterCSV(blockData, 'month_n', valMonth);
+    let pt_data = filterCSV(monthdata, 'project_type', prjType);
+    removeProperties(block);
+    let monthjson = addProperty(pt_data, block);
+    level = 0;
+    g.selectAll("*").remove();
+    rowEnter.selectAll("*").remove();
+    svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
+    updateMonth();
+    levelLocation = []; 
+    makemap(monthjson, pt_data);
+    });
 
     var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
 
@@ -794,7 +825,9 @@
       var val = tickLabels[ev.value];
       month_hack = val;
       let monthdata = filterCSV(blockData, 'month_n', val);
-      let monthjson = addProperty(monthdata, block);
+      let pt_data = filterCSV(monthdata, 'project_type', prjType)
+      removeProperties(block);
+      let monthjson = addProperty(pt_data, block);
 
       level = 0;
       g.selectAll("*").remove();
@@ -802,29 +835,16 @@
       svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
       updateMonth();
       levelLocation = [];
-      makemap(monthjson, monthdata);
+      makemap(monthjson, pt_data);
     });
 
-    $(".drop-month a").click(function () {
-      console.log('hello');
-      $(this).parents(".dropdown").find('.btn').html($(this).text());
-      var val = $(this).text();
-      month_hack = val;
-      let monthdata = filterCSV(blockData, 'month_n', val);
-      let monthjson = addProperty(monthdata, block);
-      level = 0;
-      g.selectAll("*").remove();
-      rowEnter.selectAll("*").remove();
-      svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
-      updateMonth();
-      levelLocation = [];
-      makemap(monthjson, monthdata);
-    })
+    
     //initial map
     month_hack = tickLabels[$('#monthSlider').slider('getValue')];
     let monthdata = filterCSV(blockData, 'month_n', month_hack);
-    let monthjson = addProperty(monthdata, block);
-    makemap(monthjson, monthdata);
+    let pt_data = filterCSV(monthdata, 'project_type', prjType)
+    let monthjson = addProperty(pt_data, block);
+    makemap(monthjson, pt_data);
   };
 
   async function fetchGeoJSON() {
@@ -852,13 +872,10 @@
         (bbox_path[1][0] - bbox_path[0][0]) / innerWidth,
         (bbox_path[1][1] - bbox_path[0][1]) / innerHeight
       );
-    console.log(scale, 'scale')
     var bbox_feature = d3.geoBounds(features),
       center = [
         ((bbox_feature[1][0] + bbox_feature[0][0]) / 2) - 1,
         ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)];
-
-    console.log(center, "center")
 
     return {
       'scale': scale,
@@ -872,6 +889,7 @@
       let temp = {};
       if (d.sub_district) d.sub_district = d.sub_district;
       d.district_n = d.district_n;
+      d.project_type = d.project_type;
       d.no_of_chld_cmpltd_1yr_immunzt = +d.no_of_chld_cmpltd_1yr_immunzt;
       d.no_chld_bf_at_birth = +d.no_chld_bf_at_birth;
       d.no_chld_excly_bf = +d.no_chld_excly_bf;
@@ -900,6 +918,7 @@
 
         if (x === y) {
           geojson[j].properties.month_n = data[i].month_n;
+          geojson[j].properties.project_type = data[i].project_type;
           geojson[j].properties.no_of_chld_cmpltd_1yr_immunzt = data[i].no_of_chld_cmpltd_1yr_immunzt;
           geojson[j].properties.no_chld_bf_at_birth = data[i].no_chld_bf_at_birth;
           geojson[j].properties.no_chld_excly_bf = data[i].no_chld_excly_bf;
@@ -957,19 +976,11 @@
 
 
   $(function () {
-    console.log("in on load");
     //bind event
-    $(".drop-month a").click(function () {
-      var valMonth = $(this).text();
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
-    });
+    $('.ptype a').parents('.dropdown').find('.dropdown-toggle').html('Urban' + ' <span class="selectedPtype"></span>');
 
+    $('.drop-category a').parents('.dropdown').find('.dropdown-toggle').html('Children completed 1 year immunization' + ' <span class="selectedCategory"></span>');
 
-
-    $(".drop-category a").click(function () {
-      var valCategory = $(this).text();
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
-    });
     //trigger event
     $('.drop-month a').first().trigger('click');
     $(".drop-category a").first().trigger('click');
@@ -1016,6 +1027,19 @@
   d3.select("line.track-fill").attr("stroke", "yellow");
   d3.select("line.leftcolor").attr("stroke", "red");
   d3.select("line.track-inset").attr("stroke", "green");
+
+  function removeProperties(myGeoJSON)
+  {
+    for(var i=0; i<myGeoJSON.length; i++){
+    var obj = myGeoJSON[i].properties;
+    for(var key in obj){
+        var attrName = key;
+        if (attrName!= 'district'){
+          delete obj[key];
+        }
+    }
+    }
+  }
 
 </script>
 {% endblock %}

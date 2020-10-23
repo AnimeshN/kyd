@@ -9,7 +9,7 @@ from django.db.models import Q
 
 
 # Create your views here.
-from .models import ConsoChildNdj, DistrictPwd
+from .models import ConsoChildAll, DistrictPwd
 
 class DashboardView(TemplateView):
     def get(self,request):

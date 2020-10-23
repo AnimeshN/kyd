@@ -86,9 +86,9 @@
       <a class="dropdown-item" href="#">Newborn with low birth rate</a>
     </div>
   </div>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f5' dist_name %}`">Previous
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f5' dist_name fy %}`">Previous
     Feature</button>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f7' dist_name %}`">Next
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f7' dist_name fy %}`">Next
     Feature</button>
   <div id="slider-range"></div>
 </div>
@@ -106,7 +106,7 @@
     <button type="button" class="btn btn-dark back-button m-2">back</button>
     <span class='info info-hirar'>{{dist_name}}</span>
     <p>Click on the Polygon(Block/Project/Beat) to view the Lower Level
-      <a href="{% url 'ftlcblk' dist_name %}" class="lc_link">
+      <a href="{% url 'ftlcblk' dist_name fy %}" class="lc_link">
         Want to see Month-wise Trend
         <i class="fa fa-chevron-right" aria-hidden="true"></i>
       </a>
@@ -152,7 +152,6 @@
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
 
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -167,7 +166,6 @@
       const targetWidth = $(window).width();
       const targetheight = $(window).height();
       //var targetHeight = $(window).height();
-      console.log("tw&h", targetWidth, targetheight);
       width1 = targetWidth;
       svg.attr('width', targetWidth);
       svg.attr('height', targetheight);
@@ -177,7 +175,6 @@
 
   // const width = document.getElementById("mymap").offsetWidth;
   // const height = document.getElementById("mymap").offsetHeight;
-  // console.log("width&heightdv",width, height);
   const margin = { left: 200, top: 300, right: 40, bottom: 20 };
   const innerWidth = 1300 - margin.left - margin.right;
   const innerHeight = 800 - margin.top - margin.bottom;
@@ -1024,9 +1021,7 @@
     //initial map
     month_hack = tickLabels[$('#monthSlider').slider('getValue')];
     let monthdata = filterCSV(blockData, 'month_n', month_hack);
-    console.log(monthdata);
     let monthjson = addProperty(monthdata, block);
-    console.log(monthjson);
     makemap(monthjson, monthdata);
   };
 
@@ -1064,13 +1059,10 @@
         (bbox_path[1][0] - bbox_path[0][0]) / innerWidth,
         (bbox_path[1][1] - bbox_path[0][1]) / innerHeight
       );
-    console.log(scale, 'scale')
     var bbox_feature = d3.geoBounds(features),
       center = [
         (bbox_feature[1][0] + bbox_feature[0][0]) / 2,
         ((bbox_feature[1][1] + bbox_feature[0][1]) / 2)];
-
-    console.log(center, "center")
 
     return {
       'scale': scale,
@@ -1110,7 +1102,6 @@
   };
 
   const addProperty = (data, geojson) => {
-    console.log(data)
     var x, y;
     for (let i = 0; i < data.length; i++) {
       for (let j = 0; j < geojson.length; j++) {

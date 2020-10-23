@@ -186,13 +186,13 @@
 <script>
 
   const width = 500;
-  const height = 800;
+  const height = 1000;
 
   const tansitionDuration = 500;
 
-  const bar1 = d3.select('#b1').append("svg").attr('id', 'svg1').attr('width', 500).attr('height', 800).call(responsivefy);
+  const bar1 = d3.select('#b1').append("svg").attr('id', 'svg1').attr('width', 500).attr('height', 1000).call(responsivefy);
 
-  const bar2 = d3.select('#b2').append("svg").attr('id', 'svg2').attr('width', 500).attr('height', 800).call(responsivefy);
+  const bar2 = d3.select('#b2').append("svg").attr('id', 'svg2').attr('width', 500).attr('height', 1000).call(responsivefy);
 
   function responsivefy(svg) {
 
@@ -205,7 +205,6 @@
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
 
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -219,7 +218,6 @@
       const targetWidth = $(window).width();
       const targetheight = $(window).height();
       //var targetHeight = $(window).height();
-      console.log("tw&h", targetWidth, targetheight);
       d3.select('#svg1').attr('width', targetWidth);
       d3.select('#svg1').attr('height', targetheight);
       d3.select('#svg2').attr('width', targetWidth);
@@ -602,25 +600,11 @@
     drawRight(monthData);
   });
 
-  monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  augData = filterCSV(data, 'month_n', monthSelect);
-  augSortedData = sortData(augData, sortBy);
-  drawLeft(augSortedData);
-  drawRight(augSortedData);
-
-
-  $(".month a").click(function () {
-
-    $(this).parents(".dropdown").find('.btn').html($(this).text());
-    valMonth = $(this).text();
-    filterdata = filterCSV(data, 'month_n', valMonth);
-    monthData = sortData(filterdata, sortBy);
-    drawLeft(monthData);
-    drawRight(monthData);
-
-  });
-
-
+  // monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
+  // augData = filterCSV(data, 'month_n', monthSelect);
+  // augSortedData = sortData(augData, sortBy);
+  // drawLeft(augSortedData);
+  // drawRight(augSortedData);
 
   $(".category a").click(function () {
 
@@ -746,24 +730,14 @@
     }
 
     $(".category2 a").click(function () {
-
       var valCategory = $(this).text();
-
       $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory2"></span>');
 
     });
 
-
-
     //trigger event
-
     $(".category2 a").first().trigger('click');
-
-
-
   });
-
-
 
   $(window).on('load', function () {
 
@@ -771,16 +745,6 @@
     document.getElementById("cat2").style.display = 'none';
 
     document.getElementById('sw').style.display = 'none';
-
-    $(".month a").click(function () {
-
-      var valMonth = $(this).text();
-
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
-
-    });
-
-
 
     $(".category a").click(function () {
 
@@ -790,12 +754,7 @@
 
     });
 
-
-
     //trigger event
-
-    $('.month a').first().trigger('click');
-
     $(".category a").first().trigger('click');
 
   })

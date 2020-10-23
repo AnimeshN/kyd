@@ -55,44 +55,6 @@
         <div class="heading text-center"> District Overview </div>
     </div>
 </div>
-<!-- <div class="row text-center" style="height: 100px;">
-    <div class="col-12 bg-info h-75 w-100">
-        select month
-        <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Select Month
-                <span class="selectedMonth"></span>
-            </button>
-            <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#">Aug</a>
-                <a class="dropdown-item" href="#">Sep</a>
-                <a class="dropdown-item" href="#">Oct</a>
-                {% for month_select in monthList %}
-                <a class="dropdown-item" href="#">{{ month_select.month }}</a>
-                {% endfor %}
-            </div>
-        </div>
-        select category
-        <div class="dropdown" style="float: left; margin:20px; font-weight:bold">
-            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton"
-                data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                Select Level
-                <span class="selectedCategory"></span>
-            </button>
-            <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="#" onclick="block()">Block</a>
-                <a class="dropdown-item" href="#" onclick="project()">Project</a>
-                <a class="dropdown-item" href="#" onclick="beat()">Beat</a>
-                <a class="dropdown-item" href="#" onclick="awc()">Anganwadi/Village</a>
-            </div>
-
-        </div>
-
-        <button type="button" class="btn btn-info" style="float: left; margin:20px"
-            onclick="location.href=`{% url 'f4' dist_name %}`">Previous Feature</button>
-    </div> -->
-
 <div class="row h-100 bg-info">
     <div class="dropdown m-1">
         <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -107,9 +69,9 @@
             <a class="dropdown-item" href="#" onclick="awc()">Anganwadi/Village</a>
         </div>
     </div>
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f4' dist_name %}`">Previous
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f4' dist_name fy %}`">Previous
         Feature</button>
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f6' dist_name %}`">Next
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f6' dist_name fy %}`">Next
         Feature</button>
 </div>
 
@@ -197,12 +159,7 @@
     }
 
     function block() {
-        // console.log("in block function");
-        // console.log(d3.select('input[name="states"]:checked').node().value);
-
         const render = data => {
-
-            console.log(data);
         }
 
         //   d3.csv("{% static 'data/csv/f5_dt_ow/f5_block.csv'%}").then(data => {
@@ -244,8 +201,7 @@
         d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
 
     });
-    // monthwiseData = monthwise(data);
-    //console.log(monthwiseData);
+    
 
     var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
     $('#monthSlider').slider().on('slideStop', function (ev) {
@@ -257,13 +213,12 @@
     });
 
     selectMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    console.log(selectMonth, "Current Month")
 
     $(".month a").click(function () {
         $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
         $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
         var val = selectMonth
-        console.log(val, "val")
+
         // selectMonth=val;
         filterdata = filterCSV(data, 'month_n', val);
         tableData = tables(d3.select('input[name="states"]:checked').node().value, filterdata);
@@ -281,7 +236,6 @@
 
     // })
     const tbData = (val, monthwiseData) => {
-        console.log(d3.select('input[name="states"]:checked').node().value);
 
         // if (val == "November") {
         //     return tables(d3.select('input[name="states"]:checked').node().value, monthwiseData[0]);
@@ -304,11 +258,7 @@
 
     function tables(selection, data) {
 
-        console.log(data);
-
         if (selection == "set1") {
-
-            console.log("in set1");
 
             $("div#table").find(".hello").remove();
 
@@ -753,13 +703,11 @@
     var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
     $('#monthSlider').slider().on('slideStop', function (ev) {
         var val = tickLabels[ev.value];
-        // monthSelect = $('.month a').first().text();
         augData = filterCSV(data, 'month_n', val);
         let tbleData = tables(d3.select('input[name="states"]:checked').node().value, augData);
         render(tbleData);
     });
 
-    // console.log(selectMonth, "Current Month")
 
     monthSelect = tickLabels[$('#monthSlider').slider('getValue')];
     augData = filterCSV(data, 'month_n', monthSelect);
@@ -1241,7 +1189,6 @@
     });
 
     selectMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    console.log(selectMonth, "Current Month")
 
     monthSelect = tickLabels[$('#monthSlider').slider('getValue')];
     augData = filterCSV(data, 'month_n', monthSelect);
@@ -1723,7 +1670,6 @@
     });
 
     selectMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    console.log(selectMonth, "Current Month")
 
     monthSelect = tickLabels[$('#monthSlider').slider('getValue')];
     augData = filterCSV(data, 'month_n', monthSelect);
@@ -2161,7 +2107,6 @@
 }
 
     $(function () {
-        console.log("in on load");
         //bind event
         $(".month a").click(function () {
             var valMonth = $(this).text();
@@ -2178,7 +2123,6 @@
         //trigger event
         $('.month a').first().trigger('click');
         $(".category a").first().trigger('click');
-
 
     });
 

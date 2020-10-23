@@ -54,9 +54,9 @@
 
 <div class="row header h-75">
   <div class="col bg-info">
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f1' dist_name %}`">Previous
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f1' dist_name fy %}`">Previous
       Feature</button>
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f3' dist_name  %}`">Next
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f3' dist_name fy %}`">Next
       Feature</button>
     <button class='btn btn-outline-dark toggle m-1'>Compare</button>
   </div>
@@ -211,15 +211,15 @@
 <script>
 
   const width = 500;
-  const height = 800;
+  const height = 1000;
   //const width2 = document.getElementById("b2").offsetWidth;
 
 
   const tansitionDuration = 500;
 
-  const bar1 = d3.select('#b1').append("svg").attr('id', 'svg1').attr('width', 500).attr('height', 800).call(responsivefy);
+  const bar1 = d3.select('#b1').append("svg").attr('id', 'svg1').attr('width', 500).attr('height', 1000).call(responsivefy);
 
-  const bar2 = d3.select('#b2').append("svg").attr('id', 'svg2').attr('width', 500).attr('height', 800).call(responsivefy);
+  const bar2 = d3.select('#b2').append("svg").attr('id', 'svg2').attr('width', 500).attr('height', 1000).call(responsivefy);
 
 
   function responsivefy(svg) {
@@ -365,7 +365,7 @@
 
       .attr("font-family", "sans-serif")
 
-      .attr("font-size", "12px")
+      // .attr("font-size", "12px")
 
       .attr("fill", "blue")
 
@@ -422,15 +422,7 @@
 
   }
 
-
-
-
-
-
-
   //******************************
-
-
 
   const drawRight = data => {
     const yScale = d3.scaleBand().range([bar_height * data.length, 0]).padding(0.1);
@@ -688,22 +680,22 @@
   });
 
 
-  monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  augData = filterCSV(data, 'month_n', monthSelect);
-  augSortedData = sortData(augData, sortBy);
-  drawLeft(augSortedData);
-  drawRight(augSortedData);
+  // monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
+  // augData = filterCSV(data, 'month_n', monthSelect);
+  // augSortedData = sortData(augData, sortBy);
+  // drawLeft(augSortedData);
+  // drawRight(augSortedData);
 
-  $(".month a").click(function () {
+  // $(".month a").click(function () {
 
-    $(this).parents(".dropdown").find('.btn').html($(this).text());
-    valMonth = $(this).text();
-    filterdata = filterCSV(data, 'month_n', valMonth);
-    monthData = sortData(filterdata, sortBy);
-    drawLeft(monthData);
-    drawRight(monthData);
+  //   $(this).parents(".dropdown").find('.btn').html($(this).text());
+  //   valMonth = $(this).text();
+  //   filterdata = filterCSV(data, 'month_n', valMonth);
+  //   monthData = sortData(filterdata, sortBy);
+  //   drawLeft(monthData);
+  //   drawRight(monthData);
 
-  });
+  // });
 
 
 

@@ -108,9 +108,10 @@
       <a class="dropdown-item" href="#">Newborns with low birth weight</a>
     </div>
   </div>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f6' dist_name %}`">Previous
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f6' dist_name fy %}`">Previous
     Feature</button>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'ftlcprjt' dist_name %}`">Next
+  <button type="button" class="btn btn-outline-dark m-1"
+    onclick="location.href=`{% url 'ftlcprjt' dist_name fy %}`">Next
     Feature</button>
 </div>
 
@@ -141,13 +142,13 @@
   // var svg = d3.select('svg');
   // var width = +svg.attr('width');
   // var height = +svg.attr('height');
-  var width = 700,
+  var width = 1000,
     height = 550;
   var ticks;
   var mouseG;
 
-  var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 700)
-    .attr('height', 550).call(responsivefy);
+  var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 1000)
+    .attr('height', 800).call(responsivefy);
 
   var legend = d3.select('#legend').append('svg').attr('id', 'svg2').attr('width', 350)
     .attr('height', 700).call(responsivefy);
@@ -165,7 +166,6 @@
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
 
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -179,7 +179,6 @@
       const targetWidth = $(window).width();
       const targetheight = $(window).height();
       //var targetHeight = $(window).height();
-      console.log("tw&h", targetWidth, targetheight);
       d3.select('#svg1').attr('width', targetWidth);
       d3.select('#svg1').attr('height', targetheight);
       d3.select('#svg2').attr('width', targetWidth);
@@ -191,7 +190,7 @@
 
 
   var margin = { top: 10, right: 20, bottom: 30, left: 50 },
-    innerWidth = 700 - margin.left - margin.right,
+    innerWidth = 1000 - margin.left - margin.right,
     innerHeight = 550 - margin.top - margin.bottom;
 
 
@@ -249,8 +248,6 @@
       .key(function (d) { return d.block })
       .entries(data);
 
-    console.log(dataNest);
-
     var result = dataNest;
 
     var block = g.selectAll(".line")
@@ -263,7 +260,6 @@
       .style("stroke", function (d, i) { return d.color = color(d.key); })
       .attr("id", function (d) { return 'tag' + d.key.replace(/\s+/g, ''); }) // assign ID
       .attr("d", function (d) {
-        console.log(d.values)
         return stateline(d.values);
       });
 
@@ -284,13 +280,11 @@
       })
       .attr("class", function (d, i) { return "legendcheckbox " + d.key })
       .on("click", function (d) {
-        console.log("in legend")
         var sect = selectedCategory;
-        console.log(sect);
         sect = sect.replace(/ /g, '_');
         var selectedBlock = d.key.replace(/ /g, '_');
 
-        var url = "{% url 'ftlcprjt' dist_name %}?id1=" + selectedBlock + "&id2=" + sect;
+        var url = "{% url 'ftlcprjt' dist_name fy %}?id1=" + selectedBlock + "&id2=" + sect;
         $(location).attr('href', url);
         window.location = url;
 
@@ -394,7 +388,6 @@
       var monthX
 
       var tickPos = xScale.range();
-      // console.log(tickPos,'as')
       var m = d3.mouse(this),
         lowDiff = 1e99,
         xI = null;
@@ -420,16 +413,15 @@
 
         });
 
-        console.log((d3.event.pageY) + "px");
-      tooltip.html('<b style="color:#FF0000">'+monthX+'</b>')
+      tooltip.html('<b style="color:#FF0000">' + monthX + '</b>')
         .style('display', 'block')
         .style('left', d3.event.pageX + "px")
         .style('top', 40 + "px")
         .selectAll()
         .data(result).enter()
         .append('div')
-        .style('color','black')
-        .html(d => d.key + ': ' + '<b>'+ yScale.invert(yScale(d.values[xI].value)).toFixed(2) +'</b>');
+        .style('color', 'black')
+        .html(d => d.key + ': ' + '<b>' + yScale.invert(yScale(d.values[xI].value)).toFixed(2) + '</b>');
     }
 
 

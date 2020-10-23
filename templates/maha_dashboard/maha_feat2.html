@@ -52,14 +52,23 @@
 </div>
 
 
-<div class="row header h-75">
-  <div class="col bg-info">
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat1' %}`">Previous
+<div class="row bg-info">
+    <div class="dropdown m-1">
+      <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+        aria-haspopup="true" aria-expanded="false">
+        <span class="selectedPtype"></span>
+      </button>
+      <div class="dropdown-menu ptype" aria-labelledby="dropdownMenuButton">
+        <a class="dropdown-item" href="#">Urban</a>
+        <a class="dropdown-item" href="#">Rural</a>
+        <a class="dropdown-item" href="#">Tribal</a>
+      </div>
+    </div>
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat1' fy %}`">Previous
       Feature</button>
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat3' %}`">Next
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat3' fy %}`">Next
       Feature</button>
     <button class='btn btn-outline-dark toggle m-1'>Compare</button>
-  </div>
 </div>
 
 
@@ -71,11 +80,7 @@
 
       <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
         aria-haspopup="true" aria-expanded="false">
-
-        Select Category
-
         <span class="selectedCategory"></span>
-
       </button>
 
       <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
@@ -120,8 +125,6 @@
     </div>
 
   </div>
-
-
 
   <div class="col-xs-4 col-sm-4 col-md-6 bg-info">
     <!-- 
@@ -211,13 +214,13 @@
 <script>
 
   const width = 900;
-  const height = 1600;
+  const height = 2000;
 
   const tansitionDuration = 500;
 
-  const bar1 = d3.select('#b1').append("svg").attr('id', 'svg1').attr('width', 900).attr('height', 1600).call(responsivefy);
+  const bar1 = d3.select('#b1').append("svg").attr('id', 'svg1').attr('width', 900).attr('height', 2000).call(responsivefy);
 
-  const bar2 = d3.select('#b2').append("svg").attr('id', 'svg2').attr('width', 900).attr('height', 1600).call(responsivefy);
+  const bar2 = d3.select('#b2').append("svg").attr('id', 'svg2').attr('width', 900).attr('height', 2000).call(responsivefy);
 
 
   function responsivefy(svg) {
@@ -231,7 +234,6 @@
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
 
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -245,43 +247,12 @@
       const targetWidth = $(window).width();
       const targetheight = $(window).height();
       //var targetHeight = $(window).height();
-      console.log("tw&h", targetWidth, targetheight);
       d3.select('#svg1').attr('width', targetWidth);
       d3.select('#svg1').attr('height', targetheight);
       d3.select('#svg2').attr('width', targetWidth);
       d3.select('#svg2').attr('height', targetheight);
     }
   }
-
-
-
-  let sortBy = 'stunting_percent';
-
-  let xValue = d => d.stunting_percent;
-
-  let yValue = d => d.district_n;
-
-  const marginLeft = { left: 280, top: 50, right: 0, bottom: 30 };
-
-  const innerWidthLeft = width - marginLeft.left - marginLeft.right;
-
-  const innerHeightLeft = height - marginLeft.top - marginLeft.bottom;
-
-  const marginRight = { left: 280, top: 50, right: 0, bottom: 30 };
-
-  const innerWidthRight = width - marginRight.left - marginRight.right;
-
-  const innerHeightRight = height - marginRight.top - marginRight.bottom;
-
-
-  const g1 = bar1.append('g').attr('transform', `translate(${marginLeft.left}, ${marginLeft.top})`);
-
-  const g2 = bar2.append('g').attr('transform', `translate(${marginRight.left}, ${marginRight.top})`);
-
-  const xScaleLeft = d3.scaleLinear().domain([0, 100]).range([0, innerWidthLeft]);
-  const xScaleRight = d3.scaleLinear().domain([0, 100]).range([0, innerWidthRight]);
-
-  let bar_height = 40;
 
   function filterCSV(csv, key, value) {
     var result = [];
@@ -295,27 +266,45 @@
     return result;
   }
 
+  let bar_height = 40;
+  let prjType = 'Urban';
+  let sortBy = 'stunting_percent';
+  let xValue = d => d.stunting_percent;
+  let yValue = d => d.district_n;
+  const marginLeft = { left: 280, top: 50, right: 0, bottom: 30 };
+  const innerWidthLeft = width - marginLeft.left - marginLeft.right;
+  const innerHeightLeft = height - marginLeft.top - marginLeft.bottom;
+  const marginRight = { left: 280, top: 50, right: 0, bottom: 30 };
+  const innerWidthRight = width - marginRight.left - marginRight.right;
+  const innerHeightRight = height - marginRight.top - marginRight.bottom;
+
+  const g1 = bar1.append('g').attr('transform', `translate(${marginLeft.left}, ${marginLeft.top})`);
+  const g2 = bar2.append('g').attr('transform', `translate(${marginRight.left}, ${marginRight.top})`);
+  
+  const xScaleRight = d3.scaleLinear().domain([0, 100]).range([0, innerWidthRight]);
+  const xScaleLeft = d3.scaleLinear().domain([0, 100]).range([0, innerWidthLeft]);
+
   let tooltip = d3.select("body")
     .append("div")
     .attr("class", "tooltip")
     .style("opacity", 0);
 
   const drawLeft = data => {
-
     const yScale = d3.scaleBand().range([bar_height * data.length, 0]).padding(0.1);
+    
     yScale.domain(data.map(yValue))
+
+    let yAxisGenerator = d3.axisLeft(yScale);
 
     let getColor;
 
     if (xValue == 'd=> d.stunting_percent' || xValue == 'd=> d.wasting_percent' || xValue == 'd=> d.underweight_percent' || xValue == 'd=> d.low_birth_weight_percent' || xValue == 'd => d.prnt_anwmic_wmn') {
       getColor = d3.scaleSequential().domain([d3.max(data, xValue), d3.min(data, xValue)])
-
-        .interpolator(d3.interpolateRdYlGn);
+      .interpolator(d3.interpolateRdYlGn);
     }
     else {
       getColor = d3.scaleSequential().domain([d3.min(data, xValue), d3.max(data, xValue)])
-
-        .interpolator(d3.interpolateRdYlGn);
+      .interpolator(d3.interpolateRdYlGn);
     }
 
     let chart = g1.selectAll("rect").data(data)
@@ -327,13 +316,9 @@
     chartText.exit().remove();
 
     chart.enter().append('rect')
-
-      .attr('width', d => xScaleLeft(xValue(d)))
-
       .attr("y", d => yScale(d.district_n))
-
+      .attr('width', d => xScaleLeft(xValue(d)))
       .attr("height", yScale.bandwidth())
-
       .attr("fill", d => getColor(xValue(d)))
       .on("mouseover", d => {
         tooltip
@@ -350,86 +335,47 @@
           .transition()
           .duration(500)
           .style("opacity", 0);
-      });
-
+    });
 
     chartText.enter().append('text')
       .filter(function (d, i) { return i === 0 || i === (data.length - 1) })
-
       .text(d => xValue(d).toFixed(2))
-
       .attr('x', d => xScaleLeft(xValue(d)))
-
       .attr('y', d => yScale(d.district_n) + yScale.bandwidth() / 2 + 10)
-
       .attr("font-family", "sans-serif")
-
       .attr("font-size", "12px")
-
       .attr("fill", "blue")
-
       .attr("font-weight", "bold");
 
-
-
-
     chart.transition().duration(tansitionDuration)
-
-      //.attr('x',d => x(xValue(d)))
-
       .attr('width', d => xScaleLeft(xValue(d)))
-
       .attr("y", d => yScale(d.district_n))
-
       .attr("height", yScale.bandwidth())
       .attr("fill", d => getColor(xValue(d)))
 
     chartText.transition().duration(tansitionDuration)
       .filter(function (d, i) { return i === 0 || i === (data.length - 1) })
-
       .text(d => xValue(d).toFixed(2))
-
       .attr('x', d => xScaleLeft(xValue(d)))
-
-      .attr('y', d => yScale(d.district_n) + yScale.bandwidth() / 2 + 10);
-
-
-
-
-
+      .attr('y', d => yScale(d.district_n) + yScale.bandwidth() / 2 + 10)
+      .attr("fill", "blue")
+      .attr("font-weight", "bold");
 
     let xaxisLeft = g1.append('g').call(d3.axisBottom(xScaleLeft))
-
       .attr('transform', `translate(0, ${bar_height * data.length})`)
-
-
 
     xaxisLeft.selectAll("text").attr("font-size", "12px")
       .attr("font-weight", "bold")
       .style("text-anchor", "middle");
 
-
-
-
     let yaxisLeft = g1.append('g')
-
-      .call(d3.axisLeft(yScale))
-
+      .call(yAxisGenerator)
+      // .attr('transform', `translate(0, ${innerHeightLeft})`)
       .attr("font-size", "12px")
-
       .attr("font-weight", "bold");
-
   }
 
-
-
-
-
-
-
   //******************************
-
-
 
   const drawRight = data => {
     const yScale = d3.scaleBand().range([bar_height * data.length, 0]).padding(0.1);
@@ -448,8 +394,6 @@
 
         .interpolator(d3.interpolateRdYlGn);
     }
-
-
 
     let chart = g2.selectAll("rect").data(data)
 
@@ -504,8 +448,6 @@
       .attr("font-weight", "bold");
 
 
-
-
     chart.transition().duration(tansitionDuration)
 
       //.attr('x',d => x(xValue(d)))
@@ -524,21 +466,17 @@
 
       .attr('x', d => xScaleRight(xValue(d)))
 
-      .attr('y', d => yScale(d.district_n) + yScale.bandwidth() / 2 + 10);
+      .attr('y', d => yScale(d.district_n) + yScale.bandwidth() / 2 + 10)
+      .attr("fill", "blue")
 
+      .attr("font-weight", "bold");
 
     let xaxisRight = g2.append('g').call(d3.axisBottom(xScaleRight))
-
       .attr('transform', `translate(0, ${bar_height * data.length})`);
-
-
 
     xaxisRight.selectAll("text").attr("font-size", "12px")
       .attr("font-weight", "bold")
       .style("text-anchor", "middle");
-
-
-
 
     let yaxisRight = g2.append('g')
 
@@ -550,84 +488,6 @@
 
   }
 
-
-
-  const monthwise = (data) => {
-
-    let listdata = { "Nov": [], "Dec": [], "Jan": [] }
-
-    data.forEach(d => {
-
-      var temp = {};
-
-      temp['district_n'] = d.district_n;
-
-      temp['stunting_percent'] = +d.stunting_percent;
-
-      temp['wasting_percent'] = +d.wasting_percent;
-
-      temp['underweight_percent'] = +d.underweight_percent;
-
-      temp['low_birth_weight_percent'] = +d.low_birth_weight_percent;
-
-      temp['prnt_child_1yr_cmpltd_immunzt'] = +d.prnt_child_1yr_cmpltd_immunzt;
-
-      temp['prnt_chld_bf_at_birth'] = +d.prnt_chld_bf_at_birth;
-
-      temp['prnt_chld_excly_bf'] = +d.prnt_chld_excly_bf;
-
-      temp['prnt_chld_intd_cf_past30d'] = +d.prnt_chld_intd_cf_past30d;
-
-      temp['prnt_chld_6to24mnths_intd_cf'] = +d.prnt_chld_6to24mnths_intd_cf;
-
-      temp['prnt_anwmic_wmn'] = +d.prnt_anwmic_wmn;
-
-      temp['prnt_tenatus_cmpltd'] = +d.prnt_tenatus_cmpltd;
-
-      temp['prnt_wmn_1_anc_vst_dlvry'] = +d.prnt_wmn_1_anc_vst_dlvry;
-
-      temp['prnt_wmn_4_anc_vst_dlvry'] = +d.prnt_wmn_4_anc_vst_dlvry;
-
-      temp['prnt_wmn_rstg_drg_prgncy'] = +d.prnt_wmn_rstg_drg_prgncy;
-
-      temp['prnt_wmn_etg_xtr_ml_drng_prgncy'] = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
-
-      temp['prnt_trmstr_3wmn_cnsld_imdtbf'] = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
-
-      listdata[d.month_n].push(temp);
-
-    })
-
-    return listdata;
-
-  }
-
-
-
-  const selectData = (val, monthwiseData, sortBy) => {
-
-    if (val === "November") {
-
-      monthwiseData.Nov = sortData(monthwiseData.Nov, sortBy);
-
-      return monthwiseData.Nov;
-
-    } else if (val === "December") {
-
-      monthwiseData.Dec = sortData(monthwiseData.Dec, sortBy);
-
-      return monthwiseData.Dec;
-
-    } else if (val === 'January') {
-
-      monthwiseData.Jan = sortData(monthwiseData.Jan, sortBy);
-
-      return monthwiseData.Jan
-
-    }
-
-  }
-
   const sortData = (data, parameter) => {
 
     let sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
@@ -636,9 +496,6 @@
 
   }
 
-
-
-  //   d3.csv("{% static 'data/csv/f2.csv'%}").then(data=>{
   data_from_django = {{ data | safe }};
 
   var data = []
@@ -667,40 +524,26 @@
     d.prnt_wmn_rstg_drg_prgncy = +d.prnt_wmn_rstg_drg_prgncy;
     d.prnt_wmn_etg_xtr_ml_drng_prgncy = +d.prnt_wmn_etg_xtr_ml_drng_prgncy;
     d.prnt_trmstr_3wmn_cnsld_imdtbf = +d.prnt_trmstr_3wmn_cnsld_imdtbf;
+    d.project_type = d.project_type;
     d.month_n = d.month_n;
-
   });
-
 
   var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
 
   $('#monthSlider').slider().on('slideStop', function (ev) {
     var val = tickLabels[ev.value];
     filterdata = filterCSV(data, 'month_n', val);
-    monthData = sortData(filterdata, sortBy);
+    pt_data = filterCSV(filterdata, 'project_type', prjType)
+    monthData = sortData(pt_data, sortBy);
     drawLeft(monthData);
     drawRight(monthData);
   });
 
-
-  monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  augData = filterCSV(data, 'month_n', monthSelect);
-  augSortedData = sortData(augData, sortBy);
-  drawLeft(augSortedData);
-  drawRight(augSortedData);
-
-  $(".month a").click(function () {
-
-    $(this).parents(".dropdown").find('.btn').html($(this).text());
-    valMonth = $(this).text();
-    filterdata = filterCSV(data, 'month_n', valMonth);
-    monthData = sortData(filterdata, sortBy);
-    drawLeft(monthData);
-    drawRight(monthData);
-
-  });
-
-
+  // monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
+  // augData = filterCSV(data, 'month_n', monthSelect);
+  // augSortedData = sortData(augData, sortBy);
+  // drawLeft(augSortedData);
+  // drawRight(augSortedData);
 
   $(".category a").click(function () {
 
@@ -745,13 +588,10 @@
     }
 
     var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    console.log('mon', valMonth);
     filterdata = filterCSV(data, 'month_n', valMonth);
-    monthData = sortData(filterdata, sortBy);
+    pt_data = filterCSV(filterdata, 'project_type', prjType)
+    monthData = sortData(pt_data, sortBy);
     drawLeft(monthData);
-
-
-
   });
 
 
@@ -799,9 +639,9 @@
     }
 
     var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    console.log('mon', valMonth);
     filterdata = filterCSV(data, 'month_n', valMonth);
-    monthData = sortData(filterdata, sortBy);
+    pt_data = filterCSV(filterdata, 'project_type', prjType)
+    monthData = sortData(pt_data, sortBy);
     drawRight(monthData);
 
   });
@@ -828,24 +668,35 @@
 
     }
 
+    $('.ptype a').parents('.dropdown').find('.dropdown-toggle').html('Urban' + ' <span class="selectedPtype"></span>');
+
     $(".category2 a").click(function () {
-
       var valCategory = $(this).text();
-
       $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory2"></span>');
-
     });
 
-
-
     //trigger event
-
     $(".category2 a").first().trigger('click');
-
-
-
   });
 
+
+  $(".ptype a").click(function () {
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    prjType = $(this).text();
+    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    filterdata = filterCSV(data, 'month_n', valMonth);
+    pt_data = filterCSV(filterdata, 'project_type', prjType)
+    mydata = sortData(pt_data, sortBy);
+    g1.selectAll('path.domain').remove();
+    g1.selectAll("g.tick").remove();
+    g1.selectAll("text").remove();
+    g2.selectAll('path.domain').remove();
+    g2.selectAll("g.tick").remove();
+    g2.selectAll("text").remove();
+    drawLeft(mydata);
+    drawRight(mydata);
+  });
 
 
   $(window).on('load', function () {
@@ -855,15 +706,15 @@
 
     document.getElementById('sw').style.display = 'none';
 
-    $(".month a").click(function () {
+    // $(".month a").click(function () {
 
-      var valMonth = $(this).text();
+    //   var valMonth = $(this).text();
 
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
+    //   $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
 
-    });
+    // });
 
-
+    $('.ptype a').parents('.dropdown').find('.dropdown-toggle').html('Urban' + ' <span class="selectedPtype"></span>');
 
     $(".category a").click(function () {
 
@@ -873,11 +724,7 @@
 
     });
 
-
-
     //trigger event
-
-    $('.month a').first().trigger('click');
 
     $(".category a").first().trigger('click');
 

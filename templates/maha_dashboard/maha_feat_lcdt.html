@@ -17,14 +17,14 @@
     shape-rendering: crispEdges;
   }
 
-  .scrollable {
-    width: 150px;
-    height: 550px;
-    overflow-y: scroll;
+  div#legendList {
+    width: 250px;
+    height: 500px; 
+    overflow: scroll;
   }
 
   text.legend {
-    font-size: calc(80% + 0.7vw + 0.7vh);
+    font-size: calc(50% + 0.7vw + 0.7vh);
   }
 
   .legendcheckbox {
@@ -111,19 +111,30 @@
       <a class="dropdown-item" href="#">Newborns with low birth weight</a>
     </div>
   </div>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat7' %}`">Previous
+  <div class="dropdown m-1">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      <span class="selectedPtype"></span>
+    </button>
+    <div class="dropdown-menu ptype" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#">Urban</a>
+      <a class="dropdown-item" href="#">Rural</a>
+      <a class="dropdown-item" href="#">Tribal</a>
+    </div>
+  </div>
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat7' fy %}`">Previous
     Feature</button>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat_lcsdt' %}`">Next
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat_lcsdt' fy %}`">Next
     Feature</button>
 </div>
 
-<div class="row m-1">
+<div class="row">
   <p>Click rectangle box besides block names to view month wise trend for
     the project</p>
 </div>
 
-<div class="row m-1">
-  <div class="col-2 scrollable" id="legend">
+<div class="row m-2">
+  <div class="col-2" id="legendList">
   </div>
 
   <div class="col-10" id="chart">
@@ -139,17 +150,19 @@
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 
 <script>
-  var width = 700,
-    height = 550;
+  var width = 1000,
+    height = 800;
 
-  var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 700)
-    .attr('height', 550).call(responsivefy);
+  let prjType = 'Urban';
 
-  var legend = d3.select('#legend').append('svg').attr('id', 'svg2').attr('width', 350)
-    .attr('height', 1090).call(responsivefy);
+  const svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 1000)
+    .attr('height', 800).call(responsivefy);
 
-  var ticks;
-  var selectedCategory = 'Severly Stunted Children';
+  const legendbox = d3.select('#legendList').append('svg').attr('id', 'svg2').attr('width', 350)
+    .attr('height', 950).call(responsivefy);
+
+  let ticks;
+  let selectedCategory = 'Severly Stunted Children';
 
   function responsivefy(svg) {
 
@@ -162,7 +175,6 @@
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
 
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -176,7 +188,6 @@
       const targetWidth = $(window).width();
       const targetheight = $(window).height();
       //var targetHeight = $(window).height();
-      console.log("tw&h", targetWidth, targetheight);
       d3.select('#svg1').attr('width', targetWidth);
       d3.select('#svg1').attr('height', targetheight);
       d3.select('#svg2').attr('width', targetWidth);
@@ -184,10 +195,22 @@
     }
   }
 
+  function filterCSV(csv, key, value) {
+      var result = [];
+      csv.forEach(function (val, idx, arr) {
+
+        if (val[key] == value) {
+
+          result.push(val)
+        }
+      })
+      return result;
+    }
+
   var mouseG
 
   var margin = { top: 10, right: 20, bottom: 30, left: 50 },
-    innerWidth = 700 - margin.left - margin.right,
+    innerWidth = 1000 - margin.left - margin.right,
     innerHeight = 550 - margin.top - margin.bottom;
 
   // Set the ranges
@@ -228,13 +251,9 @@
 
   var color = d3.scale.category10();
 
-
   const render = data => {
-    console.log(data);
+    var width1;
 
-
-
-    console.log("in update graph")
     // Scale the range of the data
 
     ticks = data.map(function (d) {
@@ -242,7 +261,6 @@
     });
     xScale.domain(ticks);
 
-    console.log("inside ydomain");
     yScale.domain([d3.min(data, function (d) { return d.value; }), d3.max(data, function (d) { return d.value; })]);
 
     // Nest the entries by block
@@ -263,23 +281,21 @@
     block.enter().append("path")
       .attr("class", "line");
 
-
-
     block.transition()
       .style("stroke", function (d, i) { return d.color = color(d.key); })
       .attr("id", function (d) { return 'tag' + d.key.replace(/\s+/g, ''); }) // assign ID
       .attr("d", function (d) {
-        console.log(d.values)
         return stateline(d.values);
       });
 
 
     block.exit().remove();
 
-    var legend = d3.select("#svg2")
+    let legend = d3.select("#svg2")
       .selectAll("text")
       .data(dataNest, function (d) { return d.key });
 
+    
     //checkboxes
     legend.enter().append("rect")
       .attr("width", 20)
@@ -292,22 +308,19 @@
       })
       .attr("class", function (d, i) { return "legendcheckbox " + d.key })
       .on("click", function (d) {
-        console.log("in legend")
-        var sect = selectedCategory;
+        let sect = selectedCategory;
         sect = sect.replace(/ /g, '_');
-
-        var url = "{% url 'maha-feat_lcsdt' %}?id1=" + d.key + "&id2=" + sect;
+        let selectedBlock = d.key.replace(/ /g, '_');
+        let url = "{% url 'maha-feat_lcsdt' fy %}?id1=" + selectedBlock + "&id2=" + sect;
         $(location).attr('href', url);
         window.location = url;
-
-
       })
 
 
     // Add the Legend text
     legend.enter().append("text")
       .attr("x", 25)
-      .attr("y", function (d, i) { return 15 + i * 30; })
+      .attr("y", function (d, i) { return 18 + i * 30; })
       .attr("class", "legend");
 
     legend.transition()
@@ -401,7 +414,6 @@
       var monthX
 
       var tickPos = xScale.range();
-      // console.log(tickPos,'as')
       var m = d3.mouse(this),
         lowDiff = 1e99,
         xI = null;
@@ -474,6 +486,7 @@
 
   data.forEach(function (d) {
 
+    d.project_type = d.project_type;
     d.svr_wasting_percent = +d.svr_wasting_percent;
     d.wasting_percent = +d.wasting_percent;
     d.svrly_stunted_percent = +d.svrly_stunted_percent;
@@ -481,9 +494,9 @@
     d.svrly_underweight_percent = +d.svrly_underweight_percent;
     d.underweight_percent = +d.underweight_percent;
     d.low_birth_weight_percent = +d.low_birth_weight_percent;
-
   });
 
+  let section = 'svrly_stunted_percent'
 
   $(".category a").click(function () {
     var val = $(this).text();
@@ -504,43 +517,49 @@
     else
       section = 'low_birth_weight_percent'
 
-    // mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
-    // mouseG.selectAll('.mouse-per-line').selectAll('text').remove();	
+    pt_data = filterCSV(data, 'project_type', prjType);
+    setData(pt_data, section)
 
+  });
+
+  $(".ptype a").click(function () {
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    prjType = $(this).text();
+    pt_data = filterCSV(data, 'project_type', prjType);
+    legendbox.selectAll("*").remove();
+    setData(pt_data, section);
+  });
+
+  function setData(data, section) {
     var dataFilter = data.map(function (d) { return { month: d.month_n, district: d.district_n, value: d[section] } })
-
 
     //debugger
 
     dataFilter.forEach(function (d) {
-
       d.value = +d.value;
-      d.active = true;
     });
-
 
     //debugger
     render(dataFilter);
-
-
     jQuery('h1.page-header').html(section);
-  });
+  }
 
-  var dataFilter = data.map(function (d) { return { month: d.month_n, district: d.district_n, value: d.svrly_stunted_percent } })
-  // generate initial graph
-  //data = filterCSV(csv, 'type', 'Stunting');
+  //Initial Graph
+  pt_data = filterCSV(data, 'project_type', prjType);
+  setData(pt_data, section);
 
-  render(dataFilter);
+  // var dataFilter = pt_data.map(function (d) { return { month: d.month_n, district: d.district_n, value: d.svrly_stunted_percent } })
+  // // generate initial graph
+  // //data = filterCSV(csv, 'type', 'Stunting');
 
-
-
-
-
+  // render(dataFilter);
 
   // });
 
   $(function () {
     //bind event
+    $('.ptype a').parents('.dropdown').find('.dropdown-toggle').html('Urban' + ' <span class="selectedPtype"></span>');
 
     $(".category a").click(function () {
       var valCategory = $(this).text();
@@ -551,7 +570,5 @@
     $(".category a").first().trigger('click');
 
   });
-
-
 </script>
 {% endblock %}

@@ -116,7 +116,7 @@
     </div>
   </div>
   <button type="button" class="btn btn-outline-dark m-1"
-    onclick="location.href=`{% url 'ftlcprjt' dist_name %}`">Previous Feature</button>
+    onclick="location.href=`{% url 'ftlcprjt' dist_name fy %}`">Previous Feature</button>
 </div>
 
 <div class="row m-1">
@@ -136,11 +136,11 @@
 <script src="//code.jquery.com/jquery-1.10.2.js"></script>
 
 <script>
-  var width = 700,
-    height = 550;
+  var width = 1000,
+    height = 800;
 
-  var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 700)
-    .attr('height', 550).call(responsivefy);
+  var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 1000)
+    .attr('height', 800).call(responsivefy);
 
   var legend = d3.select('#legend').append('svg').attr('id', 'svg2').attr('width', 350)
     .attr('height', 700).call(responsivefy);
@@ -201,7 +201,7 @@
   var mouseG
 
   var margin = { top: 10, right: 20, bottom: 30, left: 50 },
-    innerWidth = 700 - margin.left - margin.right,
+    innerWidth = 1000 - margin.left - margin.right,
     innerHeight = 550 - margin.top - margin.bottom;
 
 
@@ -472,6 +472,7 @@
       section = 'low_birth_weight_percent'
 
     $('.category a').parents('.dropdown').find('.dropdown-toggle').html(choiceOneVal + ' <span class="selectedCategory"></span>');
+    $('.projects a').parents('.dropdown').find('.dropdown-toggle').html(selectedProject + ' <span class="selectedCategory"></span>');
     filterdata = filterCSV(data, 'project_n', selectedProject);
     setData(filterdata, section);
   }

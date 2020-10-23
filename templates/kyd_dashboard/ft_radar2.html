@@ -10,14 +10,14 @@
 
   .form-check-label {
     margin-top: 7px;
-    font-size: calc(50% + 0.5vw + 0.5vh);
-    padding-left: 15px;
+    font-size: calc(40% + vw + vh);
+    padding-left: calc(10% + 0.2vw + 0.1vh);
+    text-align: middle;
   }
 
   .form-check-input {
-    margin-top: 0px;
-    width: calc(6% + 0.5vw + 0.7vh);
-    height: calc(5% + 0.5vw + 0.5vh);
+    width: calc(4% + 0.5vw + 0.7vh);
+    height: calc(2.5% + 0.5vw + 0.5vh);
   }
 
   .upt-b {
@@ -28,7 +28,7 @@
     position: relative;
     margin: auto;
     width: 75vw;
-    height: 75vh;
+    height: 65vh;
     font-size: calc(100% + 0.5vw + 0.5vh);
   }
 </style>
@@ -48,9 +48,10 @@
 </div>
 
 <div class="row text-center bg-info">
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'ftrdr1' dist_name %}`">Previous
+  <button type="button" class="btn btn-outline-dark m-1"
+    onclick="location.href=`{% url 'ftrdr1' dist_name fy %}`">Previous
     Feature</button>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f4' dist_name %}`">Next
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f4' dist_name fy %}`">Next
     Feature</button>
 </div>
 
@@ -236,7 +237,6 @@
 
   function GetSelected() {
     var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    console.log('mon', valMonth);
     mydata = filterCSV(data, 'month_n', valMonth);
     chartStatData = dataforchart(mydata);
     chart.destroy();

@@ -13,14 +13,14 @@
 
   .form-check-label {
     margin-top: 7px;
-    font-size: calc(40% + 0.5vw + 0.5vh);
-    padding-left: 15px;
+    font-size: calc(40% + vw + vh);
+    padding-left: calc(10% + 0.2vw + 0.1vh);
+    text-align: middle;
   }
 
   .form-check-input {
-    margin-top: 0px;
-    width: calc(5% + 0.5vw + 0.7vh);
-    height: calc(3% + 0.5vw + 0.5vh);
+    width: calc(4% + 0.5vw + 0.7vh);
+    height: calc(2.5% + 0.5vw + 0.5vh);
   }
 
   .upt-b {
@@ -31,7 +31,7 @@
     position: relative;
     margin: auto;
     width: 75vw;
-    height: 75vh;
+    height: 65vh;
     font-size: calc(100% + 0.5vw + 0.5vh);
   }
 </style>
@@ -52,9 +52,20 @@
 </div>
 
 <div class="row text-center bg-info">
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat3' %}`">Previous
+  <div class="dropdown m-1">
+    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      <span class="selectedPtype"></span>
+    </button>
+    <div class="dropdown-menu ptype" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#">Urban</a>
+      <a class="dropdown-item" href="#">Rural</a>
+      <a class="dropdown-item" href="#">Tribal</a>
+    </div>
+  </div>
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat3' fy %}`">Previous
     Feature</button>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat5' %}`">Next
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat5' fy %}`">Next
     Feature</button>
 </div>
 
@@ -76,15 +87,19 @@
     <p class="text-left">Select District</p>
 
     <form id="projectList">
-      <div class="form-check">
-        {% for district in dtList %}
+      <div class="form-check"> 
+        <div class="checkboxes" id="category-checkbox">
+          <!-- <input type="checkbox" class="form-check-input" id="myMH" value="Maharashtra" /><label
+          class="form-check-label">Maharashtra</label><br> -->
+        </div> 
+       
+        <!-- {% for district in dtList %}
         <input type="checkbox" class="form-check-input" id="my{{ district.district_n}}"
           value="{{ district.district_n }}" /><label
           class="form-check-label align-middle">{{ district.district_n }}</label><br>
-        {% endfor %}
+        {% endfor %} -->
 
-        <input type="checkbox" class="form-check-input" id="myMH" value="Maharashtra" /><label
-          class="form-check-label">Maharashtra</label><br>
+        
 
         <button type="button" class="btn btn-primary btn-sm  mt-3 float-left upt-b" onclick="GetSelected()">Update
           Chart</button>
@@ -100,6 +115,7 @@
 <script>
 
   let chartStatData = [];
+  let prjType = 'Urban';
 
   function filterCSV(csv, key, value) {
     var result = [];
@@ -192,132 +208,18 @@
 
 
       }
-
-
-
     });
-    // makeviz = opt => {
-
-
-    //   var rdata1 = [];
-
-    //   for (var i = 0; i < chartStatData.length; i++) {
-
-    //     for (var j = 0; j < opt.length; j++) {
-
-    //       if (opt[j] == chartStatData[i].label) {
-
-    //         rdata1.push(chartStatData[i]);
-
-    //       }
-    //     }
-
-    //   }
-
-
-
-    //   chart.data.datasets = [];
-
-
-    //   for (var i = 0; i < rdata1.length; i++) {
-
-    //     chart.data.datasets[i] = rdata1[i];
-
-    //     if (rdata1[i].label != "BestDistrict" && rdata1[i].label != "Maharashtra") {
-
-    //       chart.data.datasets[i].borderColor = "red";
-
-    //     }
-
-    //   }
-
-    //   chart.update();
-
-
-
-    // }
-
   }
-
-
-
-  const monthwise = (data) => {
-    var aproperty = [];
-    var sproperty = [];
-    var oproperty = [];
-
-    data.forEach(d => {
-
-      var temp = {};
-
-      temp['district_n'] = d.district_n;
-
-      temp['stunting_percent'] = +d.stunting_percent;
-
-      temp['underweight_percent'] = +d.underweight_percent;
-
-      temp['wasting_percent'] = +d.wasting_percent;
-
-      temp['low_birth_weight_percent'] = +d.low_birth_weight_percent;
-
-      temp['svrly_stunting_percent'] = +d.svrly_stunting_percent;
-
-      temp['svr_wasting_percent'] = +d.svr_wasting_percent;
-
-
-
-      if (d.month_n == "Nov") {
-
-
-
-        aproperty.push(temp);
-      }
-
-      else if (d.month_n == "Dec") {
-
-        sproperty.push(temp);
-
-      } else if (d.month_n == "Jan") {
-
-
-
-        oproperty.push(temp)
-
-      }
-
-
-
-    })
-
-    var listdata = [
-
-      aproperty, sproperty, oproperty
-
-    ]
-
-
-    return listdata;
-
-  }
-
-
 
   dataforchart = (data) => {
 
-
-
     let mydata = {
       data: {
-        // labels: ["wasting_percent", "stunting_percent", "underweight_percent", "Best Value"],
         datasets: []
       }
     }
 
     let mydataset = [];
-
-    // mybackgroundcolor = [];
-
-    //mybordercolor = ['#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080','#ff8000','#ffff00','#00ff80','#0040ff','#ff00ff','#936c6c','#001a1a','#800080'];
 
     mybordercolor = ['#0000FF', '#00FF00', '#FFFF00'];
     let itr = 0;
@@ -358,6 +260,7 @@
 
   data.forEach(d => {
     d.district_n = d.district_n;
+    d.project_type = d.project_type;
     d.stunting_percent = +d.stunting_percent;
     d.underweight_percent = +d.underweight_percent;
     d.wasting_percent = +d.wasting_percent;
@@ -369,32 +272,51 @@
 
   function GetSelected() {
     var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    console.log('mon', valMonth);
     mydata = filterCSV(data, 'month_n', valMonth);
-    chartStatData = dataforchart(mydata);
+    pt_data = filterCSV(mydata, 'project_type', prjType)
+    chartStatData = dataforchart(pt_data);
     chart.destroy();
     getSelectedDistricts(chartStatData)
   };
 
+  $(".ptype a").click(function () {
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    prjType = $(this).text();
+    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    mydata = filterCSV(data, 'month_n', valMonth);
+    pt_data = filterCSV(mydata, 'project_type', prjType)
+    populdatedistrictList(pt_data)
+    document.getElementById("myBestDistrict").checked = true;
+    document.getElementById("myMaharashtra").checked = true;
+    chartStatData = dataforchart(pt_data);
+    chart.destroy();
+    getSelectedDistricts(chartStatData)
+  });
+
   var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
 
   $('#monthSlider').slider().on('slideStop', function (ev) {
-    $('input[type=checkbox]').prop('checked', false);
-    document.getElementById("myBestDistrict").checked = true;
-    document.getElementById("myMH").checked = true;
     var val = tickLabels[ev.value];
     mydata = filterCSV(data, 'month_n', val);
-    chartStatData = dataforchart(mydata);
+    pt_data = filterCSV(mydata, 'project_type', prjType)
+    populdatedistrictList(pt_data);
+    document.getElementById("myBestDistrict").checked = true;
+    document.getElementById("myMaharashtra").checked = true;
+    chartStatData = dataforchart(pt_data);
     chart.destroy();
     getSelectedDistricts(chartStatData)
   });
 
   $(function () {
-    document.getElementById("myBestDistrict").checked = true;
-    document.getElementById("myMH").checked = true;
+    $('.ptype a').parents('.dropdown').find('.dropdown-toggle').html('Urban' + ' <span class="selectedPtype"></span>');
     monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
     augData = filterCSV(data, 'month_n', monthSelect);
-    chartStatData = dataforchart(augData);
+    pt_data = filterCSV(augData, 'project_type', prjType)
+    populdatedistrictList(pt_data);
+    document.getElementById("myBestDistrict").checked = true;
+    document.getElementById("myMaharashtra").checked = true;
+    chartStatData = dataforchart(pt_data);
     getSelectedDistricts(chartStatData);
 
   });
@@ -426,6 +348,20 @@
     render(rdata2)
   };
 
+function populdatedistrictList(data)
+{ 
+  $("#category-checkbox").empty();
+  $(data).each(function () {
+    $('#category-checkbox').append($('<input>').attr({
+                    type: 'checkbox', class: 'form-check-input', value: this.district_n, id: 'my' + this.district_n
+                })).append(
+                $('<label>').attr({
+                    class: 'form-check-label align-middle'
+                }).text(this.district_n))
+                .append($('<br>'));
+            });
+
+}
 </script>
 
 {% endblock %}

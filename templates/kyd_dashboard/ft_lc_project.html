@@ -107,21 +107,22 @@
       <a class="dropdown-item" href="#">Newborns with low birth weight</a>
     </div>
   </div>
-  
+
   <div class="dropdown m-1 ml-10" style="float: left;">
-    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
       Select Block
       <span class="selectedBlock"></span>
     </button>
     <div class="dropdown-menu blocks" aria-labelledby="dropdownMenuButton">
-      {% for block_select in blockList %} 
+      {% for block_select in blockList %}
       <a class="dropdown-item" href="#">{{ block_select.block_n }}</a>
-      {% endfor %}   
+      {% endfor %}
     </div>
   </div>
   <button type="button" class="btn btn-outline-dark m-1"
-    onclick="location.href=`{% url 'ftlcblk' dist_name %}`">Previous Feature</button>
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'ftlcbt' dist_name %}`">Next
+    onclick="location.href=`{% url 'ftlcblk' dist_name fy %}`">Previous Feature</button>
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'ftlcbt' dist_name fy %}`">Next
     Feature</button>
 </div>
 
@@ -169,14 +170,14 @@
     return result;
   }
 
-  var width = 700,
-    height = 550;
+  var width = 1000,
+    height = 800;
 
-  var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 700)
-    .attr('height', 550).call(responsivefy);
+  var svg = d3.select('#chart').append('svg').attr('id', 'svg1').attr('width', 1000)
+    .attr('height', 800).call(responsivefy);
 
   var legend = d3.select('#legend').append('svg').attr('id', 'svg2').attr('width', 350)
-    .attr('height', 700).call(responsivefy);
+    .attr('height', 800).call(responsivefy);
 
   function responsivefy(svg) {
 
@@ -189,7 +190,6 @@
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
 
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -203,7 +203,6 @@
       const targetWidth = $(window).width();
       const targetheight = $(window).height();
       //var targetHeight = $(window).height();
-      console.log("tw&h", targetWidth, targetheight);
       d3.select('#svg1').attr('width', targetWidth);
       d3.select('#svg1').attr('height', targetheight);
       d3.select('#svg2').attr('width', targetWidth);
@@ -219,7 +218,7 @@
   var mouseG;
 
   var margin = { top: 10, right: 20, bottom: 30, left: 50 },
-    innerWidth = 700 - margin.left - margin.right,
+    innerWidth = 1000 - margin.left - margin.right,
     innerHeight = 550 - margin.top - margin.bottom;
 
 
@@ -270,7 +269,6 @@
     });
     xScale.domain(ticks);
 
-    console.log("inside ydomain");
     yScale.domain([d3.min(data, function (d) { return d.value; }), d3.max(data, function (d) { return d.value; })]);
 
     // Nest the entries by block
@@ -313,7 +311,7 @@
         var sect2 = selectedCategory;
         sect2 = sect2.replace(/ /g, '_');
         var selectedProject = d.key.replace(/ /g, '_');
-        var url = "{% url 'ftlcbt' dist_name %}?id1=" + selectedProject + "&id2=" + sect2;
+        var url = "{% url 'ftlcbt' dist_name fy %}?id1=" + selectedProject + "&id2=" + sect2;
         $(location).attr('href', url);
         window.location = url;
       })
@@ -371,7 +369,6 @@
       .enter()
       .append("g")
       .attr("class", "mouse-per-line");
-   
 
     mousePerLine.append("circle")
       .attr('class', 'topic-circle')
@@ -407,7 +404,6 @@
 
     function removeTooltip() {
       if (tooltip) tooltip.style('display', 'none');
-  
     }
 
     function drawTooltip() {
@@ -415,7 +411,6 @@
       var monthX
 
       var tickPos = xScale.range();
-      // console.log(tickPos,'as')
       var m = d3.mouse(this),
         lowDiff = 1e99,
         xI = null;
@@ -441,17 +436,16 @@
 
         });
 
-      tooltip.html('<b style="color:#FF0000">'+monthX+'</b>')
+      tooltip.html('<b style="color:#FF0000">' + monthX + '</b>')
         .style('display', 'block')
-        .style('left', d3.event.pageX+ "px")
+        .style('left', d3.event.pageX + "px")
         .style('top', 40 + "px")
         .selectAll()
         .data(result).enter()
         .append('div')
-        .style('color','black')
-        .html(d => d.key + ': ' + '<b>'+ yScale.invert(yScale(d.values[xI].value)).toFixed(2) +'</b>');
+        .style('color', 'black')
+        .html(d => d.key + ': ' + '<b>' + yScale.invert(yScale(d.values[xI].value)).toFixed(2) + '</b>');
     }
-
   };
 
   ////
@@ -472,14 +466,14 @@
 
   });
 
-  var section;
+  let section;
   section = 'svrly_stunted_percent';
-  var choices = parseURLParameters(window.location.href);
-  var filterdata;
+  let choices = parseURLParameters(window.location.href);
+  let filterdata;
   if (choices.length > 0) {
     selectedCategory = choices[1];
-    var selectedBlock = choices[0].replace(/_/g, ' ');
-    var choiceOneVal = choices[1].replace(/_/g, ' ');
+    let selectedBlock = choices[0].replace(/_/g, ' ');
+    let choiceOneVal = choices[1].replace(/_/g, ' ');
     if (choiceOneVal == 'Severly Stunted Children')
       section = 'svrly_stunted_percent';
     else if (choiceOneVal == 'Stunted Children')
@@ -495,6 +489,7 @@
     else
       section = 'low_birth_weight_percent'
     $('.category a').parents('.dropdown').find('.dropdown-toggle').html(choiceOneVal + ' <span class="selectedCategory"></span>');
+    $('.blocks a').parents('.dropdown').find('.dropdown-toggle').html(selectedBlock + ' <span class="selectedCategory"></span>');
     filterdata = filterCSV(data, 'block_n', selectedBlock);
     setData(filterdata, section);
   }

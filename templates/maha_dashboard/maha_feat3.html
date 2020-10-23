@@ -34,6 +34,15 @@
     opacity: 0;
   }
 
+  #zero_percent {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: calc(50% + 0.5vw + 0.5vh);
+    font-weight: bold;
+    font-style: italic;
+    float: right;
+    background-color: rgb(220, 240, 240);
+  }
+
   #tooltip p {
     margin: 0;
     font-family: sans-serif;
@@ -45,9 +54,9 @@
 {% block feature %}
 <div class='heading text-dark mt-2 text-center'><span id="bartitleCategory">Pie Chart</span> <span
     id="bartitleMonth"></span></div>
+
 <div class="row h-100 mb-3 bg-info">
 
-  <!-- select category -->
   <div class="dropdown m-1">
     <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false">
@@ -61,10 +70,22 @@
     </div>
   </div>
 
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat2' %}`">Previous
+  <div class="dropdown m-1">
+    <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
+      aria-haspopup="true" aria-expanded="false">
+      <span class="selectedPtype"></span>
+    </button>
+    <div class="dropdown-menu ptype" aria-labelledby="dropdownMenuButton">
+      <a class="dropdown-item" href="#">Urban</a>
+      <a class="dropdown-item" href="#">Rural</a>
+      <a class="dropdown-item" href="#">Tribal</a>
+    </div>
+  </div>
+
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat2' fy %}`">Previous
     Feature</button>
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat4' %}`">Next
-      Feature</button>
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat4' fy %}`">Next
+    Feature</button>
 
 </div>
 
@@ -76,13 +97,15 @@
   </div>
 </div>
 
+<div id="zero_percent">District Labels with less than 1.5% are are not visible please hover to see details</div>
 
 <div class="col-12" id="chart">
 </div>
 
 <div id="tooltip" class="hidden">
-  <p><strong><span id="paraText"></span></strong><span id="value" style="font-weight: bold" ;> 100</span>%</p>
-  <p><strong>Enrolled children contribution: </strong><span id="enrlval" style="font-weight: bold" ;>10</span>%</p>
+  <p><span id="districtN" style="font-weight: bold"></span></p>
+  <p><strong><span id="paraText"></span></strong><span id="value" style="font-weight: bold"> 100</span>%</p>
+  <p><strong>Enrolled children contribution: </strong><span id="enrlval" style="font-weight: bold">10</span>%</p>
 </div>
 
 
@@ -95,7 +118,7 @@
   const svg = d3.select('#chart').
     append('svg').
     attr('width', 1100).
-    attr('height', 750).
+    attr('height', 900).
     call(responsivefy) // Call responsivefy to make the chart responsive 
 
   var radius;
@@ -134,7 +157,6 @@
     d3.select(window).on('resize.', resize);
 
     function resize() {
-      console.log("in resize");
       const targetWidth = $(window).width();
       const targetHeight = targetWidth / 2.1;
       svg.attr('width', targetWidth);
@@ -143,12 +165,13 @@
   }
 
   var radius = Math.min(1100, 750) / 3;
+  let prjType = 'Urban';
 
   const render = data => {
 
     let arcInitial = d => d.wasting_percent;
 
-    const margin = { left: 750, top: 400, right: 170, bottom: 20 };
+    const margin = { left: 750, top: 320, right: 170, bottom: 20 };
     const innerWidth = 1100 - margin.left - margin.right;
     const innerHeight = 750 - margin.top - margin.bottom;
 
@@ -189,11 +212,11 @@
       oi.underweight_percent.push(d.underweight_percent);
       oi.low_birth_weight_percent.push(d.low_birth_weight_percent);
       oi.per_no_enrld.push(d.per_no_enrld);
-
     });
 
     var color = d3.scaleSequential().domain([d3.min(arcInitial(oi)), d3.max(arcInitial(oi))])
       .interpolator(d3.interpolateReds);
+
     var arc = g.selectAll(".arc");
 
     var arcData = arc.data(pie(data));
@@ -209,6 +232,7 @@
 
 
     arcEnter.on("mouseover", function (d) {
+      d3.select("#tooltip #districtN").text("District Name:" + d.data.district_n)
       d3.select("#tooltip")
         .transition().duration(200)
         .style("left", d3.event.pageX + "px")
@@ -231,8 +255,6 @@
       g.selectAll(".arc").remove();
       // arc.selectAll("*").remove();
       $(".hello").remove();
-      // console.log(d)
-
 
       let tansitionDuration = 1000;
       if (opt == 'Wasting(%)') {
@@ -246,7 +268,6 @@
         arcInitial = d => d.low_birth_weight_percent;
       }
 
-      console.log(arcInitial);
       var pie = d3.pie()
         .value(function (d) {
           return arcInitial(d);
@@ -263,6 +284,7 @@
         .attr("class", "arc");
 
       arcEnter.on("mouseover", function (d) {
+        d3.select("#tooltip #districtN").text("District Name:" + d.data.district_n)
         d3.select("#tooltip")
           .transition().duration(200)
           .style("left", d3.event.pageX + "px")
@@ -302,7 +324,7 @@
           var posC = label.centroid(d); // Label position = almost the same as posB
           var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2 // we need the angle to see if the X position will be at the extreme right or extreme left
           posC[0] = radius * 1.1 * (midangle < Math.PI ? 1 : -1); // multiply by 1 or -1 to put it on the right or on the left
-          if (arcInitial(d.data) > 0) {
+          if (arcInitial(d.data) > 1.5) {
             return [posA, posB, posC]
 
           }
@@ -311,7 +333,7 @@
       // Add the polylines between chart and labels:
       arcEnter
         .append('text')
-        .text(function (d) { if (arcInitial(d.data) > 0) { console.log(d.data.district_n); return d.data.district_n } })
+        .text(function (d) { if (arcInitial(d.data) > 1.5) { return d.data.district_n } })
         .attr('transform', function (d) {
           var pos = label.centroid(d);
           var midangle = d.startAngle + (d.endAngle - d.startAngle) / 2
@@ -342,13 +364,21 @@
     });
   }
 
+  $(".ptype a").click(function () {
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    prjType = $(this).text();
+    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    filterdata = filterCSV(data, 'month_n', valMonth);
+    pt_data = filterCSV(filterdata, 'project_type', prjType);
+    svg.selectAll("*").remove();
+    render(pt_data);
+  });
+
   $(function () {
     //bind event
-    $(".month a").click(function () {
-      var valMonth = $(this).text();
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
-      document.getElementById('bartitleMonth').innerHTML = valMonth;
-    });
+    $('.ptype a').parents('.dropdown').find('.dropdown-toggle').html('Urban' + ' <span class="selectedPtype"></span>');
+
     $(".category a").click(function () {
       var valCategory = $(this).text();
       var displayVal = valCategory.substring(0, valCategory.length - 3);
@@ -360,58 +390,56 @@
     });
 
     //trigger event
-    $('.month a').first().trigger('click');
-    console.log("month trigger");
     $(".category a").first().trigger('click');
 
   });
 
 
-  const monthwise = (data) => {
-    data.forEach(d => {
-      d.wasting_percent = +d.wasting_percent;
-      d.stunting_percent = +d.stunting_percent;
-      d.underweight_percent = +d.underweight_percent;
-      d.low_birth_weight_percent = +d.low_birth_weight_percent;
-      d.per_no_enrld = +d.per_no_enrld;
-    });
+  // const monthwise = (data) => {
+  //   data.forEach(d => {
+  //     d.wasting_percent = +d.wasting_percent;
+  //     d.stunting_percent = +d.stunting_percent;
+  //     d.underweight_percent = +d.underweight_percent;
+  //     d.low_birth_weight_percent = +d.low_birth_weight_percent;
+  //     d.per_no_enrld = +d.per_no_enrld;
+  //   });
 
-    var aproperty = [];
-    var sproperty = [];
-    var oproperty = [];
-    data.forEach(d => {
-      var temp = {};
-      temp['district_n'] = d.district_n;
-      temp['wasting_percent'] = d.wasting_percent;
-      temp['stunting_percent'] = d.stunting_percent;
-      temp['underweight_percent'] = d.underweight_percent;
-      temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
-      temp['per_no_enrld'] = d.per_no_enrld;
-      if (d.month_n == "Nov") {
-        aproperty.push(temp);
-      } else if (d.month_n == "Dec") {
-        sproperty.push(temp);
-      } else if (d.month_n == "Jan") {
-        oproperty.push(temp);
-      }
+  // var aproperty = [];
+  // var sproperty = [];
+  // var oproperty = [];
+  // data.forEach(d => {
+  //   var temp = {};
+  //   temp['district_n'] = d.district_n;
+  //   temp['wasting_percent'] = d.wasting_percent;
+  //   temp['stunting_percent'] = d.stunting_percent;
+  //   temp['underweight_percent'] = d.underweight_percent;
+  //   temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
+  //   temp['per_no_enrld'] = d.per_no_enrld;
+  //   if (d.month_n == "Nov") {
+  //     aproperty.push(temp);
+  //   } else if (d.month_n == "Dec") {
+  //     sproperty.push(temp);
+  //   } else if (d.month_n == "Jan") {
+  //     oproperty.push(temp);
+  //   }
 
-    })
+  // })
 
-    var listdata = [
-      aproperty, sproperty, oproperty
-    ]
-    return listdata;
-  }
+  // var listdata = [
+  //   aproperty, sproperty, oproperty
+  // ]
+  // return listdata;
+  // }
 
-  const selectData = (val, monthwiseData) => {
-    if (val == "November") {
-      return monthwiseData[0];
-    } else if (val == "December") {
-      return monthwiseData[1];
-    } else if (val == 'January') {
-      return monthwiseData[2]
-    }
-  }
+  // const selectData = (val, monthwiseData) => {
+  //   if (val == "November") {
+  //     return monthwiseData[0];
+  //   } else if (val == "December") {
+  //     return monthwiseData[1];
+  //   } else if (val == 'January') {
+  //     return monthwiseData[2]
+  //   }
+  // }
 
   /////
   data_from_django = {{ data | safe }};
@@ -426,6 +454,7 @@
     d.underweight_percent = +d.underweight_percent;
     d.low_birth_weight_percent = +d.low_birth_weight_percent;
     d.per_no_enrld = +d.per_no_enrld;
+    d.project_type = d.project_type;
     d.month_n = d.month_n;
   });
 
@@ -435,14 +464,15 @@
     var val = tickLabels[ev.value];
     document.getElementById('bartitleMonth').innerHTML = val;
     mydata = filterCSV(data, 'month_n', val);
+    pt_data = filterCSV(mydata, 'project_type', prjType);
     svg.selectAll("*").remove();
-    render(mydata);
+    render(pt_data);
   });
-
 
   monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
   augData = filterCSV(data, 'month_n', monthSelect);
-  render(augData);
+  pt_data = filterCSV(augData, 'project_type', prjType);
+  render(pt_data);
 </script>
 
 {% endblock %}

@@ -67,21 +67,10 @@
   </div>
 </div>
 <div class="row bg-info mb-2">
-  <!-- <div class="dropdown" style="margin: 5px;">
-  <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-  <span class="selectedMonth"></span>
-  </button>
-  <div class="dropdown-menu month" aria-labelledby="dropdownMenuButton">
-  {% for month_select in monthList %} 
-    <a class="dropdown-item" href="#">{{ month_select.month }}</a>
-  {% endfor %}   
-  </div>
-  </div> -->
-
+  
   <div class="dropdown m-1">
     <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false">
-      <!-- Category Dropdown -->
       <span class="selectedCategory"></span>
     </button>
     <div class="dropdown-menu category" aria-labelledby="dropdownMenuButton">
@@ -91,7 +80,7 @@
     </div>
   </div>
 
-  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f2' dist_name %}`">Next
+  <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f2' dist_name fy %}`">Next
     Feature</button>
 
 </div>
@@ -157,7 +146,6 @@
       height = parseInt(svg.style('height'), 10),
       aspect = width / height;
 
-    console.log("width&height", width, height)
     // Add viewBox attribute to set the value to initial size 
     // add preserveAspectRatio attribute to specify how to scale  
     // and call resize so that svg resizes on page load 
@@ -171,7 +159,6 @@
       //const targetWidth = parseInt(container.style('width'));
       const targetWidth = $(window).width();
       //var targetHeight = $(window).height();
-      console.log("tw&h", targetWidth);
       width1 = targetWidth;
       svg.attr('width', targetWidth);
       svg.attr('height', Math.round(targetWidth / aspect));
@@ -194,8 +181,6 @@
 
 
   const render = data => {
-
-    console.log("in render", width1);
 
     const xScale = d3.scaleBand()
       .range([0, 1.5 * bar_width * data.length])
@@ -373,12 +358,11 @@
   });
 
   // monthSelect=$('.month a').first().text();
-  monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  augData = filterCSV(data, 'month_n', monthSelect);
-  sortedData = sortData(augData, sortBy);
-  console.log(sortedData, "sortedData");
-  render(sortedData);
-  tables(augData);
+  // monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
+  // augData = filterCSV(data, 'month_n', monthSelect);
+  // sortedData = sortData(augData, sortBy);
+  // render(sortedData);
+  // tables(augData);
 
   function tables(data) {
     $(".hello").remove();

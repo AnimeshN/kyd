@@ -40,9 +40,9 @@
 <div class='heading text-dark mt-2 text-center'>State Profile</div>
 <div class="row bg-info">
   <div class="col-xs-12">
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat5' %}`">Previous
+    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat5' fy %}`">Previous
       Feature</button>
-      <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat6so' %}`">Next
+      <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'maha-feat6so' fy %}`">Next
         Feature</button>
   </div>
 </div>
@@ -161,12 +161,9 @@
       } else if (d.month_n == "Jan") {
         oproperty.push(temp);
       }
-      //  console.log( data)
     })
 
     var listdata = [aproperty, sproperty, oproperty]
-    console.log(listdata)
-
     return listdata;
   }
 
@@ -208,17 +205,14 @@
     d.prnt_child_1yr_immnztn = +d.prnt_child_1yr_immnztn;
   });
 
-  console.log(data);
   //   d3.csv("{% static 'data/csv/f4.csv'%}").then(data=>{
   monthwiseData = monthwise(data);
 
   d3.select("#monthdropdown")
     .on("change", () => {
       let val = document.getElementById("monthdropdown").value
-      console.log(val);
       let tableData = tbData(val, monthwiseData);
       svg.selectAll("*").remove();
-      console.log(tableData);
       render(tableData);
     });
 
@@ -228,7 +222,6 @@
     var val = tickLabels[ev.value];
     filterdata = filterCSV(data, 'month_n', val);
     tableData = tables(filterdata);
-    console.log(tableData);
     render(tableData);
   });
 
@@ -236,7 +229,6 @@
     var val = $(this).text();
     filterdata = filterCSV(data, 'month_n', val);
     tableData = tables(filterdata);
-    console.log(tableData);
     render(tableData);
   })
   monthSelect = tickLabels[$('#monthSlider').slider('getValue')];
@@ -258,7 +250,6 @@
 
 
   const tbData = (val, monthwiseData) => {
-    console.log(monthwiseData);
     if (val == "November") {
       return [tables(monthwiseData[0])];
     } else if (val == "December") {
