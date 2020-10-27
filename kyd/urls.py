@@ -46,7 +46,7 @@ urlpatterns = [
     url(r'^(?P<dist_name>[-\w]+)/(?P<fy>[-\w\ ]+)/kyd_dashboard/ft_radar2$', FtRdr2.as_view(), name='ftrdr2'),
     url(r'^(?P<dist_name>[-\w]+)/(?P<fy>[-\w\ ]+)/kyd_dashboard/ft_awc_infra$', F10AWCInfraBlock.as_view(), name='ftAwcInfra'),
     
-    # url(r'^maha_dashboard/maha_feature1$', MHDashboardView.as_view(), name='maha_dashboard'),
+    url(r'^maha_dashboard$', MHDashboardView.as_view(), name='maha_dashboard'),
     url(r'^maha_dashboard/maha_feature1$', MahaFeatureOne_post.as_view(), name='maha-feat1'),
     url(r'^(?P<fy>[-\w\ ]+)/maha_dashboard/maha_feature1$', MahaFeatureOne.as_view(), name='maha-feat1'),
     url(r'^(?P<fy>[-\w\ ]+)/maha_dashboard/maha_feature2$', MahaFeatureTwo.as_view(), name='maha-feat2'),

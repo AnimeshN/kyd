@@ -13,15 +13,14 @@ from .models import (Mhf1, Mhf2, Mhf3, Mhf4,
     QuarterSelect)
 
 # Create your views here.
+
 class MHDashboardView(LoginRequiredMixin, TemplateView):
-    template_name = "maha_dashboard/kyd_base.html"
+    template_name = "dashboard/dash_base.html"
     
 
 class MahaFeatureOne_post(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     redirect_field_name = 'login'
-
-    # template_name = "maha_dashboard/maha_feat1.html"
 
     def post(self, request):
         # quarter_S = request.GET.get('quarter',quarter)   
@@ -37,7 +36,7 @@ class MahaFeatureOne(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     redirect_field_name = 'login'
 
-    def post(self, request, fy= None):
+    def get(self, request, fy= None):
         # quarter_S = request.GET.get('quarter',quarter)   
         # months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')  
         fy_name = request.GET.get('fy', fy) 

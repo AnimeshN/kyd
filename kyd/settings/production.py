@@ -4,7 +4,7 @@ with open('/etc/config.json') as config_file:
         config = json.load(config_file)
 
 DEBUG = True
-ALLOWED_HOSTS = ['104.43.197.79']
+ALLOWED_HOSTS = ['communitygis.net', 'kyd.communitygis.net']
 SECRET_KEY = config['SECRET_KEY'] 
 
 DATABASES = {
