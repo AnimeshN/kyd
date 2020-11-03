@@ -366,7 +366,21 @@
           }
         })
         .text(function (d) {
-          return d.value;
+          if (d.name == 'Stunted Children') {
+            return numberWithCommas(d.value)
+          }
+          else if (d.name == 'Wasted Children') {
+            return numberWithCommas(d.value)
+          }
+          else if (d.name == 'Underweight Children') {
+            return numberWithCommas(d.value)
+          }
+          else if (d.name == 'No. of Newborn with Low Birth Weight') {
+            return numberWithCommas(d.value)
+          }
+          else{
+            return d.value;
+          }
         });
     }
     else if (selection == 'set2') {
@@ -860,7 +874,21 @@
           }
         })
         .text(function (d) {
-          return d.value;
+          if (d.name == 'Stunted Children') {
+            return numberWithCommas(d.value)
+          }
+          else if (d.name == 'Wasted Children') {
+            return numberWithCommas(d.value)
+          }
+          else if (d.name == 'Underweight Children') {
+            return numberWithCommas(d.value)
+          }
+          else if (d.name == 'No. of Newborn with Low Birth Weight') {
+            return numberWithCommas(d.value)
+          }
+          else{
+            return d.value;
+          }
         });
     }
     else if (selection == 'set2') {
@@ -1126,5 +1154,9 @@
     //trigger event
     $(".category a").first().trigger('click');
   });
+
+  function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    }
 </script>
 {% endblock %}

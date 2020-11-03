@@ -54,7 +54,8 @@
 
 <div class="row header h-75">
   <div class="col bg-info">
-    <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f1' dist_name fy %}`">Previous
+    <button type="button" class="btn btn-outline-dark m-1"
+      onclick="location.href=`{% url 'f1' dist_name fy %}`">Previous
       Feature</button>
     <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f3' dist_name fy %}`">Next
       Feature</button>
@@ -212,7 +213,6 @@
 
   const width = 500;
   const height = 1000;
-  //const width2 = document.getElementById("b2").offsetWidth;
 
 
   const tansitionDuration = 500;
@@ -255,11 +255,13 @@
     }
   }
 
+  let sortByL = 'stunting_percent';
 
-
-  let sortBy = 'stunting_percent';
+  let sortByR = 'stunting_percent';
 
   let xValue = d => d.stunting_percent;
+  let xValueR = d => d.stunting_percent;
+
 
   let yValue = d => d.block_n;
 
@@ -330,8 +332,6 @@
     chartText.exit().remove();
 
     chart.enter().append('rect')
-
-      //.attr('x', d => xScale(d.block_n))
       .attr('width', d => xScaleLeft(xValue(d)))
       .attr("y", d => yScale(d.block_n))
       .attr("height", yScale.bandwidth())
@@ -371,12 +371,7 @@
 
       .attr("font-weight", "bold");
 
-
-
-
     chart.transition().duration(tansitionDuration)
-
-      //.attr('x',d => x(xValue(d)))
 
       .attr('width', d => xScaleLeft(xValue(d)))
 
@@ -394,32 +389,18 @@
 
       .attr('y', d => yScale(d.block_n) + yScale.bandwidth() / 2);
 
-
-
-
-
-
     let xaxisLeft = g1.append('g').call(d3.axisBottom(xScaleLeft))
 
       .attr('transform', `translate(0, ${bar_height * data.length})`)
-
-
 
     xaxisLeft.selectAll("text").attr("font-size", "12px")
       .attr("font-weight", "bold")
       .style("text-anchor", "middle");
 
-
-
-
     let yaxisLeft = g1.append('g')
-
       .call(d3.axisLeft(yScale))
-
       .attr("font-size", "12px")
-
       .attr("font-weight", "bold");
-
   }
 
   //******************************
@@ -431,18 +412,16 @@
 
     let getColor;
 
-    if (xValue == 'd=> d.stunting_percent' || xValue == 'd=> d.wasting_percent' || xValue == 'd=> d.underweight_percent' || xValue == 'd=> d.low_birth_weight_percent' || xValue == 'd => d.prnt_anwmic_wmn') {
-      getColor = d3.scaleSequential().domain([d3.max(data, xValue), d3.min(data, xValue)])
+    if (xValueR == 'd=> d.stunting_percent' || xValueR == 'd=> d.wasting_percent' || xValueR == 'd=> d.underweight_percent' || xValueR == 'd=> d.low_birth_weight_percent' || xValueR == 'd => d.prnt_anwmic_wmn') {
+      getColor = d3.scaleSequential().domain([d3.max(data, xValueR), d3.min(data, xValueR)])
 
         .interpolator(d3.interpolateRdYlGn);
     }
     else {
-      getColor = d3.scaleSequential().domain([d3.min(data, xValue), d3.max(data, xValue)])
+      getColor = d3.scaleSequential().domain([d3.min(data, xValueR), d3.max(data, xValueR)])
 
         .interpolator(d3.interpolateRdYlGn);
     }
-
-
 
     let chart = g2.selectAll("rect").data(data)
 
@@ -455,20 +434,20 @@
     chart.enter().append('rect')
 
       //.attr('x',d => x(xValue(d)))
-      .attr('width', d => xScaleRight(xValue(d)))
+      .attr('width', d => xScaleRight(xValueR(d)))
 
       .attr("y", d => yScale(d.block_n))
 
       .attr("height", yScale.bandwidth())
 
-      .attr("fill", d => getColor(xValue(d)))
+      .attr("fill", d => getColor(xValueR(d)))
       .on("mouseover", d => {
         tooltip
           .transition()
           .duration(200)
           .style("opacity", 0.9);
         tooltip
-          .html(d.block_n + " : " + (xValue(d).toFixed(2)))
+          .html(d.block_n + " : " + (xValueR(d).toFixed(2)))
           .style("left", d3.event.pageX + "px")
           .style("top", d3.event.pageY - 30 + "px");
       })
@@ -482,9 +461,9 @@
     chartText.enter().append('text')
       .filter(function (d, i) { return i === 0 || i === (data.length - 1) })
 
-      .text(d => xValue(d).toFixed(2))
+      .text(d => xValueR(d).toFixed(2))
 
-      .attr('x', d => xScaleRight(xValue(d)))
+      .attr('x', d => xScaleRight(xValueR(d)))
 
       .attr('y', d => yScale(d.block_n) + yScale.bandwidth() / 2)
 
@@ -503,19 +482,19 @@
 
       //.attr('x',d => x(xValue(d)))
 
-      .attr('width', d => xScaleRight(xValue(d)))
+      .attr('width', d => xScaleRight(xValueR(d)))
 
       .attr("y", d => yScale(d.block_n))
 
       //.attr("height", y.bandwidth())
-      .attr("fill", d => getColor(xValue(d)));
+      .attr("fill", d => getColor(xValueR(d)));
 
     chartText.transition().duration(tansitionDuration)
       .filter(function (d, i) { return i === 0 || i === (data.length - 1) })
 
-      .text(d => xValue(d).toFixed(2))
+      .text(d => xValueR(d).toFixed(2))
 
-      .attr('x', d => xScaleRight(xValue(d)))
+      .attr('x', d => xScaleRight(xValueR(d)))
 
       .attr('y', d => yScale(d.block_n) + yScale.bandwidth() / 2);
 
@@ -599,32 +578,6 @@
 
   }
 
-
-
-  const selectData = (val, monthwiseData, sortBy) => {
-
-    if (val === "November") {
-
-      monthwiseData.Nov = sortData(monthwiseData.Nov, sortBy);
-
-      return monthwiseData.Nov;
-
-    } else if (val === "December") {
-
-      monthwiseData.Dec = sortData(monthwiseData.Dec, sortBy);
-
-      return monthwiseData.Dec;
-
-    } else if (val === 'January') {
-
-      monthwiseData.Jan = sortData(monthwiseData.Jan, sortBy);
-
-      return monthwiseData.Jan
-
-    }
-
-  }
-
   const sortData = (data, parameter) => {
 
     let sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
@@ -633,9 +586,14 @@
 
   }
 
+  // const sortDataRight = (data, parameter) => {
 
+  //   let sortedData = data.slice().sort((a, b) => d3.descending(a[parameter], b[parameter]))
 
-  //   d3.csv("{% static 'data/csv/f2.csv'%}").then(data=>{
+  //   return sortedData;
+
+  // }
+
   data_from_django = {{ data | safe }};
 
   var data = []
@@ -674,30 +632,11 @@
   $('#monthSlider').slider().on('slideStop', function (ev) {
     var val = tickLabels[ev.value];
     filterdata = filterCSV(data, 'month_n', val);
-    monthData = sortData(filterdata, sortBy);
-    drawLeft(monthData);
-    drawRight(monthData);
+    monthDataL = sortData(filterdata, sortByL);
+    monthDataR = sortData(filterdata, sortByR);
+    drawLeft(monthDataL);
+    drawRight(monthDataR);
   });
-
-
-  // monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  // augData = filterCSV(data, 'month_n', monthSelect);
-  // augSortedData = sortData(augData, sortBy);
-  // drawLeft(augSortedData);
-  // drawRight(augSortedData);
-
-  // $(".month a").click(function () {
-
-  //   $(this).parents(".dropdown").find('.btn').html($(this).text());
-  //   valMonth = $(this).text();
-  //   filterdata = filterCSV(data, 'month_n', valMonth);
-  //   monthData = sortData(filterdata, sortBy);
-  //   drawLeft(monthData);
-  //   drawRight(monthData);
-
-  // });
-
-
 
   $(".category a").click(function () {
 
@@ -707,47 +646,44 @@
 
     switch (valCategory) {
 
-      case "% Stunting": xValue = d => d.stunting_percent; sortBy = 'stunting_percent'; break;
+      case "% Stunting": xValue = d => d.stunting_percent; sortByL = 'stunting_percent'; break;
 
-      case "% Wasting": xValue = d => d.wasting_percent; sortBy = 'wasting_percent'; break;
+      case "% Wasting": xValue = d => d.wasting_percent; sortByL = 'wasting_percent'; break;
 
-      case "% Underweight": xValue = d => d.underweight_percent; sortBy = 'underweight_percent'; break;
+      case "% Underweight": xValue = d => d.underweight_percent; sortByL = 'underweight_percent'; break;
 
-      case "% Low Birth Weight": xValue = d => d.low_birth_weight_percent; sortBy = 'low_birth_weight_percent'; break;
+      case "% Low Birth Weight": xValue = d => d.low_birth_weight_percent; sortByL = 'low_birth_weight_percent'; break;
 
-      case "% Children completed 1 year immunization": xValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortBy = 'prnt_child_1yr_cmpltd_immunzt'; break;
+      case "% Children completed 1 year immunization": xValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortByL = 'prnt_child_1yr_cmpltd_immunzt'; break;
 
-      case "% Children breastfed at birth": xValue = d => d.prnt_chld_bf_at_birth; sortBy = 'prnt_chld_bf_at_birth'; break;
+      case "% Children breastfed at birth": xValue = d => d.prnt_chld_bf_at_birth; sortByL = 'prnt_chld_bf_at_birth'; break;
 
-      case "% Children exclusively breastfed": xValue = d => d.prnt_chld_excly_bf; sortBy = 'prnt_chld_excly_bf'; break;
+      case "% Children exclusively breastfed": xValue = d => d.prnt_chld_excly_bf; sortByL = 'prnt_chld_excly_bf'; break;
 
-      case "% Children initiated complementary feeding(in the past 30 days)": xValue = d => d.prnt_chld_intd_cf_past30d; sortBy = 'prnt_chld_intd_cf_past30d'; break;
+      case "% Children initiated complementary feeding(in the past 30 days)": xValue = d => d.prnt_chld_intd_cf_past30d; sortByL = 'prnt_chld_intd_cf_past30d'; break;
 
-      case "% Children (6-24 months) initiated appropriate complementary feeding": xValue = d => d.prnt_chld_6to24mnths_intd_cf; sortBy = 'prnt_chld_6to24mnths_intd_cf'; break;
+      case "% Children (6-24 months) initiated appropriate complementary feeding": xValue = d => d.prnt_chld_6to24mnths_intd_cf; sortByL = 'prnt_chld_6to24mnths_intd_cf'; break;
 
-      case "% Anemic pregnant women": xValue = d => d.prnt_anwmic_wmn; sortBy = 'prnt_anwmic_wmn'; break;
+      case "% Anemic pregnant women": xValue = d => d.prnt_anwmic_wmn; sortByL = 'prnt_anwmic_wmn'; break;
 
-      case "% Pregnant women Tenatus Completed": xValue = d => d.prnt_tenatus_cmpltd; sortBy = 'prnt_tenatus_cmpltd'; break;
+      case "% Pregnant women Tenatus Completed": xValue = d => d.prnt_tenatus_cmpltd; sortByL = 'prnt_tenatus_cmpltd'; break;
 
-      case "% Pregnant women had at least 1 ANC visit by delivery": xValue = d => d.prnt_wmn_1_anc_vst_dlvry; sortBy = 'prnt_wmn_1_anc_vst_dlvry'; break;
+      case "% Pregnant women had at least 1 ANC visit by delivery": xValue = d => d.prnt_wmn_1_anc_vst_dlvry; sortByL = 'prnt_wmn_1_anc_vst_dlvry'; break;
 
-      case "% Pregnant woment had at least 4 ANC visit by delivery": xValue = d => d.prnt_wmn_4_anc_vst_dlvry; sortBy = 'prnt_wmn_4_anc_vst_dlvry'; break;
+      case "% Pregnant woment had at least 4 ANC visit by delivery": xValue = d => d.prnt_wmn_4_anc_vst_dlvry; sortByL = 'prnt_wmn_4_anc_vst_dlvry'; break;
 
-      case "% Pregnant women resting during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+      case "% Pregnant women resting during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy; sortByL = 'prnt_wmn_rstg_drg_prgncy'; break;
 
-      case "% Pregnant women eating extra meal during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+      case "% Pregnant women eating extra meal during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy; sortByL = 'prnt_wmn_rstg_drg_prgncy'; break;
 
-      case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": xValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf; sortBy = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
+      case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": xValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf; sortByL = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
 
     }
 
     var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    console.log('mon', valMonth);
     filterdata = filterCSV(data, 'month_n', valMonth);
-    monthData = sortData(filterdata, sortBy);
-    drawLeft(monthData);
-
-
+    monthDataL = sortData(filterdata, sortByL);
+    drawLeft(monthDataL);
 
   });
 
@@ -761,45 +697,45 @@
 
     switch (valCategory) {
 
-      case "% Stunting": xValue = d => d.stunting_percent; sortBy = 'stunting_percent'; break;
+      case "% Stunting": xValueR = d => d.stunting_percent; sortByR = 'stunting_percent'; break;
 
-      case "% Wasting": xValue = d => d.wasting_percent; sortBy = 'wasting_percent'; break;
+      case "% Wasting": xValueR = d => d.wasting_percent; sortByR = 'wasting_percent'; break;
 
-      case "% Underweight": xValue = d => d.underweight_percent; sortBy = 'underweight_percent'; break;
+      case "% Underweight": xValueR = d => d.underweight_percent; sortByR = 'underweight_percent'; break;
 
-      case "% Low Birth Weight": xValue = d => d.low_birth_weight_percent; sortBy = 'low_birth_weight_percent'; break;
+      case "% Low Birth Weight": xValueR = d => d.low_birth_weight_percent; sortByR = 'low_birth_weight_percent'; break;
 
-      case "% Children completed 1 year immunization": xValue = d => d.prnt_child_1yr_cmpltd_immunzt; sortBy = 'prnt_child_1yr_cmpltd_immunzt'; break;
+      case "% Children completed 1 year immunization": xValueR = d => d.prnt_child_1yr_cmpltd_immunzt; sortByR = 'prnt_child_1yr_cmpltd_immunzt'; break;
 
-      case "% Children breastfed at birth": xValue = d => d.prnt_chld_bf_at_birth; sortBy = 'prnt_chld_bf_at_birth'; break;
+      case "% Children breastfed at birth": xValueR = d => d.prnt_chld_bf_at_birth; sortByR = 'prnt_chld_bf_at_birth'; break;
 
-      case "% Children exclusively breastfed": xValue = d => d.prnt_chld_excly_bf; sortBy = 'prnt_chld_excly_bf'; break;
+      case "% Children exclusively breastfed": xValueR = d => d.prnt_chld_excly_bf; sortByR = 'prnt_chld_excly_bf'; break;
 
-      case "% Children initiated complementary feeding(in the past 30 days)": xValue = d => d.prnt_chld_intd_cf_past30d; sortBy = 'prnt_chld_intd_cf_past30d'; break;
+      case "% Children initiated complementary feeding(in the past 30 days)": xValueR = d => d.prnt_chld_intd_cf_past30d; sortByR = 'prnt_chld_intd_cf_past30d'; break;
 
-      case "% Children (6-24 months) initiated appropriate complementary feeding": xValue = d => d.prnt_chld_6to24mnths_intd_cf; sortBy = 'prnt_chld_6to24mnths_intd_cf'; break;
+      case "% Children (6-24 months) initiated appropriate complementary feeding": xValueR = d => d.prnt_chld_6to24mnths_intd_cf; sortByR = 'prnt_chld_6to24mnths_intd_cf'; break;
 
-      case "% Anemic pregnant women": xValue = d => d.prnt_anwmic_wmn; sortBy = 'prnt_anwmic_wmn'; break;
+      case "% Anemic pregnant women": xValueR = d => d.prnt_anwmic_wmn; sortByR = 'prnt_anwmic_wmn'; break;
 
-      case "% Pregnant women Tenatus Completed": xValue = d => d.prnt_tenatus_cmpltd; sortBy = 'prnt_tenatus_cmpltd'; break;
+      case "% Pregnant women Tenatus Completed": xValueR = d => d.prnt_tenatus_cmpltd; sortByR = 'prnt_tenatus_cmpltd'; break;
 
-      case "% Pregnant women had at least 1 ANC visit by delivery": xValue = d => d.prnt_wmn_1_anc_vst_dlvry; sortBy = 'prnt_wmn_1_anc_vst_dlvry'; break;
+      case "% Pregnant women had at least 1 ANC visit by delivery": xValueR = d => d.prnt_wmn_1_anc_vst_dlvry; sortByR = 'prnt_wmn_1_anc_vst_dlvry'; break;
 
-      case "% Pregnant woment had at least 4 ANC visit by delivery": xValue = d => d.prnt_wmn_4_anc_vst_dlvry; sortBy = 'prnt_wmn_4_anc_vst_dlvry'; break;
+      case "% Pregnant woment had at least 4 ANC visit by delivery": xValueR = d => d.prnt_wmn_4_anc_vst_dlvry; sortByR = 'prnt_wmn_4_anc_vst_dlvry'; break;
 
-      case "% Pregnant women resting during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+      case "% Pregnant women resting during pregnancy": xValueR = d => d.prnt_wmn_rstg_drg_prgncy; sortByR = 'prnt_wmn_rstg_drg_prgncy'; break;
 
-      case "% Pregnant women eating extra meal during pregnancy": xValue = d => d.prnt_wmn_rstg_drg_prgncy; sortBy = 'prnt_wmn_rstg_drg_prgncy'; break;
+      case "% Pregnant women eating extra meal during pregnancy": xValueR = d => d.prnt_wmn_rstg_drg_prgncy; sortByR = 'prnt_wmn_rstg_drg_prgncy'; break;
 
-      case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": xValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf; sortBy = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
+      case "% Pregnant women trimester 3 women counselled on immediate breastfeeding": xValueR = d => d.prnt_trmstr_3wmn_cnsld_imdtbf; sortByR = 'prnt_trmstr_3wmn_cnsld_imdtbf'; break;
 
     }
 
     var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
     console.log('mon', valMonth);
     filterdata = filterCSV(data, 'month_n', valMonth);
-    monthData = sortData(filterdata, sortBy);
-    drawRight(monthData);
+    monthDataR = sortData(filterdata, sortByR);
+    drawRight(monthDataR);
 
   });
 
@@ -852,16 +788,6 @@
 
     document.getElementById('sw').style.display = 'none';
 
-    $(".month a").click(function () {
-
-      var valMonth = $(this).text();
-
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
-
-    });
-
-
-
     $(".category a").click(function () {
 
       var valCategory = $(this).text();
@@ -870,11 +796,7 @@
 
     });
 
-
-
     //trigger event
-
-    $('.month a').first().trigger('click');
 
     $(".category a").first().trigger('click');
 

@@ -320,7 +320,6 @@
             var lbw_per_Color = d3.scaleSequential().domain([d3.max(column_data.lbw_per), d3.min(column_data.lbw_per)])
                 .interpolator(d3.interpolateRdYlGn);
 
-
             var sortAscending = true;
             var table = d3.select('div#table').append('table')
                 .attr('class', 'hello');
@@ -348,7 +347,6 @@
                     }
 
                 });
-
 
             var rows = table.append('tbody').selectAll('tr')
                 .data(tbdata).enter()
@@ -390,7 +388,21 @@
                     }
                 })
                 .text(function (d) {
-                    return d.value;
+                    if (d.name == 'Stunted Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'Wasted Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'Underweight Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'No. of Newborn with Low Birth Weight') {
+                        return numberWithCommas(d.value)
+                    }
+                    else{
+                        return d.value;
+                    }
                 });
         }
         else if (selection == 'set2') {
@@ -871,7 +883,21 @@
                     }
                 })
                 .text(function (d) {
-                    return d.value;
+                    if (d.name == 'Stunted Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'Wasted Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'Underweight Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'No. of Newborn with Low Birth Weight') {
+                        return numberWithCommas(d.value)
+                    }
+                    else{
+                        return d.value;
+                    }
                 });
         }
         else if (selection == 'set2') {
@@ -1351,7 +1377,21 @@
                     }
                 })
                 .text(function (d) {
-                    return d.value;
+                    if (d.name == 'Stunted Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'Wasted Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'Underweight Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'No. of Newborn with Low Birth Weight') {
+                        return numberWithCommas(d.value)
+                    }
+                    else{
+                        return d.value;
+                    }
                 });
         }
 
@@ -1841,7 +1881,21 @@
                     }
                 })
                 .text(function (d) {
-                    return d.value;
+                    if (d.name == 'Stunted Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'Wasted Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'Underweight Children') {
+                        return numberWithCommas(d.value)
+                    }
+                    else if (d.name == 'No. of Newborn with Low Birth Weight') {
+                        return numberWithCommas(d.value)
+                    }
+                    else{
+                        return d.value;
+                    }
                 });
         }
         else if (selection == 'set2') {
