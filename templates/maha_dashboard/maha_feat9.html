@@ -111,13 +111,13 @@
   <div class="col-12">
     <button type="button" class="btn btn-dark back-button m-2">back</button>
     <span class='info info-hirar'>Maharastra</span>
-    <p>Click on the Polygon(District/Block) to view the Lower Level</p>
+    <p>Click on the Polygon(District/Block) to view the Lower Level (Drilldown)</p>
   </div>
 </div>
 
 <div class="row">
-  <div class="col-8" id="mymap"></div>
-  <div class="col-4" id="table"></div>
+  <div class="col-md-8" id="mymap"></div>
+  <div class="col-md-4" id="table"></div>
 </div>
 
 {% endblock %}
@@ -207,7 +207,6 @@
     .on("zoom", zoomed);
 
   function zoomed() {
-    // g.style("stroke-width", 1.5 / d3.event.transform.k + "px");
     g.attr("transform", d3.event.transform); // updated for d3 v4
   }
 
@@ -223,11 +222,10 @@
     .scale(1);
 
   const pathGenerator = d3.geoPath().projection(mercator);
-  //Zoom
-  // svg.call(d3.zoom().on('zoom',() =>{
-  // 	g.attr('transform',event.transform)
-  // }))
-
+  let choices = parseURLParameters(window.location.href);
+  let selectedCategory = "Aneamic Women";
+  selectedCategory.replace(/ /g, '_');
+  
   const render = (
     block,
     project,
@@ -238,13 +236,14 @@
   ) => {
     //initail value of tooltip
     let TextValue = null;
-    let Tooltipheader1 = d => "Aneamic Women (%):";
+    let Tooltipheader1 = d => "Aneamic Women:";
     let TooltipVal1 = d => d.properties.no_anemic_wmn;
     let ColorValue = d => d.properties.prnt_anwmic_wmn;
     let TPercentValue = d => d.prnt_anwmic_wmn;
     let TActualValue = d => d.no_anemic_wmn;
     let low = 25.00;
     let high = 50.00;
+    let updatedCat;
 
     const fillCellColor = (d, percentageColor, actualColor) => {
       if (d.name == "Percentage") return percentageColor(d.value);
@@ -259,7 +258,85 @@
     const updateCategory = updatedCat => {
       d3.select(".info-category").text(updatedCat);
     };
+    let path;
+    let pathEnter;
+    let textLabel;
 
+    const updateviz = (selectedCat) => {
+        //update tooltip
+        switch (selectedCat) {
+
+          case 1:
+            updatedCat = "Aneamic Women";
+            Tooltipheader1 = d => "Aneamic Women:";
+            TooltipVal1 = d => d.properties.no_anemic_wmn;
+            ColorValue = d => d.properties.prnt_anwmic_wmn;
+            TPercentValue = d => d.prnt_anwmic_wmn;
+            TActualValue = d => d.no_anemic_wmn;
+
+            break;
+          case 2:
+            updatedCat = "Tenatus Completed";
+            Tooltipheader1 = d => "Tenatus Completed:";
+            TooltipVal1 = d => d.properties.no_tenatus_cmpltd;
+            ColorValue = d => d.properties.prnt_tenatus_cmpltd;
+            TPercentValue = d => d.prnt_tenatus_cmpltd;
+            TActualValue = d => d.no_tenatus_cmpltd;
+
+            break;
+          case 3:
+            updatedCat = "Women had atleast 1 ANC visit by delivery";
+            Tooltipheader1 = d => "Women had atleast 1 ANC visit by delivery:";
+            TooltipVal1 = d => d.properties.no_wmn_1_anc_vst_dlvry;
+            ColorValue = d => d.properties.prnt_wmn_1_anc_vst_dlvry;
+            TPercentValue = d => d.prnt_wmn_1_anc_vst_dlvry;
+            TActualValue = d => d.no_wmn_1_anc_vst_dlvry;
+
+            break;
+          case 4:
+            updatedCat = "Women had atleast 4 ANC visit by delivery";
+            Tooltipheader1 = d => "Women had atleast 4 ANC visit by delivery:";
+            TooltipVal1 = d => d.properties.no_wmn_4_anc_vst_dlvry;
+            ColorValue = d => d.properties.prnt_wmn_4_anc_vst_dlvry;
+            TPercentValue = d => d.prnt_wmn_4_anc_vst_dlvry;
+            TActualValue = d => d.no_wmn_4_anc_vst_dlvry;
+
+            break;
+          case 5:
+            updatedCat = "Women Resting During Pregnancy";
+            Tooltipheader1 = d => "Women Resting During Pregnancy:";
+            TooltipVal1 = d => d.properties.no_wmn_rstg_drg_prgncy;
+            ColorValue = d => d.properties.prnt_wmn_rstg_drg_prgncy;
+            TPercentValue = d => d.prnt_wmn_rstg_drg_prgncy;
+            TActualValue = d => d.no_wmn_rstg_drg_prgncy;
+
+            break;
+          case 6:
+            updatedCat = "Women Eating Extra Meal During Pregnancy";
+            Tooltipheader1 = d => "Women Eating Extra Meal During Pregnancy:";
+            TooltipVal1 = d => d.properties.no_wmn_etg_xtr_ml_drg_prgncy;
+            ColorValue = d => d.properties.prnt_wmn_etg_xtr_ml_drng_prgncy;
+            TPercentValue = d => d.prnt_wmn_etg_xtr_ml_drng_prgncy;
+            TActualValue = d => d.no_wmn_etg_xtr_ml_drg_prgncy;
+
+            break;
+          case 7:
+            updatedCat = "Trimester 3 women counselled on immediate breastfeeding";
+            Tooltipheader1 = d => "Trimester 3 women counselled on immediate breastfeeding:";
+            TooltipVal1 = d => d.properties.no_trmstr_3wmn_cnsld_imdtbf;
+            ColorValue = d => d.properties.prnt_trmstr_3wmn_cnsld_imdtbf;
+            TPercentValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf;
+            TActualValue = d => d.no_trmstr_3wmn_cnsld_imdtbf;
+
+            break;
+        }
+      };
+
+      if (choices.length > 0) {
+     updateviz(parseInt(choices[0])); 
+     selectedCategory = updatedCat;
+     $('.drop-category a').parents('.dropdown').find('.dropdown-toggle').html(updatedCat + ' <span class="selectedCategory"></span>');
+     }
 
     //makemap
     const makemap = (geojson, tdata) => {
@@ -270,6 +347,7 @@
         })
         return hirarchy;
       })
+
       updateMonth();
       if (level == 0 && direction == 1) {
         TextValue = d => d.properties.district;
@@ -284,43 +362,29 @@
       let min = d3.min(geojson, ColorValue);
       let max = d3.max(geojson, ColorValue);
       let comp = (max - min) / 3;
-      let myColor = (v, low, high) => {
-        if (ColorValue == 'd => d.properties.prnt_anwmic_wmn') {
-          if (v < low) return "#24562B"
-          //matte red
-          else if (v >= low && v <= high) return "#F4BC1C";
-          //matte yellow
-          else if (v > high) return "#B2022F"; //matte green
-
-        }
-        else {
-          if (v < low) return "#B2022F";
-          //matte red
-          else if (v >= low && v <= high) return "#F4BC1C";
-          //matte yellow
-          else if (v > high) return "#24562B"; //matte green
-        }
-      };
+      
       let tooltipValue = (d) => {
         let ttv = `<b>${TextValue(d)}</b><br> 
-                      ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
+                      ${Tooltipheader1(d)}  ${TooltipVal1(d)} (${ColorValue(d)}%)<br>
                      `;
         return ttv;
       }
-      const onMouseOverPoly = d => {
-        tooltip
-          .transition()
-          .duration(200)
-          .style("opacity", 0.9);
-        tooltip
-          .html(tooltipValue(d))
-          .style("left", d3.event.pageX + "px")
-          .style("top", d3.event.pageY - 30 + "px");
 
+      const onMouseOverPoly = d => {
+        if(TooltipVal1(d) != undefined){
+          tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0.9);
+          tooltip
+            .html(tooltipValue(d))
+            .style("left", d3.event.pageX + "px")
+            .style("top", d3.event.pageY - 30 + "px");
+        }
       };
 
-      let path = g.selectAll("path").data(geojson);
-      let pathEnter = path
+      path = g.selectAll("path").data(geojson);
+      pathEnter = path
         .enter()
         .append("path")
         .attr("d", pathGenerator)
@@ -341,14 +405,14 @@
         });
 
       //text over polygon
-      let textLabel = g
+      textLabel = g
         .selectAll("text")
         .data(geojson)
         .enter()
         .append("text")
         .text(d => {
           if (level !== 3) {
-            return `${TextValue(d)}(${ColorValue(d)})`;
+            return `${TextValue(d)}`;
           } else {
             return "";
           }
@@ -367,10 +431,7 @@
       } else if (level === 1) {
         textLabel.attr("font-size", "0.25em").attr("font-weight", "bold");
       }
-      // else if (level === 2) {
-      //   textLabel.attr("font-size", "4pt");
-      // } 
-
+      
       //update slider color
       const fillSlider = () => {
         leftX2 = +d3.select("line.track-fill").attr("x1") - 15;
@@ -392,238 +453,9 @@
             } else {
               return 'rgba(0,0,0,0)';
             }
-          });
-
-        if (level === 3) {
-          circleEnter
-            .transition()
-            .duration(transitionDuration)
-            .style("fill", function (d) {
-              return myColor(ColorValue(d), low, high);
-            });
-        }
+          });        
       });
-      let updatedCat;
-      const updateviz = selectedCat => {
-        //update tooltip
-        switch (selectedCat) {
 
-          case 1:
-            updatedCat = "Aneamic Women";
-            Tooltipheader1 = d => "Aneamic Women:";
-            TooltipVal1 = d => d.properties.no_anemic_wmn;
-            ColorValue = d => d.properties.prnt_anwmic_wmn;
-            break;
-          case 2:
-            updatedCat = "Tenatus Completed";
-            Tooltipheader1 = d => "Tenatus Completed:";
-            TooltipVal1 = d => d.properties.no_tenatus_cmpltd;
-            ColorValue = d => d.properties.prnt_tenatus_cmpltd;
-            break;
-          case 3:
-            updatedCat = "Women had atleast 1 ANC visit by delivery";
-            Tooltipheader1 = d => "Women had atleast 1 ANC visit by delivery:";
-            TooltipVal1 = d => d.properties.no_wmn_1_anc_vst_dlvry;
-            ColorValue = d => d.properties.prnt_wmn_1_anc_vst_dlvry;
-            break;
-          case 4:
-            updatedCat = "Women had atleast 4 ANC visit by delivery";
-            Tooltipheader1 = d => "Women had atleast 4 ANC visit by delivery:";
-            TooltipVal1 = d => d.properties.no_wmn_4_anc_vst_dlvry;
-            ColorValue = d => d.properties.prnt_wmn_4_anc_vst_dlvry;
-            break;
-          case 5:
-            updatedCat = "Women Resting During Pregnancy";
-            Tooltipheader1 = d => "Women Resting During Pregnancy:";
-            TooltipVal1 = d => d.properties.no_wmn_rstg_drg_prgncy;
-            ColorValue = d => d.properties.prnt_wmn_rstg_drg_prgncy;
-            break;
-          case 6:
-            updatedCat = "Women Eating Extra Meal During Pregnancy";
-            Tooltipheader1 = d => "Women Eating Extra Meal During Pregnancy:";
-            TooltipVal1 = d => d.properties.no_wmn_etg_xtr_ml_drg_prgncy;
-            ColorValue = d => d.properties.prnt_wmn_etg_xtr_ml_drng_prgncy;
-            break;
-          case 7:
-            updatedCat = "Trimester 3 women counselled on immediate breastfeeding";
-            Tooltipheader1 = d => "Trimester 3 women counselled on immediate breastfeeding:";
-            TooltipVal1 = d => d.properties.no_trmstr_3wmn_cnsld_imdtbf;
-            ColorValue = d => d.properties.prnt_trmstr_3wmn_cnsld_imdtbf;
-            break;
-        }
-        updateCategory(updatedCat);
-        min = d3.min(geojson, ColorValue);
-        max = d3.max(geojson, ColorValue);
-        comp = (max - min) / 3;
-        pathEnter
-          .transition()
-          .duration(transitionDuration)
-          .style("fill", function (d) {
-            if (level !== 3) {
-              return myColor(ColorValue(d), low, high);
-            } else {
-              return 'rgba(0,0,0,0)';
-            }
-          });
-
-        textLabel
-          .text(d => {
-            if (level !== 3)
-              return `${TextValue(d)}(${ColorValue(d)})`;
-          })
-          .exit()
-          .remove();
-      };
-
-
-      let updatepoints = () => {
-        min = d3.min(geojson, ColorValue);
-        max = d3.max(geojson, ColorValue);
-        comp = (max - min) / 3;
-        circleEnter
-          .transition()
-          .duration(transitionDuration)
-          .style("fill", d => {
-            return myColor(ColorValue(d), low, high)
-          });
-
-
-      }
-
-      //on category selection
-
-      $('.drop-category a').click(function () {
-        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-
-        let selCat = $(this).text();
-        let val;
-        if (selCat != 'Aneamic Women') {
-          d3.select("line.leftcolor").attr("stroke", "red");
-          d3.select("line.track-inset").attr("stroke", "green");
-        }
-        else {
-          d3.select("line.leftcolor").attr("stroke", "green");
-          d3.select("line.track-inset").attr("stroke", "red");
-        }
-
-        switch (selCat) {
-          case "Aneamic Women": val = 1; break;
-          case "Tenatus Completed": val = 2; break;
-          case "Women had atleast 1 ANC visit by delivery": val = 3; break;
-          case "Women had atleast 4 ANC visit by delivery": val = 4; break;
-          case "Women Resting During Pregnancy": val = 5; break;
-          case "Women Eating Extra Meal During Pregnancy": val = 6; break;
-          case "Trimester 3 women counselled on immediate breastfeeding": val = 7; break;
-        }
-        updateviz(val);
-        if (level === 3) {
-          updatepoints(val);
-        }
-        updatetable(val);
-      })
-
-
-      const zoomToBoundingBox = d => {
-        let bounds = pathGenerator.bounds(d),
-          dx = bounds[1][0] - bounds[0][0],
-          dy = bounds[1][1] - bounds[0][1],
-          x = (bounds[0][0] + bounds[1][0]) / 2,
-          y = (bounds[0][1] + bounds[1][1]) / 2,
-          scale = Math.max(
-            1,
-            Math.min(8, 0.9 / Math.max(dx / innerWidth, dy / innerHeight))
-          ),
-          translate = [innerWidth / 2 - scale * x, innerHeight / 2 - scale * y];
-        zoomBox['translate'].push(translate);
-        zoomBox['scale'].push(scale);
-        svg
-          .transition()
-          .duration(transitionDuration)
-          .call(
-            zzoom.transform,
-            d3.zoomIdentity.translate(translate[0], translate[1])
-              .scale(scale)
-          );
-      };
-      //selectmap
-      const selectedSubFeature = (geojson, location) => {
-        let selection = [];
-        let geomType;
-        // if(level === 3 && direction == 0){
-        // } 
-        geojson.forEach(sel => {
-          if (level === 1) {
-            if (sel.properties.district === location) {
-              selection.push(sel);
-            }
-          } else if (level === 2) {
-            if (sel.properties.block === location) {
-              selection.push(sel);
-            }
-          }
-
-        });
-        return selection;
-      };
-
-      const selectedSubData = (csv, location) => {
-        let selection = [];
-        csv.forEach(sel => {
-          if (level === 1 && direction === 1) {
-            if (sel.district_n == location) {
-              selection.push(sel);
-            }
-          } else if (level === 2 && direction === 1) {
-            if (sel.sub_district == location) {
-              selection.push(sel);
-            }
-          }
-
-
-          else if (level === 1 && direction === 0) {
-            if (sel.district_n == location) {
-              selection.push(sel);
-            }
-          } else if (level === 0 && direction === 0) {
-            if (sel.district_n == location) {
-              selection.push(sel);
-            }
-          }
-        });
-        return selection;
-      };
-      // clicked
-      const clicked = d => {
-        if (level < 1) {
-          level++;
-          direction = 1;
-          zoomToBoundingBox(d);
-          let clickedLocation;
-          if (level === 1) {
-            clickedLocation = d.properties.district;
-          }
-
-
-          levelLocation.push(clickedLocation);
-
-          let selectedJSON, selectedData;
-          let selectedPoints;
-
-          if (level === 1) {
-            selectedData = filterCSV(projectData, 'month_n', month_hack);
-            LocationDataPrjType= filterCSV(selectedData, 'project_type', prjType);
-            removeProperties(project);
-            selectedJSON = addProperty(LocationDataPrjType, project);
-          }
-
-          let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
-          let selecteddata = selectedSubData(LocationDataPrjType, clickedLocation);
-          g.selectAll("*").remove();
-          rowEnter.selectAll("*").remove();
-          // tooltip.remove();
-          makemap(selectedjson, selecteddata);
-        }// if condition ends here
-      };
       pathEnter.on("click", clicked);
 
       //makeTable
@@ -697,7 +529,61 @@
           fillCellColor(d, percentageColor, actualColor)
         );
 
-      const updatetable = selCat => {
+        //on category selection
+      $('.drop-category a').click(function () {
+        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+
+        let selCat = $(this).text();
+        let val;
+        if (selCat != 'Aneamic Women') {
+          d3.select("line.leftcolor").attr("stroke", "red");
+          d3.select("line.track-inset").attr("stroke", "green");
+        }
+        else {
+          d3.select("line.leftcolor").attr("stroke", "green");
+          d3.select("line.track-inset").attr("stroke", "red");
+        }
+
+        switch (selCat) {
+          case "Aneamic Women": val = 1; break;
+          case "Tenatus Completed": val = 2; break;
+          case "Women had atleast 1 ANC visit by delivery": val = 3; break;
+          case "Women had atleast 4 ANC visit by delivery": val = 4; break;
+          case "Women Resting During Pregnancy": val = 5; break;
+          case "Women Eating Extra Meal During Pregnancy": val = 6; break;
+          case "Trimester 3 women counselled on immediate breastfeeding": val = 7; break;
+        }
+        updateviz(val);
+        updateMap(geojson);
+        updatetable(val, tdata);
+      })
+    }
+    let updateMap =(geojson) => {
+        updateCategory(updatedCat);
+        min = d3.min(geojson, ColorValue);
+        max = d3.max(geojson, ColorValue);
+        comp = (max - min) / 3;
+        pathEnter
+          .transition()
+          .duration(transitionDuration)
+          .style("fill", function (d) {
+            if (level !== 3) {
+              return myColor(ColorValue(d), low, high);
+            } else {
+              return 'rgba(0,0,0,0)';
+            }
+          });
+
+        textLabel
+          .text(d => {
+            if (level !== 3)
+              return `${TextValue(d)}`;
+          })
+          .exit()
+          .remove();
+      }
+
+      const updatetable = (selCat, tdata) => {
         rowEnter.selectAll("*").remove();
         switch (selCat) {
           case 1:
@@ -790,9 +676,27 @@
           .style("background-color", d =>
             fillCellColor(d, percentageColor, actualColor)
           );
-      };
+};
 
-      d3.select(".back-button").on("click", function () {
+let myColor = (v, low, high) => {
+  if (ColorValue == 'd => d.properties.prnt_anwmic_wmn') {
+    if (v < low) return "#24562B"
+    //matte red
+    else if (v >= low && v <= high) return "#F4BC1C";
+    //matte yellow
+    else if (v > high) return "#B2022F"; //matte green
+
+  }
+  else {
+    if (v < low) return "#B2022F";
+    //matte red
+    else if (v >= low && v <= high) return "#F4BC1C";
+    //matte yellow
+    else if (v > high) return "#24562B"; //matte green
+  }
+};
+
+d3.select(".back-button").on("click", function () {
         if (level > 0) {
           level--;
           zoomBox['translate'].pop(); zoomBox['scale'].pop();
@@ -841,73 +745,197 @@
           }
         }//if condition ends here
       });
-    }
-
-    const selectGeoJSON = (val, allMonthGeoJSONData) => {
-      switch (val) {
-        case "nov":
-          return allMonthGeoJSONData.Nov;
-          break;
-        case "dec":
-          return allMonthGeoJSONData.Dec;
-          break;
-        case "jan":
-          return allMonthGeoJSONData.Jan;
-          break;
-      }
-    };
-    const selectCSV = (val, allMonthCSVData) => {
-      switch (val) {
-        case "nov":
-          return allMonthCSVData.Nov;
-          break;
-        case "dec":
-          return allMonthCSVData.Dec;
-          break;
-        case "jan":
-          return allMonthCSVData.Jan;
-          break;
-      }
-    };
-
-    $(".ptype a").click(function () {
-    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
-    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-    prjType = $(this).text();
-    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    let monthdata = filterCSV(blockData, 'month_n', valMonth);
-    let pt_data = filterCSV(monthdata, 'project_type', prjType);
-    removeProperties(block);
-    let monthjson = addProperty(pt_data, block);
-    level = 0;
-    g.selectAll("*").remove();
-    rowEnter.selectAll("*").remove();
-    svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
-    updateMonth();
-    levelLocation = []; 
-    makemap(monthjson, pt_data);
-    });
-
-    var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
 
     $('#monthSlider').slider().on('slideStop', function (ev) {
       var val = tickLabels[ev.value];
       month_hack = val;
-      let monthdata = filterCSV(blockData, 'month_n', val);
-      let pt_data = filterCSV(monthdata, 'project_type', prjType);
-      removeProperties(block);
-      let monthjson = addProperty(pt_data, block);
-      level = 0;
       g.selectAll("*").remove();
       rowEnter.selectAll("*").remove();
-      svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
-      updateMonth();
-      levelLocation = [];
-      makemap(monthjson, pt_data);
+      let svgTrans = svg.transition().duration(transitionDuration);
+          // calculation for zoom
+          let transLength = zoomBox.translate.length;
+          let scaleLength = zoomBox.scale.length;
+          let transX, transY, scaleV;
+          if (level !== 0) {
+            transX = zoomBox.translate[transLength - 1][0];
+            transY = zoomBox.translate[transLength - 1][1];
+            scaleV = zoomBox.scale[scaleLength - 1];
+          }
+          if (level === 0) {
+            LocationDataMonth = filterCSV(blockData, 'month_n', month_hack);
+            LocationDataPrjType= filterCSV(LocationDataMonth, 'project_type', prjType);
+            removeProperties(block);
+            LocationMonth = addProperty(LocationDataPrjType, block);
+            makemap(LocationMonth, LocationDataPrjType);
+            console.log("on month change");
+            console.log("LocationMonth", LocationMonth);
+          }
+          else if (level === 1) {
+            LocationDataMonth = filterCSV(projectData, 'month_n', month_hack);
+            LocationDataPrjType= filterCSV(LocationDataMonth, 'project_type', prjType);
+            removeProperties(project);
+            LocationMonth = addProperty(LocationDataPrjType, project);
+
+            let previousBlock = levelLocation[levelLocation.length - 1];
+
+            let selectedjson = selectedSubFeature(LocationMonth, previousBlock);
+            let selectedcsv = selectedSubData(LocationDataPrjType, previousBlock);
+            console.log("on month change");
+            console.log("selectedjson", selectedjson);
+            console.log("selectedcsv", selectedcsv);
+
+            makemap(selectedjson, selectedcsv);
+          }
     });
 
+  $(".ptype a").click(function () {
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
+    $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
+    prjType = $(this).text();
+    var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
+    g.selectAll("*").remove();
+    rowEnter.selectAll("*").remove();
+    let svgTrans = svg.transition().duration(transitionDuration);
+          // calculation for zoom
+          let transLength = zoomBox.translate.length;
+          let scaleLength = zoomBox.scale.length;
+          let transX, transY, scaleV;
+          if (level !== 0) {
+            transX = zoomBox.translate[transLength - 1][0];
+            transY = zoomBox.translate[transLength - 1][1];
+            scaleV = zoomBox.scale[scaleLength - 1];
+          }
+          if (level === 0) {
+            LocationDataMonth = filterCSV(blockData, 'month_n', valMonth);
+            LocationDataPrjType= filterCSV(LocationDataMonth, 'project_type', prjType);
+            removeProperties(block);
+            LocationMonth = addProperty(LocationDataPrjType, block);
+            console.log("on prjType change");
+            console.log("LocationMonth", LocationMonth);
+            makemap(LocationMonth, LocationDataPrjType);
+          }
+          else if (level === 1) {
+            LocationDataMonth = filterCSV(projectData, 'month_n', valMonth);
+            LocationDataPrjType= filterCSV(LocationDataMonth, 'project_type', prjType);
+            removeProperties(project);
+            LocationMonth = addProperty(LocationDataPrjType, project);
+
+            let previousBlock = levelLocation[levelLocation.length - 1];
+
+            let selectedjson = selectedSubFeature(LocationMonth, previousBlock);
+            let selectedcsv = selectedSubData(LocationDataPrjType, previousBlock);
+
+            makemap(selectedjson, selectedcsv);
+          }
+  });
+
+  // clicked
+  const clicked = d => {
+        if (level < 1) {
+          level++;
+          direction = 1;
+          zoomToBoundingBox(d);
+          let clickedLocation;
+          if (level === 1) {
+            clickedLocation = d.properties.district;
+          }
+
+
+          levelLocation.push(clickedLocation);
+
+          let selectedJSON, selectedData;
+          let selectedPoints;
+
+          if (level === 1) {
+            selectedData = filterCSV(projectData, 'month_n', month_hack);
+            LocationDataPrjType= filterCSV(selectedData, 'project_type', prjType);
+            removeProperties(project);
+            selectedJSON = addProperty(LocationDataPrjType, project);
+          }
+
+          let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
+          let selecteddata = selectedSubData(LocationDataPrjType, clickedLocation);
+          g.selectAll("*").remove();
+          rowEnter.selectAll("*").remove();
+          // tooltip.remove();
+          makemap(selectedjson, selecteddata);
+        }// if condition ends here
+      };
+
+//selectmap
+const selectedSubFeature = (geojson, location) => {
+        let selection = [];
+        let geomType;
+        // if(level === 3 && direction == 0){
+        // } 
+        geojson.forEach(sel => {
+          if (level === 1) {
+            if (sel.properties.district === location) {
+              selection.push(sel);
+            }
+          } else if (level === 2) {
+            if (sel.properties.block === location) {
+              selection.push(sel);
+            }
+          }
+
+        });
+        return selection;
+      };
+
+      const selectedSubData = (csv, location) => {
+        let selection = [];
+        csv.forEach(sel => {
+          if (level === 1 && direction === 1) {
+            if (sel.district_n == location) {
+              selection.push(sel);
+            }
+          } else if (level === 2 && direction === 1) {
+            if (sel.sub_district == location) {
+              selection.push(sel);
+            }
+          }
+
+
+          else if (level === 1 && direction === 0) {
+            if (sel.district_n == location) {
+              selection.push(sel);
+            }
+          } else if (level === 0 && direction === 0) {
+            if (sel.district_n == location) {
+              selection.push(sel);
+            }
+          }
+        });
+        return selection;
+      };
+
+    const zoomToBoundingBox = d => {
+        let bounds = pathGenerator.bounds(d),
+          dx = bounds[1][0] - bounds[0][0],
+          dy = bounds[1][1] - bounds[0][1],
+          x = (bounds[0][0] + bounds[1][0]) / 2,
+          y = (bounds[0][1] + bounds[1][1]) / 2,
+          scale = Math.max(
+            1,
+            Math.min(8, 0.9 / Math.max(dx / innerWidth, dy / innerHeight))
+          ),
+          translate = [innerWidth / 2 - scale * x, innerHeight / 2 - scale * y];
+        zoomBox['translate'].push(translate);
+        zoomBox['scale'].push(scale);
+        svg
+          .transition()
+          .duration(transitionDuration)
+          .call(
+            zzoom.transform,
+            d3.zoomIdentity.translate(translate[0], translate[1])
+              .scale(scale)
+          );
+      };
+
+    var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
       //initial map
-    month_hack = tickLabels[$('#monthSlider').slider('getValue')];
+    month_hack = tickLabels[0];
     let monthdata = filterCSV(blockData, 'month_n', month_hack);
     let pt_data = filterCSV(monthdata, 'project_type', prjType);
     let monthjson = addProperty(pt_data, block);
@@ -1046,6 +1074,7 @@
 
   );
     }
+
   fetchGeoJSON().then(mergeData);
 
   $(function () {
@@ -1054,14 +1083,18 @@
 
     $('.drop-category a').parents('.dropdown').find('.dropdown-toggle').html('Aneamic Women' + ' <span class="selectedCategory"></span>');
 
-    // $(".drop-category a").click(function () {
-    //   var valCategory = $(this).text();
-    //   $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
-    // });
-    // //trigger event
-    // $(".drop-category a").first().trigger('click');
-
+    if (choices.length <= 0)
+    $(".drop-category a").first().trigger('click');
   });
+
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
 
   const sliderRange = d3
     .sliderBottom()
@@ -1109,7 +1142,7 @@
     var obj = myGeoJSON[i].properties;
     for(var key in obj){
         var attrName = key;
-        if (attrName!= 'district'){
+        if (attrName!= 'district' && attrName!= 'block'){
           delete obj[key];
         }
     }

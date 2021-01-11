@@ -106,15 +106,14 @@
     <div class="row" style="margin-top:30px">
         <div class="col-4 offset-4">
             <form id="myform" name="myForm" method="POST" enctype="multipart/form-data">
-
                 {% csrf_token %}
-                <select class="custom-select" name="dist_select" id="distList">
+                <!-- <select class="custom-select" name="dist_select" id="distList">
                     <option selected disabled>Select Region</option>
                     {% for dist_select in dd_dt_data %}
                     <option value="{{ dist_select.district_n }}">{{ dist_select.district_n }}
                     </option>
                     {% endfor %}
-                </select><br></br>
+                </select><br></br> -->
 
                 <!-- {% if user.username == 'Amravati' %} 
                         <select class="custom-select" name = "quarter_select" id="quarterList"> 
@@ -147,32 +146,12 @@
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/5.15.0/d3.min.js"></script>
 <script>
-
-    // $(document).ready(function () {
-    //     $('#distList').bind('change', function () {
-    //         var elements = $('div.quarter_menu').children().hide(); // hide all the elements
-    //         var value = $(this).val();
-
-    //         if (value.length) { // if somethings' selected
-    //             elements.filter('.' + value).show(); // show the ones we want
-    //         }
-    //     }).trigger('change');
-    // });
-
-    $(document).ready(function () {
-
-        $("#myform").submit(function () {
-            var dSelect = document.forms["myForm"]["dist_select"].value;
-            var fySelect = document.forms["myForm"]["fy_select"].value;
-            console.log(fySelect);
-            if (dSelect == "Maharashtra") {
-                $("#myform").attr("action", "{% url 'maha-feat1' %}");
-            }
-            else {
-                $("#myform").attr("action", "{% url 'f1' %}");
-            }
-        })
+    $("#myform").submit(function () {
+        var fySelect = document.forms["myForm"]["fy_select"].value;
+        $("#myform").attr("action", "{% url 'overview' %}");
+        
     })
+
 </script>
 
 {% endblock %}

@@ -166,7 +166,7 @@
   // var height = +svg.attr('height');
   var radius = Math.min(1100, 750) / 3;
 
-
+  let choices = parseURLParameters(window.location.href);
 
   //var outerRadius1 = radius-100;
 
@@ -174,10 +174,34 @@
 
     let arcInitial = d => d.wasting_percent;
 
+    const setArcInitial = opt =>
+    {
+      if (opt == 'Wasting(%)') {
+        arcInitial = d => d.wasting_percent;
+      } else if (opt == 'Stunting(%)') {
+        arcInitial = d => d.stunting_percent;
+      } else if (opt == 'Underweight(%)') {
+        arcInitial = d => d.underweight_percent;
+      }
+      else {
+        arcInitial = d => d.low_birth_weight_percent;
+      }
+
+    }
+
     const margin = { left: 750, top: 400, right: 170, bottom: 20 };
     const innerWidth = 1100 - margin.left - margin.right;
     const innerHeight = 1000 - margin.top - margin.bottom;
-
+   
+    if (choices.length > 0) 
+    {
+      let selectedCat = choices[0].replace(/_/g, ' ');
+      var displayVal = selectedCat.substring(0, selectedCat.length - 3);
+      document.getElementById('paraText').innerHTML = displayVal + " Contribution: ";
+      document.getElementById('bartitleCategory').innerHTML = displayVal + " : Project wise Contribution";
+      $('.category a').parents('.dropdown').find('.dropdown-toggle').html(selectedCat + ' <span class="selectedCategory"></span>');
+      setArcInitial(selectedCat); 
+    }
     const g = svg.append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
 
@@ -257,23 +281,11 @@
           .style("opacity", 0);;
       });
 
-
-    makeviz = opt => {
+    
+    makeviz = (arcInitial) => {
       g.selectAll(".arc").remove();
       $(".hello").remove();
-
       let tansitionDuration = 1000;
-      if (opt == 'Wasting(%)') {
-        arcInitial = d => d.wasting_percent;
-      } else if (opt == 'Stunting(%)') {
-        arcInitial = d => d.stunting_percent;
-      } else if (opt == 'Underweight(%)') {
-        arcInitial = d => d.underweight_percent;
-      }
-      else {
-        arcInitial = d => d.low_birth_weight_percent;
-      }
-
       var pie = d3.pie()
         .value(function (d) {
           return arcInitial(d);
@@ -314,43 +326,9 @@
       })
         .attr("d", path);
 
-      //arcEnter
-      //      .on("mouseover", d => onMouseOver(d))	
-      //	.on("mousemove", function(d) {
-      //		div.style("left", d3.event.pageX + "px")
-      //	.style("top",  d3.event.pageY - 30 + "px");
-      //	})
-      //        .on("mouseout", function(d) {		
-      //     div.style("opacity", 0);
-      //  });
-
-
       var getAngle = function (d) {
         return (180 / Math.PI * (d.startAngle + d.endAngle) / 2 - 90);
       };
-
-
-      //     arcEnter.append("text")
-      //     .attr("transform", function(d) {
-      // //        return "translate(" + label.centroid(d) + ")"
-      // 	var c = label.centroid(d);
-      //             return "translate(" + c[0]*1.35 +"," + c[1]*1.35 + ")rotate(" + getAngle(d) + ")";
-
-      //         // var _d = label.centroid(d);
-      //         // _d[0] *= 1.50;	//multiply by a constant factor
-      //         // _d[1] *= 1.50;	//multiply by a constant factor
-      //         // return "translate(" + _d + ")";
-      //     })
-      //     .attr("dy", ".90em")
-      //     .attr("class", "hello")
-      //     .style("text-anchor", "middle")
-      //     .style("fill", "blue")
-      //     .text(function(d) { return d.data.project
-      //     //(d.data.project) + ": " + (arcInitial(d.data)) + "%" 
-      //     });
-
-
-
       arcEnter
         .append('polyline')
         .attr("stroke", "black")
@@ -385,24 +363,37 @@
         })
     }
 
-    const dropdownChange = () => {
-      var sel = document.getElementById('opt');
-      val = document.getElementById("opt").value
-    }
-    makeviz("Wasting(%)");
+  
+    makeviz(arcInitial);
     $(".category a").click(function () {
       $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
       $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
       var valCategory = $(this).text();
-      var displayVal = valCategory.substring(0, valCategory.length - 3);
-      document.getElementById('paraText').innerHTML = displayVal + " Contribution: ";
-      document.getElementById('bartitleCategory').innerHTML = displayVal + " : Project wise Contribution";
-      makeviz(valCategory);
-
+      displayPie(valCategory);
     });
+
+    function displayPie(valCategory)
+    {
+        var displayVal = valCategory.substring(0, valCategory.length - 3);
+          document.getElementById('paraText').innerHTML = displayVal + " Contribution: ";
+          document.getElementById('bartitleCategory').innerHTML = displayVal + " : Project wise Contribution";
+          setArcInitial(valCategory);
+          makeviz(arcInitial);
+    }
 
 
   }
+
+  
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
+
 
   $(function () {
     //bind event
@@ -418,75 +409,17 @@
     });
 
     //trigger event
+    if(choices.length <= 0)
     $(".category a").first().trigger('click');
+
 
   });
 
-
-
-  const monthwise = (data) => {
-    data.forEach(d => {
-      d.wasting_percent = +d.wasting_percent;
-      d.stunting_percent = +d.stunting_percent;
-      d.underweight_percent = +d.underweight_percent;
-      d.low_birth_weight_percent = +d.low_birth_weight_percent;
-      d.per_no_enrld = +d.per_no_enrld;
-    });
-
-    var aproperty = [];
-    var sproperty = [];
-    var oproperty = [];
-    data.forEach(d => {
-      var temp = {};
-      temp['project_n'] = d.project_n;
-      temp['wasting_percent'] = d.wasting_percent;
-      temp['stunting_percent'] = d.stunting_percent;
-      temp['underweight_percent'] = d.underweight_percent;
-      temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
-      temp['per_no_enrld'] = d.per_no_enrld;
-      if (d.month_n == "Nov") {
-        aproperty.push(temp);
-      } else if (d.month_n == "Dec") {
-        sproperty.push(temp);
-      } else if (d.month_n == "Jan") {
-        oproperty.push(temp);
-      }
-
-    })
-
-    var listdata = [
-      aproperty, sproperty, oproperty
-    ]
-    return listdata;
-  }
-
-  const selectData = (val, monthwiseData) => {
-    if (val == "November") {
-      return monthwiseData[0];
-    } else if (val == "December") {
-      return monthwiseData[1];
-    } else if (val == 'January') {
-      return monthwiseData[2]
-    }
-  }
-
-  /////
   data_from_django = {{ data | safe }};
   var data = []
   data_from_django.forEach(element => {
     data.push(element.fields);
   });
-
-  //   monthwiseData = monthwise(data);
-  // //   d3.csv("{% static 'data/csv/f3.csv'%}").then(data=>{
-  //             monthwiseData = monthwise(data);
-  //   d3.select("#monthdropdown")
-  //   .on("change", () =>{
-  //           val = document.getElementById("monthdropdown").value
-  //           mydata = selectData(val,monthwiseData);
-  //           svg.selectAll("*").remove();
-  //           render(mydata);
-  //       });
   data.forEach(d => {
     d.wasting_percent = +d.wasting_percent;
     d.stunting_percent = +d.stunting_percent;
@@ -494,6 +427,7 @@
     d.low_birth_weight_percent = +d.low_birth_weight_percent;
     d.per_no_enrld = +d.per_no_enrld;
     d.month_n = d.month_n;
+    d.project_n = d.project_n;
   });
 
   var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
@@ -505,30 +439,9 @@
     svg.selectAll("*").remove();
     render(mydata);
   });
-
-
-
-  //       $(".month a").click(function(){
-  //       var val = $(this).text();
-  //       $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-  // $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
-  //       var valMonth = $(this).text();
-  //    document.getElementById('bartitleMonth').innerHTML= valMonth;
-
-  //       mydata = filterCSV(data, 'month_n', valMonth);
-  //       // mydata = selectData(val,monthwiseData);
-
-  //       svg.selectAll("*").remove();
-  //       render(mydata);
-
-  //   });
-
-  // augData = monthwiseData[0];
   monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  //monthSelect=$('.month a').first().text();
   augData = filterCSV(data, 'month_n', monthSelect);
   render(augData);
-//   })
 </script>
 
 {% endblock %}

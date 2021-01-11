@@ -28,6 +28,17 @@
     pointer-events: none;
   }
 
+  .slider{
+    font-weight: bold;
+    font-size: calc(50% + 0.5vw + 0.5vh);
+  }
+
+  .color_range{
+    float: right;
+    font-weight: bold;
+    font-size: calc(35% + 0.5vw + 0.5vh);
+  }
+
   .boundary {
     stroke: #ccebed;
     stroke-width: 1px;
@@ -69,7 +80,7 @@
   </div>
 </div>
 
-<div class="row text-center bg-info mb-3">
+<div class="row text-center bg-info">
   <div class="dropdown mt-3">
     <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false">
@@ -79,7 +90,7 @@
     <div class="dropdown-menu drop-category" aria-labelledby="dropdownMenuButton">
       <a class="dropdown-item" href="#">Severly Stunted Children</a>
       <a class="dropdown-item" href="#">Stunted Children</a>
-      <a class="dropdown-item" href="#">Severely Wasted Children</a>
+      <a class="dropdown-item" href="#">Severely Wasted(SAM) Children</a>
       <a class="dropdown-item" href="#">Wasted Children</a>
       <a class="dropdown-item" href="#">Severely Underweight Children</a>
       <a class="dropdown-item" href="#">Underweight Children</a>
@@ -90,10 +101,12 @@
     Feature</button>
   <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f7' dist_name fy %}`">Next
     Feature</button>
-  <div id="slider-range"></div>
+  <div id="slider-range" class="mx-auto">
+    <div class="slider">Slider:</div>
+  </div>
 </div>
-
-<div class="row text-center">
+<div class="color_range">Please use Slider to change color range </div>
+<div class="row text-center mt-5">
   <div class="col-12 mb-3">
     <input type="text" id="monthSlider" name="somename" data-provide="slider" data-slider-ticks="[0, 1, 2, 3, 4, 5]"
       data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]' data-slider-min="0" data-slider-max="5"
@@ -105,7 +118,7 @@
   <div class="col-12">
     <button type="button" class="btn btn-dark back-button m-2">back</button>
     <span class='info info-hirar'>{{dist_name}}</span>
-    <p>Click on the Polygon(Block/Project/Beat) to view the Lower Level
+    <p>Click on the Polygon(Block/Project/Beat) to view the Lower Level <span>(Drilldown)</span>
       <a href="{% url 'ftlcblk' dist_name fy %}" class="lc_link">
         Want to see Month-wise Trend
         <i class="fa fa-chevron-right" aria-hidden="true"></i>
@@ -115,8 +128,8 @@
 </div>
 
 <div class="row">
-  <div class="col-8" id="mymap"></div>
-  <div class="col-4" id="table"></div>
+  <div class="col-md-8" id="mymap"></div>
+  <div class="col-md-4" id="table"></div>
 </div>
 
 {% endblock %}
@@ -225,12 +238,11 @@
     .scale(1);
 
   const pathGenerator = d3.geoPath().projection(mercator);
-
-  //Zoom
-  // svg.call(d3.zoom().on('zoom',() =>{
-  // 	g.attr('transform',event.transform)
-  // }))
-
+  let choices = parseURLParameters(window.location.href);
+  let selectedCategory = "Severely Stunted Children";
+  selectedCategory.replace(/ /g, '_');
+  let url = "{% url 'ftlcblk' dist_name fy %}";
+ 
   const render = (
     block,
     project,
@@ -241,11 +253,13 @@
     beatData,
     awcData
   ) => {
-    //initail value of tooltip
-    let TextValue = null;
+    
+      //initail value of tooltip
+   let TextValue = null;
     let Tooltipheader1 = d => "Severely Stunted Children:";
     let Tooltipheader2 = d => "";
     let Tooltipheader3 = d => "Height measurement efficiency:";
+    // let Tooltipheader4 = d => '<a href="https://en.wikipedia.org/wiki/{category.urlEncode()}">More info</a>';
     let TooltipVal1 = d => d.properties.svrly_stntd;
     let TooltipVal2 = d => "";
     let TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
@@ -254,6 +268,7 @@
     let TActualValue = d => d.svrly_stntd;
     let low = 25.00;
     let high = 50.00;
+    let updatedCat;
 
     const fillCellColor = (d, percentageColor, actualColor) => {
       if (d.name == "Percentage") return percentageColor(d.value);
@@ -268,145 +283,11 @@
     const updateCategory = updatedCat => {
       d3.select(".info-category").text(updatedCat);
     };
+    let path;
+    let pathEnter;
+    let textLabel;
 
-    //makemap
-    const makemap = (geojson, tdata) => {
-      d3.select('.info-hirar').text(function () {
-        var hirarchy = "{{dist_name}}";
-        levelLocation.forEach(loc => {
-          hirarchy += ">" + loc;
-        })
-        return hirarchy;
-      })
-      updateMonth();
-      if (level == 0 && direction == 1) {
-        TextValue = d => d.properties.block;
-      } else if (level == 1 && direction == 1) {
-        TextValue = d => d.properties.project;
-      } else if (level == 2 && direction == 1) {
-        TextValue = d => d.properties.beat_na;
-      } else if (level == 2 && direction == 0) {
-        TextValue = d => d.properties.beat_na;
-      } else if (level == 1 && direction == 0) {
-        TextValue = d => d.properties.project;
-      } else if (level == 0 && direction == 0) {
-        TextValue = d => d.properties.block;
-      }
-      let min = d3.min(geojson, ColorValue);
-      let max = d3.max(geojson, ColorValue);
-      let comp = (max - min) / 3;
-      let myColor = (v, low, high) => {
-        if (v < low) return "#24562B";
-        //matte green
-        else if (v >= low && v <= high) return "#F4BC1C";
-        //matte yellow
-        else if (v > high) return "#B2022F"; //matte red
-      };
-      let tooltipValue = (d) => {
-        let ttv = `<b>${TextValue(d)}</b><br> 
-          ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
-          ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
-          ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>`;
-        return ttv;
-      }
-      const onMouseOverPoly = d => {
-        tooltip
-          .transition()
-          .duration(200)
-          .style("opacity", 0.9);
-        tooltip
-          .html(tooltipValue(d))
-          .style("left", d3.event.pageX + "px")
-          .style("top", d3.event.pageY - 30 + "px");
-
-      };
-
-      let path = g.selectAll("path").data(geojson);
-      let pathEnter = path
-        .enter()
-        .append("path")
-        .attr("d", pathGenerator)
-        .attr("class", "boundary")
-        .style("fill", d => {
-          if (level !== 3) {
-            return myColor(ColorValue(d), low, high);
-          } else {
-            return "rgba(0,0,0,0)";
-          }
-        })
-        .on("mouseover", d => onMouseOverPoly(d))
-        .on("mouseout", function (d) {
-          tooltip
-            .transition()
-            .duration(500)
-            .style("opacity", 0);
-        });
-
-      //text over polygon
-      let textLabel = g
-        .selectAll("text")
-        .data(geojson)
-        .enter()
-        .append("text")
-        .text(d => {
-          if (level !== 3) {
-            return `${TextValue(d)}(${ColorValue(d)})`;
-          } else {
-            return "";
-          }
-        })
-        .attr("x", function (d) {
-          return pathGenerator.centroid(d)[0];
-        })
-        .attr("y", function (d) {
-          return pathGenerator.centroid(d)[1];
-        })
-        .attr("text-anchor", "middle")
-        .attr("font-family", "sans-serif");
-
-      if (level === 0) {
-        textLabel.attr("font-size", "1.2em").attr("font-weight", "bold");
-      } else if (level === 1) {
-        textLabel.attr("font-size", "1em").attr("font-weight", "bold");
-      } else if (level === 2) {
-        textLabel.attr("font-size", "0.38em").attr("font-weight", "bold");
-      }
-
-      //update slider color
-      const fillSlider = () => {
-        leftX2 = +d3.select("line.track-fill").attr("x1") - 15;
-        d3.select("line.leftcolor").attr("x2", leftX2);
-      };
-      //when slider move
-      sliderRange.on("onchange", val => {
-        fillSlider();
-        d3.select("p#value-range").text(val.map(d3.format(".1%")).join("-"));
-        low = (val[0] * 100).toFixed(2);
-        high = (val[1] * 100).toFixed(2);
-
-        pathEnter
-          .transition()
-          .duration(transitionDuration)
-          .style("fill", function (d) {
-            if (level !== 3) {
-              return myColor(ColorValue(d), low, high);
-            } else {
-              return 'rgba(0,0,0,0)';
-            }
-          });
-
-        if (level === 3) {
-          circleEnter
-            .transition()
-            .duration(transitionDuration)
-            .style("fill", function (d) {
-              return myColor(ColorValue(d), low, high);
-            });
-        }
-      });
-
-      let updatedCat;
-      const updateviz = selectedCat => {
+    const updateviz = (selectedCat) => {
         //update tooltip
         switch (selectedCat) {
           case 1:
@@ -436,8 +317,8 @@
 
             break;
           case 3:
-            updatedCat = "Severely Wasted Children";
-            Tooltipheader1 = d => "Severely Wasted Children:";
+            updatedCat = "Severely Wasted(SAM) Children";
+            Tooltipheader1 = d => "Severely Wasted(SAM) Children:";
             Tooltipheader2 = d => "";
             Tooltipheader3 = d => "Height Measurement efficiency:";
             TooltipVal1 = d => d.properties.svr_wstg;
@@ -502,11 +383,122 @@
 
             break;
         }
+      };
 
-        updateCategory(updatedCat);
-        min = d3.min(geojson, ColorValue);
-        max = d3.max(geojson, ColorValue);
-        comp = (max - min) / 3;
+    if (choices.length > 0) {
+     updateviz(parseInt(choices[0])); 
+     selectedCategory = updatedCat;
+     $('.drop-category a').parents('.dropdown').find('.dropdown-toggle').html(updatedCat + ' <span class="selectedCategory"></span>');
+     }
+    //makemap
+    const makemap = (geojson, tdata) => {
+      d3.select('.info-hirar').text(function () {
+        var hirarchy = "{{dist_name}}";
+        levelLocation.forEach(loc => {
+          hirarchy += ">" + loc;
+        })
+        return hirarchy;
+      })
+      updateMonth();
+      if (level == 0 && direction == 1) {
+        TextValue = d => d.properties.block;
+      } else if (level == 1 && direction == 1) {
+        TextValue = d => d.properties.project;
+      } else if (level == 2 && direction == 1) {
+        TextValue = d => d.properties.beat_na;
+      } else if (level == 2 && direction == 0) {
+        TextValue = d => d.properties.beat_na;
+      } else if (level == 1 && direction == 0) {
+        TextValue = d => d.properties.project;
+      } else if (level == 0 && direction == 0) {
+        TextValue = d => d.properties.block;
+      }
+      let min = d3.min(geojson, ColorValue);
+      let max = d3.max(geojson, ColorValue);
+      let comp = (max - min) / 3;
+     
+      let tooltipValue = (d) => {
+        let ttv = `<b>${TextValue(d)}</b><br> 
+          ${Tooltipheader1(d)}  ${TooltipVal1(d)} (${ColorValue(d)}%)<br>
+          ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
+          ${Tooltipheader3(d)}  ${TooltipVal3(d)}`;
+        return ttv;
+      }
+      const onMouseOverPoly = d => {
+        tooltip
+          .transition()
+          .duration(200)
+          .style("opacity", 0.9);
+        tooltip
+          .html(tooltipValue(d))
+          .style("left", d3.event.pageX + "px")
+          .style("top", d3.event.pageY - 30 + "px");
+
+      };
+
+       path = g.selectAll("path").data(geojson);
+       pathEnter = path
+        .enter()
+        .append("path")
+        .attr("d", pathGenerator)
+        .attr("class", "boundary")
+        .style("fill", d => {
+          if (level !== 3) {
+            return myColor(ColorValue(d), low, high);
+          } else {
+            return "rgba(0,0,0,0)";
+          }
+        })
+        .on("mouseover", d => onMouseOverPoly(d))
+        .on("mouseout", function (d) {
+          tooltip
+            .transition()
+            .duration(500)
+            .style("opacity", 0);
+        });
+
+      //text over polygon
+       textLabel = g
+        .selectAll("text")
+        .data(geojson)
+        .enter()
+        .append("text")
+        .text(d => {
+          if (level !== 3) {
+            return `${TextValue(d)}`;
+          } else {
+            return "";
+          }
+        })
+        .attr("x", function (d) {
+          return pathGenerator.centroid(d)[0];
+        })
+        .attr("y", function (d) {
+          return pathGenerator.centroid(d)[1];
+        })
+        .attr("text-anchor", "middle")
+        .attr("font-family", "sans-serif");
+
+      if (level === 0) {
+        textLabel.attr("font-size", "1.2em").attr("font-weight", "bold");
+      } else if (level === 1) {
+        textLabel.attr("font-size", "1em").attr("font-weight", "bold");
+      } else if (level === 2) {
+        textLabel.attr("font-size", "0.38em").attr("font-weight", "bold");
+      }
+
+      //update slider color
+      const fillSlider = () => {
+        leftX2 = +d3.select("line.track-fill").attr("x1") - 15;
+        d3.select("line.leftcolor").attr("x2", leftX2);
+      };
+      //when slider move
+      sliderRange.on("onchange", val => {
+        fillSlider();
+        d3.select("p#value-range").text(val.map(d3.format(".1%")).join("-"));
+        low = (val[0] * 100).toFixed(2);
+        high = (val[1] * 100).toFixed(2);
+
         pathEnter
           .transition()
           .duration(transitionDuration)
@@ -518,247 +510,16 @@
             }
           });
 
-        textLabel
-          .text(d => {
-            if (level !== 3)
-              return `${TextValue(d)}(${ColorValue(d)})`;
-          })
-          .exit()
-          .remove();
-      };
-
-
-      let updatepoints = () => {
-        min = d3.min(geojson, ColorValue);
-        max = d3.max(geojson, ColorValue);
-        comp = (max - min) / 3;
-        circleEnter
-          .transition()
-          .duration(transitionDuration)
-          .style("fill", d => {
-            return myColor(ColorValue(d), low, high)
-          });
-
-
-      }
-
-
-      //on category selection
-
-      $('.drop-category a').click(function () {
-        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-
-        let selCat = $(this).text();
-        let val;
-        switch (selCat) {
-          case "Severly Stunted Children": val = 1; break;
-          case "Stunted Children": val = 2; break;
-          case "Severely Wasted Children": val = 3; break;
-          case "Wasted Children": val = 4; break;
-          case "Severely Underweight Children": val = 5; break;
-          case "Underweight Children": val = 6; break;
-          case "Newborn with low birth rate": val = 7; break;
-        }
-        updateviz(val);
         if (level === 3) {
-          updatepoints(val);
+          circleEnter
+            .transition()
+            .duration(transitionDuration)
+            .style("fill", function (d) {
+              return myColor(ColorValue(d), low, high);
+            });
         }
-        updatetable(val);
-      })
-
-
-      const zoomToBoundingBox = d => {
-        let bounds = pathGenerator.bounds(d),
-          dx = bounds[1][0] - bounds[0][0],
-          dy = bounds[1][1] - bounds[0][1],
-          x = (bounds[0][0] + bounds[1][0]) / 2,
-          y = (bounds[0][1] + bounds[1][1]) / 2,
-          scale = Math.max(
-            1,
-            Math.min(8, 0.9 / Math.max(dx / innerWidth, dy / innerHeight))
-          ),
-          translate = [innerWidth / 2 - scale * x, innerHeight / 2 - scale * y];
-        zoomBox['translate'].push(translate);
-        zoomBox['scale'].push(scale);
-        svg
-          .transition()
-          .duration(transitionDuration)
-          .call(
-            zzoom.transform,
-            d3.zoomIdentity.translate(translate[0], translate[1])
-              .scale(scale)
-          );
-      };
-
-      //selectmap
-      const selectedSubFeature = (geojson, location) => {
-        let selection = [];
-        let geomType;
-        // if(level === 3 && direction == 0){
-        // } 
-        geojson.forEach(sel => {
-          if (level === 1) {
-            if (sel.properties.block === location) {
-              selection.push(sel);
-            }
-          } else if (level === 2) {
-            if (sel.properties.project === location) {
-              selection.push(sel);
-            }
-          } else if (level === 3) {
-            if (sel.properties.beat_na === location) {
-              selection.push(sel);
-            }
-          }
-        });
-        return selection;
-      };
-
-      // select sub points
-      const selectedSubPoint = (geojson, location) => {
-        let selection = [];
-        geojson.forEach(sel => {
-          if (sel.properties.beat === location) {
-            selection.push(sel);
-          }
-        });
-        return selection;
-      };
-
-      const selectedSubData = (csv, location) => {
-        let selection = [];
-        csv.forEach(sel => {
-          if (level === 1 && direction === 1) {
-            if (sel.block_n == location) {
-              selection.push(sel);
-            }
-          } else if (level === 2 && direction === 1) {
-            if (sel.project_n == location) {
-              selection.push(sel);
-            }
-          } else if (level === 3 && direction === 1) {
-            if (sel.beat_n == location) {
-              selection.push(sel);
-            }
-          }
-          else if (level === 2 && direction === 0) {
-            if (sel.project_n === location) {
-              selection.push(sel);
-            }
-          } else if (level === 1 && direction === 0) {
-            if (sel.block_n == location) {
-              selection.push(sel);
-            }
-          } else if (level === 0 && direction === 0) {
-            if (sel.block_n == location) {
-              selection.push(sel);
-            }
-          }
-        });
-        return selection;
-      };
-      // clicked
-      const clicked = d => {
-        if (level < 3) {
-          level++;
-          direction = 1;
-          zoomToBoundingBox(d);
-          let clickedLocation;
-          if (level === 1) {
-            clickedLocation = d.properties.block;
-          } else if (level === 2) {
-            clickedLocation = d.properties.project;
-          } else if (level === 3) {
-            clickedLocation = d.properties.beat_na;
-          }
-
-          levelLocation.push(clickedLocation);
-
-          let selectedJSON, selectedData;
-          let selectedPoints;
-          if (level === 1) {
-            selectedData = filterCSV(projectData, 'month_n', month_hack);
-            selectedJSON = addProperty(selectedData, project);
-          } else if (level === 2) {
-            selectedData = filterCSV(beatData, 'month_n', month_hack);
-            selectedJSON = addProperty(selectedData, beat);
-          } else if (level === 3) {
-            selectedData = filterCSV(awcData, 'month_n', month_hack);
-            selectedJSON = addProperty(selectedData, beat);
-            selectedPoints = addProperty(selectedData, awc);
-          }
-          let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
-          let selecteddata = selectedSubData(selectedData, clickedLocation);
-          g.selectAll("*").remove();
-          rowEnter.selectAll("*").remove();
-          // tooltip.remove();
-
-          makemap(selectedjson, selecteddata);
-
-          //Make geopoints for awc
-          if (level === 3) {
-            //onmouseover
-            const onMouseOver = d => {
-              let PointTextValue = d => d.properties.awc;
-              tooltip
-                .transition()
-                .duration(200)
-                .style("opacity", 0.9);
-
-              let tooltipValue = (d) => {
-                let ttv = `<b>${PointTextValue(d)}</b><br> 
-          ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
-          ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
-          ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>`;
-                return ttv;
-              }
-
-
-              // let pointTT = `<b>${PointTextValue(d)}</b><br> 
-              // 							Percentage Value: ${ColorValue(d)}<br>
-              // Actual Value: ${TooltipVal1(d)}<br>`;
-
-              // Moderate Value: ${TooltipVal2(d)}<br>
-              // Efficiency Value: ${TooltipVal3(d)}<br>
-              tooltip
-                .html(tooltipValue(d))
-                .style("left", d3.event.pageX + "px")
-                .style("top", d3.event.pageY - 30 + "px");
-
-            };
-
-            let selectedpoint = selectedSubPoint(selectedPoints, clickedLocation);
-            let circle = g.selectAll("circle").data(selectedpoint);
-            circleEnter = circle.enter()
-              .append("circle")
-              .attr("cx", d => mercator(d.geometry.coordinates)[0])
-              .attr("cy", d => mercator(d.geometry.coordinates)[1])
-              .attr("r", "2px")
-              .style("fill", d => {
-                return myColor(ColorValue(d), low, high);
-              })
-              .on("mouseover", d => onMouseOver(d))
-              .on("mouseout", function (d) {
-                tooltip
-                  .transition()
-                  .duration(500)
-                  .style("opacity", 0);
-              });
-            // let textLabel = g
-            //   .selectAll("text")
-            //   .data(selectedpoint)
-            //   .enter()
-            //   .append("text")
-            //   .text(d => d.properties.awc )
-            //   .attr("x", d => mercator(d.geometry.coordinates)[0]+1)
-            //   .attr("y", d => mercator(d.geometry.coordinates)[1])
-            //   // .attr("text-anchor", "middle")
-            //   .attr("font-family", "sans-serif")
-            // 	.attr("font-size","2px"); 
-
-          }
-        }// if condition ends here
-      };
+      });
+      
       pathEnter.on("click", clicked);
       // makePoint
       const makePoint = geoPoint => {
@@ -822,7 +583,74 @@
           fillCellColor(d, percentageColor, actualColor)
         );
 
-      const updatetable = selCat => {
+        $('.drop-category a').click(function () {
+        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+
+        let selCat = $(this).text();
+        let val;
+        switch (selCat) {
+          case "Severly Stunted Children": val = 1; break;
+          case "Stunted Children": val = 2; break;
+          case "Severely Wasted(SAM) Children": val = 3; break;
+          case "Wasted Children": val = 4; break;
+          case "Severely Underweight Children": val = 5; break;
+          case "Underweight Children": val = 6; break;
+          case "Newborn with low birth rate": val = 7; break;
+        }
+        updateviz(val);
+        updateMap(geojson);
+        if (level === 3) {
+          updatepoints(val, geojson);
+        }
+        updatetable(val, tdata);
+      })
+
+}
+
+      let updateMap =(geojson) => {
+        updateCategory(updatedCat);
+        min = d3.min(geojson, ColorValue);
+        max = d3.max(geojson, ColorValue);
+        comp = (max - min) / 3;
+        pathEnter
+          .transition()
+          .duration(transitionDuration)
+          .style("fill", function(d) {
+            if(level !== 3){
+            return myColor(ColorValue(d), low, high);
+            }else{
+              return 'rgba(0,0,0,0)';
+            }
+          });
+
+        textLabel
+          .text(d => {
+          if(level !== 3)
+            // return `${TextValue(d)}(${ColorValue(d)})`;
+            return `${TextValue(d)}`;
+
+          })
+          .exit()
+          .remove();
+      }
+
+      let updatepoints = (geojson) => {
+        min = d3.min(geojson, ColorValue);
+        max = d3.max(geojson, ColorValue);
+        comp = (max - min) / 3;
+        circleEnter
+          .transition()
+          .duration(transitionDuration)
+          .style("fill", d => {
+            return myColor(ColorValue(d), low, high)
+          });
+
+
+      }
+
+
+      //on category selection
+      const updatetable = (selCat, tdata)=> {
         rowEnter.selectAll("*").remove();
         switch (selCat) {
           case 1:
@@ -903,7 +731,15 @@
           );
       };
 
-      d3.select(".back-button").on("click", function () {
+let myColor = (v, low, high) => {
+        if (v < low) return "#24562B";
+        //matte green
+        else if (v >= low && v <= high) return "#F4BC1C";
+        //matte yellow
+        else if (v > high) return "#B2022F"; //matte red
+      };
+  
+d3.select(".back-button").on("click", function () {
         if (level > 0) {
           level--;
           zoomBox['translate'].pop(); zoomBox['scale'].pop();
@@ -957,69 +793,243 @@
       });
 
 
-    }
-    const selectGeoJSON = (val, allMonthGeoJSONData) => {
-      switch (val) {
-        case "Nov":
-          return allMonthGeoJSONData.Nov;
-          break;
-        case "Dec":
-          return allMonthGeoJSONData.Dec;
-          break;
-        case "Jan":
-          return allMonthGeoJSONData.Jan;
-          break;
+
+$('#monthSlider').slider().on('slideStop', function (ev) {
+  var val = tickLabels[ev.value];
+  month_hack = val;
+  g.selectAll("*").remove();
+  rowEnter.selectAll("*").remove();
+  let svgTrans = svg.transition().duration(transitionDuration);
+          // calculation for zoom
+          let transLength = zoomBox.translate.length;
+          let scaleLength = zoomBox.scale.length;
+          let transX, transY, scaleV;
+          if (level !== 0) {
+            transX = zoomBox.translate[transLength - 1][0];
+            transY = zoomBox.translate[transLength - 1][1];
+            scaleV = zoomBox.scale[scaleLength - 1];
+          }
+  if (level === 0) {
+        LocationDataMonth = filterCSV(blockData, 'month_n', month_hack);
+        LocationMonth = addProperty(LocationDataMonth, block);
+        makemap(LocationMonth, LocationDataMonth);
       }
-    };
-    const selectCSV = (val, allMonthCSVData) => {
-      switch (val) {
-        case "Nov":
-          return allMonthCSVData.Nov;
-          break;
-        case "Dec":
-          return allMonthCSVData.Dec;
-          break;
-        case "Jan":
-          return allMonthCSVData.Jan;
-          break;
+      else if (level === 1) {
+        LocationDataMonth = filterCSV(projectData, 'month_n', month_hack);
+        LocationMonth = addProperty(LocationDataMonth, project);
+
+        let previousBlock = levelLocation[levelLocation.length - 1];
+
+        let selectedjson = selectedSubFeature(LocationMonth, previousBlock);
+        let selectedcsv = selectedSubData(LocationDataMonth, previousBlock);
+        makemap(selectedjson, selectedcsv);
+      } else if (level === 2) {
+        LocationDataMonth = filterCSV(beatData, 'month_n', month_hack);
+        LocationMonth = addProperty(LocationDataMonth, beat);
+        //select beats map from project_name
+        let previousProject = levelLocation[levelLocation.length - 1];
+        let selectedjson = selectedSubFeature(LocationMonth, previousProject);
+        let selectedcsv = selectedSubData(LocationDataMonth, previousProject);
+        makemap(selectedjson, selectedcsv);
       }
-    };
-
-    var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
-
-    $('#monthSlider').slider().on('slideStop', function (ev) {
-      var val = tickLabels[ev.value];
-      month_hack = val;
-      let monthdata = filterCSV(blockData, 'month_n', val);
-      let monthjson = addProperty(monthdata, block);
-
-      level = 0;
-      g.selectAll("*").remove();
-      rowEnter.selectAll("*").remove();
-      svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
-      updateMonth();
-      levelLocation = [];
-      makemap(monthjson, monthdata);
+      else if (level === 3) {
+        LocationDataMonth = filterCSV(awcData, 'month_n', month_hack);
+        LocationMonth = addProperty(LocationDataMonth, beat);
+        selectedPoints = addProperty(LocationDataMonth, awc);
+        //select beats map from project_name
+        let previousbeat = levelLocation[levelLocation.length - 1];
+        let selectedjson = selectedSubFeature(LocationMonth, previousbeat);
+        let selectedcsv = selectedSubData(LocationDataMonth, previousbeat);
+        makemap(selectedjson, selectedcsv);
+        if (level === 3) {
+            makegeoPoints(selectedPoints, previousbeat);
+          }
+      }
     });
+	
+	   // clicked
+      const clicked = d => {
+        if (level < 3) {
+          level++;
+          direction = 1;
+          zoomToBoundingBox(d);
+          let clickedLocation;
+          if (level === 1) {
+            clickedLocation = d.properties.block;
+          } else if (level === 2) {
+            clickedLocation = d.properties.project;
+          } else if (level === 3) {
+            clickedLocation = d.properties.beat_na;
+          }
 
-    $(".drop-month a").click(function () {
-      $(this).parents(".dropdown").find('.btn').html($(this).text());
-      var val = $(this).text();
-      month_hack = val;
-      let monthdata = filterCSV(blockData, 'month_n', val);
-      let monthjson = addProperty(monthdata, block);
+          levelLocation.push(clickedLocation);
 
-      level = 0;
-      g.selectAll("*").remove();
-      rowEnter.selectAll("*").remove();
-      svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
-      updateMonth();
-      levelLocation = [];
-      makemap(monthjson, monthdata);
-    })
+          let selectedJSON, selectedData;
+          let selectedPoints;
+          if (level === 1) {
+            selectedData = filterCSV(projectData, 'month_n', month_hack);
+            selectedJSON = addProperty(selectedData, project);
+          } else if (level === 2) {
+            selectedData = filterCSV(beatData, 'month_n', month_hack);
+            selectedJSON = addProperty(selectedData, beat);
+          } else if (level === 3) {
+            selectedData = filterCSV(awcData, 'month_n', month_hack);
+            selectedJSON = addProperty(selectedData, beat);
+            selectedPoints = addProperty(selectedData, awc);
+          }
+          let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
+          let selecteddata = selectedSubData(selectedData, clickedLocation);
+          g.selectAll("*").remove();
+          rowEnter.selectAll("*").remove();
+          // tooltip.remove();
 
+          makemap(selectedjson, selecteddata);
+
+          //Make geopoints for awc
+          if (level === 3) {
+            makegeoPoints(selectedPoints, clickedLocation);
+          }
+        }// if condition ends here
+      };
+    
+      const makegeoPoints = (selectedPoints,clickedLocation)  => {
+
+        //onmouseover
+        const onMouseOver = d => {
+              let PointTextValue = d => d.properties.awc;
+              tooltip
+                .transition()
+                .duration(200)
+                .style("opacity", 0.9);
+
+              let tooltipValue = (d) => {
+                let ttv = `<b>${PointTextValue(d)}</b><br> 
+          ${Tooltipheader1(d)}  ${TooltipVal1(d)} (${ColorValue(d)}%)<br>
+          ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
+          ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>`;
+                return ttv;
+              }
+              tooltip
+                .html(tooltipValue(d))
+                .style("left", d3.event.pageX + "px")
+                .style("top", d3.event.pageY - 30 + "px");
+
+            };
+
+            let selectedpoint = selectedSubPoint(selectedPoints, clickedLocation);
+            let circle = g.selectAll("circle").data(selectedpoint);
+            circleEnter = circle.enter()
+              .append("circle")
+              .attr("cx", d => mercator(d.geometry.coordinates)[0])
+              .attr("cy", d => mercator(d.geometry.coordinates)[1])
+              .attr("r", "2px")
+              .style("fill", d => {
+                return myColor(ColorValue(d), low, high);
+              })
+              .on("mouseover", d => onMouseOver(d))
+              .on("mouseout", function (d) {
+                tooltip
+                  .transition()
+                  .duration(500)
+                  .style("opacity", 0);
+              });
+
+      }
+      
+	  //selectmap
+      const selectedSubFeature = (geojson, location) => {
+        let selection = [];
+        let geomType;
+        // if(level === 3 && direction == 0){
+        // } 
+        geojson.forEach(sel => {
+          if (level === 1) {
+            if (sel.properties.block === location) {
+              selection.push(sel);
+            }
+          } else if (level === 2) {
+            if (sel.properties.project === location) {
+              selection.push(sel);
+            }
+          } else if (level === 3) {
+            if (sel.properties.beat_na === location) {
+              selection.push(sel);
+            }
+          }
+        });
+        return selection;
+      };
+
+      // select sub points
+      const selectedSubPoint = (geojson, location) => {
+        let selection = [];
+        geojson.forEach(sel => {
+          if (sel.properties.beat === location) {
+            selection.push(sel);
+          }
+        });
+        return selection;
+      };
+
+      const selectedSubData = (csv, location) => {
+        let selection = [];
+        csv.forEach(sel => {
+          if (level === 1 && direction === 1) {
+            if (sel.block_n == location) {
+              selection.push(sel);
+            }
+          } else if (level === 2 && direction === 1) {
+            if (sel.project_n == location) {
+              selection.push(sel);
+            }
+          } else if (level === 3 && direction === 1) {
+            if (sel.beat_n == location) {
+              selection.push(sel);
+            }
+          }
+          else if (level === 2 && direction === 0) {
+            if (sel.project_n === location) {
+              selection.push(sel);
+            }
+          } else if (level === 1 && direction === 0) {
+            if (sel.block_n == location) {
+              selection.push(sel);
+            }
+          } else if (level === 0 && direction === 0) {
+            if (sel.block_n == location) {
+              selection.push(sel);
+            }
+          }
+        });
+        return selection;
+      };
+	  
+	    const zoomToBoundingBox = d => {
+        let bounds = pathGenerator.bounds(d),
+          dx = bounds[1][0] - bounds[0][0],
+          dy = bounds[1][1] - bounds[0][1],
+          x = (bounds[0][0] + bounds[1][0]) / 2,
+          y = (bounds[0][1] + bounds[1][1]) / 2,
+          scale = Math.max(
+            1,
+            Math.min(8, 0.9 / Math.max(dx / innerWidth, dy / innerHeight))
+          ),
+          translate = [innerWidth / 2 - scale * x, innerHeight / 2 - scale * y];
+        zoomBox['translate'].push(translate);
+        zoomBox['scale'].push(scale);
+        svg
+          .transition()
+          .duration(transitionDuration)
+          .call(
+            zzoom.transform,
+            d3.zoomIdentity.translate(translate[0], translate[1])
+              .scale(scale)
+          );
+      };
+   
     //initial map
-    month_hack = tickLabels[$('#monthSlider').slider('getValue')];
+    var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
+    month_hack = tickLabels[0];
     let monthdata = filterCSV(blockData, 'month_n', month_hack);
     let monthjson = addProperty(monthdata, block);
     makemap(monthjson, monthdata);
@@ -1207,27 +1217,30 @@
     awcCSV
   );
 }
-  fetchGeoJSON().then(mergeData);
+
+fetchGeoJSON().then(mergeData);
 
   $(function () {
     //bind event
-    $(".drop-month a").click(function () {
-      var valMonth = $(this).text();
-      $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
-    });
-
-
-
+    
     $(".drop-category a").click(function () {
       var valCategory = $(this).text();
       $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
     });
     //trigger event
-    $('.drop-month a').first().trigger('click');
+    if (choices.length <= 0)
     $(".drop-category a").first().trigger('click');
-
   });
+    
 
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
 
   const sliderRange = d3
     .sliderBottom()

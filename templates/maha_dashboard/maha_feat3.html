@@ -165,15 +165,42 @@
   }
 
   var radius = Math.min(1100, 750) / 3;
+  let choices = parseURLParameters(window.location.href);
+
   let prjType = 'Urban';
 
   const render = data => {
 
     let arcInitial = d => d.wasting_percent;
 
+    const setArcInitial = opt =>
+    {
+      if (opt == 'Wasting(%)') {
+        arcInitial = d => d.wasting_percent;
+      } else if (opt == 'Stunting(%)') {
+        arcInitial = d => d.stunting_percent;
+      } else if (opt == 'Underweight(%)') {
+        arcInitial = d => d.underweight_percent;
+      }
+      else {
+        arcInitial = d => d.low_birth_weight_percent;
+      }
+
+    }
+
     const margin = { left: 750, top: 320, right: 170, bottom: 20 };
     const innerWidth = 1100 - margin.left - margin.right;
     const innerHeight = 750 - margin.top - margin.bottom;
+
+    if (choices.length > 0) 
+    {
+      let selectedCat = choices[0].replace(/_/g, ' ');
+      var displayVal = selectedCat.substring(0, selectedCat.length - 3);
+      document.getElementById('paraText').innerHTML = displayVal + " Contribution: ";
+      document.getElementById('bartitleCategory').innerHTML = displayVal + " : District wise Contribution";
+      $('.category a').parents('.dropdown').find('.dropdown-toggle').html(selectedCat + ' <span class="selectedCategory"></span>');
+      setArcInitial(selectedCat); 
+    }
 
     const g = svg.append('g')
       .attr('transform', `translate(${margin.left}, ${margin.top})`);
@@ -251,22 +278,10 @@
       });
 
 
-    makeviz = opt => {
+    makeviz = (arcInitial) => {
       g.selectAll(".arc").remove();
-      // arc.selectAll("*").remove();
       $(".hello").remove();
-
       let tansitionDuration = 1000;
-      if (opt == 'Wasting(%)') {
-        arcInitial = d => d.wasting_percent;
-      } else if (opt == 'Stunting(%)') {
-        arcInitial = d => d.stunting_percent;
-      } else if (opt == 'Underweight(%)') {
-        arcInitial = d => d.underweight_percent;
-      }
-      else {
-        arcInitial = d => d.low_birth_weight_percent;
-      }
 
       var pie = d3.pie()
         .value(function (d) {
@@ -351,17 +366,22 @@
       val = document.getElementById("opt").value
     }
 
-    makeviz("Wasting(%)");
+    makeviz(arcInitial);
     $(".category a").click(function () {
       $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
       $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
       var valCategory = $(this).text();
-      var displayVal = valCategory.substring(0, valCategory.length - 3);
-      document.getElementById('paraText').innerHTML = displayVal + " Contribution: ";
-      document.getElementById('bartitleCategory').innerHTML = displayVal + " : District wise Contribution";
-      makeviz(valCategory);
-
+      displayPie(valCategory);
     });
+
+    function displayPie(valCategory)
+    {
+        var displayVal = valCategory.substring(0, valCategory.length - 3);
+          document.getElementById('paraText').innerHTML = displayVal + " Contribution: ";
+          document.getElementById('bartitleCategory').innerHTML = displayVal + " : District wise Contribution";
+          setArcInitial(valCategory);
+          makeviz(arcInitial);
+    }
   }
 
   $(".ptype a").click(function () {
@@ -374,6 +394,15 @@
     svg.selectAll("*").remove();
     render(pt_data);
   });
+
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
 
   $(function () {
     //bind event
@@ -390,56 +419,11 @@
     });
 
     //trigger event
+    if(choices.length <= 0)
     $(".category a").first().trigger('click');
 
   });
 
-
-  // const monthwise = (data) => {
-  //   data.forEach(d => {
-  //     d.wasting_percent = +d.wasting_percent;
-  //     d.stunting_percent = +d.stunting_percent;
-  //     d.underweight_percent = +d.underweight_percent;
-  //     d.low_birth_weight_percent = +d.low_birth_weight_percent;
-  //     d.per_no_enrld = +d.per_no_enrld;
-  //   });
-
-  // var aproperty = [];
-  // var sproperty = [];
-  // var oproperty = [];
-  // data.forEach(d => {
-  //   var temp = {};
-  //   temp['district_n'] = d.district_n;
-  //   temp['wasting_percent'] = d.wasting_percent;
-  //   temp['stunting_percent'] = d.stunting_percent;
-  //   temp['underweight_percent'] = d.underweight_percent;
-  //   temp['low_birth_weight_percent'] = d.low_birth_weight_percent;
-  //   temp['per_no_enrld'] = d.per_no_enrld;
-  //   if (d.month_n == "Nov") {
-  //     aproperty.push(temp);
-  //   } else if (d.month_n == "Dec") {
-  //     sproperty.push(temp);
-  //   } else if (d.month_n == "Jan") {
-  //     oproperty.push(temp);
-  //   }
-
-  // })
-
-  // var listdata = [
-  //   aproperty, sproperty, oproperty
-  // ]
-  // return listdata;
-  // }
-
-  // const selectData = (val, monthwiseData) => {
-  //   if (val == "November") {
-  //     return monthwiseData[0];
-  //   } else if (val == "December") {
-  //     return monthwiseData[1];
-  //   } else if (val == 'January') {
-  //     return monthwiseData[2]
-  //   }
-  // }
 
   /////
   data_from_django = {{ data | safe }};

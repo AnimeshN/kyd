@@ -4,7 +4,8 @@ from django.db.models import Q
 from django.core import serializers
 from django.core.serializers import serialize
 from django.contrib.auth.mixins import LoginRequiredMixin
-from .models import (F1, F2, F3, F4, F5Awc, F5Beat, F5Blk, F5Prjt, FtLcPrjt, FtLcBlk, FtLcBeat, FtRadar1, FtRadar2,
+from .models import (F1, F2, F3, F4, F5Awc, F5Beat, F5Blk, F5Prjt, FtLcPrjt, FtLcBlk, FtLcBeat, 
+       FtRadar1, FtRadar2,
        F6OiBlock, F6OiProject, F6OiBeat, F6OiAwc, 
        F7IycfAw, F7IycfBlock, F7IycfBt, F7IycfProject,
        F8PwProject, F8PwBlock, F8PwBeat, F8PwAwc,
@@ -17,25 +18,19 @@ from .models import (F1, F2, F3, F4, F5Awc, F5Beat, F5Blk, F5Prjt, FtLcPrjt, FtL
 
 class KYDDashboardView(LoginRequiredMixin, TemplateView):
     template_name = "kyd_dashboard/kyd_base.html"
-        
-        
-class F1MsrmntEffcyBlk_post(LoginRequiredMixin, TemplateView):
+
+
+class DtDashboard(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
     redirect_field_name = 'login'
 
     def post(self, request):
         dt_name = request.POST['dist_select']   
-        fy_name = request.POST['fy_select'] 
-        # print("fy_name")  
-        # print(fy_name)
-        # quarter_S = request.POST['quarter_select']   
-        # months =  QuarterSelect.objects.filter(quarter=quarter_S).values('month')  
-        # data = F1.objects.all().filter(Q(district_n=dt_name) & (Q(month_n=months[0]['month']) | Q(month_n=months[1]['month']) | Q(month_n=months[2]['month'])))
-        data = F1.objects.all().filter(Q(district_n=dt_name) & Q(financial_year=fy_name))
-        print(data)
-        jsondata = serializers.serialize('json',data)
+        fy_name = request.POST['fy_select']         
+        data = DtAvgTable.objects.filter(Q(district_n=dt_name) & Q(financial_year=fy_name))
+        jsondata = serializers.serialize('json', data)
 
-        return render(request,'kyd_dashboard/f1_msrmnt_effcy_blk.html', {'data':jsondata, 'dist_name': dt_name , 'fy': fy_name})
+        return render(request,'kyd_dashboard/dt_dashboard.html', {'data':jsondata, 'dist_name': dt_name, 'fy': fy_name})
 
 
 class F1MsrmntEffcyBlk(LoginRequiredMixin, TemplateView):

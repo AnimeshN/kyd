@@ -6,21 +6,65 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import redirect
 from django.contrib.auth.models import User
 from django.db.models import Q
+from .models import (DtAvgTable, ConsoChildAll, DistrictPwd)
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.core import serializers
+from django.core.serializers import serialize
+from .serializers import DtAvgTableSerializer
+import json
+from django.http import JsonResponse
 
 
 # Create your views here.
-from .models import ConsoChildAll, DistrictPwd
+
+def create_post_area(request, fy=None, dist_name=None):
+    dist = request.GET.get('dist_name', dist_name) 
+    areaSelected = request.GET.get('area')
+    monthSelected = request.GET.get('month')
+    fy_name = request.GET.get('fy', fy) 
+    if areaSelected =='All':
+        areaSelected = 'Maharashtra'
+    data = DtAvgTable.objects.filter(Q(district_n=areaSelected) & Q(financial_year=fy_name) & Q(month=monthSelected))
+    jsondata = json.dumps(DtAvgTableSerializer(data,  many=True).data)
+    print(jsondata[0])
+    return JsonResponse({'data':jsondata, 'dist_name': areaSelected})
+       
 
 class DashboardView(TemplateView):
     def get(self,request):
+        # username = request.user.username
+
+        # if (username == 'admin' or username == 'Maharashtra'):
+        #     dt_name = DistrictPwd.objects.all()
+        # else:
+        #     dt_name = DistrictPwd.objects.filter(Q(district_n=username) | Q(district_n='Maharashtra'))
+        #template_name = "dashboard/dash.html"
+        return render(request,'dashboard/dash.html')
+
+class RegionOverview(LoginRequiredMixin, TemplateView):
+    login_url = '/login/'
+    redirect_field_name = 'login'
+    def post(self,request):
         username = request.user.username
-
+        fy_name = request.POST['fy_select']
         if (username == 'admin' or username == 'Maharashtra'):
-            dt_name = DistrictPwd.objects.all()
+            dt_name = DistrictPwd.objects.filter(Q(state_n='Maharashtra')).values('district_n').distinct().order_by('district_n')
         else:
-            dt_name = DistrictPwd.objects.filter(Q(district_n=username) | Q(district_n='Maharashtra'))
+            print("in else")
+            dt_name = DistrictPwd.objects.filter(Q(state_n='Maharashtra') & Q(district_n=username)).values('district_n').distinct()
+            block_name = DistrictPwd.objects.filter(Q(state_n='Maharashtra') & Q(district_n=username)).values('block_n').distinct()
+       
+        if (username == 'admin' or username == 'Maharashtra'):
+            district_name = 'Maharashtra'
+           
+        else:
+            district_name =username 
+       
+        data = DtAvgTable.objects.filter(Q(district_n=district_name) & Q(financial_year=fy_name) & Q(month='All'))
+        jsondata = serializers.serialize('json',data)
+        print(data)
+        return render(request,'dashboard/dt_dashboard.html', {'dd_dt_data':dt_name, 'data':jsondata, 'dist_name':district_name, 'fy': fy_name})
 
-        return render(request,'dashboard/dash.html', {'dd_dt_data':dt_name})
 
 
 def login_request(request):

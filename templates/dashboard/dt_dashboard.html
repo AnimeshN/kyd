@@ -1,0 +1,239 @@
+{% extends 'base.html' %}
+
+{% load static %}
+
+{% block content%}
+        
+        <!-- <link rel="stylesheet" href="{% static 'kyd_dashboard/css/index.css' %}"> -->
+        
+    <style>
+    #indiDetails {
+        width:100%;
+        height:100%;
+    }
+  
+    .lc_link {
+        font-weight: bold;
+    }
+
+    span {
+        font-weight: bold;
+        font-size: calc(35% + 0.5vw + 0.5vh);
+    }
+
+    .table {
+        /* margin: 20px;
+        margin-left: 40px; */
+        margin: 0 auto; /* or margin: 0 auto 0 auto */
+        width: 96%;
+    }
+
+    .table-sm td,
+    .table-sm th {
+        padding: 0px;
+    }
+
+    td,
+    th {
+        font-size: calc(25% + 0.5vw + 0.5vh);
+    }
+
+    td.nutri_ind {
+        width: 35%;
+    }
+
+    th {
+        margin-left: 40px;
+    }
+
+    .i_cat {
+        text-align: center;
+    }
+
+    .dt_avg {
+        float: right;
+        font-weight: bold;
+        font-size: calc(30% + 0.5vw + 0.5vh);
+    }
+        </style>
+        
+   
+        
+        <div class="row">
+            <div class="col-12 h-75">
+                <h1 class="display-4 font-weight-bold font-italic text-center"><u>Dashboard</u></h1>
+            </div>
+        </div>
+        <form method="POST" name="nutriInfo">
+            {% csrf_token %}
+            <div class="row mt-2 ml-2">
+                <div class="col-2">
+                    <select class="custom-select" name ="month_select" id="month-1"> 
+                      <option value='All' selected>All</option>   
+                      <option value="Aug">Aug</option>  
+                      <option value="Sep">Sep</option>    
+                      <option value="Oct">Oct</option>    
+                      <option value="Nov">Nov</option>    
+                      <option value="Dec">Dec</option>  
+                      <option value="Jan">Jan</option>                         
+                  </select> 
+                </div>
+                <div class="col-2">
+                    <select class="custom-select" name ="state_select" id="state-1"> 
+                        <option value='Maharashtra' selected>Maharashtra</option>                       
+                    </select> 
+                </div>
+                <div class="col-2">
+                  <select class="custom-select" name ="area_select" id="area-1"> 
+                    <option value='All'>All</option>   
+                    {% for dist_select in dd_dt_data %}
+                    <option value="{{ dist_select.district_n }}">{{ dist_select.district_n }}
+                    </option>
+                    {% endfor %}                            
+                </select> 
+              </div>  
+            </div>
+           
+           </form> 
+        <br>
+
+        <div  id='indiDetails'>
+            {% if dist_name != 'Maharashtra' %}
+            {% include 'dashboard/district_dash.html' %}
+            {% else %}
+            {% include 'dashboard/mh_dash.html' %}
+            {% endif %}
+        </div> 
+        
+        <script>
+            $("#area-1").change(function(e){
+            areaSelected = $('#area-1').val();
+            monthSelected = $('#month-1').val();
+            e.preventDefault();
+            $.ajax({
+                url : "{% url 'ajaxArea' dist_name fy %}", // the endpoint
+                method : "GET", // http method
+                data : { area : $('#area-1').val(),
+                month: $('#month-1').val()
+                 }, 
+                 success : function(response) {
+                    let dataAjax = JSON.parse(response.data);
+                    let district = response.dist_name;
+                    $('#indiDetails').empty();
+                    let html_district = $('{% include "dashboard/district_dash.html" %}');
+                    let html_state = $('{% include "dashboard/mh_dash.html" %}');
+                   
+                    if(district != 'Maharashtra')
+                    {     
+                        $("#indiDetails").append(html_district);
+                    }
+                    else{
+                        $("#indiDetails").append(html_state); 
+                    }
+                    updateData(dataAjax);
+                    }
+                });
+        
+            });
+
+         $("#month-1").change(function(e){
+            areaSelected = $('#area-1').val();
+            monthSelected = $('#month-1').val();
+            e.preventDefault();
+            $.ajax({
+                url : "{% url 'ajaxArea' dist_name fy %}", // the endpoint
+                method : "GET", // http method
+                data : { area : $('#area-1').val(),
+                month: $('#month-1').val()
+                 }, 
+                 success : function(response) {
+                    let dataAjax = JSON.parse(response.data);
+                    let district = response.dist_name;
+                    updateData(dataAjax);
+                    }
+                });
+        
+            });
+
+
+
+            data_from_django = {{ data | safe }};
+            var data = []
+            data_from_django.forEach(element => {
+                data.push(element.fields);
+            });
+            updateData(data);
+
+            $(function () 
+            {       
+                    let district = '{{ dist_name }}';
+                    if(district != 'Maharashtra')
+                    { 
+                        $("#area-1").val(district);
+                    }
+                  
+            });
+
+           
+
+            function updateData(data)
+            {
+           // console.log(data[0].district_n);
+            //Measurement Efficiency
+            document.getElementById('dt_avght').innerHTML = data[0].ht_percent + "%";
+            document.getElementById('dt_avgwt').innerHTML = data[0].wt_percent + "%";
+            document.getElementById('dt_avghtwt').innerHTML = data[0].ht_wt_percent + "%";
+        
+            //Outcome Indicators
+            document.getElementById('dt_svstnt').innerHTML = data[0].svrly_stunting_percent + "%";
+            document.getElementById('dt_stnt').innerHTML = data[0].stunting_percent + "%";
+            document.getElementById('dt_svwstd').innerHTML = data[0].svr_wasting_percent + "%";
+            document.getElementById('dt_wstd').innerHTML = data[0].wasting_percent + "%";
+            document.getElementById('dt_svuw').innerHTML = data[0].svrly_underweight_percent + "%";
+            document.getElementById('dt_uw').innerHTML = data[0].underweight_percent + "%";
+            document.getElementById('dt_lbw').innerHTML = data[0].low_birth_weight_percent + "%";
+        
+            //Child Related Indicators
+            document.getElementById('dt_c1yi').innerHTML = data[0].prnt_child_1yr_immnztn + "%";
+            document.getElementById('dt_cbfb').innerHTML = data[0].prnt_chld_bf_at_birth + "%";
+            document.getElementById('dt_cxbf').innerHTML = data[0].prnt_chld_excly_bf + "%";
+            document.getElementById('dt_cicf').innerHTML = data[0].prnt_chld_intd_cf_p30d + "%";
+            document.getElementById('dt_c624cf').innerHTML = data[0].prnt_intd_cf_6to24mnth_child + "%";
+        
+            //Pregnant Women Indicators
+            document.getElementById('dt_anewmn').innerHTML = data[0].prnt_anwmic_wmn + "%";
+            document.getElementById('dt_tntcmpltd').innerHTML = data[0].prnt_tenatus_cmpltd + "%";
+            document.getElementById('dt_wmn1anc').innerHTML = data[0].prnt_wmn_1_anc_vst_dlvry + "%";
+            document.getElementById('dt_wmn4anc').innerHTML = data[0].prnt_wmn_4_anc_vst_dlvry + "%";
+            document.getElementById('dt_wmnrstg').innerHTML = data[0].prnt_wmn_rstg_drg_prgncy + "%";
+            document.getElementById('dt_xtrameal').innerHTML = data[0].prnt_wmn_etg_xtr_ml_drng_prgncy + "%";
+            document.getElementById('dt_trimester').innerHTML = data[0].prnt_trmstr_3wmn_cnsld_imdtbf + "%";
+
+            //AWC Infrastructure
+           if( $("#area-1").val() !='All')
+           {
+               console.log("area", $("#area-1").val());
+            document.getElementById('dt_ai_dw').innerHTML = data[0].drinking_water + "%";
+            document.getElementById('dt_ai_ft').innerHTML = data[0].functional_toilet + "%";
+            document.getElementById('dt_ai_mk').innerHTML = data[0].medicine_kit + "%";
+            document.getElementById('dt_ai_wsi').innerHTML = data[0].weighing_scale_for_infants + "%";
+            document.getElementById('dt_ai_wsm').innerHTML = data[0].weighing_scale_for_mother_and_child + "%";
+            document.getElementById('dt_ai_inf').innerHTML = data[0].infantometer + "%";
+            document.getElementById('dt_ai_std').innerHTML = data[0].stadiometer + "%";
+           }
+            var district= '{{ dist_name }}'; 
+            if(data[0].district_n != district)
+                {
+                 console.log(district); 
+                 $('a[href]').each(function(){ 
+                        var oldUrl = $(this).attr("href"); // Get current url
+                        var newUrl = oldUrl.replace(district, data[0].district_n); // Create new url
+                        $(this).attr("href", newUrl); // Set herf value
+                    });
+
+                }
+            }
+        
+        </script>
+        
+        {% endblock %}

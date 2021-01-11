@@ -288,6 +288,10 @@
     $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
     $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
     var valCategory = $(this).text();
+    displayChart(valCategory);
+  });
+
+  function displayChart(valCategory) {
     var displayVal = valCategory.substring(0, valCategory.length - 1);
 
     if (displayVal == "Height+Weight")
@@ -310,8 +314,7 @@
     tableData = tables(pt_data);
     svg.selectAll("*").remove();
     render(mydata);
-
-  });
+  }
 
   $(".ptype a").click(function () {
     $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
@@ -361,6 +364,12 @@
     render(mydata);
   });
 
+  let choices = parseURLParameters(window.location.href);
+  if (choices.length > 0) {
+    $('.category a').parents('.dropdown').find('.dropdown-toggle').html(choices[0] + ' <span class="selectedCategory"></span>');
+    displayChart(choices[0]);
+  }
+
   $(function () {
 
     $('.ptype a').parents('.dropdown').find('.dropdown-toggle').html('Urban' + ' <span class="selectedPtype"></span>');
@@ -371,15 +380,18 @@
     });
 
     //trigger event
+    if (choices.length < 0) 
     $(".category a").first().trigger('click');
   });
 
-  // monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  // augData = filterCSV(data, 'month_n', monthSelect);
-  // augData1 = filterCSV(augData, 'project_type', prjType);
-  // sortedData = sortData(augData1, sortBy);
-  // render(sortedData);
-  // tables(augData1);
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
 
   function tables(data) {
     $(".hello").remove();

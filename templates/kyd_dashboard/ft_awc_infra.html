@@ -159,7 +159,7 @@
 
     var color = d3.scaleOrdinal().range(["#0571b0", "#f4a582", "#ca0020", "#92c5de", "#800080", "#00FFFF", "#008000"]);
 
-    var keys = d3.keys(data[0]).filter(function (key) { return (key != "district_n" && key != "month_n" && key != "block_n"); });
+    var keys = d3.keys(data[0]).filter(function (key) { return (key != "district_n" && key != "month_n" && key != "block_n" && key != "financial_year" ); });
     var dAges;
     data.forEach(function (d) {
       dAges = keys.map(function (name) { return { name: name, value: +d[name] }; });
@@ -319,8 +319,6 @@
     render(filterdata);
   });
 
-
-
   $(".month a").click(function () {
 
     $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
@@ -334,9 +332,6 @@
     svg.selectAll("*").remove();
 
     render(filterdata);
-
-
-
   });
 
 

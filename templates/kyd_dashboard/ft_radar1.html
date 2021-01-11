@@ -263,10 +263,11 @@
   var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
 
   $('#monthSlider').slider().on('slideStop', function (ev) {
-    $('input[type=checkbox]').prop('checked', false);
-    document.getElementById("myBestProject").checked = true;
-    document.getElementById("myDistrict").checked = true;
-    document.getElementById("myMH").checked = true;
+    
+   //$('input[type=checkbox]').prop('checked', false);
+    // document.getElementById("myBestProject").checked = true;
+    // document.getElementById("myDistrict").checked = true;
+    // document.getElementById("myMH").checked = true;
     var val = tickLabels[ev.value];
     mydata = filterCSV(data, 'month_n', val);
     chartStatData = dataforchart(mydata);
@@ -274,10 +275,6 @@
     getSelectedDistricts(chartStatData)
   });
 
-  // monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  // augData = filterCSV(data, 'month_n', monthSelect);
-  // chartStatData = dataforchart(augData);
-  // render(dataforchart(augData));
 
   $(function () {
     document.getElementById("myBestProject").checked = true;

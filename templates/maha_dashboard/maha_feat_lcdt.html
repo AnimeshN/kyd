@@ -447,7 +447,7 @@
         .data(result).enter()
         .append('div')
         .style('color', 'black')
-        .html(d => d.key + ': ' + '<b>' + yScale.invert(yScale(d.values[xI].value)).toFixed(2) +'</b>');
+        .html(d => d.key + ': ' + '<b>' + yScale.invert(yScale(d.values[xI].actual_no)).toFixed(0) + ' (' + yScale.invert(yScale(d.values[xI].value)).toFixed(2)+ '%)' + '</b>');
     }
 
   };
@@ -494,33 +494,73 @@
     d.svrly_underweight_percent = +d.svrly_underweight_percent;
     d.underweight_percent = +d.underweight_percent;
     d.low_birth_weight_percent = +d.low_birth_weight_percent;
+    d.stunted_child = +d.stunted_child;
+    d.svrly_stntd=+d.svrly_stntd;
+    d.wasted_child = +d.wasted_child;
+    d.svr_wstg=+d.svr_wstg;
+    d.uw_child = +d.uw_child;
+    d.svrly_uw=+d.svrly_uw;
+    d.nb_lbw=+d.nb_lbw;
+    d.month_n =d.month_n;
   });
 
   let section = 'svrly_stunted_percent'
+  let sec_numeric = 'svrly_stntd';
 
   $(".category a").click(function () {
     var val = $(this).text();
     selectedCategory = val;
-    var section;
-    if (val == 'Severly Stunted Children')
-      section = 'svrly_stunted_percent';
-    else if (val == 'Stunted Children')
-      section = 'stunting_percent';
-    else if (val == 'Severly Wasted(SAM) Children')
-      section = 'svr_wasting_percent';
-    else if (val == 'Wasted Children')
-      section = 'wasting_percent';
-    else if (val == 'Severly Underweight(SUW) Children')
-      section = 'svrly_underweight_percent';
-    else if (val == 'Underweight Children')
-      section = 'underweight_percent'
-    else
-      section = 'low_birth_weight_percent'
+    setSection(val); 
+    pt_data = filterCSV(data, 'project_type', prjType);
+    d3.selectAll(".mouse-per-line circle").remove();
+    setData(pt_data, section)
+  });
 
+  let choices = parseURLParameters(window.location.href);
+  if (choices.length > 0) {
+    let selectedCat = choices[0].replace(/_/g, ' ');
+    selectedCategory = selectedCat;  
+    $('.category a').parents('.dropdown').find('.dropdown-toggle').html(selectedCat + ' <span class="selectedCategory"></span>');
+    setSection(selectedCat); 
     pt_data = filterCSV(data, 'project_type', prjType);
     setData(pt_data, section)
+  }
+  else{
+    pt_data = filterCSV(data, 'project_type', prjType);
+    setData(pt_data, section)
+  }
 
-  });
+    function setSection(val)
+  {
+    if (val == 'Severly Stunted Children'){
+      sec_numeric = 'svrly_stntd';
+      section = 'svrly_stunted_percent';
+    }
+    else if (val == 'Stunted Children'){
+      sec_numeric = 'stunted_child';
+      section = 'stunting_percent';
+    }
+    else if (val == 'Severly Wasted(SAM) Children'){
+      sec_numeric = 'svr_wstg';
+      section = 'svr_wasting_percent';
+    }
+    else if (val == 'Wasted Children'){
+      sec_numeric = 'wasted_child';
+      section = 'wasting_percent';
+    }
+    else if (val == 'Severly Underweight(SUW) Children'){
+      sec_numeric = 'svrly_uw';
+      section = 'svrly_underweight_percent';
+    }
+    else if (val == 'Underweight Children'){
+      sec_numeric = 'uw_child';
+      section = 'underweight_percent';
+    }
+    else{
+      sec_numeric = 'nb_lbw';
+      section = 'low_birth_weight_percent'
+    }
+  }
 
   $(".ptype a").click(function () {
     $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
@@ -532,12 +572,13 @@
   });
 
   function setData(data, section) {
-    var dataFilter = data.map(function (d) { return { month: d.month_n, district: d.district_n, value: d[section] } })
+    var dataFilter = data.map(function (d) { return { month: d.month_n, district: d.district_n, value: d[section], actual_no: d[sec_numeric] } })
 
     //debugger
 
     dataFilter.forEach(function (d) {
       d.value = +d.value;
+      d.actual_no =  +d.actual_no; 
     });
 
     //debugger
@@ -549,13 +590,14 @@
   pt_data = filterCSV(data, 'project_type', prjType);
   setData(pt_data, section);
 
-  // var dataFilter = pt_data.map(function (d) { return { month: d.month_n, district: d.district_n, value: d.svrly_stunted_percent } })
-  // // generate initial graph
-  // //data = filterCSV(csv, 'type', 'Stunting');
-
-  // render(dataFilter);
-
-  // });
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
 
   $(function () {
     //bind event
@@ -567,6 +609,7 @@
     });
 
     //trigger event
+    if(choices.length <= 0)
     $(".category a").first().trigger('click');
 
   });

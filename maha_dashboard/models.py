@@ -367,9 +367,9 @@ class Mhf8PwSubDt(models.Model):
 
 class MhftLcDt(models.Model):
     month_n = models.CharField(max_length=10, blank=True, null=True)
+    financial_year = models.CharField(max_length=25, blank=True, null=True)
     state_n = models.CharField(max_length=25, blank=True, null=True)
     district_n = models.CharField(max_length=25, blank=True, null=True)
-    project_type = models.CharField(max_length=25, blank=True, null=True)
     mdrtly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     svrly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     svr_wstg = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
@@ -377,6 +377,9 @@ class MhftLcDt(models.Model):
     svrly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     mdrtly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     nb_lbw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    wasted_child = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    stunted_child = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    uw_child = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     svr_wasting_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     wasting_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     svrly_stunted_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
@@ -384,6 +387,7 @@ class MhftLcDt(models.Model):
     underweight_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     svrly_underweight_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     low_birth_weight_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    project_type = models.CharField(max_length=25, blank=True, null=True)
 
     class Meta:
         managed = False
@@ -392,10 +396,10 @@ class MhftLcDt(models.Model):
 
 class MhftLcSubDt(models.Model):
     month_n = models.CharField(max_length=10, blank=True, null=True)
+    financial_year = models.CharField(max_length=25, blank=True, null=True)
     state_n = models.CharField(max_length=25, blank=True, null=True)
     district_n = models.CharField(max_length=25, blank=True, null=True)
     sub_district = models.CharField(max_length=25, blank=True, null=True)
-    project_type = models.CharField(max_length=25, blank=True, null=True)
     mdrtly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     svrly_stntd = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     svr_wstg = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
@@ -403,6 +407,9 @@ class MhftLcSubDt(models.Model):
     svrly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     mdrtly_uw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     nb_lbw = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    wasted_child = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    stunted_child = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
+    uw_child = models.DecimalField(max_digits=65535, decimal_places=65535, blank=True, null=True)
     svr_wasting_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     wasting_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     svrly_stunted_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
@@ -410,6 +417,7 @@ class MhftLcSubDt(models.Model):
     underweight_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     svrly_underweight_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
     low_birth_weight_percent = models.DecimalField(max_digits=4, decimal_places=2, blank=True, null=True)
+    project_type = models.CharField(max_length=25, blank=True, null=True)
 
     class Meta:
         managed = False

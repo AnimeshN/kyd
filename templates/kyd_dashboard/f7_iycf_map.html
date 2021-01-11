@@ -68,11 +68,11 @@
               <span class="selectedCategory"></span>
             </button>
             <div class="dropdown-menu drop-category" aria-labelledby="dropdownMenuButton">
-              <a class="dropdown-item" href="#">Children Completed 1 year Immunization (%)</a>
-              <a class="dropdown-item" href="#">Children Breastfeed at Birth (%)</a>
-              <a class="dropdown-item" href="#">Children Exclusively Breastfeed (%)</a>
-              <a class="dropdown-item" href="#">Children Initiated Complementary Feeding (in the past 30 days) (%)</a>
-              <a class="dropdown-item" href="#">Children (6-24 months) Initiated Appropriate Complementary Feeding (%)</a>
+              <a class="dropdown-item" href="#">Children Completed 1 year Immunization</a>
+              <a class="dropdown-item" href="#">Children Breastfeed at Birth</a>
+              <a class="dropdown-item" href="#">Children Exclusively Breastfeed</a>
+              <a class="dropdown-item" href="#">Children Initiated Complementary Feeding (in the past 30 days)</a>
+              <a class="dropdown-item" href="#">Children (6-24 months) Initiated Appropriate Complementary Feeding</a>
             </div>
           </div>
           <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f6' dist_name fy %}`">Previous Feature</button>
@@ -94,13 +94,13 @@
      <div class="col-12">
       <button type="button" class="btn btn-dark back-button m-2">back</button>
       <span class='info info-hirar'>{{dist_name}}</span>
-      <p>Click on the Polygon(Block/Project/Beat) to view the Lower Level</p>
+      <p>Click on the Polygon(Block/Project/Beat) to view the Lower Level (Drilldown)</p>
     </div>
 </div>
 
       <div class="row">
-        <div class="col-8" id = "mymap"></div>
-        <div class="col-4" id="table"></div>
+        <div class="col-md-8" id = "mymap"></div>
+        <div class="col-md-4" id="table"></div>
       </div>
 
 {% endblock %}
@@ -211,6 +211,9 @@ var mercator = d3
   .scale(1);
 
 const pathGenerator = d3.geoPath().projection(mercator);
+let choices = parseURLParameters(window.location.href);
+let selectedCategory = "Children Completed 1 year Immunization";
+selectedCategory.replace(/ /g, '_');
 
 //Zoom
 // svg.call(d3.zoom().on('zoom',() =>{
@@ -227,6 +230,7 @@ const render = (
   beatData,
   awcData
 ) => {
+
   //initail value of tooltip
   let TextValue = null;
   let Tooltipheader1 = d => "Children Completed 1 year Immunization:";
@@ -236,6 +240,8 @@ const render = (
   let TActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt;
   let low = 25.00;
   let high= 50.00;
+  let updatedCat;
+
   const fillCellColor = (d, percentageColor, actualColor) => {
     if (d.name == "Percentage") return percentageColor(d.value);
     else if (d.name == "Actual Number") return actualColor(d.value);
@@ -249,7 +255,67 @@ const render = (
   const updateCategory = updatedCat => {
     d3.select(".info-category").text(updatedCat);
   };
+  let path;
+  let pathEnter;
+  let textLabel;
 
+  const updateviz = (selectedCat) => {
+      //update tooltip
+      switch (selectedCat) {
+        case 1:
+          updatedCat = "Children Completed 1 year Immunization";
+          Tooltipheader1 = d => "Children Completed 1 year Immunization:";
+          TooltipVal1 = d => d.properties.no_of_chld_cmpltd_1yr_immunzt;
+  				ColorValue = d => d.properties.prnt_child_1yr_immnztn;
+          TPercentValue = d => d.prnt_child_1yr_immnztn;
+          TActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt;
+
+          break;
+        case 2:
+          updatedCat = "Children Breastfeed at Birth";
+          Tooltipheader1 = d => "Children Breastfeed at Birth:";
+          TooltipVal1 = d => d.properties.no_chld_bf_at_birth;
+          ColorValue = d => d.properties.prnt_chld_bf_at_birth;
+          TPercentValue = d => d.prnt_chld_bf_at_birth;
+          TActualValue = d => d.no_chld_bf_at_birth;
+
+          break;
+        case 3:
+          updatedCat = "Children Exclusively Breastfeed";
+          Tooltipheader1 = d => "Children Exclusively Breastfeed:";
+          TooltipVal1 = d => d.properties.no_chld_excly_bf;
+          ColorValue = d => d.properties.prnt_chld_excly_bf;
+          TPercentValue = d => d.prnt_chld_excly_bf;
+          TActualValue = d => d.no_chld_excly_bf;
+
+          break;
+        case 4:
+          updatedCat = "Children Initiated Complementary Feeding (in the past 30 days)";
+          Tooltipheader1 = d => "Children Initiated Complementary Feeding (in the past 30 days):";
+          TooltipVal1 = d => d.properties.no_chld_intd_cf_past30d;
+          ColorValue = d => d.properties.prnt_chld_intd_cf_p30d;
+          TPercentValue = d => d.prnt_chld_intd_cf_p30d;
+          TActualValue = d => d.no_chld_intd_cf_past30d;
+          
+          break;
+        case 5:
+          updatedCat = "Children (6-24 months) Initiated Appropriate Complementary Feeding";
+          Tooltipheader1 = d => "Children (6-24 months) Initiated Appropriate Complementary Feeding:";
+          TooltipVal1 = d => d.properties.no_chld_appr_cf;
+          ColorValue = d => d.properties.prnt_intd_cf_6to24mnth_child;
+          TPercentValue = d => d.prnt_intd_cf_6to24mnth_child;
+          TActualValue = d => d.no_chld_appr_cf;
+          
+          break;
+        
+      }
+    };
+
+    if (choices.length > 0) {
+     updateviz(parseInt(choices[0])); 
+     selectedCategory = updatedCat;
+     $('.drop-category a').parents('.dropdown').find('.dropdown-toggle').html(updatedCat + ' <span class="selectedCategory"></span>');
+     }
 
   //makemap
   const makemap = (geojson, tdata) => {
@@ -280,16 +346,10 @@ const render = (
     let min = d3.min(geojson, ColorValue);
     let max = d3.max(geojson, ColorValue);
     let comp = (max - min) / 3;
-    let myColor = (v, low, high) => {
-        if (v < low) return "#B2022F"; 
-        //matte red
-        else if (v >= low && v <= high) return "#F4BC1C";
-        //matte yellow
-        else if (v > high) return "#24562B"; //matte green
-    };
+  
      	let tooltipValue = (d) =>{
         let ttv = `<b>${TextValue(d)}</b><br> 
-      ${Tooltipheader1(d)} ${TooltipVal1(d)}<br>`;
+      ${Tooltipheader1(d)} ${TooltipVal1(d)} (${ColorValue(d)}%)<br>`;
      	return ttv;
      	}
         const onMouseOverPoly = d => {
@@ -304,8 +364,8 @@ const render = (
       
     };
 
-    let path = g.selectAll("path").data(geojson);
-    let pathEnter = path
+    path = g.selectAll("path").data(geojson);
+    pathEnter = path
       .enter()
       .append("path")
       .attr("d", pathGenerator)
@@ -326,14 +386,14 @@ const render = (
       });
 
     //text over polygon
-    let textLabel = g
+    textLabel = g
       .selectAll("text")
       .data(geojson)
       .enter()
       .append("text")
       .text(d => {
         if (level !== 3) {
-          return `${TextValue(d)}(${ColorValue(d)})`;
+          return `${TextValue(d)}`;
         } else {
           return "";
         }
@@ -388,308 +448,7 @@ const render = (
         });
       }
     });
-    let updatedCat;
-    const updateviz = selectedCat => {
-      //update tooltip
-      switch (selectedCat) {
-        case 1:
-          updatedCat = "Children Completed 1 year Immunization (%)";
-          Tooltipheader1 = d => "Children Completed 1 year Immunization:";
-          TooltipVal1 = d => d.properties.no_of_chld_cmpltd_1yr_immunzt;
-  				ColorValue = d => d.properties.prnt_child_1yr_immnztn;
-          TPercentValue = d => d.prnt_child_1yr_immnztn;
-          TActualValue = d => d.no_of_chld_cmpltd_1yr_immunzt;
-
-          break;
-        case 2:
-          updatedCat = "Children Breastfeed at Birth (%)";
-          Tooltipheader1 = d => "Children Breastfeed at Birth:";
-          TooltipVal1 = d => d.properties.no_chld_bf_at_birth;
-          ColorValue = d => d.properties.prnt_chld_bf_at_birth;
-          TPercentValue = d => d.prnt_chld_bf_at_birth;
-          TActualValue = d => d.no_chld_bf_at_birth;
-
-
-          break;
-        case 3:
-          updatedCat = "Children Exclusively Breastfeed (%)";
-          Tooltipheader1 = d => "Children Exclusively Breastfeed:";
-          ColorValue = d => d.properties.prnt_chld_excly_bf;
-          TPercentValue = d => d.prnt_chld_excly_bf;
-          TActualValue = d => d.no_chld_excly_bf;
-
-          break;
-        case 4:
-          updatedCat = "Children Initiated Complementary Feeding (in the past 30 days) (%)";
-          Tooltipheader1 = d => "Children Initiated Complementary Feeding (in the past 30 days):";
-          TooltipVal1 = d => d.properties.no_chld_intd_cf_past30d;
-          ColorValue = d => d.properties.prnt_chld_intd_cf_p30d;
-          TPercentValue = d => d.prnt_chld_intd_cf_p30d;
-          TActualValue = d => d.no_chld_intd_cf_past30d;
-          break;
-        case 5:
-          updatedCat = "Children (6-24 months) Initiated Appropriate Complementary Feeding (%)";
-          Tooltipheader1 = d => "Children (6-24 months) Initiated Appropriate Complementary Feeding:";
-          TooltipVal1 = d => d.properties.no_chld_appr_cf;
-          ColorValue = d => d.properties.prnt_intd_cf_6to24mnth_child;
-          TPercentValue = d => d.prnt_intd_cf_6to24mnth_child;
-          TActualValue = d => d.no_chld_appr_cf;
-          
-          break;
-        
-      }
-      updateCategory(updatedCat);
-      min = d3.min(geojson, ColorValue);
-      max = d3.max(geojson, ColorValue);
-      comp = (max - min) / 3;
-      pathEnter
-        .transition()
-        .duration(transitionDuration)
-        .style("fill", function(d) {
-        	if(level !== 3){
-          return myColor(ColorValue(d), low, high);
-          }else{
-          	return 'rgba(0,0,0,0)';
-          }
-        });
-
-      textLabel
-        .text(d => {
-        if(level !== 3)
-          return `${TextValue(d)}(${ColorValue(d)})`;
-        })
-        .exit()
-        .remove();
-    };
-
     
-      let updatepoints = () =>{
-      	min = d3.min(geojson, ColorValue);
-      	max = d3.max(geojson, ColorValue);
-      	comp = (max - min) / 3;
-      circleEnter
-        .transition()
-        .duration(transitionDuration)
-        .style("fill", d => {
-       return myColor(ColorValue(d), low, high);
-      }); 
-        
-        
-      }
-      
-      
-
-
-    //on category selection
-
-    $('.drop-category a').click(function(){
-    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-
-            let selCat = $(this).text();
-            let val;
-            switch(selCat){
-                case "Children Completed 1 year Immunization (%)":val=1;break;
-                case "Children Breastfeed at Birth (%)":val=2;break;
-                case "Children Exclusively Breastfeed (%)":val=3;break;
-                case "Children Initiated Complementary Feeding (in the past 30 days) (%)":val=4;break;
-                case "Children (6-24 months) Initiated Appropriate Complementary Feeding (%)":val=5;break;
-                
-            }
-            updateviz(val);
-            if(level === 3){
-      	        updatepoints(val);
-            }
-            updatetable(val);
-        })
-
-
-    const zoomToBoundingBox = d => {
-      let bounds = pathGenerator.bounds(d),
-        dx = bounds[1][0] - bounds[0][0],
-        dy = bounds[1][1] - bounds[0][1],
-        x = (bounds[0][0] + bounds[1][0]) / 2,
-        y = (bounds[0][1] + bounds[1][1]) / 2,
-        scale = Math.max(
-          1,
-          Math.min(8, 0.9 / Math.max(dx / innerWidth, dy / innerHeight))
-        ),
-        translate = [innerWidth / 2 - scale * x, innerHeight / 2 - scale * y];
-      	zoomBox['translate'].push(translate);
-      	zoomBox['scale'].push(scale);
-      svg
-        .transition()
-        .duration(transitionDuration)
-        .call(
-          zzoom.transform,
-          d3.zoomIdentity.translate(translate[0], translate[1])
-        	.scale(scale)
-        );
-    };
-    //selectmap
-    const selectedSubFeature = (geojson, location) => {
-      let selection = [];
-      let geomType;
-      // if(level === 3 && direction == 0){
-      // } 
-      geojson.forEach(sel => {
-        if (level === 1 ) {
-          if (sel.properties.block === location) {
-            selection.push(sel);
-          }
-        } else if (level === 2 ) {
-          if (sel.properties.project === location) {
-            selection.push(sel);
-          }
-        } else if (level === 3 ) {
-          if (sel.properties.beat_na === location) {
-            selection.push(sel);
-          }
-        }
-      });
-      return selection;
-    };
-
-    // select sub points
-    const selectedSubPoint = (geojson, location) => {
-      let selection = [];
-      geojson.forEach(sel => {
-        if (sel.properties.beat === location) {
-          selection.push(sel);
-        }
-      });
-      return selection;
-    };
-
-    const selectedSubData = (csv, location) => { 
-      let selection = [];
-      csv.forEach(sel => {
-        if (level === 1 && direction === 1) {
-          if (sel.block_n == location) {
-            selection.push(sel);
-          }
-        } else if (level === 2 && direction === 1) {
-          if (sel.project_n == location) {
-            selection.push(sel);
-          }
-        } else if (level === 3 && direction === 1) {
-          if (sel.beat_n == location) {
-            selection.push(sel); 
-          }
-        }
-        else if (level === 2 && direction === 0) {
-          if (sel.project_n === location) {
-            selection.push(sel);
-          }
-        }else if (level === 1 && direction === 0) {
-          if (sel.block_n == location) {
-            selection.push(sel);
-          }
-        }else if (level === 0 && direction === 0) {
-          if (sel.block_n == location) {
-            selection.push(sel);
-          }
-        }  
-      });
-      return selection;
-    };
-    // clicked
-    const clicked = d => {
-      if (level < 3){ 
-      level++;
-      direction = 1;
-      zoomToBoundingBox(d);
-      let clickedLocation;
-      if (level === 1) {
-        clickedLocation = d.properties.block;
-      } else if (level === 2) {
-        clickedLocation = d.properties.project;
-      } else if (level === 3) {
-        clickedLocation = d.properties.beat_na;
-      }
-
-      levelLocation.push(clickedLocation);
-
-      let selectedJSON, selectedData;
-      let selectedPoints;
-     
-          if (level === 1) {
-            selectedData = filterCSV(projectData, 'month_n', month_hack); 
-            selectedJSON = addProperty(selectedData, project); 
-          } else if (level === 2) {
-            selectedData = filterCSV(beatData, 'month_n', month_hack); 
-            selectedJSON = addProperty(selectedData, beat); 
-          } else if (level === 3) {
-            selectedData = filterCSV(awcData, 'month_n', month_hack); 
-            selectedJSON = addProperty(selectedData, beat); 
-            selectedPoints = addProperty(selectedData, awc);
-          }
-
-      let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
-      let selecteddata = selectedSubData(selectedData, clickedLocation);
-      g.selectAll("*").remove();
-      rowEnter.selectAll("*").remove();
-      // tooltip.remove();
-      makemap(selectedjson, selecteddata);
-      
-
-      
-      //Make geopoints for awc
-      if(level === 3){
-    //onmouseover
-    const onMouseOver = d => {
-      let PointTextValue = d => d.properties.awc;
-      tooltip
-        .transition()
-        .duration(200)
-        .style("opacity", 0.9);
-
-        let tooltipValue = (d) =>{
-        let ttv = `<b>${PointTextValue(d)}</b><br> 
-          ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>`;
-     	return ttv;
-     	}
-
-      // let pointTT = `<b>${PointTextValue(d)}</b><br> 
-			// 						Percentage Value: ${ColorValue(d)}<br>
-			// 						Actual Value: ${TooltipVal1(d)}<br>`;
-      tooltip
-      	.html(tooltipValue(d))
-        .style("left", d3.event.pageX + "px")
-        .style("top", d3.event.pageY - 30 + "px");
-      
-    }; 
-        
-        let selectedpoint = selectedSubPoint(selectedPoints,clickedLocation);
-      let circle = g.selectAll("circle").data(selectedpoint);
-      circleEnter = circle.enter()
-      	.append("circle")
-      	.attr("cx", d => mercator(d.geometry.coordinates)[0])
-      	.attr("cy", d => mercator(d.geometry.coordinates)[1])
-        .attr("r", "2px")
-        .style("fill", d => {
-        return myColor(ColorValue(d), low, high);
-      })
-        .on("mouseover", d => onMouseOver(d))
-      	.on("mouseout", function(d) {
-        tooltip
-          .transition()
-          .duration(500)
-          .style("opacity", 0);
-      }); 
-    // let textLabel = g
-    //   .selectAll("text")
-    //   .data(selectedpoint)
-    //   .enter()
-    //   .append("text")
-    //   .text(d => d.properties.awc )
-    //   .attr("x", d => mercator(d.geometry.coordinates)[0]+1)
-    //   .attr("y", d => mercator(d.geometry.coordinates)[1])
-    //   .attr("font-family", "sans-serif")
-    // 	.attr("font-size","2px"); 
-
-      }
-    }// if condition ends here
-    };
     pathEnter.on("click", clicked);
   // makePoint
   const makePoint = geoPoint => {
@@ -753,7 +512,71 @@ const render = (
         fillCellColor(d, percentageColor, actualColor)
       );
 
-    const updatetable = selCat => {
+      //on category selection
+
+      $('.drop-category a').click(function(){
+    $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+
+            let selCat = $(this).text();
+            let val;
+            switch(selCat){
+                case "Children Completed 1 year Immunization":val=1;break;
+                case "Children Breastfeed at Birth":val=2;break;
+                case "Children Exclusively Breastfeed":val=3;break;
+                case "Children Initiated Complementary Feeding (in the past 30 days)":val=4;break;
+                case "Children (6-24 months) Initiated Appropriate Complementary Feeding":val=5;break;
+            }
+            updateviz(val);
+            updateMap(geojson);
+            if(level === 3){
+      	        updatepoints(val, geojson);
+            }
+            updatetable(val,tdata);
+        })
+}
+
+      let updateMap =(geojson) => {
+      updateCategory(updatedCat);
+      min = d3.min(geojson, ColorValue);
+      max = d3.max(geojson, ColorValue);
+      comp = (max - min) / 3;
+      pathEnter
+        .transition()
+        .duration(transitionDuration)
+        .style("fill", function(d) {
+        	if(level !== 3){
+          return myColor(ColorValue(d), low, high);
+          }else{
+          	return 'rgba(0,0,0,0)';
+          }
+        });
+
+      textLabel
+        .text(d => {
+        if(level !== 3)
+          return `${TextValue(d)}`;
+        })
+        .exit()
+        .remove();
+    }
+
+    
+      let updatepoints = () =>{
+      	min = d3.min(geojson, ColorValue);
+      	max = d3.max(geojson, ColorValue);
+      	comp = (max - min) / 3;
+      circleEnter
+        .transition()
+        .duration(transitionDuration)
+        .style("fill", d => {
+       return myColor(ColorValue(d), low, high);
+      }); 
+        
+        
+      }
+        
+
+    const updatetable = (selCat, tdata) => {
       rowEnter.selectAll("*").remove();
       switch (selCat) {
         case 1:
@@ -827,7 +650,15 @@ const render = (
         );
     };
 
-    d3.select(".back-button").on("click", function() {
+let myColor = (v, low, high) => {
+        if (v < low) return "#B2022F"; 
+        //matte red
+        else if (v >= low && v <= high) return "#F4BC1C";
+        //matte yellow
+        else if (v > high) return "#24562B"; //matte green
+    };
+
+d3.select(".back-button").on("click", function() {
       if (level > 0){ level--;
       zoomBox['translate'].pop();zoomBox['scale'].pop();
 			
@@ -850,7 +681,7 @@ const render = (
     	else
        svgTrans.call(zzoom.transform,d3.zoomIdentity.translate(transX,transY).scale(scaleV))
       
-      updateCategory("Children Completed 1 year Immunization (%)");
+      updateCategory("Children Completed 1 year Immunization");
       let LocationMonth, LocationDataMonth;
       if (level === 0){  
         LocationDataMonth = filterCSV(blockData, 'month_n', month_hack); 
@@ -884,68 +715,247 @@ const render = (
 
 
 
-  
-}
-const selectGeoJSON = (val, allMonthGeoJSONData) => {
-      switch (val) {
-        case "Nov":
-          return allMonthGeoJSONData.Nov;
-          break;
-        case "Dec":
-          return allMonthGeoJSONData.Dec;
-          break;
-        case "Jan":
-          return allMonthGeoJSONData.Jan;
-          break;
-      }
-    };
-    const selectCSV = (val, allMonthCSVData) => {
-      switch (val) {
-        case "Nov":
-          return allMonthCSVData.Nov;
-          break;
-        case "Dec":
-          return allMonthCSVData.Dec;
-          break;
-        case "Jan":
-          return allMonthCSVData.Jan;
-          break;
-      }
-    };
-
-  var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
-
 $('#monthSlider').slider().on('slideStop', function (ev) {
   var val = tickLabels[ev.value];
   month_hack=val;
-  let monthdata = filterCSV(blockData, 'month_n', val); 
-  let monthjson = addProperty(monthdata, block); 
+  g.selectAll("*").remove();
+  rowEnter.selectAll("*").remove();
+  let svgTrans = svg.transition().duration(transitionDuration);
+          // calculation for zoom
+          let transLength = zoomBox.translate.length;
+          let scaleLength = zoomBox.scale.length;
+          let transX, transY, scaleV;
+          if (level !== 0) {
+            transX = zoomBox.translate[transLength - 1][0];
+            transY = zoomBox.translate[transLength - 1][1];
+            scaleV = zoomBox.scale[scaleLength - 1];
+          }
+  if (level === 0) {
+        LocationDataMonth = filterCSV(blockData, 'month_n', month_hack);
+        LocationMonth = addProperty(LocationDataMonth, block);
+        makemap(LocationMonth, LocationDataMonth);
+      }
+      else if (level === 1) {
+        LocationDataMonth = filterCSV(projectData, 'month_n', month_hack);
+        LocationMonth = addProperty(LocationDataMonth, project);
 
-  level = 0;
-	g.selectAll("*").remove();
-    rowEnter.selectAll("*").remove();
-    svg.transition().duration(transitionDuration).call( zzoom.transform, d3.zoomIdentity );
-    updateMonth();
-    levelLocation = [];
-    makemap(monthjson,monthdata);
-});
+        let previousBlock = levelLocation[levelLocation.length - 1];
 
-$(".drop-month a").click(function(){
-    $(this).parents(".dropdown").find('.btn').html($(this).text());
-      var val = $(this).text();
-      month_hack=val;
-      let monthdata = filterCSV(blockData, 'month_n', val); 
-      let monthjson = addProperty(monthdata, block); 
-    	level = 0;
-		g.selectAll("*").remove();
-    	rowEnter.selectAll("*").remove();
-        svg.transition().duration(transitionDuration).call( zzoom.transform, d3.zoomIdentity );
-        updateMonth();
-        levelLocation = [];
-      	makemap(monthjson,monthdata);
-  })
+        let selectedjson = selectedSubFeature(LocationMonth, previousBlock);
+        let selectedcsv = selectedSubData(LocationDataMonth, previousBlock);
+
+        makemap(selectedjson, selectedcsv);
+      } else if (level === 2) {
+        LocationDataMonth = filterCSV(beatData, 'month_n', month_hack);
+        LocationMonth = addProperty(LocationDataMonth, beat);
+        //select beats map from project_name
+        let previousProject = levelLocation[levelLocation.length - 1];
+        let selectedjson = selectedSubFeature(LocationMonth, previousProject);
+        let selectedcsv = selectedSubData(LocationDataMonth, previousProject);
+        makemap(selectedjson, selectedcsv);
+      }
+      else if (level === 3) {
+        LocationDataMonth = filterCSV(awcData, 'month_n', month_hack);
+        LocationMonth = addProperty(LocationDataMonth, beat);
+        selectedPoints = addProperty(LocationDataMonth, awc);
+        //select beats map from project_name
+        let previousbeat = levelLocation[levelLocation.length - 1];
+        let selectedjson = selectedSubFeature(LocationMonth, previousbeat);
+        let selectedcsv = selectedSubData(LocationDataMonth, previousbeat);
+        makemap(selectedjson, selectedcsv);
+        if (level === 3) {
+            makegeoPoints(selectedPoints, previousbeat);
+          }
+      }
+  });
+
+// clicked
+const clicked = d => {
+      if (level < 3){ 
+      level++;
+      direction = 1;
+      zoomToBoundingBox(d);
+      let clickedLocation;
+      if (level === 1) {
+        clickedLocation = d.properties.block;
+      } else if (level === 2) {
+        clickedLocation = d.properties.project;
+      } else if (level === 3) {
+        clickedLocation = d.properties.beat_na;
+      }
+
+      levelLocation.push(clickedLocation);
+
+      let selectedJSON, selectedData;
+      let selectedPoints;
+     
+          if (level === 1) {
+            selectedData = filterCSV(projectData, 'month_n', month_hack); 
+            selectedJSON = addProperty(selectedData, project); 
+          } else if (level === 2) {
+            selectedData = filterCSV(beatData, 'month_n', month_hack); 
+            selectedJSON = addProperty(selectedData, beat); 
+          } else if (level === 3) {
+            selectedData = filterCSV(awcData, 'month_n', month_hack); 
+            selectedJSON = addProperty(selectedData, beat); 
+            selectedPoints = addProperty(selectedData, awc);
+          }
+
+      let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
+      let selecteddata = selectedSubData(selectedData, clickedLocation);
+      console.log("selectedjson", selectedjson)
+      console.log("selecteddata", selecteddata)
+
+      g.selectAll("*").remove();
+      rowEnter.selectAll("*").remove();
+      // tooltip.remove();
+      makemap(selectedjson, selecteddata);
+             
+      //Make geopoints for awc
+      if(level === 3){
+        makegeoPoints(selectedPoints, clickedLocation);
+      }
+    }// if condition ends here
+  };
+
+  const makegeoPoints = (selectedPoints,clickedLocation)  => {
+
+      //onmouseover
+      const onMouseOver = d => {
+        let PointTextValue = d => d.properties.awc;
+        tooltip
+          .transition()
+          .duration(200)
+          .style("opacity", 0.9);
+
+          let tooltipValue = (d) =>{
+          let ttv = `<b>${PointTextValue(d)}</b><br> 
+            ${Tooltipheader1(d)}  ${TooltipVal1(d)} (${ColorValue(d)}%)<br>`;
+        return ttv;
+        }
+        tooltip
+          .html(tooltipValue(d))
+          .style("left", d3.event.pageX + "px")
+          .style("top", d3.event.pageY - 30 + "px");
+        
+        }; 
+          
+        let selectedpoint = selectedSubPoint(selectedPoints,clickedLocation);
+        let circle = g.selectAll("circle").data(selectedpoint);
+        circleEnter = circle.enter()
+          .append("circle")
+          .attr("cx", d => mercator(d.geometry.coordinates)[0])
+          .attr("cy", d => mercator(d.geometry.coordinates)[1])
+          .attr("r", "2px")
+          .style("fill", d => {
+          return myColor(ColorValue(d), low, high);
+        })
+          .on("mouseover", d => onMouseOver(d))
+          .on("mouseout", function(d) {
+          tooltip
+            .transition()
+            .duration(500)
+            .style("opacity", 0);
+        }); 
+      
+    }
+
+    //selectmap
+    const selectedSubFeature = (geojson, location) => {
+      let selection = [];
+      let geomType;
+      // if(level === 3 && direction == 0){
+      // } 
+      geojson.forEach(sel => {
+        if (level === 1 ) {
+          if (sel.properties.block === location) {
+            selection.push(sel);
+          }
+        } else if (level === 2 ) {
+          if (sel.properties.project === location) {
+            selection.push(sel);
+          }
+        } else if (level === 3 ) {
+          if (sel.properties.beat_na === location) {
+            selection.push(sel);
+          }
+        }
+      });
+      return selection;
+    };
+
+    // select sub points
+    const selectedSubPoint = (geojson, location) => {
+      let selection = [];
+      geojson.forEach(sel => {
+        if (sel.properties.beat === location) {
+          selection.push(sel);
+        }
+      });
+      return selection;
+    };
+
+    const selectedSubData = (csv, location) => { 
+      let selection = [];
+      csv.forEach(sel => {
+        if (level === 1 && direction === 1) {
+          if (sel.block_n == location) {
+            selection.push(sel);
+          }
+        } else if (level === 2 && direction === 1) {
+          if (sel.project_n == location) {
+            selection.push(sel);
+          }
+        } else if (level === 3 && direction === 1) {
+          if (sel.beat_n == location) {
+            selection.push(sel); 
+          }
+        }
+        else if (level === 2 && direction === 0) {
+          if (sel.project_n === location) {
+            selection.push(sel);
+          }
+        }else if (level === 1 && direction === 0) {
+          if (sel.block_n == location) {
+            selection.push(sel);
+          }
+        }else if (level === 0 && direction === 0) {
+          if (sel.block_n == location) {
+            selection.push(sel);
+          }
+        }  
+      });
+      return selection;
+    };
+
+    const zoomToBoundingBox = d => {
+      let bounds = pathGenerator.bounds(d),
+        dx = bounds[1][0] - bounds[0][0],
+        dy = bounds[1][1] - bounds[0][1],
+        x = (bounds[0][0] + bounds[1][0]) / 2,
+        y = (bounds[0][1] + bounds[1][1]) / 2,
+        scale = Math.max(
+          1,
+          Math.min(8, 0.9 / Math.max(dx / innerWidth, dy / innerHeight))
+        ),
+        translate = [innerWidth / 2 - scale * x, innerHeight / 2 - scale * y];
+      	zoomBox['translate'].push(translate);
+      	zoomBox['scale'].push(scale);
+      svg
+        .transition()
+        .duration(transitionDuration)
+        .call(
+          zzoom.transform,
+          d3.zoomIdentity.translate(translate[0], translate[1])
+        	.scale(scale)
+        );
+    };
+    
+    
   //initial map
-  month_hack = tickLabels[$('#monthSlider').slider('getValue')];
+  var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
+
+  month_hack = tickLabels[0];
   let monthdata = filterCSV(blockData, 'month_n', month_hack); 
   let monthjson = addProperty(monthdata, block); 
   makemap(monthjson, monthdata);
@@ -1107,7 +1117,6 @@ async function mergeData(geoJSON) {
   monthWiseCSV(awcCSV);
   let awcGeoJSONAug = JSON.parse(JSON.stringify(awcGeoJSON));
   
-
   render(
     blockGeoJSONAug,
     projectGeoJSONAug,
@@ -1119,26 +1128,28 @@ async function mergeData(geoJSON) {
     awcCSV
   );
 }
+
 fetchGeoJSON().then(mergeData);
 
 $(function(){
-  //bind event
-  $(".drop-month a").click(function(){
-    var valMonth = $(this).text();
-    $(this).parents('.dropdown').find('.dropdown-toggle').html(valMonth + ' <span class="selectedMonth"></span>');
-  });
-  
-  
-  
+  //bind event 
    $(".drop-category a").click(function(){
     var valCategory = $(this).text();
     $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
   });
   //trigger event
-  $('.drop-month a').first().trigger('click');
-  $(".drop-category a").first().trigger('click');
+  if (choices.length <= 0)
+    $(".drop-category a").first().trigger('click');
+  });
   
-});
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
 
 const sliderRange = d3
   .sliderBottom()

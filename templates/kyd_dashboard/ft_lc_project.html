@@ -444,7 +444,7 @@
         .data(result).enter()
         .append('div')
         .style('color', 'black')
-        .html(d => d.key + ': ' + '<b>' + yScale.invert(yScale(d.values[xI].value)).toFixed(2) + '</b>');
+        .html(d => d.key + ': ' + '<b>' + yScale.invert(yScale(d.values[xI].actual_no)).toFixed(0) + ' (' + yScale.invert(yScale(d.values[xI].value)).toFixed(2)+ '%)' + '</b>');
     }
   };
 
@@ -456,6 +456,12 @@
   });
 
   data.forEach(function (d) {
+    d.stunted_child = +d.stunted_child;
+    d.svrly_stntd = +d.svrly_stntd;
+    d.wasted_child = +d.wasted_child;
+    d.svr_wstg = +d.svr_wstg;
+    d.uw_child = +d.uw_child;
+    d.svrly_uw = +d.svrly_uw;
     d.svr_wasting_percent = +d.svr_wasting_percent;
     d.wasting_percent = +d.wasting_percent;
     d.svrly_stunted_percent = +d.svrly_stunted_percent;
@@ -468,26 +474,42 @@
 
   let section;
   section = 'svrly_stunted_percent';
+  let sec_numeric = 'svrly_stntd';
   let choices = parseURLParameters(window.location.href);
   let filterdata;
   if (choices.length > 0) {
     selectedCategory = choices[1];
     let selectedBlock = choices[0].replace(/_/g, ' ');
     let choiceOneVal = choices[1].replace(/_/g, ' ');
-    if (choiceOneVal == 'Severly Stunted Children')
+    if (choiceOneVal == 'Severly Stunted Children'){
+      sec_numeric = 'svrly_stntd';
       section = 'svrly_stunted_percent';
-    else if (choiceOneVal == 'Stunted Children')
+    }
+    else if (choiceOneVal == 'Stunted Children'){
+      sec_numeric = 'stunted_child';
       section = 'stunting_percent';
-    else if (choiceOneVal == 'Severly Wasted(SAM) Children')
+    }
+    else if (choiceOneVal == 'Severly Wasted(SAM) Children'){
+      sec_numeric = 'svr_wstg';
       section = 'svr_wasting_percent';
-    else if (choiceOneVal == 'Wasted Children')
+    }
+    else if (choiceOneVal == 'Wasted Children'){
+      sec_numeric = 'wasted_child';
       section = 'wasting_percent';
-    else if (choiceOneVal == 'Severly Underweight(SUW) Children')
+    }
+    else if (choiceOneVal == 'Severly Underweight(SUW) Children'){
+      sec_numeric = 'svrly_uw';
       section = 'svrly_underweight_percent';
-    else if (choiceOneVal == 'Underweight Children')
-      section = 'underweight_percent'
-    else
+    }
+    else if (choiceOneVal == 'Underweight Children'){
+      sec_numeric = 'uw_child';
+      section = 'underweight_percent';
+    }
+    else{
+      sec_numeric = 'nb_lbw';
       section = 'low_birth_weight_percent'
+    }
+
     $('.category a').parents('.dropdown').find('.dropdown-toggle').html(choiceOneVal + ' <span class="selectedCategory"></span>');
     $('.blocks a').parents('.dropdown').find('.dropdown-toggle').html(selectedBlock + ' <span class="selectedCategory"></span>');
     filterdata = filterCSV(data, 'block_n', selectedBlock);
@@ -495,7 +517,6 @@
   }
   else {
     filterdata = data;
-
     setData(data, section);
   }
 
@@ -503,20 +524,34 @@
   $(".category a").click(function () {
     var val = $(this).text();
     selectedCategory = val;
-    if (val == 'Severly Stunted Children')
+    if (val == 'Severly Stunted Children'){
+      sec_numeric = 'svrly_stntd';
       section = 'svrly_stunted_percent';
-    else if (val == 'Stunted Children')
+    }
+    else if (val == 'Stunted Children'){
+      sec_numeric = 'stunted_child';
       section = 'stunting_percent';
-    else if (val == 'Severly Wasted(SAM) Children')
+    }
+    else if (val == 'Severly Wasted(SAM) Children'){
+      sec_numeric = 'svr_wstg';
       section = 'svr_wasting_percent';
-    else if (val == 'Wasted Children')
+    }
+    else if (val == 'Wasted Children'){
+      sec_numeric = 'wasted_child';
       section = 'wasting_percent';
-    else if (val == 'Severly Underweight(SUW) Children')
+    }
+    else if (val == 'Severly Underweight(SUW) Children'){
+      sec_numeric = 'svrly_uw';
       section = 'svrly_underweight_percent';
-    else if (val == 'Underweight Children')
-      section = 'underweight_percent'
-    else
+    }
+    else if (val == 'Underweight Children'){
+      sec_numeric = 'uw_child';
+      section = 'underweight_percent';
+    }
+    else{
+      sec_numeric = 'nb_lbw';
       section = 'low_birth_weight_percent'
+    }
 
     // mouseG.selectAll('.mouse-per-line').selectAll('.topic-circle').remove();
     // mouseG.selectAll('.mouse-per-line').selectAll('text').remove();
@@ -536,13 +571,14 @@
 
   function setData(data, section) {
 
-    var dataFilter = data.map(function (d) { return { month: d.month_n, project: d.project_n, value: d[section] } })
+    var dataFilter = data.map(function (d) { return { month: d.month_n, project: d.project_n, value: d[section], actual_no: d[sec_numeric] } })
 
     //debugger
 
     dataFilter.forEach(function (d) {
 
       d.value = +d.value;
+      d.actual_no =  +d.actual_no; 
       d.active = true;
     });
 

@@ -8,15 +8,6 @@
 <link>
 
 <style>
-  /* body {
-    position: fixed;
-    left: 0;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    margin: 0;
-    overflow: hidden;
-  } */
   #table {
     width: 70%;
     height: 75%;
@@ -127,7 +118,7 @@
   <div class="col-12">
     <button type="button" class="btn btn-dark back-button m-2">back</button>
     <span class='info info-hirar'>Maharashtra</span>
-    <p>Click on the Polygon(District/Block) to view the Lower Level
+    <p>Click on the Polygon(District/Block) to view the Lower Level (Drilldown)
       <a href="{% url 'maha-feat_lcdt' fy %}" class="lc_link">
         Want to see Month-wise Trend
         <i class="fa fa-chevron-right" aria-hidden="true"></i>
@@ -137,8 +128,8 @@
 </div>
 
 <div class="row">
-  <div class="col-8" id="mymap"></div>
-  <div class="col-4" id="table"></div>
+  <div class="col-md-8" id="mymap"></div>
+  <div class="col-md-4" id="table"></div>
 </div>
 
 {% endblock %}
@@ -225,7 +216,6 @@
     .on("zoom", zoomed);
 
   function zoomed() {
-    // g.style("stroke-width", 1.5 / d3.event.transform.k + "px");
     g.attr("transform", d3.event.transform); // updated for d3 v4
   }
 
@@ -242,10 +232,10 @@
     .scale(1);
 
   const pathGenerator = d3.geoPath().projection(mercator);
-  //Zoom
-  // svg.call(d3.zoom().on('zoom',() =>{
-  // 	g.attr('transform',event.transform)
-  // }))
+  let choices = parseURLParameters(window.location.href);
+  let selectedCategory = "Severely Stunted Children";
+  selectedCategory.replace(/ /g, '_');
+  let url = "{% url 'maha-feat_lcdt' fy %}";
 
   const render = (
     block,
@@ -268,6 +258,7 @@
     let TActualValue = d => d.svrly_stntd;
     let low = 25.00;
     let high = 50.00;
+    let updatedCat;
 
     const fillCellColor = (d, percentageColor, actualColor) => {
       if (d.name == "Percentage") return percentageColor(d.value);
@@ -282,8 +273,113 @@
     const updateCategory = updatedCat => {
       d3.select(".info-category").text(updatedCat);
     };
+    let path;
+    let pathEnter;
+    let textLabel;
 
+    const updateviz = (selectedCat) => {
+        //update tooltip
+        switch (selectedCat) {
 
+          case 1:
+            updatedCat = "Severely Stunted Children";
+            Tooltipheader1 = d => "Severely Stunted Children:";
+            Tooltipheader2 = d => "";
+            Tooltipheader3 = d => "Height Measurement efficiency:";
+            TooltipVal1 = d => d.properties.svrly_stntd;
+            TooltipVal2 = d => "";
+            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+            ColorValue = d => d.properties.svrly_stunting_percent;
+            TPercentValue = d => d.svrly_stunting_percent;
+            TActualValue = d => d.svrly_stntd;
+
+            break;
+          case 2:
+            updatedCat = "Stunted Children";
+            Tooltipheader1 = d => "Stunted Children:";
+            Tooltipheader2 = d => "Moderately Stunted Children:";
+            Tooltipheader3 = d => "Height Measurement efficiency:";
+            TooltipVal1 = d => d.properties.stunted_child;
+            TooltipVal2 = d => d.properties.mdrtly_stntd;
+            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+            ColorValue = d => d.properties.stunting_percent;
+            TPercentValue = d => d.stunting_percent;
+            TActualValue = d => d.stunted_child;
+
+            break;
+          case 3:
+            updatedCat = "Severely Wasted Children";
+            Tooltipheader1 = d => "Severely Wasted Children:";
+            Tooltipheader2 = d => "";
+            Tooltipheader3 = d => "Height Measurement efficiency:";
+            TooltipVal1 = d => d.properties.svr_wstg;
+            TooltipVal2 = d => "";
+            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+            ColorValue = d => d.properties.svr_wasting_percent;
+            TPercentValue = d => d.svr_wasting_percent;
+            TActualValue = d => d.svr_wstg;
+
+            break;
+          case 4:
+            updatedCat = "Wasted Children";
+            Tooltipheader1 = d => "Wasted Children:";
+            Tooltipheader2 = d => "Moderately Wasted Children:";
+            Tooltipheader3 = d => "Height Measurement efficiency:";
+            TooltipVal1 = d => d.properties.wasted_child;
+            TooltipVal2 = d => d.properties.mdrtly_wstd;
+            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
+            ColorValue = d => d.properties.wasting_percent;
+            TPercentValue = d => d.wasting_percent;
+            TActualValue = d => d.wasted_child;
+
+            break;
+          case 5:
+            updatedCat = "Severely Underweight Children";
+            Tooltipheader1 = d => "Severely Underweight Children:";
+            Tooltipheader2 = d => "";
+            Tooltipheader3 = d => "Weight Measurement efficiency:";
+            TooltipVal1 = d => d.properties.svrly_uw;
+            TooltipVal2 = d => "";
+            TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
+            ColorValue = d => d.properties.svrly_underweight_percent;
+            TPercentValue = d => d.svrly_underweight_percent;
+            TActualValue = d => d.svrly_uw;
+
+            break;
+          case 6:
+            updatedCat = "Underweight Children";
+            Tooltipheader1 = d => "Underweight Children:";
+            Tooltipheader2 = d => "Moderately Underweight Children:";
+            Tooltipheader3 = d => "Weight Measurement efficiency:";
+            TooltipVal1 = d => d.properties.uw_child;
+            TooltipVal2 = d => d.properties.mdrtly_uw;
+            TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
+            ColorValue = d => d.properties.underweight_percent;
+            TPercentValue = d => d.underweight_percent;
+            TActualValue = d => d.uw_child;
+
+            break;
+          case 7:
+            updatedCat = "New born with low birth rate";
+            Tooltipheader1 = d => "New born with low birth rate:";
+            Tooltipheader2 = d => "";
+            Tooltipheader3 = d => "";
+            TooltipVal1 = d => d.properties.nb_lbw;
+            TooltipVal2 = d => "";
+            TooltipVal3 = d => "";
+            ColorValue = d => d.properties.low_birth_weight_percent;
+            TPercentValue = d => d.low_birth_weight_percent;
+            TActualValue = d => d.nb_lbw;
+
+            break;
+        }
+      };
+
+      if (choices.length > 0) {
+     updateviz(parseInt(choices[0])); 
+     selectedCategory = updatedCat;
+     $('.drop-category a').parents('.dropdown').find('.dropdown-toggle').html(updatedCat + ' <span class="selectedCategory"></span>');
+     }
     //makemap
     const makemap = (geojson, tdata) => {
       d3.select('.info-hirar').text(function () {
@@ -293,6 +389,7 @@
         })
         return hirarchy;
       })
+
       updateMonth();
       if (level == 0 && direction == 1) {
         TextValue = d => d.properties.district;
@@ -307,35 +404,30 @@
       let min = d3.min(geojson, ColorValue);
       let max = d3.max(geojson, ColorValue);
       let comp = (max - min) / 3;
-      let myColor = (v, low, high) => {
-        if (v < low) return "#24562B";
-        //matte green
-        else if (v >= low && v <= high) return "#FFE338";
-        //matte yellow
-        else if (v > high) return "#B2022F"; //matte red
-      };
+      
       let tooltipValue = (d) => {
         let ttv = `<b>${TextValue(d)}</b><br> 
-                      ${Tooltipheader1(d)}  ${TooltipVal1(d)}<br>
-                      ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
-                      ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>
-                     `;
+          ${Tooltipheader1(d)}  ${TooltipVal1(d)} (${ColorValue(d)}%)<br>
+          ${Tooltipheader2(d)}  ${TooltipVal2(d)}<br>
+          ${Tooltipheader3(d)}  ${TooltipVal3(d)}<br>`;
         return ttv;
       }
-      const onMouseOverPoly = d => {
-        tooltip
-          .transition()
-          .duration(200)
-          .style("opacity", 0.9);
-        tooltip
-          .html(tooltipValue(d))
-          .style("left", d3.event.pageX + "px")
-          .style("top", d3.event.pageY - 30 + "px");
 
+      const onMouseOverPoly = d => {
+        if(TooltipVal1(d) != undefined){
+          tooltip
+            .transition()
+            .duration(200)
+            .style("opacity", 0.9);
+          tooltip
+            .html(tooltipValue(d))
+            .style("left", d3.event.pageX + "px")
+            .style("top", d3.event.pageY - 30 + "px");
+        }
       };
 
-      let path = g.selectAll("path").data(geojson);
-      let pathEnter = path
+      path = g.selectAll("path").data(geojson);
+      pathEnter = path
         .enter()
         .append("path")
         .attr("d", pathGenerator)
@@ -356,14 +448,16 @@
         });
 
       //text over polygon
-      let textLabel = g
+      textLabel = g
         .selectAll("text")
         .data(geojson)
         .enter()
         .append("text")
         .text(d => {
           if (level !== 3) {
-            return `${TextValue(d)}(${ColorValue(d)})`;
+            // return `${TextValue(d)}(${ColorValue(d)})`;
+            return `${TextValue(d)}`;
+
           } else {
             return "";
           }
@@ -382,7 +476,6 @@
       } else if (level === 1) {
         textLabel.attr("font-size", "0.25em").attr("font-weight", "bold");
       }
-
 
       //update slider color
       const fillSlider = () => {
@@ -407,255 +500,8 @@
             }
           });
 
-        // if(level === 3){
-        //   circleEnter
-        //   .transition()
-        //   .duration(transitionDuration)
-        //   .style("fill", function(d) {
-        //       return myColor(ColorValue(d), low, high);
-        //   });
-        // }
       });
 
-      let updatedCat;
-      const updateviz = selectedCat => {
-        //update tooltip
-        switch (selectedCat) {
-
-          case 1:
-            updatedCat = "Severely Stunted Children";
-            Tooltipheader1 = d => "Severely Stunted Children:";
-            Tooltipheader2 = d => "";
-            Tooltipheader3 = d => "Height Measurement efficiency:";
-            TooltipVal1 = d => d.properties.svrly_stntd;
-            TooltipVal2 = d => "";
-            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-            ColorValue = d => d.properties.svrly_stunting_percent;
-            break;
-          case 2:
-            updatedCat = "Stunted Children";
-            Tooltipheader1 = d => "Stunted Children:";
-            Tooltipheader2 = d => "Moderately Stunted Children:";
-            Tooltipheader3 = d => "Height Measurement efficiency:";
-            TooltipVal1 = d => d.properties.stunted_child;
-            TooltipVal2 = d => d.properties.mdrtly_stntd;
-            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-            ColorValue = d => d.properties.stunting_percent;
-            break;
-          case 3:
-            updatedCat = "Severely Wasted Children";
-            Tooltipheader1 = d => "Severely Wasted Children:";
-            Tooltipheader2 = d => "";
-            Tooltipheader3 = d => "Height Measurement efficiency:";
-            TooltipVal1 = d => d.properties.svr_wstg;
-            TooltipVal2 = d => "";
-            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-            ColorValue = d => d.properties.svr_wasting_percent;
-            break;
-          case 4:
-            updatedCat = "Wasted Children";
-            Tooltipheader1 = d => "Wasted Children:";
-            Tooltipheader2 = d => "Moderately Wasted Children:";
-            Tooltipheader3 = d => "Height Measurement efficiency:";
-            TooltipVal1 = d => d.properties.wasted_child;
-            TooltipVal2 = d => d.properties.mdrtly_wstd;
-            TooltipVal3 = d => d.properties.ht_msrmnt_effcy;
-            ColorValue = d => d.properties.wasting_percent;
-            break;
-          case 5:
-            updatedCat = "Severely Underweight Children";
-            Tooltipheader1 = d => "Severely Underweight Children:";
-            Tooltipheader2 = d => "";
-            Tooltipheader3 = d => "Weight Measurement efficiency:";
-            TooltipVal1 = d => d.properties.svrly_uw;
-            TooltipVal2 = d => "";
-            TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
-            ColorValue = d => d.properties.svrly_underweight_percent;
-            break;
-          case 6:
-            updatedCat = "Underweight Children";
-            Tooltipheader1 = d => "Underweight Children:";
-            Tooltipheader2 = d => "Moderately Underweight Children:";
-            Tooltipheader3 = d => "Weight Measurement efficiency:";
-            TooltipVal1 = d => d.properties.uw_child;
-            TooltipVal2 = d => d.properties.mdrtly_uw;
-            TooltipVal3 = d => d.properties.wt_msrmnt_effcy;
-            ColorValue = d => d.properties.underweight_percent;
-            break;
-          case 7:
-            updatedCat = "New born with low birth rate";
-            Tooltipheader1 = d => "New born with low birth rate:";
-            Tooltipheader2 = d => "";
-            Tooltipheader3 = d => "";
-            TooltipVal1 = d => d.properties.nb_lbw;
-            TooltipVal2 = d => "";
-            TooltipVal3 = d => "";
-            ColorValue = d => d.properties.low_birth_weight_percent;
-            break;
-        }
-        updateCategory(updatedCat);
-        min = d3.min(geojson, ColorValue);
-        max = d3.max(geojson, ColorValue);
-        comp = (max - min) / 3;
-        pathEnter
-          .transition()
-          .duration(transitionDuration)
-          .style("fill", function (d) {
-            if (level !== 3) {
-              return myColor(ColorValue(d), low, high);
-            } else {
-              return 'rgba(0,0,0,0)';
-            }
-          });
-
-        textLabel
-          .text(d => {
-            if (level !== 3)
-              return `${TextValue(d)}(${ColorValue(d)})`;
-          })
-          .exit()
-          .remove();
-      };
-
-
-      let updatepoints = () => {
-        min = d3.min(geojson, ColorValue);
-        max = d3.max(geojson, ColorValue);
-        comp = (max - min) / 3;
-        circleEnter
-          .transition()
-          .duration(transitionDuration)
-          .style("fill", d => {
-            return myColor(ColorValue(d), low, high);
-          });
-
-
-      }
-
-      //on category selection
-      $('.drop-category a').click(function () {
-        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
-
-        let selCat = $(this).text();
-        let val;
-        switch (selCat) {
-          case "Severly Stunted Children": val = 1; break;
-          case "Stunted Children": val = 2; break;
-          case "Severely Wasted Children": val = 3; break;
-          case "Wasted Children": val = 4; break;
-          case "Severely Underweight Children": val = 5; break;
-          case "Underweight Children": val = 6; break;
-          case "Newborn with low birth rate": val = 7; break;
-        }
-        updateviz(val);
-        if (level === 3) {
-          updatepoints(val);
-        }
-        updatetable(val);
-      })
-
-
-      const zoomToBoundingBox = d => {
-        let bounds = pathGenerator.bounds(d),
-          dx = bounds[1][0] - bounds[0][0],
-          dy = bounds[1][1] - bounds[0][1],
-          x = (bounds[0][0] + bounds[1][0]) / 2,
-          y = (bounds[0][1] + bounds[1][1]) / 2,
-          scale = Math.max(
-            1,
-            Math.min(8, 0.9 / Math.max(dx / innerWidth, dy / innerHeight))
-          ),
-          translate = [innerWidth / 2 - scale * x, innerHeight / 2 - scale * y];
-        zoomBox['translate'].push(translate);
-        zoomBox['scale'].push(scale);
-        svg
-          .transition()
-          .duration(transitionDuration)
-          .call(
-            zzoom.transform,
-            d3.zoomIdentity.translate(translate[0], translate[1])
-              .scale(scale)
-          );
-      };
-      //selectmap
-      const selectedSubFeature = (geojson, location) => {
-        let selection = [];
-        let geomType;
-        // if(level === 3 && direction == 0){
-        // } 
-        geojson.forEach(sel => {
-          if (level === 1) {
-            if (sel.properties.district === location) {
-              selection.push(sel);
-            }
-          } else if (level === 2) {
-            if (sel.properties.block === location) {
-              selection.push(sel);
-            }
-          }
-
-        });
-        return selection;
-      };
-
-      const selectedSubData = (csv, location) => {
-        let selection = [];
-        csv.forEach(sel => {
-          if (level === 1 && direction === 1) {
-            if (sel.district_n == location) {
-              selection.push(sel);
-            }
-          } else if (level === 2 && direction === 1) {
-            if (sel.sub_district == location) {
-              selection.push(sel);
-            }
-          }
-
-
-          else if (level === 1 && direction === 0) {
-            if (sel.district_n == location) {
-              selection.push(sel);
-            }
-          } else if (level === 0 && direction === 0) {
-            if (sel.district_n == location) {
-              selection.push(sel);
-            }
-          }
-        });
-        return selection;
-      };
-      // clicked
-      const clicked = d => {
-        if (level < 1) {
-          level++;
-          direction = 1;
-          zoomToBoundingBox(d);
-          let clickedLocation;
-          if (level === 1) {
-            clickedLocation = d.properties.district;
-          }
-
-
-          levelLocation.push(clickedLocation);
-
-          let selectedJSON, selectedData;
-          let selectedPoints;
-          if (level === 1) {
-            selectedData = filterCSV(projectData, 'month_n', month_hack);
-            LocationDataPrjType= filterCSV(selectedData, 'project_type', prjType);
-            removeProperties(project);
-            selectedJSON = addProperty(LocationDataPrjType, project);
-          }
-          let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
-          let selecteddata = selectedSubData(LocationDataPrjType, clickedLocation);
-          g.selectAll("*").remove();
-          rowEnter.selectAll("*").remove();
-          makemap(selectedjson, selecteddata);
-
-
-
-        }// if condition ends here
-      };
       pathEnter.on("click", clicked);
 
       //makeTable
@@ -711,9 +557,58 @@
         .attr("align", "center")
         .style("background-color", d =>
           fillCellColor(d, percentageColor, actualColor)
-        );
+        );      
 
-      const updatetable = selCat => {
+        //on category selection
+      $('.drop-category a').click(function () {
+        $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedMonth"></span>');
+
+        let selCat = $(this).text();
+        let val;
+        switch (selCat) {
+          case "Severly Stunted Children": val = 1; break;
+          case "Stunted Children": val = 2; break;
+          case "Severely Wasted Children": val = 3; break;
+          case "Wasted Children": val = 4; break;
+          case "Severely Underweight Children": val = 5; break;
+          case "Underweight Children": val = 6; break;
+          case "Newborn with low birth rate": val = 7; break;
+        }
+        updateviz(val);
+        updateMap(geojson);
+        updatetable(val, tdata);
+      })
+
+}
+    let updateMap =(geojson) => {
+
+      updateCategory(updatedCat);
+      min = d3.min(geojson, ColorValue);
+      max = d3.max(geojson, ColorValue);
+      comp = (max - min) / 3;
+      pathEnter
+        .transition()
+        .duration(transitionDuration)
+        .style("fill", function (d) {
+          if (level !== 3) {
+            return myColor(ColorValue(d), low, high);
+          } else {
+            return 'rgba(0,0,0,0)';
+          }
+        });
+
+      textLabel
+        .text(d => {
+          if (level !== 3)
+            // return `${TextValue(d)}(${ColorValue(d)})`;
+            return `${TextValue(d)}`;
+          })
+        .exit()
+        .remove();
+    }
+
+
+      const updatetable = (selCat, tdata) => {
         rowEnter.selectAll("*").remove();
         switch (selCat) {
           case 1:
@@ -730,7 +625,7 @@
             break;
           case 4:
             PercentageValue = d => d.wasting_percent;
-            ActualValue = d => d.svr_wstg;
+            ActualValue = d => d.wasted_child;
             break;
           case 5:
             PercentageValue = d => d.svrly_underweight_percent;
@@ -794,7 +689,15 @@
           );
       };
 
-      d3.select(".back-button").on("click", function () {
+let myColor = (v, low, high) => {
+  if (v < low) return "#24562B";
+  //matte green
+  else if (v >= low && v <= high) return "#FFE338";
+  //matte yellow
+  else if (v > high) return "#B2022F"; //matte red
+};
+
+d3.select(".back-button").on("click", function () {
         if (level > 0) {
           level--;
           zoomBox['translate'].pop(); zoomBox['scale'].pop();
@@ -843,74 +746,195 @@
         }//if condition ends here
       });
 
-    }
-    const selectGeoJSON = (val, allMonthGeoJSONData) => {
-      switch (val) {
-        case "nov":
-          return allMonthGeoJSONData.Nov;
-          break;
-        case "dec":
-          return allMonthGeoJSONData.Dec;
-          break;
-        case "jan":
-          return allMonthGeoJSONData.Jan;
-          break;
-      }
-    };
-    const selectCSV = (val, allMonthCSVData) => {
-      switch (val) {
-        case "nov":
-          return allMonthCSVData.Nov;
-          break;
-        case "dec":
-          return allMonthCSVData.Dec;
-          break;
-        case "jan":
-          return allMonthCSVData.Jan;
-          break;
-      }
-    };
 
+$('#monthSlider').slider().on('slideStop', function (ev) {
+  var val = tickLabels[ev.value];
+  month_hack = val;
+  g.selectAll("*").remove();
+  rowEnter.selectAll("*").remove();
+  let svgTrans = svg.transition().duration(transitionDuration);
+      // calculation for zoom
+      let transLength = zoomBox.translate.length;
+      let scaleLength = zoomBox.scale.length;
+      let transX, transY, scaleV;
+      if (level !== 0) {
+        transX = zoomBox.translate[transLength - 1][0];
+        transY = zoomBox.translate[transLength - 1][1];
+        scaleV = zoomBox.scale[scaleLength - 1];
+      }
+      if (level === 0) {
+        LocationDataMonth = filterCSV(blockData, 'month_n', month_hack);
+        LocationDataPrjType= filterCSV(LocationDataMonth, 'project_type', prjType);
+        removeProperties(block);
+        LocationMonth = addProperty(LocationDataPrjType, block);
+        makemap(LocationMonth, LocationDataPrjType);
+        console.log("on month change");
+        console.log("LocationMonth", LocationMonth);
+      }
+      else if (level === 1) {
+        LocationDataMonth = filterCSV(projectData, 'month_n', month_hack);
+        LocationDataPrjType= filterCSV(LocationDataMonth, 'project_type', prjType);
+        removeProperties(project);
+        LocationMonth = addProperty(LocationDataPrjType, project);
+
+        let previousBlock = levelLocation[levelLocation.length - 1];
+
+        let selectedjson = selectedSubFeature(LocationMonth, previousBlock);
+        let selectedcsv = selectedSubData(LocationDataPrjType, previousBlock);
+
+        makemap(selectedjson, selectedcsv);
+      }
+  
+});
+
+    
     $(".ptype a").click(function () {
     $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedPtype"></span>');
     $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
     prjType = $(this).text();
     var valMonth = tickLabels[$('#monthSlider').slider('getValue')];
-    let monthdata = filterCSV(blockData, 'month_n', valMonth);
-    let pt_data = filterCSV(monthdata, 'project_type', prjType);
-    removeProperties(block);
-    let monthjson = addProperty(pt_data, block);
-    level = 0;
-
     g.selectAll("*").remove();
     rowEnter.selectAll("*").remove();
-    svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
-    //updateMonth();
-    levelLocation = []; 
-    makemap(monthjson, pt_data);
+    let svgTrans = svg.transition().duration(transitionDuration);
+          // calculation for zoom
+          let transLength = zoomBox.translate.length;
+          let scaleLength = zoomBox.scale.length;
+          let transX, transY, scaleV;
+          if (level !== 0) {
+            transX = zoomBox.translate[transLength - 1][0];
+            transY = zoomBox.translate[transLength - 1][1];
+            scaleV = zoomBox.scale[scaleLength - 1];
+          }
+          if (level === 0) {
+            LocationDataMonth = filterCSV(blockData, 'month_n', valMonth);
+            LocationDataPrjType= filterCSV(LocationDataMonth, 'project_type', prjType);
+            removeProperties(block);
+            LocationMonth = addProperty(LocationDataPrjType, block);
+            console.log("on prjType change");
+            console.log("LocationMonth", LocationMonth);
+            makemap(LocationMonth, LocationDataPrjType);
+          }
+          else if (level === 1) {
+            LocationDataMonth = filterCSV(projectData, 'month_n', valMonth);
+            LocationDataPrjType= filterCSV(LocationDataMonth, 'project_type', prjType);
+            removeProperties(project);
+            LocationMonth = addProperty(LocationDataPrjType, project);
+
+            let previousBlock = levelLocation[levelLocation.length - 1];
+
+            let selectedjson = selectedSubFeature(LocationMonth, previousBlock);
+            let selectedcsv = selectedSubData(LocationDataPrjType, previousBlock);
+
+            makemap(selectedjson, selectedcsv);
+          }
     });
 
+  // clicked
+  const clicked = d => {
+        if (level < 1) {
+          level++;
+          direction = 1;
+          zoomToBoundingBox(d);
+          let clickedLocation;
+          if (level === 1) {
+            clickedLocation = d.properties.district;
+          }
 
-    var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
 
-    $('#monthSlider').slider().on('slideStop', function (ev) {
-      var val = tickLabels[ev.value];
-      month_hack = val;
-      let monthdata = filterCSV(blockData, 'month_n', val);
-      let pt_data = filterCSV(monthdata, 'project_type', prjType)
-      removeProperties(block);
-      let monthjson = addProperty(pt_data, block);
-      level = 0;
-      g.selectAll("*").remove();
-      rowEnter.selectAll("*").remove();
-      svg.transition().duration(transitionDuration).call(zzoom.transform, d3.zoomIdentity);
-      updateMonth();
-      levelLocation = [];
-      makemap(monthjson, pt_data);
-    });
+          levelLocation.push(clickedLocation);
+          let selectedJSON, selectedData;
+          let selectedPoints;
+          if (level === 1) {
+            selectedData = filterCSV(projectData, 'month_n', month_hack);
+            LocationDataPrjType= filterCSV(selectedData, 'project_type', prjType);
+            removeProperties(project);
+            selectedJSON = addProperty(LocationDataPrjType, project);
+          }
+          let selectedjson = selectedSubFeature(selectedJSON, clickedLocation);
+          let selecteddata = selectedSubData(LocationDataPrjType, clickedLocation);
+          g.selectAll("*").remove();
+          rowEnter.selectAll("*").remove();
+          console.log("selectedjson", selectedjson)
+          console.log("selecteddata", selecteddata)
+          makemap(selectedjson, selecteddata);
+
+        }// if condition ends here
+      };
+
+//selectmap
+const selectedSubFeature = (geojson, location) => {
+        let selection = [];
+        let geomType;
+        // if(level === 3 && direction == 0){
+        // } 
+        geojson.forEach(sel => {
+          if (level === 1) {
+            if (sel.properties.district === location) {
+              selection.push(sel);
+            }
+          } else if (level === 2) {
+            if (sel.properties.block === location) {
+              selection.push(sel);
+            }
+          }
+
+        });
+        return selection;
+      };
+
+      const selectedSubData = (csv, location) => {
+        let selection = [];
+        csv.forEach(sel => {
+          if (level === 1 && direction === 1) {
+            if (sel.district_n == location) {
+              selection.push(sel);
+            }
+          } else if (level === 2 && direction === 1) {
+            if (sel.sub_district == location) {
+              selection.push(sel);
+            }
+          }
+
+
+          else if (level === 1 && direction === 0) {
+            if (sel.district_n == location) {
+              selection.push(sel);
+            }
+          } else if (level === 0 && direction === 0) {
+            if (sel.district_n == location) {
+              selection.push(sel);
+            }
+          }
+        });
+        return selection;
+      };
+
+    const zoomToBoundingBox = d => {
+        let bounds = pathGenerator.bounds(d),
+          dx = bounds[1][0] - bounds[0][0],
+          dy = bounds[1][1] - bounds[0][1],
+          x = (bounds[0][0] + bounds[1][0]) / 2,
+          y = (bounds[0][1] + bounds[1][1]) / 2,
+          scale = Math.max(
+            1,
+            Math.min(8, 0.9 / Math.max(dx / innerWidth, dy / innerHeight))
+          ),
+          translate = [innerWidth / 2 - scale * x, innerHeight / 2 - scale * y];
+        zoomBox['translate'].push(translate);
+        zoomBox['scale'].push(scale);
+        svg
+          .transition()
+          .duration(transitionDuration)
+          .call(
+            zzoom.transform,
+            d3.zoomIdentity.translate(translate[0], translate[1])
+              .scale(scale)
+          );
+      };
 
     //initial map
-    month_hack = tickLabels[$('#monthSlider').slider('getValue')];
+    var tickLabels = ["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]
+    month_hack = tickLabels[0];
     let monthdata = filterCSV(blockData, 'month_n', month_hack);
     let pt_data = filterCSV(monthdata, 'project_type', prjType)
     let monthjson = addProperty(pt_data, block);
@@ -955,7 +979,6 @@
   }
 
   const monthWiseCSV = data => {
-    let month = { Nov: [], Dec: [], Jan: [] };
     data.forEach(d => {
       let temp = {};
       if (d.sub_district) d.sub_district = d.sub_district;
@@ -1058,21 +1081,29 @@
 
   );
     }
+
   fetchGeoJSON().then(mergeData);
 
   $(function () {
     //bind event
     $('.ptype a').parents('.dropdown').find('.dropdown-toggle').html('Urban' + ' <span class="selectedPtype"></span>');
-    $('.drop-category a').parents('.dropdown').find('.dropdown-toggle').html('Severly Stunted Children' + ' <span class="selectedCategory"></span>');
-
-    // $(".drop-category a").click(function () {
-    //   var valCategory = $(this).text();
-    //   $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
-    // });
-    // //trigger event
-    // $(".drop-category a").first().trigger('click');
-
+    $(".drop-category a").click(function () {
+      var valCategory = $(this).text();
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+    });
+    //trigger event
+    if (choices.length <= 0)
+    $(".drop-category a").first().trigger('click');
   });
+
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
 
   const sliderRange = d3
     .sliderBottom()
@@ -1120,7 +1151,7 @@
     var obj = myGeoJSON[i].properties;
     for(var key in obj){
         var attrName = key;
-        if (attrName!= 'district'){
+        if (attrName!= 'district' && attrName!= 'block'){
           delete obj[key];
         }
     }

@@ -18,11 +18,16 @@
   #b2 {
     display: block;
   }
-
+  
   text {
     font-size: 1.1rem
   }
 
+  .scroll-down {
+    float: right;
+    font-size: calc(40% + 0.5vw + 0.5vh);
+  }
+  
   div.tooltip {
     position: absolute;
     text-align: center;
@@ -62,8 +67,6 @@
     <button class='btn btn-outline-dark toggle m-1'>Compare</button>
   </div>
 </div>
-
-
 
 <div class="row bg-info">
   <div class="col-xs-8 col-sm-8 col-md-6 bg-info">
@@ -111,8 +114,7 @@
 
         <a class="dropdown-item" href="#">% Pregnant women eating extra meal during pregnancy</a>
 
-        <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate
-          breastfeeding</a>
+        <a class="dropdown-item" href="#">% Pregnant women trimester 3 women counselled on immediate breastfeeding</a>
 
       </div>
 
@@ -125,8 +127,7 @@
 
 
   <div class="col-xs-4 col-sm-4 col-md-6 bg-info">
-    <!-- 
-    <div class="row header "> -->
+    
     <div class="dropdown m-1" id="cat2">
 
       <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
@@ -178,13 +179,15 @@
 
 
     </div>
-    <!-- </div> -->
   </div>
 
 
 </div>
+  <div class="scroll-down">
+    Please click "<b>Compare</b>" button if you want to see Indicators Comparison
+  </div>
 
-<div class="row text-center">
+<div class="row text-center mt-5">
   <div class="col-12 ">
     <input type="text" id="monthSlider" name="somename" data-provide="slider" data-slider-ticks="[0, 1, 2, 3, 4, 5]"
       data-slider-ticks-labels='["Aug", "Sep", "Oct", "Nov", "Dec", "Jan"]' data-slider-min="0" data-slider-max="5"
@@ -312,7 +315,7 @@
 
     let getColor;
 
-    if (xValue == 'd=> d.stunting_percent' || xValue == 'd=> d.wasting_percent' || xValue == 'd=> d.underweight_percent' || xValue == 'd=> d.low_birth_weight_percent' || xValue == 'd => d.prnt_anwmic_wmn') {
+    if (xValue == 'd => d.stunting_percent' || xValue == 'd => d.wasting_percent' || xValue == 'd => d.underweight_percent' || xValue == 'd => d.low_birth_weight_percent' || xValue == 'd => d.prnt_anwmic_wmn') {
       getColor = d3.scaleSequential().domain([d3.max(data, xValue), d3.min(data, xValue)])
 
         .interpolator(d3.interpolateRdYlGn);
@@ -412,7 +415,7 @@
 
     let getColor;
 
-    if (xValueR == 'd=> d.stunting_percent' || xValueR == 'd=> d.wasting_percent' || xValueR == 'd=> d.underweight_percent' || xValueR == 'd=> d.low_birth_weight_percent' || xValueR == 'd => d.prnt_anwmic_wmn') {
+    if (xValueR == 'd => d.stunting_percent' || xValueR == 'd => d.wasting_percent' || xValueR == 'd => d.underweight_percent' || xValueR == 'd => d.low_birth_weight_percent' || xValueR == 'd => d.prnt_anwmic_wmn') {
       getColor = d3.scaleSequential().domain([d3.max(data, xValueR), d3.min(data, xValueR)])
 
         .interpolator(d3.interpolateRdYlGn);
@@ -643,6 +646,12 @@
     $(this).parents(".dropdown").find('.btn').html($(this).text());
 
     let valCategory = $(this).text();
+    displayLeftChart(valCategory)
+
+  });
+
+  function displayLeftChart(valCategory)
+  {
 
     switch (valCategory) {
 
@@ -684,8 +693,7 @@
     filterdata = filterCSV(data, 'month_n', valMonth);
     monthDataL = sortData(filterdata, sortByL);
     drawLeft(monthDataL);
-
-  });
+  }
 
 
 
@@ -768,24 +776,33 @@
       $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory2"></span>');
 
     });
-
-
-
     //trigger event
 
     $(".category2 a").first().trigger('click');
 
-
-
   });
 
+  let choices = parseURLParameters(window.location.href);
+  if (choices.length > 0) {
+    let selectedCat = choices[0].replace(/_/g, ' ');
+    console.log("selectedCat", selectedCat);
+    $('.category a').parents('.dropdown').find('.dropdown-toggle').html(selectedCat + ' <span class="selectedCategory"></span>');
+    displayLeftChart(selectedCat); 
+  }
+
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
 
 
-  $(window).on('load', function () {
-
+  $(function () {
     document.getElementById("b2").style.display = 'none';
     document.getElementById("cat2").style.display = 'none';
-
     document.getElementById('sw').style.display = 'none';
 
     $(".category a").click(function () {
@@ -796,11 +813,10 @@
 
     });
 
-    //trigger event
-
+    if (choices.length <= 0)
     $(".category a").first().trigger('click');
 
-  })
+  });
 
 </script>
 

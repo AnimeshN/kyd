@@ -15,9 +15,9 @@ Including another URLconf
 """
 from django.contrib import admin 
 from django.conf.urls import url
-from dashboard.views import DashboardView
-from kyd_dashboard.views import (KYDDashboardView, 
-    F1MsrmntEffcyBlk, F1MsrmntEffcyBlk_post, F2OtcmIndctrBlk, F4DtProfile,
+from dashboard.views import DashboardView, RegionOverview
+from kyd_dashboard.views import (KYDDashboardView, DtDashboard,
+    F1MsrmntEffcyBlk, F2OtcmIndctrBlk, F4DtProfile,
     F3PieProject, F5DtOverview, F6OiMap, F7IycfMap, F8PwMap,
     FtLcBlock, FtLcProject, FtLcBeats, FtRdr1, FtRdr2, F10AWCInfraBlock)
 from maha_dashboard.views import ( MHDashboardView, MahaFeatureOne_post, MahaFeatureOne, MahaFeatureTwo, MahaFeatureThree,
@@ -29,9 +29,11 @@ from dashboard import views
 
 urlpatterns = [
     url(r'^$', DashboardView.as_view(), name='home'),
+    url(r'^dashboard/$', RegionOverview.as_view(), name='overview'),
+    url(r'^(?P<dist_name>[-\w]+)/(?P<fy>[-\w\ ]+)/ajax/areaChange/$', views.create_post_area, name='ajaxArea'),
+    url(r'^kyd_dashboard/dt_dashboard$', DtDashboard.as_view(), name='dt_dash'),
     url(r'^kyd_dashboard$', KYDDashboardView.as_view(), name='kyd_dashboard'),
-    url(r'^kyd_dashboard/f1_msrmnt_effcy_blk$', F1MsrmntEffcyBlk_post.as_view(), name='f1'),
-    url(r'^(?P<dist_name>[-\w]+)/(?P<fy>[-\w\ ]+)/kyd_dashboard/f1_msrmnt_effcy_blk/$', F1MsrmntEffcyBlk.as_view(), name='f1'),
+    url(r'^(?P<dist_name>[-\w]+)/(?P<fy>[-\w\ ]+)/kyd_dashboard/f1_msrmnt_effcy_blk$', F1MsrmntEffcyBlk.as_view(), name='f1'),
     url(r'^(?P<dist_name>[-\w]+)/(?P<fy>[-\w\ ]+)/kyd_dashboard/f2_oi_blk$', F2OtcmIndctrBlk.as_view(), name='f2'),
     url(r'^(?P<dist_name>[-\w]+)/(?P<fy>[-\w\ ]+)/kyd_dashboard/f3_pie_prjt$', F3PieProject.as_view(), name='f3'),
     url(r'^(?P<dist_name>[-\w]+)/(?P<fy>[-\w\ ]+)/kyd_dashboard/f4_dt_profile$', F4DtProfile.as_view(), name='f4'),

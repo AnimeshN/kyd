@@ -67,7 +67,7 @@
   </div>
 </div>
 <div class="row bg-info mb-2">
-  
+
   <div class="dropdown m-1">
     <button class="btn btn-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown"
       aria-haspopup="true" aria-expanded="false">
@@ -287,6 +287,10 @@
     $(this).parents(".dropdown").find('.btn').html($(this).text() + ' <span class="selectedCategory"></span>');
     $(this).parents(".dropdown").find('.btn').val($(this).data('value'));
     var valCategory = $(this).text();
+    displayChart(valCategory);
+  });
+
+  function displayChart(valCategory) {
     var displayVal = valCategory.substring(0, valCategory.length - 1);
 
     if (displayVal == "Height+Weight")
@@ -308,9 +312,7 @@
     tableData = tables(filterdata);
     svg.selectAll("*").remove();
     render(mydata);
-
-  });
-
+  }
   /////
 
   data_from_django = {{ data | safe }};
@@ -344,25 +346,33 @@
     render(mydata);
   });
 
+  let choices = parseURLParameters(window.location.href);
+  if (choices.length > 0) {
+    $('.category a').parents('.dropdown').find('.dropdown-toggle').html(choices[0] + ' <span class="selectedCategory"></span>');
+    displayChart(choices[0]);
+  }
 
   $(function () {
-
 
     $(".category a").click(function () {
       var selText = $(this).text();
       $(this).parents('.dropdown').find('.dropdown-toggle').html(selText + ' <span class="selectedCategory"></span>');
     });
 
-    //trigger event
-    $(".category a").first().trigger('click');
+      //trigger event
+      if (choices.length < 0) 
+      $(".category a").first().trigger('click');
+    
   });
 
-  // monthSelect=$('.month a').first().text();
-  // monthSelect = tickLabels[$('#monthSlider').slider('getValue')]
-  // augData = filterCSV(data, 'month_n', monthSelect);
-  // sortedData = sortData(augData, sortBy);
-  // render(sortedData);
-  // tables(augData);
+  function parseURLParameters() {
+    var query = (window.location.search || '?').substr(1);
+    var map = [];
+    query.replace(/([^&=]+)=?([^&]*)(?:&+|$)/g, function (match, key, value) {
+      map.push(value);
+    });
+    return map;
+  }
 
   function tables(data) {
     $(".hello").remove();
