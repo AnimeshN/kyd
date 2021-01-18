@@ -50,7 +50,9 @@
     overflow-y: scroll; 
     max-height: 700px;
   }
-
+  .drilldown{
+  color: #007FBB;
+}
 </style>
 {% endblock %}
 {% block feature %}
@@ -94,7 +96,7 @@
      <div class="col-12">
       <button type="button" class="btn btn-dark back-button m-2">back</button>
       <span class='info info-hirar'>{{dist_name}}</span>
-      <p>Click on the Polygon(Block/Project/Beat) to view the Lower Level (Drilldown)</p>
+      <p>Click on the Polygon(Block/Project/Beat) to view the Lower Level <span class="drilldown">(Drilldown)</span></p>
     </div>
 </div>
 

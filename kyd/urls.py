@@ -23,6 +23,7 @@ from kyd_dashboard.views import (KYDDashboardView, DtDashboard,
 from maha_dashboard.views import ( MHDashboardView, MahaFeatureOne_post, MahaFeatureOne, MahaFeatureTwo, MahaFeatureThree,
  MahaFeatureFour, MahaFeatureFive, MahaFeatureSix,MahaFeatureSeven,MahaFeatureEight,MahaFeatureNine,
 MahaFeatureStOw, MahaFeatureLCDT, MahaFeatureLCSDT)
+from kyp.views import KypDashboard, VtTyGp
 from django.conf import settings
 from django.conf.urls.static import static
 from dashboard import views
@@ -63,12 +64,12 @@ urlpatterns = [
     url(r'^(?P<fy>[-\w\ ]+)/maha_dashboard/maha_feat_lcdt$', MahaFeatureLCDT.as_view(), name='maha-feat_lcdt'), 
     url(r'^(?P<fy>[-\w\ ]+)/maha_dashboard/maha_feat_lcsdt$', MahaFeatureLCSDT.as_view(), name='maha-feat_lcsdt'), 
 
+    url(r'^kyp$', KypDashboard.as_view(), name='kyp_dashboard'),
+    url(r'^kyp/vj_ty_gp$', VtTyGp.as_view(), name='vjtygp'),
 
     url(r'^admin/', admin.site.urls),
     url(r'^login/', views.login_request, name='login'),
     url(r'^logout/', views.logout_request, name='logout'),
 
-
-    # url(r'logout', views.logout_request, name="logout"),
 
 ] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

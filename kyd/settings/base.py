@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'dashboard',
     'kyd_dashboard',
     'maha_dashboard',
+    'kyp',
 ]
 
 MIDDLEWARE = [

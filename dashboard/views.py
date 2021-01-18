@@ -26,20 +26,17 @@ def create_post_area(request, fy=None, dist_name=None):
         areaSelected = 'Maharashtra'
     data = DtAvgTable.objects.filter(Q(district_n=areaSelected) & Q(financial_year=fy_name) & Q(month=monthSelected))
     jsondata = json.dumps(DtAvgTableSerializer(data,  many=True).data)
-    print(jsondata[0])
     return JsonResponse({'data':jsondata, 'dist_name': areaSelected})
        
 
 class DashboardView(TemplateView):
     def get(self,request):
-        # username = request.user.username
+        username = request.user.username
 
-        # if (username == 'admin' or username == 'Maharashtra'):
-        #     dt_name = DistrictPwd.objects.all()
-        # else:
-        #     dt_name = DistrictPwd.objects.filter(Q(district_n=username) | Q(district_n='Maharashtra'))
-        #template_name = "dashboard/dash.html"
-        return render(request,'dashboard/dash.html')
+        if (username == 'dhamtari'):
+            return render(request,'kyp/vjty_template.html')
+        else:
+            return render(request,'dashboard/dash.html')
 
 class RegionOverview(LoginRequiredMixin, TemplateView):
     login_url = '/login/'
@@ -50,7 +47,6 @@ class RegionOverview(LoginRequiredMixin, TemplateView):
         if (username == 'admin' or username == 'Maharashtra'):
             dt_name = DistrictPwd.objects.filter(Q(state_n='Maharashtra')).values('district_n').distinct().order_by('district_n')
         else:
-            print("in else")
             dt_name = DistrictPwd.objects.filter(Q(state_n='Maharashtra') & Q(district_n=username)).values('district_n').distinct()
             block_name = DistrictPwd.objects.filter(Q(state_n='Maharashtra') & Q(district_n=username)).values('block_n').distinct()
        
@@ -62,7 +58,6 @@ class RegionOverview(LoginRequiredMixin, TemplateView):
        
         data = DtAvgTable.objects.filter(Q(district_n=district_name) & Q(financial_year=fy_name) & Q(month='All'))
         jsondata = serializers.serialize('json',data)
-        print(data)
         return render(request,'dashboard/dt_dashboard.html', {'dd_dt_data':dt_name, 'data':jsondata, 'dist_name':district_name, 'fy': fy_name})
 
 

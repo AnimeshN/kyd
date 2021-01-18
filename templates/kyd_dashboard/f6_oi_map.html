@@ -70,6 +70,9 @@
     float: right;
     font-size: calc(50% + 0.5vw + 0.5vh);
   }
+  .drilldown{
+  color: #007FBB;
+}
 </style>
 {% endblock %}
 {% block feature %}
@@ -118,7 +121,7 @@
   <div class="col-12">
     <button type="button" class="btn btn-dark back-button m-2">back</button>
     <span class='info info-hirar'>{{dist_name}}</span>
-    <p>Click on the Polygon(Block/Project/Beat) to view the Lower Level <span>(Drilldown)</span>
+    <p>Click on the Polygon(Block/Project/Beat) to view the Lower Level <span class="drilldown">(Drilldown)</span>
       <a href="{% url 'ftlcblk' dist_name fy %}" class="lc_link">
         Want to see Month-wise Trend
         <i class="fa fa-chevron-right" aria-hidden="true"></i>
@@ -926,6 +929,7 @@ $('#monthSlider').slider().on('slideStop', function (ev) {
               .style("fill", d => {
                 return myColor(ColorValue(d), low, high);
               })
+              .on("click", function (d) { window.open("https://childnutritiontracker.web.app/?awc_id=4c051f983ece4078a666c6f0127acbc3") })
               .on("mouseover", d => onMouseOver(d))
               .on("mouseout", function (d) {
                 tooltip

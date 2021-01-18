@@ -61,6 +61,9 @@
     float: right;
     font-size: calc(50% + 0.5vw + 0.5vh);
   }
+  .drilldown{
+  color: #007FBB;
+}
 </style>
 {% endblock %}
 {% block feature %}
@@ -118,7 +121,7 @@
   <div class="col-12">
     <button type="button" class="btn btn-dark back-button m-2">back</button>
     <span class='info info-hirar'>Maharashtra</span>
-    <p>Click on the Polygon(District/Block) to view the Lower Level (Drilldown)
+    <p>Click on the Polygon(District/Block) to view the Lower Level <span class="drilldown">(Drilldown)</span>
       <a href="{% url 'maha-feat_lcdt' fy %}" class="lc_link">
         Want to see Month-wise Trend
         <i class="fa fa-chevron-right" aria-hidden="true"></i>
