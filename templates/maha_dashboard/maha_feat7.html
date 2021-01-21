@@ -262,6 +262,7 @@
     let low = 25.00;
     let high = 50.00;
     let updatedCat;
+    let LocationValue = d => d.block;
 
     const fillCellColor = (d, percentageColor, actualColor) => {
       if (d.name == "Percentage") return percentageColor(d.value);
@@ -510,7 +511,6 @@
       //makeTable
 
       let tbdata = [];
-      let LocationValue = d => d.block;
       let PercentageValue = TPercentValue;
       let ActualValue = TActualValue;
       tdata.forEach(d => {

@@ -76,7 +76,7 @@
                 <a class="dropdown-item" href="#">Women had atleast 4 ANC visit by delivery</a>
                 <a class="dropdown-item" href="#">Women Resting During Pregnancy</a>
                 <a class="dropdown-item" href="#">Women Eating Extra Meal During Pregnancy</a>
-                <a class="dropdown-item" href="#">Trimester 3 women counselled on immediate breastfeeding</a>
+                <a class="dropdown-item" href="#">Women in 3rd trimester counselled on immediate breastfeeding</a>
             </div>
           </div>
           <button type="button" class="btn btn-outline-dark m-1" onclick="location.href=`{% url 'f7' dist_name fy %}`">Previous Feature</button>
@@ -240,6 +240,7 @@ const render = (
   let low = 25.00;
   let high= 50.00;
   let updatedCat;
+  let LocationValue = d => d.block;
 
   const fillCellColor = (d, percentageColor, actualColor) => {
     if (d.name == "Percentage") return percentageColor(d.value);
@@ -316,8 +317,8 @@ const render = (
 
           break;
         case 7:
-          updatedCat = "Trimester 3 women counselled on immediate breastfeeding";
-          Tooltipheader1 = d => "Trimester 3 women counselled on immediate breastfeeding:";
+          updatedCat = "Women in 3rd trimester counselled on immediate breastfeeding";
+          Tooltipheader1 = d => "Women in 3rd trimester counselled on immediate breastfeeding:";
           TooltipVal1 = d => d.properties.no_trmstr_3wmn_cnsld_imdtbf;
           ColorValue = d => d.properties.prnt_trmstr_3wmn_cnsld_imdtbf;
           TPercentValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf;
@@ -470,7 +471,6 @@ const render = (
     //makeTable
     
     let tbdata = [];
-    let LocationValue = d => d.block;
     let PercentageValue = TPercentValue;
     let ActualValue = TActualValue; 
     tdata.forEach(d => {
@@ -567,7 +567,7 @@ const render = (
                 case "Women had atleast 4 ANC visit by delivery":val=4;break;
                 case "Women Resting During Pregnancy":val=5;break;
                 case "Women Eating Extra Meal During Pregnancy":val=6;break;
-                case "Trimester 3 women counselled on immediate breastfeeding":val=7;break;
+                case "Women in 3rd trimester counselled on immediate breastfeeding":val=7;break;
             }
             updateviz(val);
             updateMap(geojson);

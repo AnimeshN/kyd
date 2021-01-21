@@ -82,7 +82,7 @@
       <a class="dropdown-item" href="#">Women had atleast 4 ANC visit by delivery</a>
       <a class="dropdown-item" href="#">Women Resting During Pregnancy</a>
       <a class="dropdown-item" href="#">Women Eating Extra Meal During Pregnancy</a>
-      <a class="dropdown-item" href="#">Trimester 3 women counselled on immediate breastfeeding</a>
+      <a class="dropdown-item" href="#">Women in 3rd trimester counselled on immediate breastfeeding</a>
     </div>
   </div>
   <div class="dropdown m-1 mt-3">
@@ -247,6 +247,7 @@
     let low = 25.00;
     let high = 50.00;
     let updatedCat;
+    let LocationValue = d => d.block;
 
     const fillCellColor = (d, percentageColor, actualColor) => {
       if (d.name == "Percentage") return percentageColor(d.value);
@@ -324,8 +325,8 @@
 
             break;
           case 7:
-            updatedCat = "Trimester 3 women counselled on immediate breastfeeding";
-            Tooltipheader1 = d => "Trimester 3 women counselled on immediate breastfeeding:";
+            updatedCat = "Women in 3rd trimester counselled on immediate breastfeeding";
+            Tooltipheader1 = d => "Women in 3rd trimester counselled on immediate breastfeeding:";
             TooltipVal1 = d => d.properties.no_trmstr_3wmn_cnsld_imdtbf;
             ColorValue = d => d.properties.prnt_trmstr_3wmn_cnsld_imdtbf;
             TPercentValue = d => d.prnt_trmstr_3wmn_cnsld_imdtbf;
@@ -464,7 +465,6 @@
       //makeTable
 
       let tbdata = [];
-      let LocationValue = d => d.block;
       let PercentageValue = TPercentValue;
       let ActualValue = TActualValue;
       tdata.forEach(d => {
@@ -554,7 +554,7 @@
           case "Women had atleast 4 ANC visit by delivery": val = 4; break;
           case "Women Resting During Pregnancy": val = 5; break;
           case "Women Eating Extra Meal During Pregnancy": val = 6; break;
-          case "Trimester 3 women counselled on immediate breastfeeding": val = 7; break;
+          case "Women in 3rd trimester counselled on immediate breastfeeding": val = 7; break;
         }
         updateviz(val);
         updateMap(geojson);
@@ -1084,8 +1084,11 @@ const selectedSubFeature = (geojson, location) => {
     //bind event
     $('.ptype a').parents('.dropdown').find('.dropdown-toggle').html('Urban' + ' <span class="selectedPtype"></span>');
 
-    $('.drop-category a').parents('.dropdown').find('.dropdown-toggle').html('Aneamic Women' + ' <span class="selectedCategory"></span>');
-
+    $(".drop-category a").click(function () {
+      var valCategory = $(this).text();
+      $(this).parents('.dropdown').find('.dropdown-toggle').html(valCategory + ' <span class="selectedCategory"></span>');
+    });
+    
     if (choices.length <= 0)
     $(".drop-category a").first().trigger('click');
   });
